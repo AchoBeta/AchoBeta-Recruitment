@@ -1,11 +1,13 @@
-server:
-  port: 9001
-
-# Spring
 spring:
-  application:
-    # 应用名称
+  config:
     name: achobeta-recruitment
   profiles:
-    # 环境配置
-    active: dev
+    active: @profiles.active@
+
+# 日志配置
+logging:
+  level:
+    com.achobeta: @logging.level@
+    org.springframework: warn
+    tech.powerjob.worker.background: warn
+  config: classpath:logback-plus.xml

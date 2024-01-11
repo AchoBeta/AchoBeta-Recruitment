@@ -1,0 +1,21 @@
+ab:
+  db:
+    host: 127.0.0.1
+    port: 3306
+    database: achobeta_recruitment
+    username: root
+    password: 123456
+
+server:
+  port: 9001
+
+--- # 数据源配置
+spring:
+  datasource:
+    url: jdbc:mysql://${ab.db.host}:${ab.db.port}/${ab.db.database}?serverTimezone=UTC&useSSL=false&characterEncoding=UTF8&allowPublicKeyRetrieval=true
+    username: ${ab.db.username}
+    password: ${ab.db.password}
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
