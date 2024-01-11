@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotPermissionException.class)
     public R<Void> handleNotPermissionException(NotPermissionException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-        log.error("请求地址'{}', 权限码校验失败'{}'", requestURI, e);
+        log.error("请求地址'{}', 权限码校验失败'{}'", requestURI, e.getMessage());
         return R.fail(HttpStatus.FORBIDDEN, "没有访问权限, 请联系管理员授权");
     }
 

@@ -1,7 +1,7 @@
 package com.achobeta.domain.users.controller;
 
+import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.users.service.UserService;
-import com.achobeta.domain.users.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +30,11 @@ public class UserController {
     @GetMapping("/exception")
     public void test() {
         userService.test_NotPermissionExceptionHandler();
+    }
+
+    @GetMapping("/mock/test")
+    public SystemJsonResponse mockTest() {
+        return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
 }
