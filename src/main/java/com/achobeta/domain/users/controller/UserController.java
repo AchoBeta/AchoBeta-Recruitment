@@ -13,12 +13,13 @@ public class UserController {
 
     /**
      * http://localhost:9001/login?name=bantanger
+     * 
      * @param name
      * @return
      */
     @GetMapping("/login")
     public String login(@RequestParam("name") String name) {
-        return name + " 登录成功";
+        return name + " 登录成功123";
     }
 
 }
