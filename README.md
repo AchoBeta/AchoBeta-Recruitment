@@ -81,3 +81,6 @@ e.g.
 feat: add new feature
 fix: fix a bug
 ```
+
+## content
+please delete useless import. You can also use the shortcut key ctrl + alt + o to automatically delete useless import by setting idea.

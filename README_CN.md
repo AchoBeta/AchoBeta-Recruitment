@@ -81,3 +81,6 @@ e.g.
 feat: add new feature
 fix: fix a bug
 ```
+
+## 提交内容
+无用 import 请删除，快捷键 ctrl + alt + o 也可以通过设置 idea 自动删除无用 import
