@@ -3,6 +3,8 @@ package com.achobeta.common;
 import com.achobeta.common.constants.GlobalServiceStatusCode;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
@@ -18,7 +20,9 @@ import java.util.Optional;
  * @version 1.0
  */
 @NoArgsConstructor
-public class SystemJsonResponse extends LinkedHashMap<String, Object> {
+public class SystemJsonResponse extends LinkedHashMap<String, Object> implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private static final Object NULL = null;
     private static final String RESPONSE_CODE = "code";
     private static final String RESPONSE_MESSAGE = "message";

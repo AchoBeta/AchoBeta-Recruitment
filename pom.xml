@@ -8,11 +8,17 @@
     <artifactId>AchoBeta-Recruitment</artifactId>
     <version>1.0</version>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.0.5</version>
+    </parent>
+
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-boot.version>3.1.2</spring-boot.version>
+        <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <lombok.version>1.18.30</lombok.version>
     </properties>
 
@@ -26,36 +32,53 @@
             </properties>
             <activation>
                 <!--默认环境-->
-                <activeByDefault>true</activeByDefault>
+<!--                <activeByDefault>true</activeByDefault>-->
             </activation>
         </profile>
         <profile>
             <id>prod</id>
             <properties>
-                <profiles.active>dev</profiles.active>
+                <profiles.active>prod</profiles.active>
                 <logging.level>warn</logging.level>
             </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
     </profiles>
 
     <dependencies>
-        <!-- SpringBoot的依赖配置-->
+        <!-- web开发的场景启动器 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>${spring-boot.version}</version>
         </dependency>
-        <!--lombok-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <!-- 数据库驱动 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.11</version>
+        </dependency>
+        <!-- lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
         </dependency>
-        <!-- mybatis-plus-->
+        <!-- mybatis-plus 3.5.3 才支持 spring boot 3-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.3.1</version>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.6</version>
         </dependency>
     </dependencies>
 
