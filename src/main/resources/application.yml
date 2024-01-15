@@ -3,7 +3,8 @@ spring:
     name: achobeta-recruitment
   profiles:
     active: @profiles.active@
-
+  mail:
+    host: smtp.yeah.net
 # 日志配置
 logging:
   level:
