@@ -2,8 +2,11 @@ package com.achobeta.domain.shortlink.component;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.statement.select.KSQLWindow;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -22,13 +25,14 @@ public class RedisCache {
      */
     public <T> void setCacheObject(final String key, final T value) {
         log.info("存入Redis\t[{}]-[{}]", key, value);
+        // todo: 设置超时时间
         redisTemplate.opsForValue().set(key, value);
     }
 
-    public <T> T getCacheObject(final String key) {
+    public <T> Optional<T> getCacheObject(final String key) {
         T value = (T) redisTemplate.opsForValue().get(key);
         log.info("查询Redis\t[{}]-[{}]", key, value);
-        return value;
+        return Optional.ofNullable(value);
     }
  
     /**

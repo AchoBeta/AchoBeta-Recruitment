@@ -23,6 +23,7 @@ public class RedisBloomFilter {
         Preconditions.checkArgument(bloomFilterHelper != null, "bloomFilterHelper不能为空");
         int[] offset = bloomFilterHelper.murmurHashOffset(value);
         for (int i : offset) {
+            // todo: 设置超时时间
             redisTemplate.opsForValue().setBit(BLOOM_FILTER_NAME, i, true);
         }
     }
