@@ -17,7 +17,7 @@ public class Email implements Serializable {
 
     String[] recipient;
 
-    String[] cc;
+    String[] carbonCopy;
 
     private String title;
 
@@ -31,15 +31,16 @@ public class Email implements Serializable {
         this.recipient = recipient;
     }
 
-    public void setCc(String... cc) {
-        this.cc = cc;
+    public void setCarbonCopy(String... cc) {
+        this.carbonCopy = cc;
     }
+
     public void setRecipient(@NonNull String recipient) {
         this.recipient = new String[]{recipient};
     }
 
-    public void setCc(@NonNull String cc) {
-        this.cc = new String[]{cc};
+    public void setCarbonCopy(@NonNull String cc) {
+        this.carbonCopy = new String[]{cc};
     }
 
     public String[] getRecipient() {
@@ -47,16 +48,16 @@ public class Email implements Serializable {
     }
 
 
-    public String[] getCc() {
-        return cc;
+    public String[] getCarbonCopy() {
+        return carbonCopy;
     }
 
     public String getRecipient(int i) {
         return recipient != null ? recipient[i] : null;
     }
 
-    public String getCc(int i) {
-        return cc != null ? cc[i] : null;
+    public String getCarbonCopy(int i) {
+        return carbonCopy != null ? carbonCopy[i] : null;
     }
 
 }
