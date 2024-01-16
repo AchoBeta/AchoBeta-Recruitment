@@ -43,7 +43,7 @@ public class ShortLinkController {
     public SystemJsonResponse transferAndSaveShortLink(HttpServletRequest request, @RequestParam("url")String url) {
         //验证url
         if(!HttpUrlValidator.isHttpUrl(url) || !HttpUrlValidator.isUrlAccessible(url)) {
-            throw new IllegalUrlException("url无效");
+            throw new IllegalUrlException(String.format("url:'%s' 无效", url));
         }
         // 拼接出基础的url
         String baseUrl = ShortLinkUtils.getBaseUrl(request.getHeader("host"));
