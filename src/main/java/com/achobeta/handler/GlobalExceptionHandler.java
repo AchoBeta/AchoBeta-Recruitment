@@ -1,10 +1,7 @@
 package com.achobeta.handler;
 
 import com.achobeta.common.SystemJsonResponse;
-import com.achobeta.exception.NotPermissionException;
-import com.achobeta.exception.ParameterValidateException;
-import com.achobeta.exception.SendMailException;
-import com.achobeta.exception.ShortLinkGenerateException;
+import com.achobeta.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -51,6 +48,13 @@ public class GlobalExceptionHandler {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}', 短链生成失败'{}'", requestURI, e.getMessage());
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_FAIL, "短链生成失败");
+    }
+
+    @ExceptionHandler(IllegalUrlException.class)
+    public SystemJsonResponse handleIllegalUrlException(IllegalUrlException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}', 非法的url'{}'", requestURI, e.getMessage());
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_FAIL, "url非法");
     }
 
 }
