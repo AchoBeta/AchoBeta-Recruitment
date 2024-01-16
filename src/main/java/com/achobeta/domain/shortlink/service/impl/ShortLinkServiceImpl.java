@@ -7,10 +7,13 @@ import com.achobeta.domain.shortlink.service.ShortLinkService;
 import com.achobeta.domain.shortlink.util.ShortLinkUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
 * @author 马拉圈
@@ -18,6 +21,7 @@ import java.util.Objects;
 * @createDate 2024-01-12 19:48:07
 */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink>
     implements ShortLinkService {
@@ -28,7 +32,6 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     @Override
     public String transShortLinkURL(String baseUrl, String url) {
         //获取短链接code
-        ShortLink one = null;
         String code = url;
         String redisKey = null;
         // 生成唯一的code
@@ -40,9 +43,11 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         ShortLink shortLink = new ShortLink();
         shortLink.setOriginUrl(url);
         shortLink.setShortCode(code);
-        shortLink.setIsDeleted(false);
+        shortLink.setDeleted(0);
+        shortLink.setVersion(0);
         shortLink.setIsUsed(false);
-        shortLink.setCreateTime(new Date());
+        shortLink.setCreateTime(LocalDateTime.now());
+        log.info("原链接:{} -> redisKey:{}", url, redisKey);
         this.save(shortLink);
         // 缓存到Redis，加入布隆过滤器
         redisCache.setCacheObject(redisKey, url);
@@ -55,21 +60,20 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     public String getOriginUrl(String code) {
         String redisKey = ShortLinkUtils.LINK + code;
         //如果Redis缓存了，就直接返回Redis的值
-        String originUrl = redisCache.getCacheObject(redisKey);
-        if(Objects.nonNull(originUrl)) {
+        Optional<String> originUrlCache = redisCache.getCacheObject(redisKey);
+        return originUrlCache.orElseGet(() -> {
+            //否则查MySQL
+            ShortLink shortLink = this.lambdaQuery().eq(ShortLink::getShortCode, code).one();
+            if(Objects.isNull(shortLink)) {
+                log.warn("不存在此短链接code：" + code);
+                throw new RuntimeException("不存在此短链接code:" + code);
+            }
+            String originUrl = shortLink.getOriginUrl();
+            // 缓存到Redis里
+            redisCache.setCacheObject(redisKey, originUrl);
+            redisCache.addToBloomFilter(redisKey);
             return originUrl;
-        }
-        //否则查MySQL
-        ShortLink shortLink = this.lambdaQuery().eq(ShortLink::getShortCode, code).one();
-        if(Objects.isNull(shortLink)) {
-            log.warn("不存在此短链接code：" + code);
-            throw new RuntimeException("不存在此短链接");
-        }
-        originUrl = shortLink.getOriginUrl();
-        // 缓存到Redis里
-        redisCache.setCacheObject(redisKey, originUrl);
-        redisCache.addToBloomFilter(redisKey);
-        return originUrl;
+        });
     }
 
 
