@@ -4,6 +4,7 @@ import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
 import com.achobeta.domain.shortlink.util.HttpUrlValidator;
 import com.achobeta.domain.shortlink.util.ShortLinkUtils;
+import com.achobeta.exception.ShortLinkGenerateException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +42,7 @@ public class ShortLinkController {
     public SystemJsonResponse transferAndSaveShortLink(HttpServletRequest request, @RequestParam("url")String url) {
         //验证url
         if(!HttpUrlValidator.isHttpUrl(url) || !HttpUrlValidator.isUrlAccessible(url)) {
-            throw new IllegalArgumentException("url is not valid");
+            throw new ShortLinkGenerateException("url无效");
         }
         // 拼接出基础的url
         String baseUrl = ShortLinkUtils.getBaseUrl(request.getHeader("host"));
