@@ -1,10 +1,14 @@
 package com.achobeta.domain.shortlink.util;
 
+import cn.hutool.log.Log;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.regex.Pattern;
 
+@Slf4j
 public class HttpUrlValidator {
 
     private static final Pattern HTTP_PATTERN = Pattern.compile("^(http|https)://.*$");
@@ -32,6 +36,7 @@ public class HttpUrlValidator {
             int responseCode = connection.getResponseCode();
             return responseCode == 200; // 如果状态码为 200，则返回 true，表示可以访问
         } catch (IOException e) {
+            log.warn("{} 无法访问", urlString);
             return false; // 发生异常时，返回 false，表示不可访问
         }
     }
