@@ -2,6 +2,7 @@ package com.achobeta.handler;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.exception.NotPermissionException;
+import com.achobeta.exception.SendMailException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,6 +28,13 @@ public class GlobalExceptionHandler {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}', 权限码校验失败'{}'", requestURI, e.getMessage());
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(USER_NO_PERMISSION, "没有访问权限, 请联系管理员授权");
+    }
+
+    @ExceptionHandler(SendMailException.class)
+    public SystemJsonResponse handleSendMailException(SendMailException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}', 权限码校验失败'{}'", requestURI, e.getMessage());
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(USER_NO_PERMISSION, "邮箱发送失败");
     }
 
 }
