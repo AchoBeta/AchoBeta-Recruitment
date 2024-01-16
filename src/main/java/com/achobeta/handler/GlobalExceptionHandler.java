@@ -2,7 +2,9 @@ package com.achobeta.handler;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.exception.NotPermissionException;
+import com.achobeta.exception.ParameterValidateException;
 import com.achobeta.exception.SendMailException;
+import com.achobeta.exception.ShortLinkGenerateException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -35,6 +37,20 @@ public class GlobalExceptionHandler {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}', 权限码校验失败'{}'", requestURI, e.getMessage());
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(USER_NO_PERMISSION, "邮箱发送失败");
+    }
+
+    @ExceptionHandler(ParameterValidateException.class)
+    public SystemJsonResponse handleParameterValidateException(ParameterValidateException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}', 权限码校验失败'{}'", requestURI, e.getMessage());
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(USER_NO_PERMISSION, "参数校验不通过");
+    }
+
+    @ExceptionHandler(ShortLinkGenerateException.class)
+    public SystemJsonResponse handleShortLinkGenerateException(ShortLinkGenerateException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}', 权限码校验失败'{}'", requestURI, e.getMessage());
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(USER_NO_PERMISSION, "短链生成失败");
     }
 
 }
