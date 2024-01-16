@@ -10,7 +10,11 @@ public class ShortLinkUtils {
     private static final String CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
     private static final int LINK_LENGTH = 6;
 
-    public static final String LINK = "REDIS_SHORT_LINK_";
+    public static final String LINK = "REDIS_SHORT_LINK_";//前缀
+
+    public static final int MODULES = CHARSET.length();
+
+    public static final int FETCH_HEX_SIZE = 4;
 
 
     // 获取盐值
@@ -26,14 +30,14 @@ public class ShortLinkUtils {
     public static String subCodeByString(String str) {
         int strLength = str.length();
         int gap = strLength / LINK_LENGTH;//取值间隔
-        if(gap < 4) {
+        if(gap < FETCH_HEX_SIZE) {
+            // 代表无法取出 LINK_LENGTH 个十六进制数
             return null;
         }
         StringBuilder subCode = new StringBuilder();
-        int modulus = CHARSET.length();
         for (int i = 0; i < LINK_LENGTH; i++) {
-            int index = Integer.parseInt(str.substring(i * gap, i * gap + 4), 16);//提取十六进制数
-            subCode.append(CHARSET.charAt(index % modulus));//对应到Base64字典的某个Base64字符
+            int index = Integer.parseInt(str.substring(i * gap, i * gap + FETCH_HEX_SIZE), 16);//提取十六进制数
+            subCode.append(CHARSET.charAt(index % MODULES));//对应到Base64字典的某个Base64字符
         }
         return subCode.toString();
     }
