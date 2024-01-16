@@ -47,12 +47,14 @@ public class EmailSender {
             mimeMessageHelper.setTo(email.getRecipient());
             return mimeMessageHelper;
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            log.warn(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     public void sendSimpleMailMessage(Email email) {
         if(Objects.isNull(email)) {
+            log.warn("email不能为null!");
             throw new RuntimeException("email不能为null!");
         }
         // 封装simpleMailMessage对象
@@ -64,6 +66,7 @@ public class EmailSender {
 
     public void sendMailWithFile(Email email, File... files) {
         if(Objects.isNull(email)) {
+            log.warn("email不能为null!");
             throw new RuntimeException("email不能为null!");
         }
         // 封装对象
@@ -79,12 +82,14 @@ public class EmailSender {
             mimeMessageHelper.setText(email.getContent(), false);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            log.warn(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     public void sendModelMail(Email email, String template, Object modelMessage) {
         if(Objects.isNull(email)) {
+            log.warn("email不能为null!");
             throw new RuntimeException("email不能为null!");
         }
         // 封装对象
@@ -99,7 +104,8 @@ public class EmailSender {
             mimeMessageHelper.setText(content, true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            log.warn(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
     public void sendModelMailWithFile(Email email, String template, Object modelMessage, File... files) {
@@ -124,7 +130,8 @@ public class EmailSender {
             }
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            log.warn(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -164,7 +171,8 @@ public class EmailSender {
                         //发送
                         javaMailSender.send(mimeMessage);
                     } catch (MessagingException e) {
-                        throw new RuntimeException(e);
+                        log.warn(e.getMessage());
+                        throw new RuntimeException(e.getMessage());
                     }
                 });
     }
