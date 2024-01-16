@@ -1,8 +1,7 @@
 package com.achobeta.domain.shortlink.po;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.achobeta.domain.users.model.dao.BaseIncrIDEntity;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -13,20 +12,16 @@ import java.util.Date;
  */
 @TableName(value ="short_link")
 @Data
-public class ShortLink implements Serializable {
+public class ShortLink extends BaseIncrIDEntity implements Serializable {
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
-
+    @TableField(value = "origin_url")
     private String originUrl;
 
+    @TableField(value = "short_code")
     private String shortCode;
 
+    @TableField(value = "is_used")
     private Boolean isUsed;
-
-    private Boolean isDeleted;
-
-    private Date createTime;
 
     private static final long serialVersionUID = 1L;
 }
