@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static com.achobeta.common.constants.GlobalServiceStatusCode.USER_NO_PERMISSION;
+import static com.achobeta.common.constants.GlobalServiceStatusCode.*;
 
 /**
  * 全局异常处理器，减少 try-catch 语句
@@ -36,21 +36,21 @@ public class GlobalExceptionHandler {
     public SystemJsonResponse handleSendMailException(SendMailException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}', 权限码校验失败'{}'", requestURI, e.getMessage());
-        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(USER_NO_PERMISSION, "邮箱发送失败");
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_FAIL, "邮箱发送失败");
     }
 
     @ExceptionHandler(ParameterValidateException.class)
     public SystemJsonResponse handleParameterValidateException(ParameterValidateException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}', 权限码校验失败'{}'", requestURI, e.getMessage());
-        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(USER_NO_PERMISSION, "参数校验不通过");
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(PARAM_NOT_VALID, "参数校验不通过");
     }
 
     @ExceptionHandler(ShortLinkGenerateException.class)
     public SystemJsonResponse handleShortLinkGenerateException(ShortLinkGenerateException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}', 权限码校验失败'{}'", requestURI, e.getMessage());
-        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(USER_NO_PERMISSION, "短链生成失败");
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_FAIL, "短链生成失败");
     }
 
 }
