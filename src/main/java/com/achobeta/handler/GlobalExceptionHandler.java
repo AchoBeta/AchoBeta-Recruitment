@@ -35,21 +35,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SendMailException.class)
     public SystemJsonResponse handleSendMailException(SendMailException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-        log.error("请求地址'{}', 权限码校验失败'{}'", requestURI, e.getMessage());
+        log.error("请求地址'{}', 邮箱发送失败'{}'", requestURI, e.getMessage());
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_FAIL, "邮箱发送失败");
     }
 
     @ExceptionHandler(ParameterValidateException.class)
     public SystemJsonResponse handleParameterValidateException(ParameterValidateException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-        log.error("请求地址'{}', 权限码校验失败'{}'", requestURI, e.getMessage());
+        log.error("请求地址'{}', 参数校验不通过'{}'", requestURI, e.getMessage());
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(PARAM_NOT_VALID, "参数校验不通过");
     }
 
     @ExceptionHandler(ShortLinkGenerateException.class)
     public SystemJsonResponse handleShortLinkGenerateException(ShortLinkGenerateException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-        log.error("请求地址'{}', 权限码校验失败'{}'", requestURI, e.getMessage());
+        log.error("请求地址'{}', 短链生成失败'{}'", requestURI, e.getMessage());
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_FAIL, "短链生成失败");
     }
 
