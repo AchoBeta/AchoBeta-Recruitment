@@ -2,6 +2,7 @@ package com.achobeta.domain.email.component;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.domain.email.component.po.Email;
+import com.achobeta.exception.ParameterValidateException;
 import com.achobeta.exception.SendMailException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -54,7 +55,7 @@ public class EmailSender {
 
     public void sendSimpleMailMessage(Email email) {
         if(Objects.isNull(email)) {
-            throw new SendMailException("email不能为空");
+            throw new ParameterValidateException("email不能为空");
         }
         // 封装simpleMailMessage对象
         SimpleMailMessage simpleMailMessage = emailToSimpleMailMessage(email);
@@ -65,7 +66,7 @@ public class EmailSender {
 
     public void sendMailWithFile(Email email, File... files) {
         if(Objects.isNull(email)) {
-            throw new SendMailException("email不能为空");
+            throw new ParameterValidateException("email不能为空");
         }
         // 封装对象
         try {
@@ -86,7 +87,7 @@ public class EmailSender {
 
     public void sendModelMail(Email email, String template, Object modelMessage) {
         if(Objects.isNull(email)) {
-            throw new SendMailException("email不能为空");
+            throw new ParameterValidateException("email不能为空");
         }
         // 封装对象
         try {
@@ -105,7 +106,7 @@ public class EmailSender {
     }
     public void sendModelMailWithFile(Email email, String template, Object modelMessage, File... files) {
         if(Objects.isNull(email)) {
-            throw new SendMailException("email不能为空");
+            throw new ParameterValidateException("email不能为空");
         }
         // 封装对象
         try {
@@ -131,7 +132,7 @@ public class EmailSender {
 
     public <T, R> void customizedSendEmail(Email email, String template, Function<T, R> function, File... files) {
         if(Objects.isNull(email)) {
-            throw new SendMailException("email不能为空");
+            throw new ParameterValidateException("email不能为空");
         }
         String sender = email.getSender();
         String[] carbonCopy = email.getCarbonCopy();
@@ -165,7 +166,6 @@ public class EmailSender {
                         //发送
                         javaMailSender.send(mimeMessage);
                     } catch (MessagingException e) {
-                        log.warn(e.getMessage());
                         throw new SendMailException(e.getMessage());
                     }
                 });
