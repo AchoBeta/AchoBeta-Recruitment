@@ -10,7 +10,7 @@ public class ShortLinkUtils {
     private static final String CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
     private static final int LINK_LENGTH = 6;
 
-    public static final String LINK = "link:";
+    public static final String LINK = "REDIS_SHORT_LINK_";
 
 
     // 获取盐值
@@ -24,14 +24,16 @@ public class ShortLinkUtils {
     }
 
     public static String subCodeByString(String str) {
-        int gap = str.length() / LINK_LENGTH;//取值间隔
+        int strLength = str.length();
+        int gap = strLength / LINK_LENGTH;//取值间隔
         if(gap < 4) {
             return null;
         }
         StringBuilder subCode = new StringBuilder();
+        int modulus = CHARSET.length();
         for (int i = 0; i < LINK_LENGTH; i++) {
             int index = Integer.parseInt(str.substring(i * gap, i * gap + 4), 16);//提取十六进制数
-            subCode.append(CHARSET.charAt(index % CHARSET.length()));//对应到Base64字典的某个Base64字符
+            subCode.append(CHARSET.charAt(index % modulus));//对应到Base64字典的某个Base64字符
         }
         return subCode.toString();
     }
@@ -41,6 +43,9 @@ public class ShortLinkUtils {
         return subCodeByString(hash);
     }
 
+    public static String getBaseUrl(String host) {
+        return String.format("http://%s/api/v1/shortlink/", host);
+    }
 
 
 
