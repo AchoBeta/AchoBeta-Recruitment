@@ -7,7 +7,7 @@ package com.achobeta.exception;
  * Date: 2024-01-16
  * Time: 18:26
  */
-public class SendMailException extends RuntimeException{
+public class SendMailException extends RuntimeException {
     public SendMailException(String message) {
         super(message);
     }
