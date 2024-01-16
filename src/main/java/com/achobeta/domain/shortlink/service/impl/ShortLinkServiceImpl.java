@@ -38,7 +38,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         // 生成唯一的code
         do {
             code = ShortLinkUtils.getShortCodeByURL(code);
-            redisKey = ShortLinkUtils.LINK + code;
+            redisKey = ShortLinkUtils.REDIS_SHORT_LINK + code;
         } while (redisCache.containsInBloomFilter(redisKey));//误判为存在也无所谓，无非就是再重新生成一个
         // 保存
         ShortLink shortLink = new ShortLink();
@@ -59,7 +59,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
 
     @Override
     public String getOriginUrl(String code) {
-        String redisKey = ShortLinkUtils.LINK + code;
+        String redisKey = ShortLinkUtils.REDIS_SHORT_LINK + code;
         //如果Redis缓存了，就直接返回Redis的值
         Optional<String> originUrlCache = redisCache.getCacheObject(redisKey);
         return originUrlCache.orElseGet(() -> {
