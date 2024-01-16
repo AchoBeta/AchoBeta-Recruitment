@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 封装这个对象，传给AtomicEmailSender就可以了
+ * 封装这个对象，传给EmailSender就可以了
  */
 @Data
 public class Email implements Serializable {
