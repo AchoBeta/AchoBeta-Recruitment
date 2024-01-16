@@ -5,6 +5,7 @@ import com.achobeta.domain.shortlink.mapper.ShortLinkMapper;
 import com.achobeta.domain.shortlink.po.ShortLink;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
 import com.achobeta.domain.shortlink.util.ShortLinkUtils;
+import com.achobeta.exception.ShortLinkGenerateException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,8 +66,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             //否则查MySQL
             ShortLink shortLink = this.lambdaQuery().eq(ShortLink::getShortCode, code).one();
             if(Objects.isNull(shortLink)) {
-                log.warn("不存在此短链接code：" + code);
-                throw new RuntimeException("不存在此短链接code:" + code);
+                throw new ShortLinkGenerateException("不存在此短链接code：" + code);
             }
             String originUrl = shortLink.getOriginUrl();
             // 缓存到Redis里
