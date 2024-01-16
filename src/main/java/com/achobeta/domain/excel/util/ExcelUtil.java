@@ -61,7 +61,6 @@ public class ExcelUtil {
             log.info("导出成功：{}", path);
         }catch (IOException e){
             log.warn(e.getMessage());
-            e.printStackTrace();
         }
     }
 }
