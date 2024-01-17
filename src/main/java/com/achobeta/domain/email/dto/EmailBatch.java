@@ -3,14 +3,10 @@ package com.achobeta.domain.email.dto;
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.domain.email.component.annotations.EmailPattern;
 import com.achobeta.domain.email.component.po.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.util.Date;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,12 +22,15 @@ public class EmailBatch {
     private String[] recipient;
 
     @EmailPattern
+    @jakarta.validation.constraints.Email
+    @NotBlank
     private String sender;
 
     private String[] cc;
 
     private String title;
 
+    @NotBlank(message = "邮件内容不能为空")
     private String content;
 
     public Email transfer() {
