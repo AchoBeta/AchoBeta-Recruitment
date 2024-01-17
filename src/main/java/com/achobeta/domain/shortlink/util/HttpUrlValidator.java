@@ -1,6 +1,7 @@
 package com.achobeta.domain.shortlink.util;
 
 import cn.hutool.log.Log;
+import com.achobeta.common.constants.GlobalServiceStatusCode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -12,6 +13,8 @@ import java.util.regex.Pattern;
 public class HttpUrlValidator {
 
     private static final Pattern HTTP_PATTERN = Pattern.compile("^(http|https)://.*$");
+
+    private static final Integer HTTP_CODE = GlobalServiceStatusCode.SYSTEM_SUCCESS.getCode();
 
     /**
      * 是否格式正确
@@ -34,7 +37,7 @@ public class HttpUrlValidator {
             connection.setRequestMethod("GET");
             connection.connect();
             int responseCode = connection.getResponseCode();
-            return responseCode == 200; // 如果状态码为 200，则返回 true，表示可以访问
+            return HTTP_CODE.equals(responseCode); // 如果状态码为 200，则返回 true，表示可以访问
         } catch (IOException e) {
             log.warn("{} 无法访问", urlString);
             return false; // 发生异常时，返回 false，表示不可访问

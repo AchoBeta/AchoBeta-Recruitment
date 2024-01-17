@@ -1,6 +1,7 @@
 package com.achobeta.domain.shortlink.util;
 
 
+import com.achobeta.exception.ShortLinkGenerateException;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.UUID;
@@ -12,9 +13,11 @@ public class ShortLinkUtils {
 
     public static final String REDIS_SHORT_LINK = "REDIS_SHORT_LINK_";//前缀
 
+    public static final int FETCH_RADIX = 16;
+
     public static final int MODULES = CHARSET.length();
 
-    public static final int FETCH_HEX_SIZE = 4;
+    public static final int FETCH_SIZE = 4;
 
 
     // 获取盐值
@@ -30,13 +33,13 @@ public class ShortLinkUtils {
     public static String subCodeByString(String str) {
         int strLength = str.length();
         int gap = strLength / LINK_LENGTH;//取值间隔
-        if(gap < FETCH_HEX_SIZE) {
-            // 代表无法取出 LINK_LENGTH 个十六进制数
-            return null;
+        if(gap < FETCH_SIZE) {
+            // 代表无法取出6个十六进制数
+            throw new ShortLinkGenerateException(String.format("哈希字符串%s，无法取出%d个%d进制数", str, LINK_LENGTH, FETCH_RADIX));
         }
         StringBuilder subCode = new StringBuilder();
         for (int i = 0; i < LINK_LENGTH; i++) {
-            int index = Integer.parseInt(str.substring(i * gap, i * gap + FETCH_HEX_SIZE), 16);//提取十六进制数
+            int index = Integer.parseInt(str.substring(i * gap, i * gap + FETCH_SIZE), FETCH_RADIX);//提取十六进制数
             subCode.append(CHARSET.charAt(index % MODULES));//对应到Base64字典的某个Base64字符
         }
         return subCode.toString();
