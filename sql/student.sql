@@ -65,9 +65,9 @@ CREATE TABLE `student`  (
   UNIQUE INDEX `uni_questionnaire_id`(`questionnaire_id` ASC) USING BTREE,
   UNIQUE INDEX `uni_student_id`(`student_id` ASC) USING BTREE,
   UNIQUE INDEX `uni_email`(`email` ASC) USING BTREE,
-  INDEX  `uni_class`(`class` ASC) USING BTREE,
-  INDEX  `uni_major`(`major` ASC) USING BTREE,
-  INDEX `uni_name`(`name` ASC) USING BTREE
+  INDEX `idx_class`(`class` ASC) USING BTREE,
+  INDEX `idx_major`(`major` ASC) USING BTREE,
+  INDEX `idx_name`(`name` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_bin COMMENT = '学生用户简历表' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
