@@ -4,7 +4,7 @@ import lombok.Data;
 
 
 @Data
-public class EmailTemplate {
+public class EmailCodeTemplate {
 
     private String code; // 验证码
 
