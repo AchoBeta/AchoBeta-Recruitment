@@ -8,7 +8,10 @@ package com.achobeta.exception;
  * Time: 12:14
  */
 public class EmailIdentifyingException extends RuntimeException {
+
+    // todo 待修改
     public EmailIdentifyingException(String message) {
         super(message);
     }
+
 }
