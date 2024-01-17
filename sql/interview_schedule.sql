@@ -33,7 +33,7 @@ CREATE TABLE `interview_schedule`  (
   `is_deleted` tinyint NOT NULL DEFAULT 0 COMMENT '伪删除标记',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uni_stu_id`(`stu_id` ASC) USING BTREE,
-  UNIQUE INDEX `uni_date`(`date` ASC) USING BTREE
+  INDEX `uni_date`(`date` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_bin COMMENT = '面试时间预约表' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

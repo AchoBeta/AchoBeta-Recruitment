@@ -19,6 +19,23 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
 -- Table structure for student
+-- 简历状态comment说明
+-- 范围：0~14，简历状态{
+# - 0-草稿
+# - 1-待筛选
+# - 2-筛选不通过
+# - 3-待安排初试
+# - 4-待初试
+# - 5-初试不通过
+# - 6-初试通过（仅当初试为最后一个流程时显示）
+# - 7-待复试
+# - 8-待安排复试
+# - 9-复试通过（仅当复试为最后一个流程时显示）
+# - 10-待终试
+# - 11-待安排终试
+# - 12-终试通过（仅当复试为最后一个流程时显示）
+# - 13-待处理（反馈异常/或管理员主动设置为该状态）
+# - 14-挂起（管理员可以主动设置该状态）}
 -- ----------------------------
 DROP TABLE IF EXISTS `student`;
 CREATE TABLE `student`  (
@@ -37,23 +54,7 @@ CREATE TABLE `student`  (
   `awards` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '获奖经历',
   `image` varchar(500) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '照片',
   `remark` varchar(500) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '备注',
-  `status_id` int NOT NULL DEFAULT 1 COMMENT '范围：0~14，简历状态{
-- 0-草稿
-- 1-待筛选
-- 2-筛选不通过
-- 3-待安排初试
-- 4-待初试
-- 5-初试不通过
-- 6-初试通过（仅当初试为最后一个流程时显示）
-- 7-待复试
-- 8-待安排复试
-- 9-复试通过（仅当复试为最后一个流程时显示）
-- 10-待终试
-- 11-待安排终试
-- 12-终试通过（仅当复试为最后一个流程时显示）
-- 13-待处理（反馈异常/或管理员主动设置为该状态）
-- 14-挂起（管理员可以主动设置该状态）
-}',
+  `status` int NOT NULL DEFAULT 1 COMMENT '简历状态',
   `submit_count` int NOT NULL DEFAULT 0 COMMENT '提交次数',
   `batch` int NOT NULL DEFAULT 1 COMMENT 'ab版本',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -64,10 +65,9 @@ CREATE TABLE `student`  (
   UNIQUE INDEX `uni_questionnaire_id`(`questionnaire_id` ASC) USING BTREE,
   UNIQUE INDEX `uni_student_id`(`student_id` ASC) USING BTREE,
   UNIQUE INDEX `uni_email`(`email` ASC) USING BTREE,
-  UNIQUE INDEX `uni_ab_version`(`batch` ASC) USING BTREE,
-  UNIQUE INDEX `uni_class`(`class` ASC) USING BTREE,
-  UNIQUE INDEX `uni_major`(`major` ASC) USING BTREE,
-  UNIQUE INDEX `uni_name`(`name` ASC) USING BTREE
+  INDEX  `uni_class`(`class` ASC) USING BTREE,
+  INDEX  `uni_major`(`major` ASC) USING BTREE,
+  INDEX `uni_name`(`name` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_bin COMMENT = '学生用户简历表' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
