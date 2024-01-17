@@ -64,4 +64,11 @@ public class GlobalExceptionHandler {
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(USER_NO_EMAIL_VERIFICATION_FAIL, "邮箱验证失败");
     }
 
+    @ExceptionHandler(IllegalEmailException.class)
+    public SystemJsonResponse handleIllegalEmailException(IllegalEmailException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}', 邮箱有效性校验不通过'{}'", requestURI, e.getMessage());
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(USER_NO_EMAIL_validation_FAIL, "邮箱有效性校验不通过");
+    }
+
 }
