@@ -11,7 +11,7 @@ spring:
     default-encoding: utf-8
     properties:
       mail:
-        debug: true
+#        debug: true
         smtp:
           socketFactory:
             class: javax.net.ssl.SSLSocketFactory
