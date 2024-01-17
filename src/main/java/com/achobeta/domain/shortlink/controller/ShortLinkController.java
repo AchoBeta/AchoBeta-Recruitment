@@ -5,7 +5,6 @@ import com.achobeta.domain.shortlink.service.ShortLinkService;
 import com.achobeta.domain.shortlink.util.HttpUrlValidator;
 import com.achobeta.domain.shortlink.util.ShortLinkUtils;
 import com.achobeta.exception.IllegalUrlException;
-import com.achobeta.exception.ShortLinkGenerateException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +51,4 @@ public class ShortLinkController {
         log.info("原链接:{} -> 短链接:{}", url, shortLinkURL);
         return SystemJsonResponse.SYSTEM_SUCCESS(shortLinkURL);
     }
-
-
 }
