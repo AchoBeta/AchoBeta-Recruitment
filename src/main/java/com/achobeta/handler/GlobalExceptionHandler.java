@@ -57,4 +57,11 @@ public class GlobalExceptionHandler {
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_FAIL, "url非法");
     }
 
+    @ExceptionHandler(EmailIdentifyingException.class)
+    public SystemJsonResponse handleEmailIdentifyingException(EmailIdentifyingException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}', 邮箱验证失败'{}'", requestURI, e.getMessage());
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(USER_NO_EMAIL_VERIFICATION_FAIL, "邮箱验证失败");
+    }
+
 }
