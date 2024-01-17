@@ -8,6 +8,7 @@ import com.achobeta.domain.users.service.EmailService;
 import com.achobeta.domain.users.util.IdentifyingCodeValidator;
 import com.achobeta.exception.EmailIdentifyingException;
 import com.achobeta.exception.IllegalEmailException;
+import com.achobeta.exception.SendMailException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +45,7 @@ public class EmailServiceImpl implements EmailService {
         emailRepository.getIdentifyingCode(redisKey).ifPresent((data) -> {
             if(!IdentifyingCodeValidator.isAllowedToSend((Map<String, Object>)data,
                     IDENTIFYING_CODE_INTERVAL_Limit, IDENTIFYING_CODE_TIMEOUT)) {
-                throw new IllegalEmailException("短时间内多次申请验证码");
+                throw new SendMailException("短时间内多次申请验证码");
             }
         });
         // 封装 Email
