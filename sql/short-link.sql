@@ -8,7 +8,7 @@ create table `short_link`(
     `create_time` datetime DEFAULT CURRENT_TIMESTAMP comment '创建时间',
     `update_time` datetime DEFAULT NULL comment '更新时间',
     `version` int DEFAULT 0 comment '乐观锁',
-    `is_deleted` int DEFAULT 0 comment '逻辑删除'
+    `is_deleted` tinyint DEFAULT 0 comment '逻辑删除'
 ) comment '长短链关系表';
 create UNIQUE index SHORT_CODE_INDEX on `short_link`(`short_code`);
 
