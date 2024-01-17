@@ -4,7 +4,7 @@ ab:
     port: 3306
     database: achobeta_recruitment
     username: root
-    password: 123456
+    password: mmsszsd666
 
 server:
   port: 9001
@@ -19,3 +19,10 @@ spring:
     hikari:
       driver-class-name: com.mysql.cj.jdbc.Driver
 
+spring.data:
+  # redis
+  redis:
+    # 地址
+    host: 127.0.0.1
+    # 端口
+    port: 6379
