@@ -1,21 +1,49 @@
 package com.achobeta.domain.users.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.domain.users.service.EmailService;
 import com.achobeta.domain.users.service.UserService;
+import com.achobeta.domain.users.util.IdentifyingCodeValidator;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author BanTanger 半糖
  * @date 2024/1/11 15:58
  */
 @RestController
+@Slf4j
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/user")
 public class UserController {
 
     private final UserService userService;
+
+    private final EmailService emailService;
+
+
+
+    @PostMapping("/check")
+    public SystemJsonResponse emailIdentityCheck(@RequestParam("email") @NonNull String email) {
+        // 获得随机数
+        String code = IdentifyingCodeValidator.getIdentifyingCode();
+        emailService.sendIdentifyingCode(email, code);
+        // 能到这一步就成功了
+        log.info("发送验证码:{} -> email:{}", code, email);
+        return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
+
+    @PostMapping("/check/{code}")
+    public SystemJsonResponse checkCode(@RequestParam("email") @NonNull String email,
+                                        @PathVariable("code") @NonNull String code) {
+        String redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
+        emailService.checkIdentifyingCode(redisKey, code);
+        // 成功
+        log.info("email:{}, 验证码:{} 验证成功", email, code);
+        return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
 
     /**
      * http://localhost:9001/login?name=bantanger
