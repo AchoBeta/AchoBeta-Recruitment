@@ -13,7 +13,6 @@ public class EmailPatternValidator implements ConstraintValidator<EmailPattern, 
     // email的格式
     private String pattern;
 
-
     @Override
     public void initialize(EmailPattern constraintAnnotation) {
         this.pattern = constraintAnnotation.pattern();
