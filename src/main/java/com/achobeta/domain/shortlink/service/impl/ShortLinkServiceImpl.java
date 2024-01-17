@@ -1,6 +1,6 @@
 package com.achobeta.domain.shortlink.service.impl;
 
-import com.achobeta.domain.shortlink.component.RedisCache;
+import com.achobeta.util.RedisCache;
 import com.achobeta.domain.shortlink.mapper.ShortLinkMapper;
 import com.achobeta.domain.shortlink.po.ShortLink;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -27,6 +26,7 @@ import java.util.Optional;
 public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink>
     implements ShortLinkService {
 
+    private static final String BLOOM_FILTER_NAME = "LINK-CODE-LIST";
 
     private final RedisCache redisCache;
 
@@ -39,7 +39,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         do {
             code = ShortLinkUtils.getShortCodeByURL(code);
             redisKey = ShortLinkUtils.REDIS_SHORT_LINK + code;
-        } while (redisCache.containsInBloomFilter(redisKey));//误判为存在也无所谓，无非就是再重新生成一个
+        } while (redisCache.containsInBloomFilter(BLOOM_FILTER_NAME, redisKey));//误判为存在也无所谓，无非就是再重新生成一个
         // 保存
         ShortLink shortLink = new ShortLink();
         shortLink.setOriginUrl(url);
@@ -52,7 +52,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         this.save(shortLink);
         // 缓存到Redis，加入布隆过滤器
         redisCache.setCacheObject(redisKey, url);
-        redisCache.addToBloomFilter(redisKey);
+        redisCache.addToBloomFilter(BLOOM_FILTER_NAME, redisKey);
         // 返回完整的短链接
         return baseUrl + code;
     }
@@ -71,7 +71,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             String originUrl = shortLink.getOriginUrl();
             // 缓存到Redis里
             redisCache.setCacheObject(redisKey, originUrl);
-            redisCache.addToBloomFilter(redisKey);
+            redisCache.addToBloomFilter(BLOOM_FILTER_NAME, redisKey);
             return originUrl;
         });
     }

@@ -1,4 +1,4 @@
-package com.achobeta.domain.shortlink.component;
+package com.achobeta.util;
 
 import com.google.common.hash.Funnel;
 import com.google.common.hash.Hashing;
@@ -14,7 +14,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * 4. 判断某个key是否在集合时，用k个hash函数计算出k个散列值，并查询数组中对应的比特位，如果所有的比特位都是1，认为在集合中。
  **/
 public class BloomFilterHelper<T> {
-
 
     private int numHashFunctions;
 
