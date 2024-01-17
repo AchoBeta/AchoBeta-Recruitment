@@ -24,9 +24,9 @@ DROP TABLE IF EXISTS `interview_schedule`;
 CREATE TABLE `interview_schedule`  (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `stu_id` bigint UNSIGNED NOT NULL COMMENT '用户表id',
-  `date` date NOT NULL COMMENT '预约日期',
-  `start_time` time NOT NULL COMMENT '预约开始时间',
-  `end_time` time NOT NULL COMMENT '预约结束时间',
+  `date` datetime NOT NULL COMMENT '预约日期',
+  `start_time` datetime NOT NULL COMMENT '预约开始时间',
+  `end_time` datetime NOT NULL COMMENT '预约结束时间',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   `version` int NOT NULL DEFAULT 0 COMMENT '乐观锁',
