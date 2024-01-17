@@ -1,6 +1,6 @@
 package com.achobeta.domain.users.repository;
 
-import com.achobeta.domain.shortlink.component.RedisCache;
+import com.achobeta.util.RedisCache;
 import com.achobeta.domain.users.util.IdentifyingCodeValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -20,6 +20,7 @@ public class EmailRepository {
         Map<String, Object> data = new HashMap<>();
         data.put(IdentifyingCodeValidator.IDENTIFYING_CODE, code); // 验证码
         data.put(IdentifyingCodeValidator.IDENTIFYING_DEADLINE, System.currentTimeMillis() + timeout); // 键值失效的时间点
+        // todo: 设置超时时间
         redisCache.setCacheObject(redisKey, data);
     }
 

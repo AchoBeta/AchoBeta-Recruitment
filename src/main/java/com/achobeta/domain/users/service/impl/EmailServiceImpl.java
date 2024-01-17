@@ -2,11 +2,12 @@ package com.achobeta.domain.users.service.impl;
 
 import com.achobeta.domain.email.component.EmailSender;
 import com.achobeta.domain.email.component.po.Email;
-import com.achobeta.domain.users.model.vo.EmailModelMessage;
+import com.achobeta.domain.users.model.vo.EmailCodeTemplate;
 import com.achobeta.domain.users.repository.EmailRepository;
 import com.achobeta.domain.users.service.EmailService;
 import com.achobeta.domain.users.util.IdentifyingCodeValidator;
 import com.achobeta.exception.EmailIdentifyingException;
+import com.achobeta.exception.IllegalEmailException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,9 +24,11 @@ public class EmailServiceImpl implements EmailService {
 
     private static final int IDENTIFYING_CODE_MINUTES = 5;//过期分钟数
 
-    private static final int IDENTIFYING_CODE_TIMEOUT = IDENTIFYING_CODE_MINUTES * 60  * 1000; //单位为毫秒
+    private static final long IDENTIFYING_CODE_INTERVAL_Limit = 1 * 60 * 1000; // 两次发送验证码的最短时间间隔
 
-    private static final String EMAIL_MODEL_HTML = "identifying-code-model.html";
+    private static final long IDENTIFYING_CODE_TIMEOUT = IDENTIFYING_CODE_MINUTES * 60  * 1000; //单位为毫秒
+
+    private static final String EMAIL_MODEL_HTML = "identifying-code-model.html"; // Email 验证码通知 -模板
 
     @Value("${spring.mail.username}")
     private String achobetaEmail;
@@ -36,6 +39,14 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendIdentifyingCode(String email, String code) {
+        String redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
+        // 验证一下一分钟以内发过了没有
+        emailRepository.getIdentifyingCode(redisKey).ifPresent((data) -> {
+            if(!IdentifyingCodeValidator.isAllowedToSend((Map<String, Object>)data,
+                    IDENTIFYING_CODE_INTERVAL_Limit, IDENTIFYING_CODE_TIMEOUT)) {
+                throw new IllegalEmailException("短时间内多次申请验证码");
+            }
+        });
         // 封装 Email
         Email emailMessage = new Email();
         emailMessage.setContent(code);
@@ -45,14 +56,14 @@ public class EmailServiceImpl implements EmailService {
         emailMessage.setCarbonCopy();
         emailMessage.setSender(achobetaEmail);
         // 存到 redis 中
-        String redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
+        redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
         emailRepository.setIdentifyingCode(redisKey, code, IDENTIFYING_CODE_TIMEOUT);
         // 构造模板消息
-        EmailModelMessage emailModelMessage = new EmailModelMessage();
-        emailModelMessage.setCode(code);
-        emailModelMessage.setMinutes(IDENTIFYING_CODE_MINUTES);
+        EmailCodeTemplate emailCodeTemplate = new EmailCodeTemplate();
+        emailCodeTemplate.setCode(code);
+        emailCodeTemplate.setMinutes(IDENTIFYING_CODE_MINUTES);
         // 发送模板消息
-        emailSender.sendModelMail(emailMessage, EMAIL_MODEL_HTML, emailModelMessage);
+        emailSender.sendModelMail(emailMessage, EMAIL_MODEL_HTML, emailCodeTemplate);
     }
 
     @Override
