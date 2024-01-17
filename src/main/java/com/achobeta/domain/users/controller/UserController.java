@@ -1,9 +1,11 @@
 package com.achobeta.domain.users.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.domain.email.component.EmailValidator;
 import com.achobeta.domain.users.service.EmailService;
 import com.achobeta.domain.users.service.UserService;
 import com.achobeta.domain.users.util.IdentifyingCodeValidator;
+import com.achobeta.exception.IllegalEmailException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +25,11 @@ public class UserController {
 
     private final EmailService emailService;
 
-
-
     @PostMapping("/check")
     public SystemJsonResponse emailIdentityCheck(@RequestParam("email") @NonNull String email) {
+        if(!EmailValidator.isEmailAccessible(email)) {
+            throw new IllegalEmailException("邮箱格式错误");
+        }
         // 获得随机数
         String code = IdentifyingCodeValidator.getIdentifyingCode();
         emailService.sendIdentifyingCode(email, code);
@@ -38,8 +41,10 @@ public class UserController {
     @PostMapping("/check/{code}")
     public SystemJsonResponse checkCode(@RequestParam("email") @NonNull String email,
                                         @PathVariable("code") @NonNull String code) {
-        String redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
-        emailService.checkIdentifyingCode(redisKey, code);
+        if(!EmailValidator.isEmailAccessible(email)) {
+            throw new IllegalEmailException("邮箱格式错误");
+        }
+        emailService.checkIdentifyingCode(email, code);
         // 成功
         log.info("email:{}, 验证码:{} 验证成功", email, code);
         return SystemJsonResponse.SYSTEM_SUCCESS();

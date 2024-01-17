@@ -4,7 +4,6 @@ import java.util.Random;
 
 public class IdentifyingCodeValidator {
 
-
     public static final String IDENTIFYING_CODE_PURPOSE = "验证用户身份";
 
     public static final int IDENTIFYING_CODE_SIZE = 6; // 验证码长度
@@ -17,7 +16,6 @@ public class IdentifyingCodeValidator {
 
     public static final String REDIS_EMAIL_IDENTIFYING_CODE = "REDIS_EMAIL_IDENTIFYING_CODE_";
 
-
     public static String getIdentifyingCode() {
         Random random = new Random();
         StringBuilder builder = new StringBuilder();
@@ -27,7 +25,5 @@ public class IdentifyingCodeValidator {
         }
         return builder.toString();
     }
-
-
 
 }

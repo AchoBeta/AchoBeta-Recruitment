@@ -17,6 +17,8 @@ import org.thymeleaf.context.Context;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -25,6 +27,7 @@ import java.util.function.Function;
 @Slf4j
 @RequiredArgsConstructor
 public class EmailSender {
+
     private final JavaMailSender javaMailSender;
 
     private final TemplateEngine templateEngine;
@@ -38,7 +41,6 @@ public class EmailSender {
         simpleMailMessage.setText(email.getContent());
         return simpleMailMessage;
     }
-
 
     public MimeMessageHelper emailIntoMimeMessageByHelper(MimeMessage mimeMessage, Email email) {
         try {
@@ -62,7 +64,6 @@ public class EmailSender {
         // 发送
         javaMailSender.send(simpleMailMessage);
     }
-
 
     public void sendMailWithFile(Email email, File... files) {
         if(Objects.isNull(email)) {
@@ -104,6 +105,7 @@ public class EmailSender {
             throw new SendMailException(e.getMessage());
         }
     }
+
     public void sendModelMailWithFile(Email email, String template, Object modelMessage, File... files) {
         if(Objects.isNull(email)) {
             throw new ParameterValidateException("email不能为空");

@@ -21,7 +21,6 @@ public class EmailBatch {
 
     private String[] recipient;
 
-    @EmailPattern
     @jakarta.validation.constraints.Email
     @NotBlank
     private String sender;
@@ -40,11 +39,6 @@ public class EmailBatch {
         email.setCreateTime(new Date());
         return email;
     }
-
-    public static void main(String[] args) {
-
-    }
-
 
     private static final long serialVersionUID = 1L;
 }

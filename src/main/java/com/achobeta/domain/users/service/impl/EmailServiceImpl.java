@@ -21,22 +21,18 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
-
-    private final EmailSender emailSender;
-
-    private final EmailRepository emailRepository;
-
-
-
-    @Value("${spring.mail.username}")
-    private String achobetaEmail;
-
-
     private static final int IDENTIFYING_CODE_MINUTES = 5;//过期分钟数
 
     private static final int IDENTIFYING_CODE_TIMEOUT = IDENTIFYING_CODE_MINUTES * 60  * 1000; //单位为毫秒
 
     private static final String EMAIL_MODEL_HTML = "identifying-code-model.html";
+
+    @Value("${spring.mail.username}")
+    private String achobetaEmail;
+
+    private final EmailSender emailSender;
+
+    private final EmailRepository emailRepository;
 
     @Override
     public void sendIdentifyingCode(String email, String code) {
@@ -60,7 +56,8 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void checkIdentifyingCode(String redisKey, String code) {
+    public void checkIdentifyingCode(String email, String code) {
+        String redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
         Object data = emailRepository.getIdentifyingCode(redisKey).orElseGet(() -> {
             throw new EmailIdentifyingException("邮箱不存在/用户未获取验证码/验证码过期/用户已验证");
         });

@@ -41,8 +41,9 @@ public enum GlobalServiceStatusCode {
 
     USER_NO_PERMISSION(2403, "用户无权限"),
     USER_NO_PHONE_CODE(2500, "验证码错误"),
-    USER_NO_EMAIL_VERIFICATION_FAIL(2501, "邮箱验证失败"),
-    USER_NO_EMAIL_validation_FAIL(2502, "邮箱有效性验证不通过"),
+
+    USER_NO_EMAIL_VERIFICATION_FAIL(2601, "邮箱验证失败"),
+    USER_NO_EMAIL_VALIDATION_FAIL(2602, "邮箱有效性验证不通过"),
 
 
     /* -------------- */;
