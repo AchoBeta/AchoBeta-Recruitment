@@ -29,6 +29,8 @@ public class EmailServiceImpl implements EmailService {
 
     private static final long IDENTIFYING_CODE_TIMEOUT = IDENTIFYING_CODE_MINUTES * 60  * 1000; //单位为毫秒
 
+    private static final int IDENTIFYING_OPPORTUNITIES_LIMIT = 5; // 只有五次验证机会
+
     private static final String EMAIL_MODEL_HTML = "identifying-code-model.html"; // Email 验证码通知 -模板
 
     @Value("${spring.mail.username}")
@@ -58,7 +60,7 @@ public class EmailServiceImpl implements EmailService {
         emailMessage.setSender(achobetaEmail);
         // 存到 redis 中
         redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
-        emailRepository.setIdentifyingCode(redisKey, code, IDENTIFYING_CODE_TIMEOUT);
+        emailRepository.setIdentifyingCode(redisKey, code, IDENTIFYING_CODE_TIMEOUT, IDENTIFYING_OPPORTUNITIES_LIMIT);
         // 构造模板消息
         EmailCodeTemplate emailCodeTemplate = new EmailCodeTemplate();
         emailCodeTemplate.setCode(code);
@@ -78,12 +80,19 @@ public class EmailServiceImpl implements EmailService {
         Map<String, Object> map = (Map<String, Object>) data;
         String codeValue = (String) map.get(IdentifyingCodeValidator.IDENTIFYING_CODE);
         long deadline = (long) map.get(IdentifyingCodeValidator.IDENTIFYING_DEADLINE);
+        int opportunities = (int) map.get(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES);
         // 验证是否过期
         if(System.currentTimeMillis() > deadline) {
             throw new EmailIdentifyingException("验证码过期");
         }
+        // 还有没有验证机会
+        if(opportunities < 1) {
+            throw new EmailIdentifyingException("验证机会已用尽");
+        }
         // 验证是否正确
         if(!codeValue.equals(code)) {
+            map.put(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES, opportunities - 1);
+            emailRepository.setIdentifyingCode(redisKey, map); // 次数减一
             throw new EmailIdentifyingException("验证码错误");
         }
         // 验证成功

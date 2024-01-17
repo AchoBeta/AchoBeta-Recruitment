@@ -14,6 +14,8 @@ public class IdentifyingCodeValidator {
 
     public static final String IDENTIFYING_DEADLINE = "IDENTIFYING_DEADLINE";
 
+    public static final String IDENTIFYING_OPPORTUNITIES = "IDENTIFYING_OPPORTUNITIES";
+
     public static final String REDIS_EMAIL_IDENTIFYING_CODE = "REDIS_EMAIL_IDENTIFYING_CODE_";
 
     public static String getIdentifyingCode() {
