@@ -1,13 +1,13 @@
 package com.achobeta.handler;
 
 import com.achobeta.common.SystemJsonResponse;
-import com.achobeta.exception.NotPermissionException;
+import com.achobeta.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static com.achobeta.common.constants.GlobalServiceStatusCode.USER_NO_PERMISSION;
+import static com.achobeta.common.constants.GlobalServiceStatusCode.*;
 
 /**
  * 全局异常处理器，减少 try-catch 语句
@@ -27,6 +27,34 @@ public class GlobalExceptionHandler {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}', 权限码校验失败'{}'", requestURI, e.getMessage());
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(USER_NO_PERMISSION, "没有访问权限, 请联系管理员授权");
+    }
+
+    @ExceptionHandler(SendMailException.class)
+    public SystemJsonResponse handleSendMailException(SendMailException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}', 邮箱发送失败'{}'", requestURI, e.getMessage());
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_FAIL, "邮箱发送失败");
+    }
+
+    @ExceptionHandler(ParameterValidateException.class)
+    public SystemJsonResponse handleParameterValidateException(ParameterValidateException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}', 参数校验不通过'{}'", requestURI, e.getMessage());
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(PARAM_NOT_VALID, "参数校验不通过");
+    }
+
+    @ExceptionHandler(ShortLinkGenerateException.class)
+    public SystemJsonResponse handleShortLinkGenerateException(ShortLinkGenerateException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}', 短链生成失败'{}'", requestURI, e.getMessage());
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_FAIL, "短链生成失败");
+    }
+
+    @ExceptionHandler(IllegalUrlException.class)
+    public SystemJsonResponse handleIllegalUrlException(IllegalUrlException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}', 非法的url'{}'", requestURI, e.getMessage());
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_FAIL, "url非法");
     }
 
 }
