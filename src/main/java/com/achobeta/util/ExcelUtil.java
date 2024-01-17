@@ -1,4 +1,4 @@
-package com.achobeta.domain.excel.util;
+package com.achobeta.util;
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
@@ -17,20 +17,6 @@ public class ExcelUtil {
 
     private static final String DEFAULT_SUFFIX = ".xlsx";
 
-    private static String tryCreateFile(String filePath, String fileName) throws IOException {
-        // 文件夹是否存在，若没有对应文件夹直接根据路径生成文件会报错
-        File directory = new File(filePath);
-        if (!directory.exists() && !directory.isDirectory()) {
-            directory.mkdirs();
-        }
-        // 文件是否存在
-        String path = filePath + fileName + DEFAULT_SUFFIX;
-        File file = new File(path);
-        if (!file.exists()){
-            file.createNewFile();
-        }
-        return path;
-    }
     /**
      * 打印表格
      * @param title 表格标题
@@ -63,4 +49,20 @@ public class ExcelUtil {
             log.warn(e.getMessage());
         }
     }
+
+    private static String tryCreateFile(String filePath, String fileName) throws IOException {
+        // 文件夹是否存在，若没有对应文件夹直接根据路径生成文件会报错
+        File directory = new File(filePath);
+        if (!directory.exists() && !directory.isDirectory()) {
+            directory.mkdirs();
+        }
+        // 文件是否存在
+        String path = filePath + fileName + DEFAULT_SUFFIX;
+        File file = new File(path);
+        if (!file.exists()){
+            file.createNewFile();
+        }
+        return path;
+    }
+
 }

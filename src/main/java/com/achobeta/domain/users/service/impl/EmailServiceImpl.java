@@ -59,6 +59,7 @@ public class EmailServiceImpl implements EmailService {
     public void checkIdentifyingCode(String email, String code) {
         String redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
         Object data = emailRepository.getIdentifyingCode(redisKey).orElseGet(() -> {
+            // todo 这些都可以写 枚举，然后直接 Enum.getMessage 就行了
             throw new EmailIdentifyingException("邮箱不存在/用户未获取验证码/验证码过期/用户已验证");
         });
         // 取出验证码和过期时间点

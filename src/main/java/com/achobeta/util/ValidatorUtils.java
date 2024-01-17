@@ -1,7 +1,8 @@
-package com.achobeta.domain.email.component;
+package com.achobeta.util;
 
 import cn.hutool.extra.spring.SpringUtil;
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 
 import java.util.Set;
@@ -10,12 +11,11 @@ public class ValidatorUtils {
 
 	private static final Validator validator = SpringUtil.getBean(Validator.class);
 
-	public static <T> String validateEntity(T object, Class<?>... groups) {
+	public static <T> void validate(T object, Class<?>... groups) {
 		Set<ConstraintViolation<T>> validate = validator.validate(object, groups);
-		StringBuilder stringBuilder = new StringBuilder();
-		for (ConstraintViolation<T> o : validate) {
-			stringBuilder.append(o.getMessage() + "\n");
+		if (!validate.isEmpty()) {
+			throw new ConstraintViolationException("参数校验异常", validate);
 		}
-		return stringBuilder.toString();
 	}
+
 }

@@ -3,9 +3,14 @@ package com.achobeta.handler;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.achobeta.common.constants.GlobalServiceStatusCode.*;
 
@@ -69,6 +74,19 @@ public class GlobalExceptionHandler {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}', 邮箱有效性校验不通过'{}'", requestURI, e.getMessage());
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(USER_NO_EMAIL_VALIDATION_FAIL, "邮箱有效性校验不通过");
+    }
+
+    /**
+     * 自定义验证异常
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public SystemJsonResponse constraintViolationException(ConstraintViolationException e) {
+        log.error("自定义验证异常'{}'", e.getMessage());
+        String message = e.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessage)
+                .filter(Objects::nonNull)
+                .collect(Collectors.joining("\n"));
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(PARAM_FAILED_VALIDATE, message);
     }
 
 }
