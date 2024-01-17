@@ -4,6 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+
     <groupId>com.achobeta</groupId>
     <artifactId>AchoBeta-Recruitment</artifactId>
     <version>1.0</version>
@@ -49,6 +50,9 @@
         </profile>
 
     </profiles>
+
+
+
 
     <dependencies>
         <!-- web开发的场景启动器 -->
@@ -126,6 +130,11 @@
             <version>4.3.0</version>
         </dependency>
 
+        <!-- 自定义验证注解 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
 
     </dependencies>
 
