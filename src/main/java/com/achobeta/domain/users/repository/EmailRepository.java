@@ -38,8 +38,8 @@ public class EmailRepository {
         redisCache.expire(redisKey, timeout); // 更新超时时间
     }
 
-    public <T> Optional<T> getIdentifyingCode(String redisKey) {
-        return redisCache.getCacheObject(redisKey);
+    public <T> Optional<Map<String,T>> getIdentifyingCode(String redisKey) {
+        return redisCache.getCacheMap(redisKey);
     }
 
     public void deleteIdentifyingCodeRecord(String redisKey) {

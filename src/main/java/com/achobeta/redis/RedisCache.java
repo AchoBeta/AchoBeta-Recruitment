@@ -117,10 +117,11 @@ public class RedisCache {
      * @param key
      * @return
      */
-    public <T> Map<String, T> getCacheMap(final String key) {
+    public <T> Optional<Map<String,T>> getCacheMap(final String key) {
         Map<String, T> data = redisTemplate.opsForHash().entries(key);
+        data = data.size() == 0 ? null: data;
         log.info("获取 Redis 中的 Map 缓存\t[{}]-[{}]", key, data);
-        return data;
+        return Optional.ofNullable(data);
     }
 
     /**

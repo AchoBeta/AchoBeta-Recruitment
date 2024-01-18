@@ -43,10 +43,10 @@ public class EmailServiceImpl implements EmailService {
     public void sendIdentifyingCode(String email, String code) {
         String redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
         // 验证一下一分钟以内发过了没有
-        emailRepository.getIdentifyingCode(redisKey).ifPresent((data) -> {
-            if (!IdentifyingCodeValidator.isAllowedToSend((Map<String, Object>) data,
+        emailRepository.getIdentifyingCode(redisKey).ifPresent(data -> {
+            if (!IdentifyingCodeValidator.isAllowedToSend(data,
                     IDENTIFYING_CODE_INTERVAL_Limit, IDENTIFYING_CODE_TIMEOUT)) {
-                String message = String.format("请在 %d 分钟后重新申请", IDENTIFYING_CODE_INTERVAL_Limit / (60 * 1000L));
+                String message = String.format("请在 %d 分钟后再重新申请", IDENTIFYING_CODE_INTERVAL_Limit / (60 * 1000L));
                 throw new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_SEND_FAIL);
             }
         });
