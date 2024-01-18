@@ -2,7 +2,7 @@ package com.achobeta.domain.users.service.impl;
 
 import com.achobeta.common.constants.GlobalServiceStatusCode;
 import com.achobeta.domain.email.component.EmailSender;
-import com.achobeta.domain.email.component.po.Email;
+import com.achobeta.domain.email.component.po.EmailMessage;
 import com.achobeta.domain.users.model.vo.VerificationCodeTemplate;
 import com.achobeta.domain.users.repository.EmailRepository;
 import com.achobeta.domain.users.service.EmailService;
@@ -28,7 +28,7 @@ public class EmailServiceImpl implements EmailService {
 
     private static final long IDENTIFYING_CODE_TIMEOUT = IDENTIFYING_CODE_MINUTES * 60 * 1000; //单位为毫秒
 
-    private static final int IDENTIFYING_OPPORTUNITIES_LIMIT = 5; // 只有五次验证机会
+    private static final int IDENTIFYING_CODE_INTERVAL_LIMIT = 5; // 只有五次验证机会
 
     private static final String EMAIL_MODEL_HTML = "identifying-code-model.html"; // Email 验证码通知 -模板
 
@@ -49,7 +49,7 @@ public class EmailServiceImpl implements EmailService {
             throw new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_SEND_FAIL);
         }
         // 封装 Email
-        Email emailMessage = new Email();
+        EmailMessage emailMessage = new EmailMessage();
         emailMessage.setContent(code);
         emailMessage.setCreateTime(new Date());
         emailMessage.setTitle(IdentifyingCodeValidator.IDENTIFYING_CODE_PURPOSE);
@@ -57,7 +57,7 @@ public class EmailServiceImpl implements EmailService {
         emailMessage.setCarbonCopy();
         emailMessage.setSender(achobetaEmail);
         // 存到 redis 中
-        emailRepository.setIdentifyingCode(redisKey, code, IDENTIFYING_CODE_TIMEOUT, IDENTIFYING_OPPORTUNITIES_LIMIT);
+        emailRepository.setIdentifyingCode(redisKey, code, IDENTIFYING_CODE_TIMEOUT, IDENTIFYING_CODE_INTERVAL_LIMIT);
         // 构造模板消息
         VerificationCodeTemplate verificationCodeTemplate = VerificationCodeTemplate.builder()
                 .code(code)
