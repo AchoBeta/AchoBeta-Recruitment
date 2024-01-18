@@ -17,11 +17,8 @@ import org.thymeleaf.context.Context;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-
 
 @Component
 @Slf4j
@@ -56,7 +53,7 @@ public class EmailSender {
     }
 
     public void sendSimpleMailMessage(Email email) {
-        if(Objects.isNull(email)) {
+        if (Objects.isNull(email)) {
             throw new ParameterValidateException("email不能为空");
         }
         // 封装simpleMailMessage对象
@@ -66,7 +63,7 @@ public class EmailSender {
     }
 
     public void sendMailWithFile(Email email, File... files) {
-        if(Objects.isNull(email)) {
+        if (Objects.isNull(email)) {
             throw new ParameterValidateException("email不能为空");
         }
         // 封装对象
@@ -74,8 +71,8 @@ public class EmailSender {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = emailIntoMimeMessageByHelper(mimeMessage, email);
             // 添加附件
-            for(File file : files) {
-                if(Objects.nonNull(file)) {
+            for (File file : files) {
+                if (Objects.nonNull(file)) {
                     mimeMessageHelper.addAttachment(file.getName(), file);
                 }
             }
@@ -87,7 +84,7 @@ public class EmailSender {
     }
 
     public void sendModelMail(Email email, String template, Object modelMessage) {
-        if(Objects.isNull(email)) {
+        if (Objects.isNull(email)) {
             throw new ParameterValidateException("email不能为空");
         }
         // 封装对象
@@ -107,7 +104,7 @@ public class EmailSender {
     }
 
     public void sendModelMailWithFile(Email email, String template, Object modelMessage, File... files) {
-        if(Objects.isNull(email)) {
+        if (Objects.isNull(email)) {
             throw new ParameterValidateException("email不能为空");
         }
         // 封装对象
@@ -121,8 +118,8 @@ public class EmailSender {
             String content = templateEngine.process(template, context);
             mimeMessageHelper.setText(content, true);
             // 添加附件
-            for(File file : files) {
-                if(Objects.nonNull(file)) {
+            for (File file : files) {
+                if (Objects.nonNull(file)) {
                     mimeMessageHelper.addAttachment(file.getName(), file);
                 }
             }
@@ -133,7 +130,7 @@ public class EmailSender {
     }
 
     public <T, R> void customizedSendEmail(Email email, String template, Function<T, R> function, File... files) {
-        if(Objects.isNull(email)) {
+        if (Objects.isNull(email)) {
             throw new ParameterValidateException("email不能为空");
         }
         String sender = email.getSender();
@@ -152,8 +149,8 @@ public class EmailSender {
                         mimeMessageHelper.setCc(carbonCopy);
                         mimeMessageHelper.setSubject(title);
                         // 添加附件
-                        for(File file : files) {
-                            if(Objects.nonNull(file)) {
+                        for (File file : files) {
+                            if (Objects.nonNull(file)) {
                                 mimeMessageHelper.addAttachment(file.getName(), file);
                             }
                         }

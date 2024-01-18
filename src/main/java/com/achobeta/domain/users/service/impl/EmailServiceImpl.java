@@ -2,12 +2,11 @@ package com.achobeta.domain.users.service.impl;
 
 import com.achobeta.domain.email.component.EmailSender;
 import com.achobeta.domain.email.component.po.Email;
-import com.achobeta.domain.users.model.vo.EmailCodeTemplate;
+import com.achobeta.domain.users.model.vo.VerificationCodeTemplate;
 import com.achobeta.domain.users.repository.EmailRepository;
 import com.achobeta.domain.users.service.EmailService;
 import com.achobeta.domain.users.util.IdentifyingCodeValidator;
 import com.achobeta.exception.EmailIdentifyingException;
-import com.achobeta.exception.IllegalEmailException;
 import com.achobeta.exception.SendMailException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +26,7 @@ public class EmailServiceImpl implements EmailService {
 
     private static final long IDENTIFYING_CODE_INTERVAL_Limit = 1 * 60 * 1000; // 两次发送验证码的最短时间间隔
 
-    private static final long IDENTIFYING_CODE_TIMEOUT = IDENTIFYING_CODE_MINUTES * 60  * 1000; //单位为毫秒
+    private static final long IDENTIFYING_CODE_TIMEOUT = IDENTIFYING_CODE_MINUTES * 60 * 1000; //单位为毫秒
 
     private static final int IDENTIFYING_OPPORTUNITIES_LIMIT = 5; // 只有五次验证机会
 
@@ -45,7 +44,7 @@ public class EmailServiceImpl implements EmailService {
         String redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
         // 验证一下一分钟以内发过了没有
         emailRepository.getIdentifyingCode(redisKey).ifPresent((data) -> {
-            if(!IdentifyingCodeValidator.isAllowedToSend((Map<String, Object>)data,
+            if (!IdentifyingCodeValidator.isAllowedToSend((Map<String, Object>) data,
                     IDENTIFYING_CODE_INTERVAL_Limit, IDENTIFYING_CODE_TIMEOUT)) {
                 throw new SendMailException("短时间内多次申请验证码");
             }
@@ -62,11 +61,12 @@ public class EmailServiceImpl implements EmailService {
         redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
         emailRepository.setIdentifyingCode(redisKey, code, IDENTIFYING_CODE_TIMEOUT, IDENTIFYING_OPPORTUNITIES_LIMIT);
         // 构造模板消息
-        EmailCodeTemplate emailCodeTemplate = new EmailCodeTemplate();
-        emailCodeTemplate.setCode(code);
-        emailCodeTemplate.setMinutes(IDENTIFYING_CODE_MINUTES);
+        VerificationCodeTemplate verificationCodeTemplate = VerificationCodeTemplate.builder()
+                .code(code)
+                .minutes(IDENTIFYING_CODE_MINUTES)
+                .build();
         // 发送模板消息
-        emailSender.sendModelMail(emailMessage, EMAIL_MODEL_HTML, emailCodeTemplate);
+        emailSender.sendModelMail(emailMessage, EMAIL_MODEL_HTML, verificationCodeTemplate);
     }
 
     @Override
@@ -91,15 +91,15 @@ public class EmailServiceImpl implements EmailService {
         long deadline = (long) map.get(IdentifyingCodeValidator.IDENTIFYING_DEADLINE);
         int opportunities = (int) map.get(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES);
         // 验证是否过期
-        if(System.currentTimeMillis() > deadline) {
+        if (System.currentTimeMillis() > deadline) {
             throw new EmailIdentifyingException("验证码过期");
         }
         // 还有没有验证机会
-        if(opportunities < 1) {
+        if (opportunities < 1) {
             throw new EmailIdentifyingException("验证机会已用尽");
         }
         // 验证是否正确
-        if(!codeValue.equals(code)) {
+        if (!codeValue.equals(code)) {
             map.put(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES, opportunities - 1);
             // 计算新的超时时间，或者其实也可以继续设置五分钟，防止有deadline
             long timeout = Math.max(0, deadline - System.currentTimeMillis());

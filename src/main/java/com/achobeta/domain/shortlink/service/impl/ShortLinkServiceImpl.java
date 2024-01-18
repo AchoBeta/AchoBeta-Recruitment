@@ -1,11 +1,11 @@
 package com.achobeta.domain.shortlink.service.impl;
 
-import com.achobeta.util.RedisCache;
 import com.achobeta.domain.shortlink.mapper.ShortLinkMapper;
 import com.achobeta.domain.shortlink.po.ShortLink;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
 import com.achobeta.domain.shortlink.util.ShortLinkUtils;
 import com.achobeta.exception.ShortLinkGenerateException;
+import com.achobeta.redis.RedisCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,15 +16,15 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
-* @author 马拉圈
-* @description 针对表【short_link】的数据库操作Service实现
-* @createDate 2024-01-12 19:48:07
-*/
+ * @author 马拉圈
+ * @description 针对表【short_link】的数据库操作Service实现
+ * @createDate 2024-01-12 19:48:07
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink>
-    implements ShortLinkService {
+        implements ShortLinkService {
 
     private static final String BLOOM_FILTER_NAME = "LINK-CODE-LIST";
 
@@ -67,7 +67,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         return originUrlCache.orElseGet(() -> {
             //否则查MySQL
             ShortLink shortLink = this.lambdaQuery().eq(ShortLink::getShortCode, code).one();
-            if(Objects.isNull(shortLink)) {
+            if (Objects.isNull(shortLink)) {
                 throw new ShortLinkGenerateException("不存在此短链接code：" + code);
             }
             String originUrl = shortLink.getOriginUrl();

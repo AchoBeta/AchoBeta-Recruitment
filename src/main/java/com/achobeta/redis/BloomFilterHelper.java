@@ -1,4 +1,4 @@
-package com.achobeta.util;
+package com.achobeta.redis;
 
 import com.google.common.hash.Funnel;
 import com.google.common.hash.Hashing;

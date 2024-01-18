@@ -1,7 +1,7 @@
 package com.achobeta.domain.users.repository;
 
-import com.achobeta.util.RedisCache;
 import com.achobeta.domain.users.util.IdentifyingCodeValidator;
+import com.achobeta.redis.RedisCache;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -18,9 +18,10 @@ public class EmailRepository {
 
     /**
      * 设置验证码到 redis 里（携带超时时间点，与验证机会数）
-     * @param redisKey 用户邮箱在 redis 对应的key
-     * @param code 验证码
-     * @param timeout 超时时间点
+     *
+     * @param redisKey      用户邮箱在 redis 对应的key
+     * @param code          验证码
+     * @param timeout       超时时间点
      * @param opportunities 验证机会
      */
     public void setIdentifyingCode(String redisKey, String code, long timeout, int opportunities) {

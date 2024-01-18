@@ -19,7 +19,6 @@ public class ShortLinkUtils {
 
     public static final int FETCH_SIZE = 4;
 
-
     // 获取盐值
     public static String getSalt() {
         return UUID.randomUUID().toString().replace("-", "");
@@ -33,7 +32,7 @@ public class ShortLinkUtils {
     public static String subCodeByString(String str) {
         int strLength = str.length();
         int gap = strLength / LINK_LENGTH;//取值间隔
-        if(gap < FETCH_SIZE) {
+        if (gap < FETCH_SIZE) {
             // 代表无法取出6个十六进制数
             throw new ShortLinkGenerateException(String.format("哈希字符串%s，无法取出%d个%d进制数", str, LINK_LENGTH, FETCH_RADIX));
         }
@@ -53,7 +52,6 @@ public class ShortLinkUtils {
     public static String getBaseUrl(String host) {
         return String.format("http://%s/api/v1/shortlink/", host);
     }
-
 
 
 }
