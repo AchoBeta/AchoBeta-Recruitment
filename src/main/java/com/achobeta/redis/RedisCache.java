@@ -1,8 +1,8 @@
 package com.achobeta.redis;
 
+import com.achobeta.redis.component.RedisBloomFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@SuppressWarnings(value = { "unchecked", "rawtypes" })
 public class RedisCache {
 
     private final RedisTemplate redisTemplate;
@@ -30,6 +31,29 @@ public class RedisCache {
     public boolean expire(final String key, final long timeout) {
         log.info("为 Redis 的键值设置超时时间\t[{}]-[{}s]", key, timeout / 1000L);
         return redisTemplate.expire(key, timeout, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     *  获得对象的剩余存活时间
+     * @param key 键
+     * @return 剩余存活时间
+     */
+    public long getKeyTTL(final String key) {
+        int ttl = Math.toIntExact(redisTemplate.opsForValue().getOperations().getExpire(key));
+        String message = null;
+        switch (ttl) {
+            case -1:
+                message = "没有设置过期时间";
+                break;
+            case -2:
+                message = "key不存在";
+                break;
+            default:
+                message = ttl + "s";
+                break;
+        }
+        log.info("查询 Redis key[{}] 剩余存活时间:{}", key, message);
+        return ttl * 1000L; // 统一单位为 ms
     }
 
     /**
@@ -74,6 +98,11 @@ public class RedisCache {
     public boolean deleteObject(final String key) {
         log.info("删除 Redis 的键值\tkey[{}]", key);
         return redisTemplate.delete(key);
+    }
+
+    public void decrementCacheNumber(final String key) {
+        long number = redisTemplate.opsForValue().decrement(key);
+        log.info("Redis key[{}] 自减后：{}", key, number);
     }
 
     /**
@@ -158,6 +187,12 @@ public class RedisCache {
     public void delCacheMapValue(final String key, final String hashKey) {
         log.info("删除 Redis 中的 Map 的键值\tkey[{}.{}]", key, hashKey);
         redisTemplate.opsForHash().delete(key, hashKey);
+    }
+
+    public long decrementCacheMapNumber(final String key, final String hashKey) {
+        long number = redisTemplate.boundHashOps(key).increment(hashKey, -1);
+        log.info("Redis key[{}.{}] 自减后：{}", key, hashKey, number);
+        return number;
     }
 
 }
