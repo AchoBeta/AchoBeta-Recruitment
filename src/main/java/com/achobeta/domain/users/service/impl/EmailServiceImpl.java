@@ -73,14 +73,10 @@ public class EmailServiceImpl implements EmailService {
     public void checkIdentifyingCode(String email, String code) {
         String redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
         Object data = null;
-        try {
-            data = emailRepository.getIdentifyingCode(redisKey).orElseThrow(() -> {
-                String message = String.format("Redis中不存在邮箱[%s]的相关记录", email);
-                return new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_NOT_EXIST_RECORD);
-            });
-        } catch (Throwable e) {
-            throw (GlobalServiceException)e;
-        }
+        data = emailRepository.getIdentifyingCode(redisKey).orElseThrow(() -> {
+            String message = String.format("Redis 中不存在邮箱[%s]的相关记录", email);
+            return new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_NOT_EXIST_RECORD);
+        });
         // 取出验证码和过期时间点
         Map<String, Object> map = (Map<String, Object>) data;
         String codeValue = (String) map.get(IdentifyingCodeValidator.IDENTIFYING_CODE);
