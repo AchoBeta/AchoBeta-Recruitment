@@ -44,7 +44,13 @@ public enum GlobalServiceStatusCode {
     USER_NO_PHONE_CODE(2500, "验证码错误"),
 
      /* 邮箱错误 3001-4000 */
-    EMAIL_VALIDATION_FAIL(3001, "邮箱验证不通过"),
+    EMAIL_PATTERN_ERROR(3001, "邮箱格式错误"),
+    EMAIL_SEND_FAIL(3002, "邮箱发送失败"),
+
+    EMAIL_NOT_EXIST_RECORD(3101, "邮箱不存在记录"),
+    EMAIL_CODE_NOT_CONSISTENT(3102, "邮箱验证码不一致"),
+    EMAIL_CODE_EXPIRE(3103, "邮箱验证码已过期"),
+    EMAIL_CODE_OPPORTUNITIES_EXHAUST(3104, "验证次数达到上限"),
 
     /* -------------- */;
 

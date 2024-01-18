@@ -1,22 +1,19 @@
 package com.achobeta.domain.users.service.impl;
 
-import com.achobeta.common.constants.EmailStatusCode;
+import com.achobeta.common.constants.GlobalServiceStatusCode;
 import com.achobeta.domain.email.component.EmailSender;
 import com.achobeta.domain.email.component.po.Email;
 import com.achobeta.domain.users.model.vo.VerificationCodeTemplate;
 import com.achobeta.domain.users.repository.EmailRepository;
 import com.achobeta.domain.users.service.EmailService;
 import com.achobeta.domain.users.util.IdentifyingCodeValidator;
-import com.achobeta.exception.EmailIdentifyingException;
-import com.achobeta.exception.SendMailException;
+import com.achobeta.exception.GlobalServiceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 
@@ -49,7 +46,7 @@ public class EmailServiceImpl implements EmailService {
         emailRepository.getIdentifyingCode(redisKey).ifPresent((data) -> {
             if (!IdentifyingCodeValidator.isAllowedToSend((Map<String, Object>) data,
                     IDENTIFYING_CODE_INTERVAL_Limit, IDENTIFYING_CODE_TIMEOUT)) {
-                throw new SendMailException("短时间内多次申请验证码");
+                throw new GlobalServiceException("短时间内多次申请验证码", GlobalServiceStatusCode.EMAIL_SEND_FAIL);
             }
         });
         // 封装 Email
@@ -78,13 +75,11 @@ public class EmailServiceImpl implements EmailService {
         Object data = null;
         try {
             data = emailRepository.getIdentifyingCode(redisKey).orElseThrow(() -> {
-                String message = String.format("Redis中不存在[%s]的记录", email);
-                List<EmailStatusCode> codeList = List.of(EmailStatusCode.EMAIL_NOT_EXIST,
-                        EmailStatusCode.EMAIL_NOT_OBTAIN_CODE);
-                return new EmailIdentifyingException(message, codeList);
+                String message = String.format("Redis中不存在邮箱[%s]的相关记录", email);
+                return new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_NOT_EXIST_RECORD);
             });
         } catch (Throwable e) {
-            throw (EmailIdentifyingException)e;
+            throw (GlobalServiceException)e;
         }
         // 取出验证码和过期时间点
         Map<String, Object> map = (Map<String, Object>) data;
@@ -93,13 +88,11 @@ public class EmailServiceImpl implements EmailService {
         int opportunities = (int) map.get(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES);
         // 验证是否过期
         if (System.currentTimeMillis() > deadline) {
-            List<EmailStatusCode> codeList = List.of(EmailStatusCode.EMAIL_CODE_EXPIRE);
-            throw new EmailIdentifyingException(codeList);
+            throw new GlobalServiceException(GlobalServiceStatusCode.EMAIL_CODE_EXPIRE);
         }
         // 还有没有验证机会
         if (opportunities < 1) {
-            List<EmailStatusCode> codeList = List.of(EmailStatusCode.EMAIL_CODE_OPPORTUNITIES_EXHAUST);
-            throw new EmailIdentifyingException(codeList);
+            throw new GlobalServiceException(GlobalServiceStatusCode.EMAIL_CODE_OPPORTUNITIES_EXHAUST);
         }
         // 验证是否正确
         if (!codeValue.equals(code)) {
@@ -108,8 +101,7 @@ public class EmailServiceImpl implements EmailService {
             // 次数减一
             map.put(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES, opportunities - 1);
             emailRepository.setIdentifyingCode(redisKey, map, timeout);
-            List<EmailStatusCode> codeList = List.of(EmailStatusCode.EMAIL_CODE_NOT_CONSISTENT);
-            throw new EmailIdentifyingException(codeList);
+            throw new GlobalServiceException(GlobalServiceStatusCode.EMAIL_CODE_NOT_CONSISTENT);
         }
         // 验证成功
         emailRepository.deleteIdentifyingCodeRecord(redisKey);

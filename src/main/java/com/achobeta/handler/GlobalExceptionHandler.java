@@ -1,19 +1,19 @@
 package com.achobeta.handler;
 
 import com.achobeta.common.SystemJsonResponse;
-import com.achobeta.exception.*;
+import com.achobeta.common.constants.GlobalServiceStatusCode;
+import com.achobeta.exception.GlobalServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.achobeta.common.constants.GlobalServiceStatusCode.*;
+import static com.achobeta.common.constants.GlobalServiceStatusCode.PARAM_FAILED_VALIDATE;
 
 /**
  * 全局异常处理器，减少 try-catch 语句
@@ -28,50 +28,13 @@ import static com.achobeta.common.constants.GlobalServiceStatusCode.*;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NotPermissionException.class)
-    public SystemJsonResponse handleNotPermissionException(NotPermissionException e, HttpServletRequest request) {
+    @ExceptionHandler(GlobalServiceException.class)
+    public SystemJsonResponse handleGlobalServiceException(GlobalServiceException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-        log.error("请求地址'{}', 权限码校验失败'{}'", requestURI, e.getMessage());
-        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(USER_NO_PERMISSION, "没有访问权限, 请联系管理员授权");
-    }
-
-    @ExceptionHandler(SendMailException.class)
-    public SystemJsonResponse handleSendMailException(SendMailException e, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        log.error("请求地址'{}', 邮箱发送失败'{}'", requestURI, e.getMessage());
-        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_FAIL, "邮箱发送失败");
-    }
-
-    @ExceptionHandler(ParameterValidateException.class)
-    public SystemJsonResponse handleParameterValidateException(ParameterValidateException e, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        log.error("请求地址'{}', 参数校验不通过'{}'", requestURI, e.getMessage());
-        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(PARAM_NOT_VALID, "参数校验不通过");
-    }
-
-    @ExceptionHandler(ShortLinkGenerateException.class)
-    public SystemJsonResponse handleShortLinkGenerateException(ShortLinkGenerateException e, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        log.error("请求地址'{}', 短链生成失败'{}'", requestURI, e.getMessage());
-        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_FAIL, "短链生成失败");
-    }
-
-    @ExceptionHandler(IllegalUrlException.class)
-    public SystemJsonResponse handleIllegalUrlException(IllegalUrlException e, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        log.error("请求地址'{}', 非法的url'{}'", requestURI, e.getMessage());
-        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_FAIL, "url非法");
-    }
-
-    @ExceptionHandler(EmailIdentifyingException.class)
-    public SystemJsonResponse handleEmailIdentifyingException(EmailIdentifyingException e, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        log.error("请求地址'{}', 邮箱验证不通过'{}'", requestURI, e.getMessage());
-        String reason = e.getMessageList();
-        if(StringUtils.hasLength(reason)) {
-            log.error("邮箱验证不通过，原因：{}", reason);
-        }
-        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(EMAIL_VALIDATION_FAIL, "邮箱验证不通过");
+        String message = e.getMessage();
+        GlobalServiceStatusCode statusCode = e.getStatusCode();
+        log.error("请求地址'{}', {}: '{}'", requestURI, statusCode, message);
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(statusCode, message);
     }
 
     /**

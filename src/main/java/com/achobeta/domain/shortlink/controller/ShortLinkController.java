@@ -1,10 +1,11 @@
 package com.achobeta.domain.shortlink.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.common.constants.GlobalServiceStatusCode;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
 import com.achobeta.domain.shortlink.util.HttpUrlValidator;
 import com.achobeta.domain.shortlink.util.ShortLinkUtils;
-import com.achobeta.exception.IllegalUrlException;
+import com.achobeta.exception.GlobalServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class ShortLinkController {
     @GetMapping("/{code}")
     public RedirectView getShortLink(@PathVariable("code") String code) {
         String originUrl = shortLinkService.getOriginUrl(code);
+        log.info("短链code:{} -> 原链接:{}", code, originUrl);
         return new RedirectView(originUrl);
     }
 
@@ -43,7 +45,8 @@ public class ShortLinkController {
     public SystemJsonResponse transferAndSaveShortLink(HttpServletRequest request, @RequestParam("url") String url) {
         //验证url
         if (!HttpUrlValidator.isHttpUrl(url) || !HttpUrlValidator.isUrlAccessible(url)) {
-            throw new IllegalUrlException(String.format("url:'%s' 无效", url));
+            throw new GlobalServiceException(String.format("url:'%s' 无效", url),
+                    GlobalServiceStatusCode.PARAM_NOT_VALID);
         }
         // 拼接出基础的url
         String baseUrl = ShortLinkUtils.getBaseUrl(request.getHeader("host"));

@@ -1,7 +1,8 @@
 package com.achobeta.domain.shortlink.util;
 
 
-import com.achobeta.exception.ShortLinkGenerateException;
+import com.achobeta.common.constants.GlobalServiceStatusCode;
+import com.achobeta.exception.GlobalServiceException;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.UUID;
@@ -34,7 +35,7 @@ public class ShortLinkUtils {
         int gap = strLength / LINK_LENGTH;//取值间隔
         if (gap < FETCH_SIZE) {
             // 代表无法取出6个十六进制数
-            throw new ShortLinkGenerateException(String.format("哈希字符串%s，无法取出%d个%d进制数", str, LINK_LENGTH, FETCH_RADIX));
+            throw new GlobalServiceException("哈希字符串%s，无法取出%d个%d进制数", GlobalServiceStatusCode.PARAM_NOT_VALID);
         }
         StringBuilder subCode = new StringBuilder();
         for (int i = 0; i < LINK_LENGTH; i++) {
