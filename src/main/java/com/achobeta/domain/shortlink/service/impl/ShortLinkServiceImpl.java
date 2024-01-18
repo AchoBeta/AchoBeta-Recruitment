@@ -1,6 +1,6 @@
 package com.achobeta.domain.shortlink.service.impl;
 
-import com.achobeta.util.RedisCache;
+import com.achobeta.redis.RedisCache;
 import com.achobeta.domain.shortlink.mapper.ShortLinkMapper;
 import com.achobeta.domain.shortlink.po.ShortLink;
 import com.achobeta.domain.shortlink.service.ShortLinkService;

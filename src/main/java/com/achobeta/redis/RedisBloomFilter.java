@@ -1,4 +1,4 @@
-package com.achobeta.util;
+package com.achobeta.redis;
 
 import lombok.RequiredArgsConstructor;
 import org.assertj.core.util.Preconditions;

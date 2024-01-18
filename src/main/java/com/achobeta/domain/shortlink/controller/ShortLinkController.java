@@ -20,7 +20,6 @@ public class ShortLinkController {
 
     private final ShortLinkService shortLinkService;
 
-
     /**
      * 重定向短链接
      * @param code 短链code

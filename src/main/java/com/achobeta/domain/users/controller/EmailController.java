@@ -5,6 +5,7 @@ import com.achobeta.domain.email.component.EmailValidator;
 import com.achobeta.domain.users.service.EmailService;
 import com.achobeta.domain.users.util.IdentifyingCodeValidator;
 import com.achobeta.exception.IllegalEmailException;
+import jakarta.validation.constraints.Email;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ public class EmailController {
      * @return
      */
     @PostMapping("/check")
-    public SystemJsonResponse emailIdentityCheck(@RequestParam("email") @NonNull String email) {
+    public SystemJsonResponse emailIdentityCheck(@RequestParam("email") @Email String email) {
         if(!EmailValidator.isEmailAccessible(email)) {
             throw new IllegalEmailException("邮箱格式错误");
         }

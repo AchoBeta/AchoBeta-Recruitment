@@ -2,12 +2,11 @@ package com.achobeta.domain.users.service.impl;
 
 import com.achobeta.domain.email.component.EmailSender;
 import com.achobeta.domain.email.component.po.Email;
-import com.achobeta.domain.users.model.vo.EmailCodeTemplate;
+import com.achobeta.domain.users.model.vo.VerificationCodeTemplate;
 import com.achobeta.domain.users.repository.EmailRepository;
 import com.achobeta.domain.users.service.EmailService;
 import com.achobeta.domain.users.util.IdentifyingCodeValidator;
 import com.achobeta.exception.EmailIdentifyingException;
-import com.achobeta.exception.IllegalEmailException;
 import com.achobeta.exception.SendMailException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,11 +61,12 @@ public class EmailServiceImpl implements EmailService {
         redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
         emailRepository.setIdentifyingCode(redisKey, code, IDENTIFYING_CODE_TIMEOUT, IDENTIFYING_OPPORTUNITIES_LIMIT);
         // 构造模板消息
-        EmailCodeTemplate emailCodeTemplate = new EmailCodeTemplate();
-        emailCodeTemplate.setCode(code);
-        emailCodeTemplate.setMinutes(IDENTIFYING_CODE_MINUTES);
+        VerificationCodeTemplate verificationCodeTemplate = VerificationCodeTemplate.builder()
+                .code(code)
+                .minutes(IDENTIFYING_CODE_MINUTES)
+                .build();
         // 发送模板消息
-        emailSender.sendModelMail(emailMessage, EMAIL_MODEL_HTML, emailCodeTemplate);
+        emailSender.sendModelMail(emailMessage, EMAIL_MODEL_HTML, verificationCodeTemplate);
     }
 
     @Override

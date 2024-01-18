@@ -1,6 +1,6 @@
 package com.achobeta.domain.users.repository;
 
-import com.achobeta.util.RedisCache;
+import com.achobeta.redis.RedisCache;
 import com.achobeta.domain.users.util.IdentifyingCodeValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

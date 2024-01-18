@@ -19,7 +19,6 @@ public class ShortLinkUtils {
 
     public static final int FETCH_SIZE = 4;
 
-
     // 获取盐值
     public static String getSalt() {
         return UUID.randomUUID().toString().replace("-", "");
