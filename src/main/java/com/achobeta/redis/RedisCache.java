@@ -143,10 +143,10 @@ public class RedisCache {
      * @param hashKey Hash键
      * @return Hash中的对象
      */
-    public <T> T getCacheMapValue(final String key, final String hashKey) {
+    public <T> Optional<T> getCacheMapValue(final String key, final String hashKey) {
         T value = (T) redisTemplate.opsForHash().get(key, hashKey);
         log.info("获取 Redis 中的 Map 的键值\t[{}.{}]-[{}]", key, hashKey, value);
-        return value;
+        return Optional.ofNullable(value);
     }
 
     /**

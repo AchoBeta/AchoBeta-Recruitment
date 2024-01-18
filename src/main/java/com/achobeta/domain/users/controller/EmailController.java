@@ -1,19 +1,19 @@
 package com.achobeta.domain.users.controller;
 
 import com.achobeta.common.SystemJsonResponse;
-import com.achobeta.common.constants.GlobalServiceStatusCode;
-import com.achobeta.domain.email.component.EmailValidator;
 import com.achobeta.domain.users.service.EmailService;
 import com.achobeta.domain.users.util.IdentifyingCodeValidator;
-import com.achobeta.exception.GlobalServiceException;
+import jakarta.validation.constraints.Email;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor
+@Validated
 @RequestMapping("/api/v1/email")
 public class EmailController {
 
@@ -26,11 +26,7 @@ public class EmailController {
      * @return
      */
     @PostMapping("/check")
-    public SystemJsonResponse emailIdentityCheck(@RequestParam("email") @NonNull String email) {
-        // 判断 email 格式
-        if(!EmailValidator.isEmailAccessible(email)) {
-            throw new GlobalServiceException(GlobalServiceStatusCode.EMAIL_PATTERN_ERROR);
-        }
+    public SystemJsonResponse emailIdentityCheck(@RequestParam("email") @Email String email) {
         // 获得随机验证码
         String code = IdentifyingCodeValidator.getIdentifyingCode();
         emailService.sendIdentifyingCode(email, code);
@@ -40,12 +36,8 @@ public class EmailController {
     }
 
     @PostMapping("/check/{code}")
-    public SystemJsonResponse checkCode(@RequestParam("email") @NonNull String email,
+    public SystemJsonResponse checkCode(@RequestParam("email") @Email String email,
                                         @PathVariable("code") @NonNull String code) {
-        // 判断 email 格式
-        if(!EmailValidator.isEmailAccessible(email)) {
-            throw new GlobalServiceException(GlobalServiceStatusCode.EMAIL_PATTERN_ERROR);
-        }
         // 验证
         emailService.checkIdentifyingCode(email, code);
         // 成功
