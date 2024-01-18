@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -65,15 +66,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EmailIdentifyingException.class)
     public SystemJsonResponse handleEmailIdentifyingException(EmailIdentifyingException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-        log.error("请求地址'{}', 邮箱验证失败'{}'", requestURI, e.getMessage());
-        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(EMAIL_VERIFICATION_FAIL, "邮箱验证失败");
-    }
-
-    @ExceptionHandler(IllegalEmailException.class)
-    public SystemJsonResponse handleIllegalEmailException(IllegalEmailException e, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        log.error("请求地址'{}', 邮箱有效性校验不通过'{}'", requestURI, e.getMessage());
-        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(EMAIL_VALIDATION_FAIL, "邮箱有效性校验不通过");
+        log.error("请求地址'{}', 邮箱验证不通过'{}'", requestURI, e.getMessage());
+        String reason = e.getMessageList();
+        if(StringUtils.hasLength(reason)) {
+            log.error("邮箱验证不通过，原因：{}", reason);
+        }
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(EMAIL_VALIDATION_FAIL, "邮箱验证不通过");
     }
 
     /**

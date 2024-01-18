@@ -44,9 +44,7 @@ public enum GlobalServiceStatusCode {
     USER_NO_PHONE_CODE(2500, "验证码错误"),
 
      /* 邮箱错误 3001-4000 */
-    EMAIL_VERIFICATION_FAIL(3001, "邮箱验证失败"),
-    EMAIL_VALIDATION_FAIL(3002, "邮箱有效性验证不通过"),
-
+    EMAIL_VALIDATION_FAIL(3001, "邮箱验证不通过"),
 
     /* -------------- */;
 
@@ -57,7 +55,6 @@ public enum GlobalServiceStatusCode {
         this.code = code;
         this.message = message;
     }
-
 
     /**
      * 根据code获取message
