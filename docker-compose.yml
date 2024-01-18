@@ -1,0 +1,12 @@
+version: '3'
+services:
+  recruitment:
+    container_name: achobeta-recruitment #配置容器名
+    build:
+      context: .
+      dockerfile: ./dockerfile #指定dockerFile文件
+    image: java/achobeta-recruitment:1.0.0 # 指定镜像名
+    ports:
+      - "9001:9001" # 暴露端口
+    volumes:
+      - ./logs:/logs # 创建容器数据卷
