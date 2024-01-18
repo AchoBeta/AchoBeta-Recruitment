@@ -90,19 +90,27 @@ public class RedisCache {
         log.info("查询 Redis\t[{}]-[{}]", key, value);
         return Optional.ofNullable(value);
     }
- 
-    /**
-     * 删除单个对象
-     * @param key
-     */
-    public boolean deleteObject(final String key) {
-        log.info("删除 Redis 的键值\tkey[{}]", key);
-        return redisTemplate.delete(key);
-    }
 
-    public void decrementCacheNumber(final String key) {
+    /**
+     * 让指定 Redis 键值进行自减
+     * @param key 键
+     * @return 自减后的值
+     */
+    public long decrementCacheNumber(final String key) {
         long number = redisTemplate.opsForValue().decrement(key);
         log.info("Redis key[{}] 自减后：{}", key, number);
+        return number;
+    }
+
+    /**
+     * 让指定 Redis 键值进行自增
+     * @param key 键
+     * @return 自增后的值
+     */
+    public long incrementCacheNumber(final String key) {
+        long number = redisTemplate.opsForValue().increment(key);
+        log.info("Redis key[{}] 自增后：{}", key, number);
+        return number;
     }
 
     /**
@@ -189,10 +197,37 @@ public class RedisCache {
         redisTemplate.opsForHash().delete(key, hashKey);
     }
 
+    /**
+     * 让指定 HashMap 的键值进行自减
+     * @param key HashMap的名字
+     * @param hashKey HashMap的一个键
+     * @return 自减后的值
+     */
     public long decrementCacheMapNumber(final String key, final String hashKey) {
-        long number = redisTemplate.boundHashOps(key).increment(hashKey, -1);
+        long number = redisTemplate.opsForHash().increment(key, hashKey, -1);
         log.info("Redis key[{}.{}] 自减后：{}", key, hashKey, number);
         return number;
+    }
+
+    /**
+     * 让指定 HashMap 的键值进行自增
+     * @param key HashMap的名字
+     * @param hashKey HashMap的一个键
+     * @return 自增后的值
+     */
+    public long incrementCacheMapNumber(final String key, final String hashKey) {
+        long number = redisTemplate.opsForHash().increment(key, hashKey, +1);
+        log.info("Redis key[{}.{}] 自增后：{}", key, hashKey, number);
+        return number;
+    }
+
+    /**
+     * 删除单个对象
+     * @param key
+     */
+    public boolean deleteObject(final String key) {
+        log.info("删除 Redis 的键值\tkey[{}]", key);
+        return redisTemplate.delete(key);
     }
 
 }
