@@ -88,5 +88,10 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining("\n"));
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(PARAM_FAILED_VALIDATE, message);
     }
-
+    @ExceptionHandler(InvalidTokenException.class)
+    public SystemJsonResponse InvalidTokenException(InvalidTokenException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}', 无效的请求token'{}'", requestURI, e.getMessage());
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(EMAIL_VALIDATION_FAIL, "邮箱有效性校验不通过");
+    }
 }
