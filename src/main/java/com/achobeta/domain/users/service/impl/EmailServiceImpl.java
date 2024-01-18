@@ -46,7 +46,8 @@ public class EmailServiceImpl implements EmailService {
         emailRepository.getIdentifyingCode(redisKey).ifPresent((data) -> {
             if (!IdentifyingCodeValidator.isAllowedToSend((Map<String, Object>) data,
                     IDENTIFYING_CODE_INTERVAL_Limit, IDENTIFYING_CODE_TIMEOUT)) {
-                throw new GlobalServiceException("短时间内多次申请验证码", GlobalServiceStatusCode.EMAIL_SEND_FAIL);
+                String message = String.format("请在 %d 分钟后重新申请", IDENTIFYING_CODE_INTERVAL_Limit / (60 * 1000L));
+                throw new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_SEND_FAIL);
             }
         });
         // 封装 Email
@@ -95,12 +96,10 @@ public class EmailServiceImpl implements EmailService {
             // 计算新的超时时间，或者其实也可以继续设置五分钟，防止有deadline
             long timeout = Math.max(0, deadline - System.currentTimeMillis());
             // 次数减一
-            map.put(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES, opportunities - 1);
-            emailRepository.setIdentifyingCode(redisKey, map, timeout);
+            emailRepository.setIdentifyingCodeOpportunities(redisKey, opportunities - 1, timeout);
             throw new GlobalServiceException(GlobalServiceStatusCode.EMAIL_CODE_NOT_CONSISTENT);
         }
         // 验证成功
         emailRepository.deleteIdentifyingCodeRecord(redisKey);
-        // todo: 进行一些其他的业务
     }
 }

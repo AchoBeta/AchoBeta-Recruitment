@@ -28,13 +28,14 @@ public class EmailRepository {
         Map<String, Object> data = new HashMap<>();
         data.put(IdentifyingCodeValidator.IDENTIFYING_CODE, code); // 验证码
         data.put(IdentifyingCodeValidator.IDENTIFYING_DEADLINE, System.currentTimeMillis() + timeout); // 键值失效的时间点
-        data.put(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES, opportunities);
-        // todo: 设置超时时间
-        redisCache.setCacheObject(redisKey, data, timeout);
+        data.put(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES, opportunities); // 有效次数
+        redisCache.setCacheMap(redisKey, data);
+        redisCache.expire(redisKey, timeout); // 设置超时时间
     }
 
-    public void setIdentifyingCode(String redisKey, Object data, long timeout) {
-        redisCache.setCacheObject(redisKey, data, timeout);
+    public void setIdentifyingCodeOpportunities(String redisKey, int opportunities, long timeout) {
+        redisCache.setCacheMapValue(redisKey, IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES, opportunities);
+        redisCache.expire(redisKey, timeout); // 更新超时时间
     }
 
     public <T> Optional<T> getIdentifyingCode(String redisKey) {
