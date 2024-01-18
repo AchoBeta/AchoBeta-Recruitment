@@ -1,10 +1,8 @@
 package com.achobeta.domain.users.controller;
 
 import com.achobeta.common.SystemJsonResponse;
-import com.achobeta.domain.email.component.EmailValidator;
 import com.achobeta.domain.users.service.EmailService;
 import com.achobeta.domain.users.util.IdentifyingCodeValidator;
-import com.achobeta.exception.IllegalEmailException;
 import jakarta.validation.constraints.Email;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +25,6 @@ public class EmailController {
      */
     @PostMapping("/check")
     public SystemJsonResponse emailIdentityCheck(@RequestParam("email") @Email String email) {
-        if (!EmailValidator.isEmailAccessible(email)) {
-            throw new IllegalEmailException("邮箱格式错误");
-        }
         // 获得随机数
         String code = IdentifyingCodeValidator.getIdentifyingCode();
         emailService.sendIdentifyingCode(email, code);
@@ -39,11 +34,8 @@ public class EmailController {
     }
 
     @PostMapping("/check/{code}")
-    public SystemJsonResponse checkCode(@RequestParam("email") @NonNull String email,
+    public SystemJsonResponse checkCode(@RequestParam("email") @Email String email,
                                         @PathVariable("code") @NonNull String code) {
-        if (!EmailValidator.isEmailAccessible(email)) {
-            throw new IllegalEmailException("邮箱格式错误");
-        }
         emailService.checkIdentifyingCode(email, code);
         // 成功
         log.info("email:{}, 验证码:{} 验证成功", email, code);

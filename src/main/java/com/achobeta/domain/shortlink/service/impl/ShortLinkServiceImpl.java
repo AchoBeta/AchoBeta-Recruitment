@@ -28,7 +28,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
 
     private static final String BLOOM_FILTER_NAME = "LINK-CODE-LIST";
 
-    private static final long SHORT_LINK_TIMEOUT = 1 * 365 * 24 * 3600 * 1000L; // 超时时间
+    private static final long SHORT_LINK_TIMEOUT = 1 * 7 * 24 * 3600 * 1000L; // 超时时间 (默认七天)
 
     private final RedisCache redisCache;
 
