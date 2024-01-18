@@ -103,10 +103,10 @@ public class EmailServiceImpl implements EmailService {
         }
         // 验证是否正确
         if (!codeValue.equals(code)) {
-            map.put(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES, opportunities - 1);
             // 计算新的超时时间，或者其实也可以继续设置五分钟，防止有deadline
             long timeout = Math.max(0, deadline - System.currentTimeMillis());
             // 次数减一
+            map.put(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES, opportunities - 1);
             emailRepository.setIdentifyingCode(redisKey, map, timeout);
             List<EmailStatusCode> codeList = List.of(EmailStatusCode.EMAIL_CODE_NOT_CONSISTENT);
             throw new EmailIdentifyingException(codeList);
