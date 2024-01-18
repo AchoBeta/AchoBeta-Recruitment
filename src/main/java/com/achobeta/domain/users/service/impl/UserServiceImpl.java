@@ -1,7 +1,7 @@
 package com.achobeta.domain.users.service.impl;
 
 import com.achobeta.domain.users.service.UserService;
-import com.achobeta.exception.NotPermissionException;
+import com.achobeta.exception.GlobalServiceException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,7 +15,7 @@ public class UserServiceImpl implements UserService {
         boolean loginStatus = false;
         if (!loginStatus) {
             // 减少 try-catch 语句, 直接抛出异常将会被全局异常处理器 GlobalExceptionHandler 接收处理
-            throw new NotPermissionException("用户未登录");
+            throw new GlobalServiceException();
         }
     }
 

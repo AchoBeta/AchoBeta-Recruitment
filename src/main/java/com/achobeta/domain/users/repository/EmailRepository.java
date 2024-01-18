@@ -37,7 +37,7 @@ public class EmailRepository {
         redisCache.setCacheObject(redisKey, data, timeout);
     }
 
-    public Optional getIdentifyingCode(String redisKey) {
+    public <T> Optional<T> getIdentifyingCode(String redisKey) {
         return redisCache.getCacheObject(redisKey);
     }
 
