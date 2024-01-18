@@ -1,6 +1,5 @@
 package com.achobeta.domain.shortlink.util;
 
-import cn.hutool.log.Log;
 import com.achobeta.common.constants.GlobalServiceStatusCode;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,6 +17,7 @@ public class HttpUrlValidator {
 
     /**
      * 是否格式正确
+     *
      * @param url
      * @return
      */
@@ -27,6 +27,7 @@ public class HttpUrlValidator {
 
     /**
      * 是否是有效地址
+     *
      * @param urlString 链接
      * @return 是否有效
      */

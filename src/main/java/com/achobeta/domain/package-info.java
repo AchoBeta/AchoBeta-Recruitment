@@ -5,6 +5,7 @@
  * 比如招新系统有注册登录模块 users，有通知模块 notice
  * 每个领域模块里面的内容应当包含四个（controller、model、repository、service）
  * 暂时以 users 包为例，大家可以点击浏览一下，每个包的具体含义和职责请查看 package-info
+ *
  * @author BanTanger 半糖
  * @date 2024/1/11 15:40
  */

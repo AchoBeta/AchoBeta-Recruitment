@@ -22,25 +22,27 @@ public class ShortLinkController {
 
     /**
      * 重定向短链接
+     *
      * @param code 短链code
      * @return 重定向到原链接
      */
     @GetMapping("/{code}")
-    public RedirectView getShortLink(@PathVariable("code")String code) {
+    public RedirectView getShortLink(@PathVariable("code") String code) {
         String originUrl = shortLinkService.getOriginUrl(code);
         return new RedirectView(originUrl);
     }
 
     /**
      * 长转短
+     *
      * @param request 用来获取host
-     * @param url 原链接
+     * @param url     原链接
      * @return 短链接
      */
     @PostMapping("/trans")
-    public SystemJsonResponse transferAndSaveShortLink(HttpServletRequest request, @RequestParam("url")String url) {
+    public SystemJsonResponse transferAndSaveShortLink(HttpServletRequest request, @RequestParam("url") String url) {
         //验证url
-        if(!HttpUrlValidator.isHttpUrl(url) || !HttpUrlValidator.isUrlAccessible(url)) {
+        if (!HttpUrlValidator.isHttpUrl(url) || !HttpUrlValidator.isUrlAccessible(url)) {
             throw new IllegalUrlException(String.format("url:'%s' 无效", url));
         }
         // 拼接出基础的url

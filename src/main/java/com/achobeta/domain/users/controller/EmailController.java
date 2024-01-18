@@ -21,12 +21,13 @@ public class EmailController {
 
     /**
      * 发送验证码接口
+     *
      * @param email
      * @return
      */
     @PostMapping("/check")
     public SystemJsonResponse emailIdentityCheck(@RequestParam("email") @Email String email) {
-        if(!EmailValidator.isEmailAccessible(email)) {
+        if (!EmailValidator.isEmailAccessible(email)) {
             throw new IllegalEmailException("邮箱格式错误");
         }
         // 获得随机数
@@ -40,7 +41,7 @@ public class EmailController {
     @PostMapping("/check/{code}")
     public SystemJsonResponse checkCode(@RequestParam("email") @NonNull String email,
                                         @PathVariable("code") @NonNull String code) {
-        if(!EmailValidator.isEmailAccessible(email)) {
+        if (!EmailValidator.isEmailAccessible(email)) {
             throw new IllegalEmailException("邮箱格式错误");
         }
         emailService.checkIdentifyingCode(email, code);

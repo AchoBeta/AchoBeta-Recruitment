@@ -24,7 +24,7 @@ public class IdentifyingCodeValidator {
 
     public static boolean isAllowedToSend(Map<String, Object> data, long intervalLimit, long timeout) {
         long nowTime = System.currentTimeMillis(); // 当前时间
-        long deadline = (long)data.get(IDENTIFYING_DEADLINE); // 截止时间
+        long deadline = (long) data.get(IDENTIFYING_DEADLINE); // 截止时间
         long nextAllowedTime = deadline - timeout + intervalLimit; // 下个可以再次发送的点
         return nowTime > nextAllowedTime;
     }

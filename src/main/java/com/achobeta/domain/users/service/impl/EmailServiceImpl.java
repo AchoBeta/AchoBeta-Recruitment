@@ -26,7 +26,7 @@ public class EmailServiceImpl implements EmailService {
 
     private static final long IDENTIFYING_CODE_INTERVAL_Limit = 1 * 60 * 1000; // 两次发送验证码的最短时间间隔
 
-    private static final long IDENTIFYING_CODE_TIMEOUT = IDENTIFYING_CODE_MINUTES * 60  * 1000; //单位为毫秒
+    private static final long IDENTIFYING_CODE_TIMEOUT = IDENTIFYING_CODE_MINUTES * 60 * 1000; //单位为毫秒
 
     private static final int IDENTIFYING_OPPORTUNITIES_LIMIT = 5; // 只有五次验证机会
 
@@ -44,7 +44,7 @@ public class EmailServiceImpl implements EmailService {
         String redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
         // 验证一下一分钟以内发过了没有
         emailRepository.getIdentifyingCode(redisKey).ifPresent((data) -> {
-            if(!IdentifyingCodeValidator.isAllowedToSend((Map<String, Object>)data,
+            if (!IdentifyingCodeValidator.isAllowedToSend((Map<String, Object>) data,
                     IDENTIFYING_CODE_INTERVAL_Limit, IDENTIFYING_CODE_TIMEOUT)) {
                 throw new SendMailException("短时间内多次申请验证码");
             }
@@ -82,15 +82,15 @@ public class EmailServiceImpl implements EmailService {
         long deadline = (long) map.get(IdentifyingCodeValidator.IDENTIFYING_DEADLINE);
         int opportunities = (int) map.get(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES);
         // 验证是否过期
-        if(System.currentTimeMillis() > deadline) {
+        if (System.currentTimeMillis() > deadline) {
             throw new EmailIdentifyingException("验证码过期");
         }
         // 还有没有验证机会
-        if(opportunities < 1) {
+        if (opportunities < 1) {
             throw new EmailIdentifyingException("验证机会已用尽");
         }
         // 验证是否正确
-        if(!codeValue.equals(code)) {
+        if (!codeValue.equals(code)) {
             map.put(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES, opportunities - 1);
             emailRepository.setIdentifyingCode(redisKey, map); // 次数减一
             throw new EmailIdentifyingException("验证码错误");
