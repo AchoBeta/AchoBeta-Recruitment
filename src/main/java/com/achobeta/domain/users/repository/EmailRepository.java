@@ -29,12 +29,11 @@ public class EmailRepository {
         data.put(IdentifyingCodeValidator.IDENTIFYING_DEADLINE, System.currentTimeMillis() + timeout); // 键值失效的时间点
         data.put(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES, opportunities);
         // todo: 设置超时时间
-        redisCache.setCacheObject(redisKey, data);
+        redisCache.setCacheObject(redisKey, data, timeout);
     }
 
-    public void setIdentifyingCode(String redisKey, Object data) {
-        // todo: 设置超时时间
-        redisCache.setCacheObject(redisKey, data);
+    public void setIdentifyingCode(String redisKey, Object data, long timeout) {
+        redisCache.setCacheObject(redisKey, data, timeout);
     }
 
     public Optional getIdentifyingCode(String redisKey) {

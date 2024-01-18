@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
@@ -21,11 +22,11 @@ public class RedisCache {
      *
      * @param key 缓存的键值
      * @param value 缓存的值
+     * @param timout 超时时间
      */
-    public <T> void setCacheObject(final String key, final T value) {
-        log.info("存入Redis\t[{}]-[{}]", key, value);
-        // todo: 设置超时时间
-        redisTemplate.opsForValue().set(key, value);
+    public <T> void setCacheObject(final String key, final T value, final long timout) {
+        log.info("存入Redis\t[{}]-[{}]，超时时间:[{}s]", key, value, timout / 1000L);
+        redisTemplate.opsForValue().set(key, value, timout, TimeUnit.MILLISECONDS);
     }
 
     /**

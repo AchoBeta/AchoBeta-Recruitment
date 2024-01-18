@@ -11,7 +11,7 @@ public class RedisBloomFilter {
 
     private final RedisTemplate redisTemplate;
 
-    private BloomFilterHelper bloomFilterHelper = new BloomFilterHelper();
+    private final BloomFilterHelper bloomFilterHelper;
 
     /**
      * 根据给定的布隆过滤器添加值
@@ -20,7 +20,6 @@ public class RedisBloomFilter {
         Preconditions.checkArgument(bloomFilterHelper != null, "bloomFilterHelper不能为空");
         int[] offset = bloomFilterHelper.murmurHashOffset(value);
         for (int i : offset) {
-            // todo: 设置超时时间
             redisTemplate.opsForValue().setBit(bloomFilterName, i, true);
         }
     }

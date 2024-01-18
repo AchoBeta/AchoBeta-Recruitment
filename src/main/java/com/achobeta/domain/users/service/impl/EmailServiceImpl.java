@@ -72,10 +72,19 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void checkIdentifyingCode(String email, String code) {
         String redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
-        Object data = emailRepository.getIdentifyingCode(redisKey).orElseGet(() -> {
-            // todo 这些都可以写 枚举，然后直接 Enum.getMessage 就行了
-            throw new EmailIdentifyingException("邮箱不存在/用户未获取验证码/验证码过期/用户已验证");
-        });
+//        Object data = emailRepository.getIdentifyingCode(redisKey).orElseGet(() -> {
+//            // todo 这些都可以写 枚举，然后直接 Enum.getMessage 就行了
+//            throw new EmailIdentifyingException("邮箱不存在/用户未获取验证码/验证码过期/用户已验证");
+//        });
+        Object data = null;
+        try {
+            data = emailRepository.getIdentifyingCode(redisKey).orElseThrow(() ->
+                new EmailIdentifyingException("Redis中不存在记录")
+            );
+        } catch (Throwable e) {
+            throw new EmailIdentifyingException(e.getMessage());
+        }
+
         // 取出验证码和过期时间点
         Map<String, Object> map = (Map<String, Object>) data;
         String codeValue = (String) map.get(IdentifyingCodeValidator.IDENTIFYING_CODE);
@@ -92,7 +101,9 @@ public class EmailServiceImpl implements EmailService {
         // 验证是否正确
         if(!codeValue.equals(code)) {
             map.put(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES, opportunities - 1);
-            emailRepository.setIdentifyingCode(redisKey, map); // 次数减一
+            // 计算新的超时时间，或者其实也可以继续设置五分钟，防止有deadline
+            long timeout = Math.max(0, deadline - System.currentTimeMillis());
+            emailRepository.setIdentifyingCode(redisKey, map, timeout); // 次数减一
             throw new EmailIdentifyingException("验证码错误");
         }
         // 验证成功
