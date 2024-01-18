@@ -41,15 +41,13 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendIdentifyingCode(String email, String code) {
-        String redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
+        final String redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
         // 验证一下一分钟以内发过了没有
-        emailRepository.getIdentifyingCode(redisKey).ifPresent(data -> {
-            if (!IdentifyingCodeValidator.isAllowedToSend(data,
-                    IDENTIFYING_CODE_INTERVAL_Limit, IDENTIFYING_CODE_TIMEOUT)) {
-                String message = String.format("请在 %d 分钟后再重新申请", IDENTIFYING_CODE_INTERVAL_Limit / (60 * 1000L));
-                throw new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_SEND_FAIL);
-            }
-        });
+        long ttl = emailRepository.getTTLOfCode(redisKey); // 小于 0 则代表没有到期时间或者不存在，允许发送
+        if(ttl > IDENTIFYING_CODE_TIMEOUT - IDENTIFYING_CODE_INTERVAL_Limit) {
+            String message = String.format("请在 %d 分钟后再重新申请", IDENTIFYING_CODE_INTERVAL_Limit / (60 * 1000L));
+            throw new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_SEND_FAIL);
+        }
         // 封装 Email
         Email emailMessage = new Email();
         emailMessage.setContent(code);
@@ -59,7 +57,6 @@ public class EmailServiceImpl implements EmailService {
         emailMessage.setCarbonCopy();
         emailMessage.setSender(achobetaEmail);
         // 存到 redis 中
-        redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
         emailRepository.setIdentifyingCode(redisKey, code, IDENTIFYING_CODE_TIMEOUT, IDENTIFYING_OPPORTUNITIES_LIMIT);
         // 构造模板消息
         VerificationCodeTemplate verificationCodeTemplate = VerificationCodeTemplate.builder()
@@ -81,23 +78,17 @@ public class EmailServiceImpl implements EmailService {
         // 取出验证码和过期时间点
         Map<String, Object> map = (Map<String, Object>) data;
         String codeValue = (String) map.get(IdentifyingCodeValidator.IDENTIFYING_CODE);
-        long deadline = (long) map.get(IdentifyingCodeValidator.IDENTIFYING_DEADLINE);
         int opportunities = (int) map.get(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES);
-        // 验证是否过期
-        if (System.currentTimeMillis() > deadline) {
-            throw new GlobalServiceException(GlobalServiceStatusCode.EMAIL_CODE_EXPIRE);
-        }
         // 还有没有验证机会
         if (opportunities < 1) {
             throw new GlobalServiceException(GlobalServiceStatusCode.EMAIL_CODE_OPPORTUNITIES_EXHAUST);
         }
         // 验证是否正确
         if (!codeValue.equals(code)) {
-            // 计算新的超时时间，或者其实也可以继续设置五分钟，防止有deadline
-            long timeout = Math.max(0, deadline - System.currentTimeMillis());
             // 次数减一
-            emailRepository.setIdentifyingCodeOpportunities(redisKey, opportunities - 1, timeout);
-            throw new GlobalServiceException(GlobalServiceStatusCode.EMAIL_CODE_NOT_CONSISTENT);
+            opportunities = (int)emailRepository.decrementOpportunities(redisKey);
+            String message = String.format("验证码错误，剩余%d次机会", opportunities);
+            throw new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_CODE_NOT_CONSISTENT);
         }
         // 验证成功
         emailRepository.deleteIdentifyingCodeRecord(redisKey);

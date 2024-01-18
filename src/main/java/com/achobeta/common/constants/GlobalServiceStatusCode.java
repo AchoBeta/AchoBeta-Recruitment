@@ -49,8 +49,7 @@ public enum GlobalServiceStatusCode {
 
     EMAIL_NOT_EXIST_RECORD(3101, "邮箱不存在记录"),
     EMAIL_CODE_NOT_CONSISTENT(3102, "邮箱验证码不一致"),
-    EMAIL_CODE_EXPIRE(3103, "邮箱验证码已过期"),
-    EMAIL_CODE_OPPORTUNITIES_EXHAUST(3104, "验证次数达到上限"),
+    EMAIL_CODE_OPPORTUNITIES_EXHAUST(3103, "验证次数达到上限"),
 
     /* -------------- */;
 
