@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 public class EmailController {
     private final StudentService studentService;
     private final EmailService emailService;
-    private final JwtProperties jwtProperties;
 
     /**
      * 发送验证码接口

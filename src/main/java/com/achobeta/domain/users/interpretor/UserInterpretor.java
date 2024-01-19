@@ -67,7 +67,7 @@ public class UserInterpretor implements HandlerInterceptor {
     }
 
     private void setGlobaleUserIdByClaims(Claims claims) {
-        Long userId = Long.valueOf(claims.get(jwtProperties.getUserTokenName()).toString());
+        Long userId = Long.valueOf(claims.get(UserInterpretor.USER_ID).toString());
         BaseContext.setCurrentId(userId);
     }
 }

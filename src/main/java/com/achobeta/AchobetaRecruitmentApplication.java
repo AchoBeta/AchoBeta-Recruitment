@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
  * @date 2024/1/11 15:25
  */
 @SpringBootApplication
-@MapperScan({"com.achobeta.domain.shortlink.mapper"})
+@MapperScan({"com.achobeta.domain.shortlink.mapper","com.achobeta.domain.users.model.dao"})
 public class AchobetaRecruitmentApplication {
 
     public static void main(String[] args) {

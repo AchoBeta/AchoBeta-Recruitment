@@ -5,6 +5,7 @@ import com.achobeta.exception.GlobalServiceException;
 
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 
 import javax.crypto.SecretKey;
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.Map;
 
 @RequiredArgsConstructor
+@Slf4j
 public class JwtUtil {
     private final JwtProperties jwtProperties;
     //过期时间小于该值就刷新token
@@ -28,6 +30,7 @@ public class JwtUtil {
      * @param claims    设置的信息
      * @return
      */
+
     public static String createJWT(@NotNull SecretKey secretKey, @NotNull long ttlMillis, @NotNull Map<String, Object> claims) {
         // 指定签名的时候使用的签名算法，也就是header那部分
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -77,6 +80,7 @@ public class JwtUtil {
     public static SecretKey generalKey(@NotNull String secretKey) {
         byte[] encodedKey = Base64.getDecoder().decode(secretKey);
         SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
+        log.info("生成的key->{}",key);
         return key;
     }
 
