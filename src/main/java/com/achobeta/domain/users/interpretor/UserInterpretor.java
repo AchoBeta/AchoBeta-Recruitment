@@ -3,13 +3,15 @@ package com.achobeta.domain.users.interpretor;
 
 import cn.hutool.core.util.StrUtil;
 import com.achobeta.domain.users.context.BaseContext;
-import com.achobeta.domain.users.jwt.util.propertities.JwtProperties;
 
+
+import com.achobeta.domain.users.jwt.propertities.JwtProperties;
 import com.achobeta.domain.users.jwt.util.JwtUtil;
 import com.achobeta.exception.GlobalServiceException;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,11 +24,13 @@ import javax.crypto.SecretKey;
  * @author cattleYuan
  * @date 2024/1/18
  */
+
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class UserInterpretor implements HandlerInterceptor {
-    @Autowired
-    private JwtProperties jwtProperties;
+
+    private final JwtProperties jwtProperties;
 
     private static final String USER_ID="user_id";
     @Override
@@ -44,6 +48,7 @@ public class UserInterpretor implements HandlerInterceptor {
         SecretKey secretKey = JwtUtil.generalKey(jwtProperties.getUserSecretKey());
 
         io.jsonwebtoken.Claims claims = JwtUtil.parseJWT(secretKey, token);
+        //通过包装的threadlocal类设置当前线程用户id
         setGlobaleUserIdByClaims(claims);
         //判断token是否即将过期
         if(JwtUtil.judgeApproachExpiration(token,secretKey)){

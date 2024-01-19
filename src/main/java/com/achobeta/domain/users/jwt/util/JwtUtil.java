@@ -1,13 +1,15 @@
 package com.achobeta.domain.users.jwt.util;
 
-import com.achobeta.domain.users.jwt.util.propertities.JwtProperties;
-import com.achobeta.exception.InvalidTokenException;
+import com.achobeta.domain.users.jwt.propertities.JwtProperties;
+import com.achobeta.exception.GlobalServiceException;
+
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import javax.validation.constraints.NotNull;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
@@ -17,7 +19,6 @@ public class JwtUtil {
     private final JwtProperties jwtProperties;
     //过期时间小于该值就刷新token
     private static final long REFRESHTIME = 1000 * 60 * 60;
-    private SecretKey secretKey = null;
     /**
      * 生成jwt
      * 使用Hs256算法
@@ -27,7 +28,7 @@ public class JwtUtil {
      * @param claims    设置的信息
      * @return
      */
-    public static String createJWT(SecretKey secretKey, long ttlMillis, Map<String, Object> claims) {
+    public static String createJWT(@NotNull SecretKey secretKey, @NotNull long ttlMillis, @NotNull Map<String, Object> claims) {
         // 指定签名的时候使用的签名算法，也就是header那部分
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         // 生成JWT的时间
@@ -53,7 +54,7 @@ public class JwtUtil {
      * @param token     加密后的token
      * @return
      */
-    public static Claims parseJWT(SecretKey secretKey, String token) {
+    public static Claims parseJWT(@NotNull SecretKey secretKey, @NotNull String token) {
         Claims claims = null;
         try {
             // 得到DefaultJwtParser
@@ -63,29 +64,24 @@ public class JwtUtil {
                     // 设置需要解析的jwt
                     .parseClaimsJws(token).getBody();
         } catch (JwtException e) {
-            throw new InvalidTokenException("无效的token格式");
+            throw new GlobalServiceException("无效的token格式");
         }
         return claims;
     }
-    public static Date getTokenExperition(SecretKey secretKey, String token) {
-
-        Claims claims = Jwts.parser()
-                // 设置签名的秘钥
-                .setSigningKey(secretKey)
-                // 设置需要解析的jwt
-                .parseClaimsJws(token).getBody();
+    public static Date getTokenExperition(@NotNull SecretKey secretKey, @NotNull String token) {
+       Claims claims=parseJWT(secretKey,token);
         //返回该token的过期时间
         return claims.getExpiration();
     }
     // 通过明文密钥生成加密后的秘钥 secretKey
-    public static SecretKey generalKey(String secretKey) {
+    public static SecretKey generalKey(@NotNull String secretKey) {
         byte[] encodedKey = Base64.getDecoder().decode(secretKey);
         SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
         return key;
     }
 
     //
-    public static boolean judgeApproachExpiration(String token,SecretKey secretKey) {
+    public static boolean judgeApproachExpiration(@NotNull String token,@NotNull SecretKey secretKey) {
         long cur = System.currentTimeMillis();
         long exp = getTokenExperition(secretKey,token).getTime();
         return  (cur - exp) < REFRESHTIME;
