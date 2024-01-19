@@ -22,6 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
+    // todo: 将配置写于配置文件
     private static final int IDENTIFYING_CODE_MINUTES = 5;//过期分钟数
 
     private static final long IDENTIFYING_CODE_INTERVAL_Limit = 1 * 60 * 1000; // 两次发送验证码的最短时间间隔
@@ -70,13 +71,13 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void checkIdentifyingCode(String email, String code) {
         String redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
-        Object data = null;
-        data = emailRepository.getIdentifyingCode(redisKey).orElseThrow(() -> {
-            String message = String.format("Redis 中不存在邮箱[%s]的相关记录", email);
-            return new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_NOT_EXIST_RECORD);
-        });
+        Map<String, Object> map = emailRepository.getIdentifyingCode(redisKey)
+                .map(value -> (Map<String, Object>)value)
+                .orElseThrow(() -> {
+                    String message = String.format("Redis 中不存在邮箱[%s]的相关记录", email);
+                    return new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_NOT_EXIST_RECORD);
+                });
         // 取出验证码和过期时间点
-        Map<String, Object> map = (Map<String, Object>) data;
         String codeValue = (String) map.get(IdentifyingCodeValidator.IDENTIFYING_CODE);
         int opportunities = (int) map.get(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES);
         // 还有没有验证机会
