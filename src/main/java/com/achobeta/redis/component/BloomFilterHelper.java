@@ -1,10 +1,11 @@
-package com.achobeta.domain.shortlink.component;
+package com.achobeta.redis.component;
 
 import com.google.common.hash.Funnel;
 import com.google.common.hash.Hashing;
 import com.google.common.hash.PrimitiveSink;
 import org.assertj.core.util.Preconditions;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.springframework.stereotype.Component;
 
 /**
  * 算法过程：
@@ -13,8 +14,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * 3. 某个key加入集合时，用k个hash函数计算出k个散列值，并把数组中对应的比特位置为1
  * 4. 判断某个key是否在集合时，用k个hash函数计算出k个散列值，并查询数组中对应的比特位，如果所有的比特位都是1，认为在集合中。
  **/
+@Component
 public class BloomFilterHelper<T> {
-
 
     private int numHashFunctions;
 
@@ -54,7 +55,6 @@ public class BloomFilterHelper<T> {
             }
             offset[i - 1] = nextHash % bitSize;
         }
-
         return offset;
     }
 

@@ -1,32 +1,33 @@
 package com.achobeta.domain.shortlink.service.impl;
 
-import com.achobeta.domain.shortlink.component.RedisCache;
+import com.achobeta.common.constants.GlobalServiceStatusCode;
 import com.achobeta.domain.shortlink.mapper.ShortLinkMapper;
 import com.achobeta.domain.shortlink.po.ShortLink;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
 import com.achobeta.domain.shortlink.util.ShortLinkUtils;
-import com.achobeta.exception.ShortLinkGenerateException;
+import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.redis.RedisCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
 /**
-* @author 马拉圈
-* @description 针对表【short_link】的数据库操作Service实现
-* @createDate 2024-01-12 19:48:07
-*/
+ * @author 马拉圈
+ * @description 针对表【short_link】的数据库操作Service实现
+ * @createDate 2024-01-12 19:48:07
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink>
-    implements ShortLinkService {
+        implements ShortLinkService {
 
+    private static final long SHORT_LINK_TIMEOUT = 1 * 7 * 24 * 3600 * 1000L; // 超时时间 (默认七天)
 
     private final RedisCache redisCache;
 
@@ -39,7 +40,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         do {
             code = ShortLinkUtils.getShortCodeByURL(code);
             redisKey = ShortLinkUtils.REDIS_SHORT_LINK + code;
-        } while (redisCache.containsInBloomFilter(redisKey));//误判为存在也无所谓，无非就是再重新生成一个
+        } while (redisCache.containsInBloomFilter(ShortLinkUtils.BLOOM_FILTER_NAME, redisKey));//误判为存在也无所谓，无非就是再重新生成一个
         // 保存
         ShortLink shortLink = new ShortLink();
         shortLink.setOriginUrl(url);
@@ -51,8 +52,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         log.info("原链接:{} -> redisKey:{}", url, redisKey);
         this.save(shortLink);
         // 缓存到Redis，加入布隆过滤器
-        redisCache.setCacheObject(redisKey, url);
-        redisCache.addToBloomFilter(redisKey);
+        redisCache.setCacheObject(redisKey, url, SHORT_LINK_TIMEOUT);
+        redisCache.addToBloomFilter(ShortLinkUtils.BLOOM_FILTER_NAME, redisKey);
         // 返回完整的短链接
         return baseUrl + code;
     }
@@ -65,13 +66,13 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         return originUrlCache.orElseGet(() -> {
             //否则查MySQL
             ShortLink shortLink = this.lambdaQuery().eq(ShortLink::getShortCode, code).one();
-            if(Objects.isNull(shortLink)) {
-                throw new ShortLinkGenerateException("不存在此短链接code：" + code);
+            if (Objects.isNull(shortLink)) {
+                throw new GlobalServiceException("不存在此短链接code：" + code, GlobalServiceStatusCode.PARAM_NOT_VALID);
             }
             String originUrl = shortLink.getOriginUrl();
             // 缓存到Redis里
-            redisCache.setCacheObject(redisKey, originUrl);
-            redisCache.addToBloomFilter(redisKey);
+            redisCache.setCacheObject(redisKey, originUrl, SHORT_LINK_TIMEOUT);
+            redisCache.addToBloomFilter(ShortLinkUtils.BLOOM_FILTER_NAME, redisKey);
             return originUrl;
         });
     }

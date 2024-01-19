@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>邮箱验证</title>
+  </head>
+  <body>
+    <span>
+      &nbsp;感谢您参与AchoBeta实验室的招新！下面是您的身份验证码：
+    </span>
+    <br />
+    <font style="font-size: 50pt">
+      &nbsp;<span th:text="${code}"></span>
+    </font>
+    <br />
+    <span>&nbsp;请在&nbsp;</span>
+    <font style="font-size: 20pt; color: brown">
+      <span th:text="${minutes}"></span>
+    </font>
+    <span>&nbsp;分钟内完成验证，如非本人操作，请忽略！</span>
+  </body>
+</html>

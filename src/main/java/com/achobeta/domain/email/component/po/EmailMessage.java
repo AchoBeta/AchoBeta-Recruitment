@@ -10,7 +10,7 @@ import java.util.Date;
  * 封装这个对象，传给EmailSender就可以了
  */
 @Data
-public class Email implements Serializable {
+public class EmailMessage implements Serializable {
 
 
     private String sender;

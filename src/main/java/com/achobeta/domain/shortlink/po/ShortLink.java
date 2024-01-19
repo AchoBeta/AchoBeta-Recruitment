@@ -1,16 +1,16 @@
 package com.achobeta.domain.shortlink.po;
 
 import com.achobeta.domain.users.model.dao.BaseIncrIDEntity;
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @TableName short_link
  */
-@TableName(value ="short_link")
+@TableName(value = "short_link")
 @Data
 public class ShortLink extends BaseIncrIDEntity implements Serializable {
 

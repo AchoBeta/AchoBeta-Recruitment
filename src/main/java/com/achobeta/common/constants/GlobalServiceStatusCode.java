@@ -27,6 +27,7 @@ public enum GlobalServiceStatusCode {
     PARAM_IS_BLANK(1002, "参数为空"),
     PARAM_TYPE_ERROR(1003, "参数类型错误"),
     PARAM_NOT_COMPLETE(1004, "参数缺失"),
+    PARAM_FAILED_VALIDATE(1005, "参数未通过验证"),
 
     /* 用户错误 2001-3000 */
     USER_NOT_LOGIN(2001, "用户未登录"),
@@ -42,6 +43,13 @@ public enum GlobalServiceStatusCode {
     USER_NO_PERMISSION(2403, "用户无权限"),
     USER_NO_PHONE_CODE(2500, "验证码错误"),
 
+     /* 邮箱错误 3001-4000 */
+    EMAIL_PATTERN_ERROR(3001, "邮箱格式错误"),
+    EMAIL_SEND_FAIL(3002, "邮箱发送失败"),
+
+    EMAIL_NOT_EXIST_RECORD(3101, "邮箱不存在记录"),
+    EMAIL_CODE_NOT_CONSISTENT(3102, "邮箱验证码不一致"),
+    EMAIL_CODE_OPPORTUNITIES_EXHAUST(3103, "验证次数达到上限"),
 
     /* -------------- */;
 
@@ -52,7 +60,6 @@ public enum GlobalServiceStatusCode {
         this.code = code;
         this.message = message;
     }
-
 
     /**
      * 根据code获取message

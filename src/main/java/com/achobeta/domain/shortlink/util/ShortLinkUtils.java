@@ -1,7 +1,8 @@
 package com.achobeta.domain.shortlink.util;
 
 
-import com.achobeta.exception.ShortLinkGenerateException;
+import com.achobeta.common.constants.GlobalServiceStatusCode;
+import com.achobeta.exception.GlobalServiceException;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.UUID;
@@ -11,14 +12,16 @@ public class ShortLinkUtils {
     private static final String CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
     private static final int LINK_LENGTH = 6;
 
-    public static final String REDIS_SHORT_LINK = "REDIS_SHORT_LINK_";//前缀
+//    public static final String REDIS_SHORT_LINK = "REDIS_SHORT_LINK_";//前缀
+    public static final String REDIS_SHORT_LINK = "redis_short_link:";//前缀
+
+    public static final String BLOOM_FILTER_NAME = "LINK_CODE_BLOOM_FILTER"; // 布隆过滤器名
 
     public static final int FETCH_RADIX = 16;
 
     public static final int MODULES = CHARSET.length();
 
     public static final int FETCH_SIZE = 4;
-
 
     // 获取盐值
     public static String getSalt() {
@@ -33,9 +36,10 @@ public class ShortLinkUtils {
     public static String subCodeByString(String str) {
         int strLength = str.length();
         int gap = strLength / LINK_LENGTH;//取值间隔
-        if(gap < FETCH_SIZE) {
+        if (gap < FETCH_SIZE) {
             // 代表无法取出6个十六进制数
-            throw new ShortLinkGenerateException(String.format("哈希字符串%s，无法取出%d个%d进制数", str, LINK_LENGTH, FETCH_RADIX));
+            String message = String.format("哈希字符串%s，无法取出%d个%d进制数", str, LINK_LENGTH, FETCH_RADIX);
+            throw new GlobalServiceException(message, GlobalServiceStatusCode.PARAM_NOT_VALID);
         }
         StringBuilder subCode = new StringBuilder();
         for (int i = 0; i < LINK_LENGTH; i++) {
@@ -53,7 +57,6 @@ public class ShortLinkUtils {
     public static String getBaseUrl(String host) {
         return String.format("http://%s/api/v1/shortlink/", host);
     }
-
 
 
 }

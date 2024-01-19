@@ -3,7 +3,9 @@ package com.achobeta.domain.users.controller;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.users.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,13 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2024/1/11 15:58
  */
 @RestController
+@Slf4j
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/user")
 public class UserController {
 
-    private final UserService userService;
+    private UserService userService;
 
     /**
      * http://localhost:9001/login?name=bantanger
+     *
      * @param name
      * @return
      */
