@@ -1,5 +1,5 @@
-package com.achobeta.redis.component;
 
+package com.achobeta.redis.component;
 import com.google.common.hash.Funnel;
 import com.google.common.hash.Hashing;
 import com.google.common.hash.PrimitiveSink;
