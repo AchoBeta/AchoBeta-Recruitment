@@ -3,6 +3,8 @@ package com.achobeta.domain.email.controller;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.email.service.EmailService;
 import com.achobeta.domain.email.util.IdentifyingCodeValidator;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.Email;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +39,7 @@ public class EmailController {
 
     @PostMapping("/check/{code}")
     public SystemJsonResponse checkCode(@RequestParam("email") @Email String email,
-                                        @PathVariable("code") @NonNull String code) {
+                                        @PathVariable("code") @NonNull String code, HttpServletResponse httpServletResponse) {
         // 验证
         emailService.checkIdentifyingCode(email, code);
         // 成功

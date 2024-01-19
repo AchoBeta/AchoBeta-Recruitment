@@ -13,8 +13,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 
 
 /**
- * 配置类，注册用户端；拦截器
+ *  @author cattleYuan
+ *  @date 2024/1/18
  */
+//配置类，注册用户端；拦截器
 @Configuration
 @Slf4j
 public class WebMvcConfiguration extends WebMvcConfigurationSupport {

@@ -1,5 +1,8 @@
 package com.achobeta.domain.users.context;
-
+/**
+ * @author cattleYuan
+ * @date 2024/1/18
+ */
 public class BaseContext {
 
     public static ThreadLocal<Long> threadLocal = new ThreadLocal<>();
