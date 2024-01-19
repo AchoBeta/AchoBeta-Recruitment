@@ -2,6 +2,7 @@ package com.achobeta.domain.users.interpretor;
 
 
 import cn.hutool.core.util.StrUtil;
+import com.achobeta.common.constants.GlobalServiceStatusCode;
 import com.achobeta.domain.users.context.BaseContext;
 
 
@@ -32,31 +33,37 @@ public class UserInterpretor implements HandlerInterceptor {
 
     private final JwtProperties jwtProperties;
 
-    private static final String USER_ID="user_id";
+    public static final String USER_ID="user_id";
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        //判断跨域请求
+        //可以解决拦截器跨域问题
         if(!(handler instanceof HandlerMethod)){
             return true;
         }
         String token = request.getHeader(jwtProperties.getUserTokenName());
         //从请求头中获取token
         if(StrUtil.isEmpty(token)){
-            throw new GlobalServiceException("用户未登录");
+            throw new GlobalServiceException("用户未登录,token为空", GlobalServiceStatusCode.USER_NOT_LOGIN);
         }
         //通过明文钥匙生成密钥
         SecretKey secretKey = JwtUtil.generalKey(jwtProperties.getUserSecretKey());
 
         io.jsonwebtoken.Claims claims = JwtUtil.parseJWT(secretKey, token);
-        //通过包装的threadlocal类设置当前线程用户id
+        //通过当前线程类对象设置当前线程用户id
         setGlobaleUserIdByClaims(claims);
         //判断token是否即将过期
         if(JwtUtil.judgeApproachExpiration(token,secretKey)){
-            long ttl = jwtProperties.getUserTtl();
-            //刷新token,通过请求头返回前端
-            response.setHeader(jwtProperties.getUserTokenName(),JwtUtil.createJWT(secretKey,ttl,claims));
+            refreshToken(response, secretKey, claims);
         }
         return true;
+    }
+
+    private void refreshToken(HttpServletResponse response, SecretKey secretKey, Claims claims) {
+        long ttl = jwtProperties.getUserTtl();
+        String refreshToken = JwtUtil.createJWT(secretKey, ttl, claims);
+        //刷新token,通过请求头返回前端
+        response.setHeader(jwtProperties.getUserTokenName(),refreshToken);
+        log.info("无感刷新token:{}",refreshToken);
     }
 
     private void setGlobaleUserIdByClaims(Claims claims) {
