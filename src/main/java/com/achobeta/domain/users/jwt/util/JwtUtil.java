@@ -1,7 +1,6 @@
-package com.achobeta.domain.users.util;
+package com.achobeta.domain.users.jwt.util;
 
-import cn.hutool.core.date.DateTime;
-import com.achobeta.domain.users.propertities.JwtProperties;
+import com.achobeta.domain.users.jwt.util.propertities.JwtProperties;
 import com.achobeta.exception.InvalidTokenException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;

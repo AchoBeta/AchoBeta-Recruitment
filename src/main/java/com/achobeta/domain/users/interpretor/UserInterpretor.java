@@ -3,16 +3,15 @@ package com.achobeta.domain.users.interpretor;
 
 import cn.hutool.core.util.StrUtil;
 import com.achobeta.domain.users.context.BaseContext;
-import com.achobeta.domain.users.propertities.JwtProperties;
+import com.achobeta.domain.users.jwt.util.propertities.JwtProperties;
 
-import com.achobeta.domain.users.util.JwtUtil;
+import com.achobeta.domain.users.jwt.util.JwtUtil;
 import com.achobeta.exception.GlobalServiceException;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.instrument.classloading.glassfish.GlassFishLoadTimeWeaver;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
