@@ -55,7 +55,6 @@ public class BloomFilterHelper<T> {
             }
             offset[i - 1] = nextHash % bitSize;
         }
-
         return offset;
     }
 

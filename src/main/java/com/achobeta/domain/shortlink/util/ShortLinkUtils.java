@@ -12,7 +12,10 @@ public class ShortLinkUtils {
     private static final String CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
     private static final int LINK_LENGTH = 6;
 
-    public static final String REDIS_SHORT_LINK = "REDIS_SHORT_LINK_";//前缀
+//    public static final String REDIS_SHORT_LINK = "REDIS_SHORT_LINK_";//前缀
+    public static final String REDIS_SHORT_LINK = "redis_short_link:";//前缀
+
+    public static final String BLOOM_FILTER_NAME = "LINK_CODE_BLOOM_FILTER"; // 布隆过滤器名
 
     public static final int FETCH_RADIX = 16;
 

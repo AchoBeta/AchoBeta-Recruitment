@@ -27,8 +27,6 @@ import java.util.Optional;
 public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink>
         implements ShortLinkService {
 
-    private static final String BLOOM_FILTER_NAME = "LINK-CODE-LIST";
-
     private static final long SHORT_LINK_TIMEOUT = 1 * 7 * 24 * 3600 * 1000L; // 超时时间 (默认七天)
 
     private final RedisCache redisCache;
@@ -42,7 +40,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         do {
             code = ShortLinkUtils.getShortCodeByURL(code);
             redisKey = ShortLinkUtils.REDIS_SHORT_LINK + code;
-        } while (redisCache.containsInBloomFilter(BLOOM_FILTER_NAME, redisKey));//误判为存在也无所谓，无非就是再重新生成一个
+        } while (redisCache.containsInBloomFilter(ShortLinkUtils.BLOOM_FILTER_NAME, redisKey));//误判为存在也无所谓，无非就是再重新生成一个
         // 保存
         ShortLink shortLink = new ShortLink();
         shortLink.setOriginUrl(url);
@@ -55,7 +53,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         this.save(shortLink);
         // 缓存到Redis，加入布隆过滤器
         redisCache.setCacheObject(redisKey, url, SHORT_LINK_TIMEOUT);
-        redisCache.addToBloomFilter(BLOOM_FILTER_NAME, redisKey);
+        redisCache.addToBloomFilter(ShortLinkUtils.BLOOM_FILTER_NAME, redisKey);
         // 返回完整的短链接
         return baseUrl + code;
     }
@@ -74,7 +72,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             String originUrl = shortLink.getOriginUrl();
             // 缓存到Redis里
             redisCache.setCacheObject(redisKey, originUrl, SHORT_LINK_TIMEOUT);
-            redisCache.addToBloomFilter(BLOOM_FILTER_NAME, redisKey);
+            redisCache.addToBloomFilter(ShortLinkUtils.BLOOM_FILTER_NAME, redisKey);
             return originUrl;
         });
     }
