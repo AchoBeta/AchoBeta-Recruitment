@@ -9,7 +9,6 @@ import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.jwt.propertities.JwtProperties;
 import com.achobeta.domain.users.jwt.util.JwtUtil;
 import com.achobeta.domain.users.model.po.StudentEntity;
-import com.achobeta.domain.users.model.vo.LoginVO;
 import com.achobeta.domain.users.service.StudentService;
 import com.achobeta.exception.GlobalServiceException;
 import io.jsonwebtoken.Claims;
@@ -72,6 +71,6 @@ public class UserInterpretor implements HandlerInterceptor {
     private void setGlobaleUserIdByClaims(Claims claims) {
         Long user_id = Long.valueOf(claims.get(UserInterpretor.USER_ID).toString());
         StudentEntity student = studentService.getById(user_id);
-        BaseContext.setCurrentId(student);
+        BaseContext.setCurrentUser(student);
     }
 }

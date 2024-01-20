@@ -1,7 +1,6 @@
 package com.achobeta.domain.users.context;
 
 import com.achobeta.domain.users.model.po.StudentEntity;
-import com.achobeta.domain.users.model.vo.LoginVO;
 
 /**
  * @author cattleYuan
@@ -11,15 +10,15 @@ public class BaseContext {
 
     public static ThreadLocal<StudentEntity> threadLocal = new ThreadLocal<>();
 
-    public static void setCurrentId(StudentEntity studentEntity ) {
+    public static void setCurrentUser(StudentEntity studentEntity ) {
         threadLocal.set(studentEntity);
     }
 
-    public static StudentEntity getCurrentId() {
+    public static StudentEntity getCurrentUser() {
         return threadLocal.get();
     }
 
-    public static void removeCurrentId() {
+    public static void removeCurrentUser() {
         threadLocal.remove();
     }
 
