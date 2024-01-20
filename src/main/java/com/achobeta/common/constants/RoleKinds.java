@@ -1,6 +1,6 @@
 package com.achobeta.common.constants;
 
-public enum RoleType {
+public enum RoleKinds {
     USER("user",0),
     ADMINER("adminer",1)
     ;
@@ -15,7 +15,7 @@ public enum RoleType {
         return roleNumber;
     }
 
-    RoleType(String roleName, Integer roleNum) {
+    RoleKinds(String roleName, Integer roleNum) {
         this.roleName = roleName;
         this.roleNumber = roleNum;
     }

@@ -3,13 +3,12 @@ package com.achobeta.interpretor;
 
 import cn.hutool.core.util.StrUtil;
 import com.achobeta.common.constants.GlobalServiceStatusCode;
-import com.achobeta.common.constants.RoleType;
+import com.achobeta.common.constants.RoleKinds;
 import com.achobeta.domain.users.context.BaseContext;
 
 
 import com.achobeta.domain.users.jwt.propertities.JwtProperties;
 import com.achobeta.domain.users.jwt.util.JwtUtil;
-import com.achobeta.domain.users.model.po.StudentEntity;
 import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.domain.users.service.StudentService;
 import com.achobeta.exception.GlobalServiceException;
@@ -55,7 +54,7 @@ public class UserInterpretor implements HandlerInterceptor {
         SecretKey secretKey = JwtUtil.generalKey(jwtProperties.getUserSecretKey());
 
         io.jsonwebtoken.Claims claims = JwtUtil.parseJWT(secretKey, token);
-        //通过当前线程类对象设置当前线程用户id
+        //通过当前线程类对象设置当前线程用户信息
         setGlobaleUserIdByClaims(claims, token);
         //判断token是否即将过期
         if (JwtUtil.judgeApproachExpiration(token, secretKey)) {
@@ -74,7 +73,7 @@ public class UserInterpretor implements HandlerInterceptor {
 
     private void setGlobaleUserIdByClaims(Claims claims, String token) {
         Long userId = Long.valueOf(claims.get(UserInterpretor.USER_ID).toString());
-        Integer role = Integer.parseInt(claims.get(RoleType.USER.getRoleName()).toString());
+        Integer role = Integer.parseInt(claims.get(RoleKinds.USER.getRoleName()).toString());
         UserHelper userHelper = UserHelper.builder()
                 .userId(userId)
                 .token(token)
