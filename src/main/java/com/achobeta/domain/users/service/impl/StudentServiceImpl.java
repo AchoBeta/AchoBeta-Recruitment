@@ -1,6 +1,5 @@
 package com.achobeta.domain.users.service.impl;
 
-import cn.hutool.core.util.StrUtil;
 import com.achobeta.domain.users.interpretor.UserInterpretor;
 import com.achobeta.domain.users.jwt.propertities.JwtProperties;
 import com.achobeta.domain.users.jwt.util.JwtUtil;
@@ -41,7 +40,9 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
         }
         //将id存入claims
 
+
         if (!Optional.ofNullable(student.getId()).isPresent()) {
+
             claims.put(UserInterpretor.USER_ID, student.getId());
         }
 
@@ -53,6 +54,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
 
         return loginVO;
     }
+
 
     private  Student getStudent(String email) {
         Student student;
@@ -68,6 +70,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
         student.setUpdateTime(LocalDateTime.now());
         return student;
     }
+
 }
 
 
