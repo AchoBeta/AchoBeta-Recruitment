@@ -36,7 +36,7 @@ public class StudentEntity extends BaseIncrIDEntity implements Serializable {
 
     // 班级
     @TableField("class")
-    private String classId;
+    private String className;
 
     // 邮箱
     @TableField("email")

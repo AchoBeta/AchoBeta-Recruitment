@@ -22,7 +22,7 @@ import java.util.Map;
 public class JwtUtil {
     private final JwtProperties jwtProperties;
     //过期时间小于该值就刷新token
-    private static final long REFRESHTIME = 1000 * 60 * 10;
+    private static final long REFRESHTIME = 1000 * 60 * 20;
     /**
      * 生成jwt
      * 使用Hs256算法
@@ -91,6 +91,6 @@ public class JwtUtil {
     public static boolean judgeApproachExpiration(@NotNull String token,@NotNull SecretKey secretKey) {
         long cur = System.currentTimeMillis();
         long exp = getTokenExperition(secretKey,token).getTime();
-        return  (cur - exp) < REFRESHTIME;
+        return  (exp - cur) < REFRESHTIME;
     }
 }
