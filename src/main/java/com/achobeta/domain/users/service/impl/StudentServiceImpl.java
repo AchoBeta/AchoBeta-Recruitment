@@ -53,26 +53,15 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, StudentEntity
     }
 
     private StudentEntity registWithEmail(String email, StudentEntity studentEntity) {
-            studentEntity = buildStudent(email);
+            studentEntity=new StudentEntity();
+            studentEntity.setEmail(email);
             this.save(studentEntity);
             return studentEntity;
 
     }
 
 
-    private StudentEntity buildStudent(String email) {
-        StudentEntity studentEntity = new StudentEntity();
-        studentEntity.setEmail(email);
-        studentEntity.setExperience("");
-        studentEntity.setIntroduce("");
-        studentEntity.setAwards("");
-        studentEntity.setReason("");
-        studentEntity.setDeleted(0);
-        studentEntity.setVersion(1);
-        studentEntity.setCreateTime(LocalDateTime.now());
-        studentEntity.setUpdateTime(LocalDateTime.now());
-        return studentEntity;
-    }
+
 
 }
 
