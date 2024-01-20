@@ -1,7 +1,7 @@
-package com.achobeta.domain.users.config;
+package com.achobeta.config;
 
 
-import com.achobeta.domain.users.interpretor.UserInterpretor;
+import com.achobeta.interpretor.UserInterpretor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

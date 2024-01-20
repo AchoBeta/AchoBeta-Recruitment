@@ -18,7 +18,7 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for student
+-- Table structure for studentEntity
 -- 简历状态comment说明
 -- 范围：0~14，简历状态{
 # - 0-草稿
@@ -37,8 +37,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 # - 13-待处理（反馈异常/或管理员主动设置为该状态）
 # - 14-挂起（管理员可以主动设置该状态）}
 -- ----------------------------
-DROP TABLE IF EXISTS `student`;
-CREATE TABLE `student`  (
+DROP TABLE IF EXISTS `studentEntity`;
+CREATE TABLE `studentEntity`  (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `questionnaire_id` int NOT NULL DEFAULT 1 COMMENT '问卷id',
   `student_id` varchar(13) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '学号',

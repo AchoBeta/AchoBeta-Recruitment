@@ -45,8 +45,8 @@ public class EmailController {
         emailService.checkIdentifyingCode(email, code);
         // 成功
         log.info("email:{}, 验证码:{} 验证成功", email, code);
-        LoginVO loginVO =studentService.saveStudentByEmail(email);
-        log.info("token:{},生成token成功",loginVO.getAccess_token());
+        LoginVO loginVO =studentService.login(email);
+        log.info("token:{},生成token成功",loginVO.getAccessToken());
         return SystemJsonResponse.SYSTEM_SUCCESS(loginVO);
     }
 
