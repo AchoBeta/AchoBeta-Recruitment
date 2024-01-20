@@ -1,6 +1,7 @@
 package com.achobeta.domain.users.context;
 
 import com.achobeta.domain.users.model.po.StudentEntity;
+import com.achobeta.domain.users.model.po.UserHelper;
 
 /**
  * @author cattleYuan
@@ -8,13 +9,13 @@ import com.achobeta.domain.users.model.po.StudentEntity;
  */
 public class BaseContext {
 
-    public static ThreadLocal<StudentEntity> threadLocal = new ThreadLocal<>();
+    public static ThreadLocal<UserHelper> threadLocal = new ThreadLocal<>();
 
-    public static void setCurrentUser(StudentEntity studentEntity ) {
-        threadLocal.set(studentEntity);
+    public static void setCurrentUser(UserHelper userHelper ) {
+        threadLocal.set(userHelper);
     }
 
-    public static StudentEntity getCurrentUser() {
+    public static UserHelper getCurrentUser() {
         return threadLocal.get();
     }
 

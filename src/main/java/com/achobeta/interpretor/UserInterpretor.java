@@ -3,12 +3,14 @@ package com.achobeta.interpretor;
 
 import cn.hutool.core.util.StrUtil;
 import com.achobeta.common.constants.GlobalServiceStatusCode;
+import com.achobeta.common.constants.RoleType;
 import com.achobeta.domain.users.context.BaseContext;
 
 
 import com.achobeta.domain.users.jwt.propertities.JwtProperties;
 import com.achobeta.domain.users.jwt.util.JwtUtil;
 import com.achobeta.domain.users.model.po.StudentEntity;
+import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.domain.users.service.StudentService;
 import com.achobeta.exception.GlobalServiceException;
 import io.jsonwebtoken.Claims;
@@ -35,16 +37,18 @@ public class UserInterpretor implements HandlerInterceptor {
     private final JwtProperties jwtProperties;
     private final StudentService studentService;
 
-    public static final String USER_ID="user_id";
+    public static final String USER_ID = "user_id";
+    public static final String UserRoleName = "user";
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //可以解决拦截器跨域问题
-        if(!(handler instanceof HandlerMethod)){
+        if (!(handler instanceof HandlerMethod)) {
             return true;
         }
         String token = request.getHeader(jwtProperties.getUserTokenName());
         //从请求头中获取token
-        if(StrUtil.isEmpty(token)){
+        if (StrUtil.isEmpty(token)) {
             throw new GlobalServiceException("用户未登录,token为空", GlobalServiceStatusCode.USER_NOT_LOGIN);
         }
         //通过明文钥匙生成密钥
@@ -52,9 +56,9 @@ public class UserInterpretor implements HandlerInterceptor {
 
         io.jsonwebtoken.Claims claims = JwtUtil.parseJWT(secretKey, token);
         //通过当前线程类对象设置当前线程用户id
-        setGlobaleUserIdByClaims(claims);
+        setGlobaleUserIdByClaims(claims, token);
         //判断token是否即将过期
-        if(JwtUtil.judgeApproachExpiration(token,secretKey)){
+        if (JwtUtil.judgeApproachExpiration(token, secretKey)) {
             refreshToken(response, secretKey, claims);
         }
         return true;
@@ -64,13 +68,19 @@ public class UserInterpretor implements HandlerInterceptor {
         long ttl = jwtProperties.getUserTtl();
         String refreshToken = JwtUtil.createJWT(secretKey, ttl, claims);
         //刷新token,通过请求头返回前端
-        response.setHeader(jwtProperties.getUserTokenName(),refreshToken);
-        log.info("无感刷新token:{}",refreshToken);
+        response.setHeader(jwtProperties.getUserTokenName(), refreshToken);
+        log.info("无感刷新token:{}", refreshToken);
     }
 
-    private void setGlobaleUserIdByClaims(Claims claims) {
-        Long user_id = Long.valueOf(claims.get(UserInterpretor.USER_ID).toString());
-        StudentEntity student = studentService.getById(user_id);
-        BaseContext.setCurrentUser(student);
+    private void setGlobaleUserIdByClaims(Claims claims, String token) {
+        Long userId = Long.valueOf(claims.get(UserInterpretor.USER_ID).toString());
+        Integer role = Integer.parseInt(claims.get(RoleType.USER.getRoleName()).toString());
+        UserHelper userHelper = UserHelper.builder()
+                .userId(userId)
+                .token(token)
+                .role(role)
+                .build();
+        log.info("登录信息->{}",userHelper);
+        BaseContext.setCurrentUser(userHelper);
     }
 }

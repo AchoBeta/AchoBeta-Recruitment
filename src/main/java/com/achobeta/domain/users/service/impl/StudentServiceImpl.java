@@ -1,5 +1,6 @@
 package com.achobeta.domain.users.service.impl;
 
+import com.achobeta.common.constants.RoleType;
 import com.achobeta.interpretor.UserInterpretor;
 import com.achobeta.domain.users.jwt.propertities.JwtProperties;
 import com.achobeta.domain.users.jwt.util.JwtUtil;
@@ -41,6 +42,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, StudentEntity
         //将id存入claims
         if (Optional.ofNullable(studentEntity.getId()).isPresent()) {
             claims.put(UserInterpretor.USER_ID, studentEntity.getId());
+            claims.put(RoleType.USER.getRoleName(),RoleType.USER.getRoleNumber());
         }
 
         String token = JwtUtil.createJWT(secretKey, jwtProperties.getUserTtl(), claims);
