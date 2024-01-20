@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -35,13 +36,12 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
         Student student = this.lambdaQuery().eq(Student::getEmail, email).one();
         //若student为空则存入新用户
         if(!Optional.ofNullable(student).isPresent()){
-            student=new Student();
-            student.setEmail(email);
+            student = getStudent(email);
             this.save(student);
         }
         //将id存入claims
 
-        if (student != null && student.getId() != null) {
+        if (!Optional.ofNullable(student.getId()).isPresent()) {
             claims.put(UserInterpretor.USER_ID, student.getId());
         }
 
@@ -52,6 +52,21 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
                 .build();
 
         return loginVO;
+    }
+
+    private  Student getStudent(String email) {
+        Student student;
+        student=new Student();
+        student.setAwards("");
+        student.setExperience("");
+        student.setIntroduce("");
+        student.setReason("");
+        student.setEmail(email);
+        student.setVersion(1);
+        student.setDeleted(0);
+        student.setCreateTime(LocalDateTime.now());
+        student.setUpdateTime(LocalDateTime.now());
+        return student;
     }
 }
 

@@ -1,5 +1,7 @@
 package com.achobeta.domain.users.jwt.util;
 
+import cn.hutool.http.HttpGlobalConfig;
+import com.achobeta.common.constants.GlobalServiceStatusCode;
 import com.achobeta.domain.users.jwt.propertities.JwtProperties;
 import com.achobeta.exception.GlobalServiceException;
 
@@ -67,7 +69,8 @@ public class JwtUtil {
                     // 设置需要解析的jwt
                     .parseClaimsJws(token).getBody();
         } catch (JwtException e) {
-            throw new GlobalServiceException("无效的token格式");
+            log.error("无效的token->{}",token);
+            throw new GlobalServiceException("无效的token格式", GlobalServiceStatusCode.USER_ACCOUNT_USE_BY_OTHERS);
         }
         return claims;
     }
