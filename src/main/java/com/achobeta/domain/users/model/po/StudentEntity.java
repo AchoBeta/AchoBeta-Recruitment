@@ -2,11 +2,13 @@ package com.achobeta.domain.users.model.po;
 
 import java.io.Serializable;
 
-import com.achobeta.domain.users.model.dao.BaseIncrIDEntity;
+import com.achobeta.common.base.BaseIncrIDEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * 学生用户简历表
@@ -14,7 +16,7 @@ import lombok.Data;
  */
 @Data
 @TableName("student")
-public class Student extends BaseIncrIDEntity implements Serializable {
+public class StudentEntity extends BaseIncrIDEntity implements Serializable {
 
     // 问卷id
     private Integer questionnaireId;

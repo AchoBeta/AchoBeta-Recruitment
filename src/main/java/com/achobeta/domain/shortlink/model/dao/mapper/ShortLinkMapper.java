@@ -1,6 +1,6 @@
-package com.achobeta.domain.shortlink.mapper;
+package com.achobeta.domain.shortlink.model.dao.mapper;
 
-import com.achobeta.domain.shortlink.po.ShortLink;
+import com.achobeta.domain.shortlink.model.dao.po.ShortLink;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

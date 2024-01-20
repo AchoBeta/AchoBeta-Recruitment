@@ -1,8 +1,10 @@
 package com.achobeta.domain.shortlink.service.impl;
 
 import com.achobeta.common.constants.GlobalServiceStatusCode;
-import com.achobeta.domain.shortlink.mapper.ShortLinkMapper;
-import com.achobeta.domain.shortlink.po.ShortLink;
+
+import com.achobeta.domain.shortlink.model.dao.mapper.ShortLinkMapper;
+
+import com.achobeta.domain.shortlink.model.dao.po.ShortLink;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
 import com.achobeta.domain.shortlink.util.ShortLinkUtils;
 import com.achobeta.exception.GlobalServiceException;
