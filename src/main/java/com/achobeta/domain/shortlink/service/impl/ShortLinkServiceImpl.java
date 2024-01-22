@@ -1,6 +1,6 @@
 package com.achobeta.domain.shortlink.service.impl;
 
-import com.achobeta.common.constants.GlobalServiceStatusCode;
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 
 import com.achobeta.domain.shortlink.model.dao.mapper.ShortLinkMapper;
 

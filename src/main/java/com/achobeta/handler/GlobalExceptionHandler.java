@@ -1,7 +1,7 @@
 package com.achobeta.handler;
 
 import com.achobeta.common.SystemJsonResponse;
-import com.achobeta.common.constants.GlobalServiceStatusCode;
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.exception.GlobalServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.achobeta.common.constants.GlobalServiceStatusCode.PARAM_FAILED_VALIDATE;
+import static com.achobeta.common.enums.GlobalServiceStatusCode.PARAM_FAILED_VALIDATE;
 
 /**
  * 全局异常处理器，减少 try-catch 语句

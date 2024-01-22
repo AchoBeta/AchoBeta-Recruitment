@@ -1,14 +1,11 @@
-package com.achobeta.domain.users.jwt.util;
+package com.achobeta.jwt.util;
 
-import cn.hutool.http.HttpGlobalConfig;
-import com.achobeta.common.constants.GlobalServiceStatusCode;
-import com.achobeta.domain.users.jwt.propertities.JwtProperties;
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.exception.GlobalServiceException;
-
+import com.achobeta.jwt.propertities.JwtProperties;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -23,6 +20,7 @@ public class JwtUtil {
     private final JwtProperties jwtProperties;
     //过期时间小于该值就刷新token
     private static final long REFRESHTIME = 1000 * 60 * 20;
+
     /**
      * 生成jwt
      * 使用Hs256算法
@@ -69,28 +67,30 @@ public class JwtUtil {
                     // 设置需要解析的jwt
                     .parseClaimsJws(token).getBody();
         } catch (JwtException e) {
-            log.error("无效的token->{}",token);
+            log.error("无效的token->{}", token);
             throw new GlobalServiceException("无效的token格式", GlobalServiceStatusCode.USER_ACCOUNT_USE_BY_OTHERS);
         }
         return claims;
     }
+
     public static Date getTokenExperition(@NotNull SecretKey secretKey, @NotNull String token) {
-       Claims claims=parseJWT(secretKey,token);
+        Claims claims = parseJWT(secretKey, token);
         //返回该token的过期时间
         return claims.getExpiration();
     }
+
     // 通过明文密钥生成加密后的秘钥 secretKey
     public static SecretKey generalKey(@NotNull String secretKey) {
         byte[] encodedKey = Base64.getDecoder().decode(secretKey);
         SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
-        log.info("生成的key->{}",key);
+        log.info("生成的key -> {}", key.getAlgorithm());
         return key;
     }
 
     //
-    public static boolean judgeApproachExpiration(@NotNull String token,@NotNull SecretKey secretKey) {
+    public static boolean judgeApproachExpiration(@NotNull String token, @NotNull SecretKey secretKey) {
         long cur = System.currentTimeMillis();
-        long exp = getTokenExperition(secretKey,token).getTime();
-        return  (exp - cur) < REFRESHTIME;
+        long exp = getTokenExperition(secretKey, token).getTime();
+        return (exp - cur) < REFRESHTIME;
     }
 }

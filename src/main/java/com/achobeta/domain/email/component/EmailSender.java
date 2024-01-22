@@ -1,7 +1,7 @@
 package com.achobeta.domain.email.component;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.achobeta.common.constants.GlobalServiceStatusCode;
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.email.component.po.EmailMessage;
 import com.achobeta.exception.GlobalServiceException;
 import jakarta.mail.MessagingException;

@@ -1,7 +1,7 @@
 package com.achobeta.domain.shortlink.util;
 
 
-import com.achobeta.common.constants.GlobalServiceStatusCode;
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.exception.GlobalServiceException;
 import org.apache.commons.codec.digest.DigestUtils;
 

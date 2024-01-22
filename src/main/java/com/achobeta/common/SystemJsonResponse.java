@@ -1,6 +1,6 @@
 package com.achobeta.common;
 
-import com.achobeta.common.constants.GlobalServiceStatusCode;
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serial;

@@ -1,6 +1,5 @@
 package com.achobeta.domain.users.context;
 
-import com.achobeta.domain.users.model.po.StudentEntity;
 import com.achobeta.domain.users.model.po.UserHelper;
 
 /**

@@ -1,7 +1,7 @@
 package com.achobeta.domain.shortlink.controller;
 
 import com.achobeta.common.SystemJsonResponse;
-import com.achobeta.common.constants.GlobalServiceStatusCode;
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
 import com.achobeta.domain.shortlink.util.HttpUrlValidator;
 import com.achobeta.domain.shortlink.util.ShortLinkUtils;

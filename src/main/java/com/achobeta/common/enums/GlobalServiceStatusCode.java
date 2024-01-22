@@ -1,4 +1,4 @@
-package com.achobeta.common.constants;
+package com.achobeta.common.enums;
 
 import lombok.Getter;
 
@@ -41,15 +41,15 @@ public enum GlobalServiceStatusCode {
     USER_ACCOUNT_USE_BY_OTHERS(2009, "账号下线"),
 
     USER_NO_PERMISSION(2403, "用户无权限"),
-    USER_NO_PHONE_CODE(2500, "验证码错误"),
+    USER_CAPTCHA_CODE_ERROR(2500, "验证码错误"),
 
      /* 邮箱错误 3001-4000 */
     EMAIL_PATTERN_ERROR(3001, "邮箱格式错误"),
     EMAIL_SEND_FAIL(3002, "邮箱发送失败"),
 
     EMAIL_NOT_EXIST_RECORD(3101, "邮箱不存在记录"),
-    EMAIL_CODE_NOT_CONSISTENT(3102, "邮箱验证码不一致"),
-    EMAIL_CODE_OPPORTUNITIES_EXHAUST(3103, "验证次数达到上限"),
+    EMAIL_CAPTCHA_CODE_COUNT_EXHAUST(3103, "申请次数达到上限"),
+//    EMAIL_CODE_NOT_CONSISTENT(3102, "邮箱验证码不一致"),
 
     /* -------------- */;
 

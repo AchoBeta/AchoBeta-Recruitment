@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-@SuppressWarnings(value = { "unchecked", "rawtypes" })
+@SuppressWarnings(value = {"unchecked", "rawtypes"})
 public class RedisCache {
 
     private final RedisTemplate redisTemplate;
@@ -24,17 +24,18 @@ public class RedisCache {
     /**
      * 设置有效时间
      *
-     * @param key Redis键
+     * @param key     Redis键
      * @param timeout 超时时间
      * @return true=设置成功；false=设置失败
      */
     public boolean expire(final String key, final long timeout) {
-        log.info("为 Redis 的键值设置超时时间\t[{}]-[{}s]", key, timeout / 1000L);
+        log.info("为 Redis 的键值设置超时时间\t[{}]-[{}s]", key, TimeUnit.MILLISECONDS.toSeconds(timeout));
         return redisTemplate.expire(key, timeout, TimeUnit.MILLISECONDS);
     }
 
     /**
-     *  获得对象的剩余存活时间
+     * 获得对象的剩余存活时间
+     *
      * @param key 键
      * @return 剩余存活时间
      */
@@ -53,13 +54,13 @@ public class RedisCache {
                 break;
         }
         log.info("查询 Redis key[{}] 剩余存活时间:{}", key, message);
-        return ttl * 1000L; // 统一单位为 ms
+        return TimeUnit.SECONDS.toMillis(ttl); // 统一单位为 ms
     }
 
     /**
      * 缓存基本的对象，Integer、String、实体类等
      *
-     * @param key 缓存的键值
+     * @param key   缓存的键值
      * @param value 缓存的值
      */
     public <T> void setCacheObject(final String key, final T value) {
@@ -70,20 +71,21 @@ public class RedisCache {
     /**
      * 缓存基本的对象，Integer、String、实体类等
      *
-     * @param key 缓存的键值
-     * @param value 缓存的值
+     * @param key    缓存的键值
+     * @param value  缓存的值
      * @param timout 超时时间
      */
     public <T> void setCacheObject(final String key, final T value, final long timout) {
-        log.info("存入 Redis\t[{}]-[{}]，超时时间:[{}s]", key, value, timout / 1000L);
+        log.info("存入 Redis\t[{}]-[{}]，超时时间:[{}s]", key, value, TimeUnit.MILLISECONDS.toSeconds(timout));
         redisTemplate.opsForValue().set(key, value, timout, TimeUnit.MILLISECONDS);
     }
 
     /**
      * 获取键值
+     *
      * @param key 键
-     * @return 键对应的值，并封装成 Optional 对象
      * @param <T>
+     * @return 键对应的值，并封装成 Optional 对象
      */
     public <T> Optional<T> getCacheObject(final String key) {
         T value = (T) redisTemplate.opsForValue().get(key);
@@ -93,6 +95,7 @@ public class RedisCache {
 
     /**
      * 让指定 Redis 键值进行自减
+     *
      * @param key 键
      * @return 自减后的值
      */
@@ -104,6 +107,7 @@ public class RedisCache {
 
     /**
      * 让指定 Redis 键值进行自增
+     *
      * @param key 键
      * @return 自增后的值
      */
@@ -115,8 +119,9 @@ public class RedisCache {
 
     /**
      * 加入布隆过滤器
+     *
      * @param bloomFilterName 隆过滤器的名字
-     * @param key key 键
+     * @param key             key 键
      */
     public void addToBloomFilter(final String bloomFilterName, final String key) {
         log.info("加入布隆过滤器[{}]\tkey[{}]", bloomFilterName, key);
@@ -125,8 +130,9 @@ public class RedisCache {
 
     /**
      * 布隆过滤器是否存在该键值
+     *
      * @param bloomFilterName 布隆过滤器的名字
-     * @param key 键
+     * @param key             键
      * @return 键是否存在
      */
     public boolean containsInBloomFilter(final String bloomFilterName, final String key) {
@@ -154,9 +160,9 @@ public class RedisCache {
      * @param key
      * @return
      */
-    public <T> Optional<Map<String,T>> getCacheMap(final String key) {
+    public <T> Optional<Map<String, T>> getCacheMap(final String key) {
         Map<String, T> data = redisTemplate.opsForHash().entries(key);
-        data = data.size() == 0 ? null: data;
+        data = data.size() == 0 ? null : data;
         log.info("获取 Redis 中的 Map 缓存\t[{}]-[{}]", key, data);
         return Optional.ofNullable(data);
     }
@@ -164,9 +170,9 @@ public class RedisCache {
     /**
      * 往Hash中存入数据
      *
-     * @param key Redis键
+     * @param key     Redis键
      * @param hashKey Hash键
-     * @param value 值
+     * @param value   值
      */
     public <T> void setCacheMapValue(final String key, final String hashKey, final T value) {
         log.info("存入 Redis 的某个 Map\t[{}.{}]-[{}]", key, hashKey, value);
@@ -176,7 +182,7 @@ public class RedisCache {
     /**
      * 获取Hash中的数据
      *
-     * @param key Redis键
+     * @param key     Redis键
      * @param hashKey Hash键
      * @return Hash中的对象
      */
@@ -199,7 +205,8 @@ public class RedisCache {
 
     /**
      * 让指定 HashMap 的键值进行自减
-     * @param key HashMap的名字
+     *
+     * @param key     HashMap的名字
      * @param hashKey HashMap的一个键
      * @return 自减后的值
      */
@@ -211,7 +218,8 @@ public class RedisCache {
 
     /**
      * 让指定 HashMap 的键值进行自增
-     * @param key HashMap的名字
+     *
+     * @param key     HashMap的名字
      * @param hashKey HashMap的一个键
      * @return 自增后的值
      */
@@ -223,6 +231,7 @@ public class RedisCache {
 
     /**
      * 删除单个对象
+     *
      * @param key
      */
     public boolean deleteObject(final String key) {

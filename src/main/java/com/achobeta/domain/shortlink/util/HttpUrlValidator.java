@@ -1,6 +1,6 @@
 package com.achobeta.domain.shortlink.util;
 
-import com.achobeta.common.constants.GlobalServiceStatusCode;
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;

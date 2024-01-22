@@ -1,4 +1,4 @@
-package com.achobeta.domain.users.jwt.propertities;
+package com.achobeta.jwt.propertities;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
