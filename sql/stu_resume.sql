@@ -37,8 +37,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 # - 13-待处理（反馈异常/或管理员主动设置为该状态）
 # - 14-挂起（管理员可以主动设置该状态）}
 -- ----------------------------
-DROP TABLE IF EXISTS `student`;
-CREATE TABLE `student`
+DROP TABLE IF EXISTS `stu_resume`;
+CREATE TABLE `stu_resume`
 (
     `id`               bigint UNSIGNED                                  NOT NULL AUTO_INCREMENT COMMENT 'ID',
     `questionnaire_id` int                                              NOT NULL DEFAULT 1 COMMENT '问卷id',
@@ -72,7 +72,7 @@ CREATE TABLE `student`
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
   CHARACTER SET = utf8
-  COLLATE = utf8_bin COMMENT = '学生用户简历表'
+  COLLATE = utf8_bin COMMENT = '学生简历表'
   ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
