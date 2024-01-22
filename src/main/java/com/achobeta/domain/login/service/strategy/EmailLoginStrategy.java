@@ -77,18 +77,13 @@ public class EmailLoginStrategy implements LoginStrategy {
     private UserEntity findOrCreateUserByEmail(String email) {
         // 查询是否存在该邮箱
         UserEntity user = userMapper.selectOne(new LambdaQueryWrapper<UserEntity>()
-//                .select(UserEntity::getEmail)
                 .eq(UserEntity::getEmail, email));
 
         if (null == user) {
             // 不存在邮箱走注册逻辑
             user = new UserEntity();
             user.setUsername("bantanger");
-            user.setCreateTime(LocalDateTime.now());
-            user.setUpdateTime(LocalDateTime.now());
             user.setEmail(email);
-            user.setVersion(0);
-            user.setDeleted(0);
             // 生成 32 位 uuid 防重
             user.setUuid((UUID.randomUUID().toString().replace("-", "")).substring(0, 32));
             userMapper.insert(user);
