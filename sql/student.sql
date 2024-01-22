@@ -55,6 +55,6 @@ CREATE TABLE `student`  (
   INDEX `idx_class`(`class` ASC) USING BTREE,
   INDEX `idx_major`(`major` ASC) USING BTREE,
   INDEX `idx_name`(`name` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_bin COMMENT = '学生用户简历表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_bin COMMENT = '学生用户简历表' ROW_FORMAT = DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;

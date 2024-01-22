@@ -1,5 +1,8 @@
 package com.achobeta.common.constants;
 
+import lombok.Getter;
+
+@Getter
 public enum LoginType {
 
     LOGINBYEMAIL("邮箱登录",1),
@@ -13,11 +16,5 @@ public enum LoginType {
         LoginCode = loginCode;
     }
 
-    public String getLoginTypeName() {
-        return LoginTypeName;
-    }
 
-    public Integer getLoginCode() {
-        return LoginCode;
-    }
 }
