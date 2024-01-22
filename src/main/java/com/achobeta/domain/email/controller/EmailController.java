@@ -21,6 +21,7 @@ public class EmailController {
     private final EmailService emailService;
 
     /**
+     * POST http://localhost:8080/api/v1/resource/email/code?email=sharksharkchan@qq.com
      * 发送验证码接口
      *
      * @param email
