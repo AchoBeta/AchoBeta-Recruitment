@@ -3,7 +3,7 @@ package com.achobeta.common.enums;
 import lombok.Getter;
 
 @Getter
-public enum UserType {
+public enum UserTypeEnum {
 
     USER("user",1),
     ADMIN("admin",2)
@@ -12,7 +12,7 @@ public enum UserType {
     private final String name;
     private final Integer code;
 
-    UserType(String name, Integer code) {
+    UserTypeEnum(String name, Integer code) {
         this.name = name;
         this.code = code;
     }

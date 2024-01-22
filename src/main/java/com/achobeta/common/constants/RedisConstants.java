@@ -26,6 +26,9 @@ public class RedisConstants {
      */
     public static final String CAPTCHA_CODE_CNT_KEY = "captcha_code_cnt:";
 
+    /**
+     * 风控用户列表
+     */
     public static final String RISK_CONTROLLER_USERS_KEY = "risk_controller_users:";
 
     /**

@@ -1,7 +1,7 @@
 package com.achobeta.domain.login.model.dao;
 
 import com.achobeta.common.base.BaseIncrIDEntity;
-import com.achobeta.common.enums.UserType;
+import com.achobeta.common.enums.UserTypeEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,7 +45,7 @@ public class UserEntity extends BaseIncrIDEntity {
     private String uuid;
 
     public boolean isAdmin() {
-        return UserType.ADMIN.getCode().equals(this.userType);
+        return UserTypeEnum.ADMIN.getCode().equals(this.userType);
     }
 
 }

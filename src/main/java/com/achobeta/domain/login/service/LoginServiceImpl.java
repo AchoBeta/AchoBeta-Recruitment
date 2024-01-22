@@ -1,8 +1,8 @@
 package com.achobeta.domain.login.service;
 
 import com.achobeta.common.constants.RedisConstants;
-import com.achobeta.common.enums.LoginType;
-import com.achobeta.common.enums.UserType;
+import com.achobeta.common.enums.LoginTypeEnum;
+import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.jwt.propertities.JwtProperties;
 import com.achobeta.jwt.util.JwtUtil;
 import com.achobeta.domain.login.model.entity.LoginUser;
@@ -51,7 +51,7 @@ public class LoginServiceImpl implements LoginService {
         //将id存入claims
         if (Optional.ofNullable(loginUser.getUserId()).isPresent()) {
             claims.put(UserInterpretor.USER_ID, loginUser.getUserId());
-            claims.put(UserType.USER.getName(), loginUser.getUsername());
+            claims.put(UserTypeEnum.USER.getName(), loginUser.getUsername());
         }
 
         String token = JwtUtil.createJWT(secretKey, jwtProperties.getUserTtl(), claims);
@@ -63,7 +63,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public void checkLogin(LoginType loginType, String username, Supplier<Boolean> supplier) {
+    public void checkLogin(LoginTypeEnum loginTypeEnum, String username, Supplier<Boolean> supplier) {
         // 登录错误统一处理
         // 设置失败 key 为 key + username，限制，也可以是 key + username + ip 自定义限制
         String failKey = RedisConstants.LOGIN_FAIL_CNT_KEY + username;
@@ -75,7 +75,7 @@ public class LoginServiceImpl implements LoginService {
         // 锁定时间禁止登录
         if (failCount >= maxRetryCount) {
             String message = String.format("连续'%d'次登录失败, 请过'%d'分钟后再登录", maxRetryCount, lockTime);
-            throw new GlobalServiceException(message, loginType.getErrorCode());
+            throw new GlobalServiceException(message, loginTypeEnum.getErrorCode());
         }
 
         if (supplier.get()) {
@@ -89,11 +89,11 @@ public class LoginServiceImpl implements LoginService {
             if (failCount >= maxRetryCount) {
                 // 达到失败上限，锁定登录
                 String message = String.format("连续'%d'次登录失败, 请过'%d'分钟后再登录", maxRetryCount, lockTime);
-                throw new GlobalServiceException(message, loginType.getErrorCode());
+                throw new GlobalServiceException(message, loginTypeEnum.getErrorCode());
             } else {
                 // 未达到失败上限，直接抛出异常
                 String message = String.format("第'%d'次登录失败, 还剩'%d'次机会", failCount, maxRetryCount - failCount);
-                throw new GlobalServiceException(message, loginType.getErrorCode());
+                throw new GlobalServiceException(message, loginTypeEnum.getErrorCode());
             }
         }
 

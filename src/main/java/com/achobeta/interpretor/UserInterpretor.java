@@ -3,15 +3,13 @@ package com.achobeta.interpretor;
 
 import cn.hutool.core.util.StrUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.common.enums.UserType;
-import com.achobeta.domain.login.service.LoginService;
+import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.users.context.BaseContext;
 
 
 import com.achobeta.jwt.propertities.JwtProperties;
 import com.achobeta.jwt.util.JwtUtil;
 import com.achobeta.domain.users.model.po.UserHelper;
-import com.achobeta.domain.users.service.StuResumeService;
 import com.achobeta.exception.GlobalServiceException;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -73,7 +71,7 @@ public class UserInterpretor implements HandlerInterceptor {
 
     private void setGlobaleUserInfoByClaims(Claims claims, String token) {
         Long userId = Long.valueOf(claims.get(UserInterpretor.USER_ID).toString());
-        Integer role = Integer.parseInt(claims.get(UserType.USER.getName()).toString());
+        Integer role = Integer.parseInt(claims.get(UserTypeEnum.USER.getName()).toString());
         UserHelper userHelper = UserHelper.builder()
                 .userId(userId)
                 .token(token)

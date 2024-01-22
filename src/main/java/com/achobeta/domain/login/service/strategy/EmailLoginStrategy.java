@@ -1,8 +1,7 @@
 package com.achobeta.domain.login.service.strategy;
 
-import com.achobeta.common.constants.RedisConstants;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.common.enums.LoginType;
+import com.achobeta.common.enums.LoginTypeEnum;
 import com.achobeta.domain.login.model.dao.UserEntity;
 import com.achobeta.domain.login.model.dao.mapper.UserMapper;
 import com.achobeta.domain.login.model.dto.EmailLoginDTO;
@@ -18,13 +17,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
 import static com.achobeta.common.constants.RedisConstants.CAPTCHA_CODES_KEY;
 import static com.achobeta.common.constants.RedisConstants.CAPTCHA_CODE_KEY;
-import static com.achobeta.common.enums.GlobalServiceStatusCode.USER_ACCOUNT_NOT_EXIST;
 
 /**
  * @author BanTanger 半糖
@@ -53,7 +50,7 @@ public class EmailLoginStrategy implements LoginStrategy {
         UserEntity user = findOrCreateUserByEmail(email);
 
         // 检查是否能登录
-        loginService.checkLogin(LoginType.EMAIL, user.getUsername(),
+        loginService.checkLogin(LoginTypeEnum.EMAIL, user.getUsername(),
                 () -> !validateEmailCode(email, emailCode));
 
 //        // 自定义分配，不同用户有不同 token 授权时间，不设置默认走全局

@@ -1,6 +1,6 @@
 package com.achobeta.domain.login.service;
 
-import com.achobeta.common.enums.LoginType;
+import com.achobeta.common.enums.LoginTypeEnum;
 import com.achobeta.domain.login.model.entity.LoginUser;
 import com.achobeta.domain.login.model.vo.LoginVO;
 
@@ -22,7 +22,7 @@ public interface LoginService {
     /**
      * 登录校验
      */
-    void checkLogin(LoginType loginType, String username, Supplier<Boolean> supplier);
+    void checkLogin(LoginTypeEnum loginTypeEnum, String username, Supplier<Boolean> supplier);
 
     /**
      * 退出登录

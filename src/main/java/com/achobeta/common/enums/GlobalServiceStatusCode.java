@@ -49,7 +49,6 @@ public enum GlobalServiceStatusCode {
 
     EMAIL_NOT_EXIST_RECORD(3101, "邮箱不存在记录"),
     EMAIL_CAPTCHA_CODE_COUNT_EXHAUST(3103, "申请次数达到上限"),
-//    EMAIL_CODE_NOT_CONSISTENT(3102, "邮箱验证码不一致"),
 
     /* -------------- */;
 
