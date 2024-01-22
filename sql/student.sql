@@ -1,24 +1,4 @@
 /*
- Navicat Premium Data Transfer
-
- Source Server         : 本机
- Source Server Type    : MySQL
- Source Server Version : 80026
- Source Host           : localhost:3306
- Source Schema         : achobeta_recruitment
-
- Target Server Type    : MySQL
- Target Server Version : 80026
- File Encoding         : 65001
-
- Date: 17/01/2024 13:44:06
-*/
-
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
-
--- ----------------------------
--- Table structure for student
 -- 简历状态comment说明
 -- 范围：0~14，简历状态{
 # - 0-草稿
@@ -36,6 +16,13 @@ SET FOREIGN_KEY_CHECKS = 0;
 # - 12-终试通过（仅当复试为最后一个流程时显示）
 # - 13-待处理（反馈异常/或管理员主动设置为该状态）
 # - 14-挂起（管理员可以主动设置该状态）}
+*/
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for student
 -- ----------------------------
 DROP TABLE IF EXISTS `student`;
 CREATE TABLE `student`  (
@@ -68,6 +55,6 @@ CREATE TABLE `student`  (
   INDEX `idx_class`(`class` ASC) USING BTREE,
   INDEX `idx_major`(`major` ASC) USING BTREE,
   INDEX `idx_name`(`name` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_bin COMMENT = '学生用户简历表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_bin COMMENT = '学生用户简历表' ROW_FORMAT = DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;

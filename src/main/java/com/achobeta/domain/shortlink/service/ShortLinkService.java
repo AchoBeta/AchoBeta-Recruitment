@@ -1,6 +1,7 @@
 package com.achobeta.domain.shortlink.service;
 
-import com.achobeta.domain.shortlink.po.ShortLink;
+
+import com.achobeta.domain.shortlink.model.dao.po.ShortLink;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

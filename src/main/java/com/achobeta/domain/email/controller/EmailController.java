@@ -1,8 +1,13 @@
 package com.achobeta.domain.email.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.common.constants.LoginType;
 import com.achobeta.domain.email.service.EmailService;
 import com.achobeta.domain.email.util.IdentifyingCodeValidator;
+import com.achobeta.domain.users.jwt.propertities.JwtProperties;
+import com.achobeta.domain.users.model.vo.LoginVO;
+import com.achobeta.domain.users.service.StudentService;
+import com.achobeta.domain.users.service.login.LoginLauncher;
 import jakarta.validation.constraints.Email;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 @RequestMapping("/api/v1/email")
 public class EmailController {
-
+    private final LoginLauncher loginLauncher;
     private final EmailService emailService;
 
     /**
@@ -42,7 +47,10 @@ public class EmailController {
         emailService.checkIdentifyingCode(email, code);
         // 成功
         log.info("email:{}, 验证码:{} 验证成功", email, code);
-        return SystemJsonResponse.SYSTEM_SUCCESS();
+        /*LoginVO loginVO =studentService.login(email);*/
+        LoginVO loginVO = loginLauncher.login(LoginType.LOGINBYEMAIL, email);
+        log.info("token:{},生成token成功",loginVO.getAccessToken());
+        return SystemJsonResponse.SYSTEM_SUCCESS(loginVO);
     }
 
 }

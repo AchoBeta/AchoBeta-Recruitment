@@ -9,9 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date 2024/1/11 15:25
  */
 @SpringBootApplication
-@MapperScan({"com.achobeta.domain.shortlink.mapper"})
+@MapperScan({"com.achobeta.domain.*.model.dao.mapper"})
 public class AchobetaRecruitmentApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(AchobetaRecruitmentApplication.class, args);
     }

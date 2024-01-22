@@ -1,6 +1,6 @@
-package com.achobeta.domain.shortlink.po;
+package com.achobeta.domain.shortlink.model.dao.po;
 
-import com.achobeta.domain.users.model.dao.BaseIncrIDEntity;
+import com.achobeta.common.base.BaseIncrIDEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
