@@ -87,8 +87,6 @@ public class EmailLoginStrategy implements LoginStrategy {
             user = new UserEntity();
             user.setUsername(email);
             user.setEmail(email);
-            // 生成 32 位 uuid 防重
-            user.setUuid((UUID.randomUUID().toString().replace("-", "")).substring(0, 32));
             userMapper.insert(user);
             log.info("用户 email: '{}' 新建完成", email);
         }
