@@ -4,14 +4,11 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.login.model.dto.LoginDTO;
-import com.achobeta.domain.login.model.dto.RegisterDTO;
 import com.achobeta.domain.login.model.vo.LoginVO;
-import com.achobeta.domain.login.service.LoginService;
 import com.achobeta.domain.login.service.strategy.LoginStrategy;
 import com.achobeta.util.ValidatorUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,19 +26,16 @@ import java.util.Map;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
-    private LoginService loginService;
-
     /**
      * # curl -X POST -H "Content-Type: application/json" -d '{"loginType": "email", "email": "sharksharkchen@qq.com", "emailCode": "433693"}' http://localhost:8080/api/v1/auth/login
      * POST http://localhost:8080/api/v1/auth/login
      * Content-Type: application/json
-     * <p>
-     * {
-     * "loginType": "email",
-     * "email": "sharksharkchen@qq.com",
-     * "emailCode": "294283"
-     * }
      *
+     * {
+     *   "loginType": "email",
+     *   "email": "sharksharkchen@qq.com",
+     *   "emailCode": "294283"
+     * }
      * @param body
      * @return
      */
@@ -55,11 +49,4 @@ public class AuthController {
 
         return SystemJsonResponse.SYSTEM_SUCCESS(loginVO);
     }
-
-    @PostMapping("register")
-    public SystemJsonResponse register(@Validated @RequestBody RegisterDTO user) {
-        loginService.register(user);
-        return SystemJsonResponse.SYSTEM_SUCCESS();
-    }
-
 }

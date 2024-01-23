@@ -26,4 +26,24 @@ public class LoginDTO implements Serializable {
     @NotBlank(message = "登录方式不能为空")
     private String loginType;
 
+    /**
+     * 用户唯一标识 (uid + uuid)
+     */
+    private String openid;
+
+    /**
+     * 邮箱登录
+     */
+    private EmailLoginDTO emailParams;
+
+    /**
+     * 密码登录
+     */
+    private PasswordLoginDTO passwordParams;
+
+    /**
+     * 短信登录
+     */
+    private SmsLoginDTO smsParams;
+
 }

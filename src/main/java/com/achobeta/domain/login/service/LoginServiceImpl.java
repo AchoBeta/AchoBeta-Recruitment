@@ -1,11 +1,7 @@
 package com.achobeta.domain.login.service;
 
-import cn.hutool.crypto.digest.BCrypt;
 import com.achobeta.common.enums.LoginTypeEnum;
 import com.achobeta.common.enums.UserTypeEnum;
-import com.achobeta.domain.login.model.dao.UserEntity;
-import com.achobeta.domain.login.model.dao.mapper.UserMapper;
-import com.achobeta.domain.login.model.dto.RegisterDTO;
 import com.achobeta.domain.login.model.entity.LoginUser;
 import com.achobeta.domain.login.model.vo.LoginVO;
 import com.achobeta.exception.GlobalServiceException;
@@ -13,7 +9,6 @@ import com.achobeta.interpretor.UserInterpretor;
 import com.achobeta.jwt.propertities.JwtProperties;
 import com.achobeta.jwt.util.JwtUtil;
 import com.achobeta.redis.RedisCache;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,8 +20,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.achobeta.common.constants.RedisConstants.LOGIN_FAIL_CNT_KEY;
-import static com.achobeta.common.enums.GlobalServiceStatusCode.USER_ACCOUNT_ALREADY_EXIST;
-import static com.achobeta.common.enums.GlobalServiceStatusCode.USER_ACCOUNT_REGISTER_ERROR;
 
 /**
  * @author BanTanger 半糖
@@ -44,40 +37,11 @@ public class LoginServiceImpl implements LoginService {
     private Integer lockTime;
 
     private final RedisCache redisCache;
-    private final UserMapper userMapper;
     private final JwtProperties jwtProperties;
 
     @Override
-    public void register(RegisterDTO registerBody) {
-        String username = registerBody.getUsername();
+    public void register() {
 
-        // TODO 验证码校验
-
-        // 校验数据库中是否存在
-        boolean exists = userMapper.exists(new LambdaQueryWrapper<UserEntity>()
-                .eq(UserEntity::getUsername, username));
-
-        if (exists) {
-            String message = String.format("账号名称:'%s'已存在", username);
-            throw new GlobalServiceException(message, USER_ACCOUNT_ALREADY_EXIST);
-        }
-
-        // 注册
-        boolean regFlag = registerUser(registerBody);
-        if (!regFlag) {
-            String message = String.format("账号名称:'%s'注册异常, 数据库插入数据失败", username);
-            throw new GlobalServiceException(message, USER_ACCOUNT_REGISTER_ERROR);
-        }
-        log.info("账号名称:'{}'注册成功!", username);
-    }
-
-    private boolean registerUser(RegisterDTO registerBody) {
-        UserEntity user = new UserEntity();
-        user.setUsername(registerBody.getUsername());
-        user.setNickname(registerBody.getUsername());
-        user.setPassword(BCrypt.hashpw(registerBody.getPassword()));
-
-        return userMapper.insert(user) > 0;
     }
 
     @Override

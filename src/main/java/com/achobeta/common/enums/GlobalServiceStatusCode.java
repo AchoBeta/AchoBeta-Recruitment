@@ -39,7 +39,6 @@ public enum GlobalServiceStatusCode {
     USER_ACCOUNT_NOT_EXIST(2007, "账号不存在"),
     USER_ACCOUNT_ALREADY_EXIST(2008, "账号已存在"),
     USER_ACCOUNT_USE_BY_OTHERS(2009, "账号下线"),
-    USER_ACCOUNT_REGISTER_ERROR(2010, "账号注册错误"),
 
     USER_NO_PERMISSION(2403, "用户无权限"),
     USER_CAPTCHA_CODE_ERROR(2500, "验证码错误"),

@@ -1,6 +1,5 @@
 package com.achobeta.domain.login.model.entity;
 
-import com.achobeta.common.enums.UserTypeEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,9 +31,5 @@ public class LoginUser implements Serializable {
      * 用户唯一标识
      */
     private String openid;
-
-    public boolean isAdmin() {
-        return UserTypeEnum.ADMIN.getCode().equals(this.userType);
-    }
 
 }
