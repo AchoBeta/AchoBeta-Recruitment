@@ -73,7 +73,7 @@ public class AuthController {
      * @param user
      * @return
      */
-    @PostMapping("register")
+    @PostMapping("/register")
     public SystemJsonResponse register(@Validated @RequestBody RegisterDTO user) {
         loginService.register(user);
         return SystemJsonResponse.SYSTEM_SUCCESS();
