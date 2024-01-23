@@ -1,7 +1,5 @@
 package com.achobeta.domain.login.controller;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.extra.spring.SpringUtil;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.login.model.dto.LoginDTO;
@@ -19,8 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 import static com.achobeta.domain.login.service.strategy.LoginStrategy.BASE_NAME;
 
