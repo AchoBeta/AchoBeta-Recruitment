@@ -17,9 +17,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtUtil {
-    private final JwtProperties jwtProperties;
-    //过期时间小于该值就刷新token
-    private static final long REFRESHTIME = 1000 * 60 * 20;
+
+    /**
+     * 过期时间小于该值就刷新token
+     */
+    private static final long REFRESH_TIME = 1000 * 60 * 20;
 
     /**
      * 生成jwt
@@ -67,13 +69,14 @@ public class JwtUtil {
                     // 设置需要解析的jwt
                     .parseClaimsJws(token).getBody();
         } catch (JwtException e) {
-            log.error("无效的token->{}", token);
-            throw new GlobalServiceException("无效的token格式", GlobalServiceStatusCode.USER_ACCOUNT_USE_BY_OTHERS);
+            String message = String.format("无效的token:'%s'", token);
+            throw new GlobalServiceException(message, GlobalServiceStatusCode.USER_ACCOUNT_USE_BY_OTHERS);
         }
         return claims;
     }
 
     public static Date getTokenExperition(@NotNull SecretKey secretKey, @NotNull String token) {
+        // TODO 可能会成为性能瓶颈
         Claims claims = parseJWT(secretKey, token);
         //返回该token的过期时间
         return claims.getExpiration();
@@ -91,6 +94,6 @@ public class JwtUtil {
     public static boolean judgeApproachExpiration(@NotNull String token, @NotNull SecretKey secretKey) {
         long cur = System.currentTimeMillis();
         long exp = getTokenExperition(secretKey, token).getTime();
-        return (exp - cur) < REFRESHTIME;
+        return (exp - cur) < REFRESH_TIME;
     }
 }

@@ -1,7 +1,7 @@
 package com.achobeta.domain.email.service.impl;
 
-import com.achobeta.domain.email.component.EmailSender;
-import com.achobeta.domain.email.component.po.EmailMessage;
+import com.achobeta.domain.email.service.EmailSender;
+import com.achobeta.domain.email.model.po.EmailMessage;
 import com.achobeta.domain.email.model.vo.VerificationCodeTemplate;
 import com.achobeta.domain.email.service.EmailService;
 import com.achobeta.exception.GlobalServiceException;

@@ -14,8 +14,8 @@ public class JwtProperties {
     /**
      * 用户端用户生成jwt令牌相关配置
      */
-    private String userSecretKey;
-    private long userTtl;
-    private String userTokenName;
+    private String secretKey;
+    private long ttl;
+    private String tokenName;
 
 }

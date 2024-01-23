@@ -1,4 +1,4 @@
-package com.achobeta.domain.email.component.po;
+package com.achobeta.domain.email.model.po;
 
 import lombok.Data;
 import lombok.NonNull;
