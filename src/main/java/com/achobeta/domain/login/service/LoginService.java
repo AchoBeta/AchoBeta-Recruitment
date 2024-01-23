@@ -1,6 +1,7 @@
 package com.achobeta.domain.login.service;
 
 import com.achobeta.common.enums.LoginTypeEnum;
+import com.achobeta.domain.login.model.dto.RegisterDTO;
 import com.achobeta.domain.login.model.entity.LoginUser;
 import com.achobeta.domain.login.model.vo.LoginVO;
 
@@ -15,7 +16,7 @@ public interface LoginService {
     /**
      * 注册
      */
-    void register();
+    void register(RegisterDTO registerBody);
 
     LoginVO login(LoginUser loginUser);
 

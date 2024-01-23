@@ -26,8 +26,9 @@ public class RegisterDTO extends LoginDTO{
     private String password;
 
     /**
-     * 用户类型
+     * 用户类型（已废弃，不对外开放，防止恶意注册管理员账号，管理员账号采用人工手动注册）
      */
+    @Deprecated
     private String userType;
 
 }
