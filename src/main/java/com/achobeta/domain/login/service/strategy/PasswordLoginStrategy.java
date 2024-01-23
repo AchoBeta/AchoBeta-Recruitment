@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 import static com.achobeta.common.enums.GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL;
 import static com.achobeta.common.enums.GlobalServiceStatusCode.USER_ACCOUNT_NOT_EXIST;
 import static com.achobeta.domain.login.service.strategy.LoginStrategy.BASE_NAME;
@@ -72,10 +74,10 @@ public class PasswordLoginStrategy implements LoginStrategy {
         UserEntity user = userMapper.selectOne(new LambdaQueryWrapper<UserEntity>()
                 .eq(UserEntity::getUsername, username));
 
-        if (ObjectUtil.isNull(user) || ObjectUtil.isEmpty(user.getUsername())) {
+        Optional.ofNullable(user).filter(u -> u.getUsername() != null).orElseThrow(() -> {
             String message = String.format("登录用户:'%s'不存在", username);
-            throw new GlobalServiceException(message, USER_ACCOUNT_NOT_EXIST);
-        }
+            return new GlobalServiceException(message, USER_ACCOUNT_NOT_EXIST);
+        });
         return user;
     }
 
