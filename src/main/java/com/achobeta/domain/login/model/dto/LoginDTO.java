@@ -3,6 +3,7 @@ package com.achobeta.domain.login.model.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
+@ToString
 public class LoginDTO implements Serializable {
 
     @Serial
@@ -28,5 +30,20 @@ public class LoginDTO implements Serializable {
      * 用户唯一标识 (uid + uuid)
      */
     private String openid;
+
+    /**
+     * 邮箱登录
+     */
+    private EmailLoginDTO emailParams;
+
+    /**
+     * 密码登录
+     */
+    private PasswordLoginDTO passwordParams;
+
+    /**
+     * 短信登录
+     */
+    private SmsLoginDTO smsParams;
 
 }

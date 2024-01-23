@@ -37,11 +37,11 @@ public class AuthController {
      * @return
      */
     @PostMapping("/login")
-    public SystemJsonResponse login(@RequestBody String body) {
-        LoginDTO loginBody = JSON.parseObject(body, LoginDTO.class);
-        ValidatorUtils.validate(loginBody);
+    public SystemJsonResponse login(@RequestBody LoginDTO body) {
+//        LoginDTO loginBody = JSON.parseObject(body, LoginDTO.class);
+        ValidatorUtils.validate(body);
 
-        String loginType = loginBody.getLoginType();
+        String loginType = body.getLoginType();
         LoginVO loginVO = LoginStrategy.doLogin(body, loginType);
 
         return SystemJsonResponse.SYSTEM_SUCCESS(loginVO);

@@ -5,6 +5,7 @@ import com.achobeta.common.enums.LoginTypeEnum;
 import com.achobeta.domain.login.model.dao.UserEntity;
 import com.achobeta.domain.login.model.dao.mapper.UserMapper;
 import com.achobeta.domain.login.model.dto.EmailLoginDTO;
+import com.achobeta.domain.login.model.dto.LoginDTO;
 import com.achobeta.domain.login.model.entity.LoginUser;
 import com.achobeta.domain.login.service.LoginService;
 import com.achobeta.domain.login.model.vo.LoginVO;
@@ -37,14 +38,12 @@ public class EmailLoginStrategy implements LoginStrategy {
     private final LoginService loginService;
 
     @Override
-    public LoginVO doLogin(String body) {
-        EmailLoginDTO loginBody = JSONObject.parseObject(body, EmailLoginDTO.class);
-        ValidatorUtils.validate(loginBody);
+    public LoginVO doLogin(LoginDTO loginBody) {
+        EmailLoginDTO emailLoginBody = loginBody.getEmailParams();
+        ValidatorUtils.validate(emailLoginBody);
 
-        String email = loginBody.getEmail();
-        String emailCode = loginBody.getEmailCode();
-
-        log.info("测试");
+        String email = emailLoginBody.getEmail();
+        String emailCode = emailLoginBody.getEmailCode();
 
         // 通过邮箱查找用户
         UserEntity user = findOrCreateUserByEmail(email);

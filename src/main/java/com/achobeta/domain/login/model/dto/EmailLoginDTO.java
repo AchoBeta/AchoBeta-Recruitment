@@ -4,6 +4,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * @author BanTanger 半糖
@@ -11,7 +15,11 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class EmailLoginDTO extends LoginDTO {
+@ToString
+public class EmailLoginDTO implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * 邮箱地址

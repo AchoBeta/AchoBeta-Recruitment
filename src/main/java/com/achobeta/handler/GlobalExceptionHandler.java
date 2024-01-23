@@ -41,8 +41,10 @@ public class GlobalExceptionHandler {
      * 自定义验证异常
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public SystemJsonResponse constraintViolationException(ConstraintViolationException e) {
-        log.error("自定义验证异常'{}'", e.getMessage());
+    public SystemJsonResponse constraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+
+        log.error("请求地址'{}', 自定义验证异常'{}'", requestURI, e.getMessage());
         String message = e.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
                 .filter(Objects::nonNull)

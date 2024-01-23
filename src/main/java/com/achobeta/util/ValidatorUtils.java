@@ -14,7 +14,8 @@ public class ValidatorUtils {
 	public static <T> void validate(T object, Class<?>... groups) {
 		Set<ConstraintViolation<T>> validate = validator.validate(object, groups);
 		if (!validate.isEmpty()) {
-			throw new ConstraintViolationException("参数校验异常", validate);
+			String message = String.format("请求对象:'%s'", object.toString());
+			throw new ConstraintViolationException(message, validate);
 		}
 	}
 
