@@ -1,23 +1,23 @@
 package com.achobeta.domain.login.service.strategy;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.LoginTypeEnum;
 import com.achobeta.domain.login.model.dao.UserEntity;
 import com.achobeta.domain.login.model.dao.mapper.UserMapper;
 import com.achobeta.domain.login.model.dto.EmailLoginDTO;
-import com.achobeta.domain.login.model.dto.LoginDTO;
 import com.achobeta.domain.login.model.entity.LoginUser;
-import com.achobeta.domain.login.service.LoginService;
 import com.achobeta.domain.login.model.vo.LoginVO;
+import com.achobeta.domain.login.service.LoginService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.RedisCache;
 import com.achobeta.util.ValidatorUtils;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,12 +38,12 @@ public class EmailLoginStrategy implements LoginStrategy {
     private final LoginService loginService;
 
     @Override
-    public LoginVO doLogin(LoginDTO loginBody) {
-        EmailLoginDTO emailLoginBody = loginBody.getEmailParams();
-        ValidatorUtils.validate(emailLoginBody);
+    public LoginVO doLogin(Map<String, Object> body) {
+        EmailLoginDTO loginBody = BeanUtil.mapToBean(body, EmailLoginDTO.class, false);
+        ValidatorUtils.validate(loginBody);
 
-        String email = emailLoginBody.getEmail();
-        String emailCode = emailLoginBody.getEmailCode();
+        String email = loginBody.getEmail();
+        String emailCode = loginBody.getEmailCode();
 
         // 通过邮箱查找用户
         UserEntity user = findOrCreateUserByEmail(email);

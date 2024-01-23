@@ -1,17 +1,20 @@
 package com.achobeta.domain.login.controller;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.login.model.dto.LoginDTO;
-import com.achobeta.domain.login.service.strategy.LoginStrategy;
 import com.achobeta.domain.login.model.vo.LoginVO;
+import com.achobeta.domain.login.service.strategy.LoginStrategy;
 import com.achobeta.util.ValidatorUtils;
-import com.alibaba.fastjson.JSON;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 /**
  * @author BanTanger 半糖
@@ -37,11 +40,11 @@ public class AuthController {
      * @return
      */
     @PostMapping("/login")
-    public SystemJsonResponse login(@RequestBody LoginDTO body) {
-//        LoginDTO loginBody = JSON.parseObject(body, LoginDTO.class);
-        ValidatorUtils.validate(body);
+    public SystemJsonResponse login(@RequestBody Map<String, Object> body) {
+        LoginDTO loginBody = BeanUtil.mapToBean(body, LoginDTO.class, false, new CopyOptions());
+        ValidatorUtils.validate(loginBody);
 
-        String loginType = body.getLoginType();
+        String loginType = loginBody.getLoginType();
         LoginVO loginVO = LoginStrategy.doLogin(body, loginType);
 
         return SystemJsonResponse.SYSTEM_SUCCESS(loginVO);
