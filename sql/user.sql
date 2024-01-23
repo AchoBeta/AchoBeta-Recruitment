@@ -9,19 +9,18 @@ CREATE TABLE `user`
 (
     `id`           bigint(20)   NOT NULL AUTO_INCREMENT COMMENT '用户唯一ID',
     `username`     varchar(10)  NOT NULL DEFAULT '' COMMENT '用户名',
+    `nickname`     varchar(10)  NOT NULL DEFAULT '' COMMENT '用户昵称',
     `email`        varchar(50)  NOT NULL DEFAULT '' COMMENT '邮箱',
     `phone_number` varchar(11)  NOT NULL DEFAULT '' COMMENT '手机号码',
-    `password`     varchar(100) NOT NULL DEFAULT '' COMMENT '密码',
+    `password`     varchar(16) NOT NULL DEFAULT '' COMMENT '密码',
     `user_type`    int          NOT NULL DEFAULT 1 COMMENT '用户类型：1.普通用户 2. 管理员',
     `avatar`       bigint(20) COMMENT '头像地址',
-    `uuid`         varchar(64)  NOT NULL DEFAULT '' COMMENT '防重 id, 结合 uid ',
     `create_time`  datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`  datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     `version`      int          NOT NULL DEFAULT 0 COMMENT '乐观锁',
     `is_deleted`   tinyint      NOT NULL DEFAULT 0 COMMENT '伪删除标记',
     PRIMARY KEY (`id`),
     UNIQUE INDEX `uni_email` (`email`),
-    UNIQUE INDEX `uni_uuid` (`uuid`),
     UNIQUE INDEX `uni_phone` (`phone_number`),
     UNIQUE INDEX `uni_name` (`username`)
 ) ENGINE = InnoDB

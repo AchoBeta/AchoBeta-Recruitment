@@ -20,6 +20,10 @@ public class UserEntity extends BaseIncrIDEntity {
      */
     private String username;
     /**
+     * 用户昵称
+     */
+    private String nickname;
+    /**
      * 邮箱
      */
     private String email;
@@ -35,13 +39,5 @@ public class UserEntity extends BaseIncrIDEntity {
      * 用户类型
      */
     private int userType;
-    /**
-     * 唯一标识
-     */
-    private String uuid;
-
-    public boolean isAdmin() {
-        return UserTypeEnum.ADMIN.getCode().equals(this.userType);
-    }
 
 }
