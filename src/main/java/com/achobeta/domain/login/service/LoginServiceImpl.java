@@ -48,7 +48,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public LoginVO login(LoginUser loginUser) {
         HashMap<String, Object> claims = new HashMap<>();
-        SecretKey secretKey = JwtUtil.generalKey(jwtProperties.getUserSecretKey());
+        SecretKey secretKey = JwtUtil.generalKey(jwtProperties.getSecretKey());
 
         //将id存入claims
         if (Optional.ofNullable(loginUser.getUserId()).isPresent()) {
@@ -56,11 +56,11 @@ public class LoginServiceImpl implements LoginService {
             claims.put(UserTypeEnum.USER.getName(), loginUser.getUsername());
         }
 
-        String token = JwtUtil.createJWT(secretKey, jwtProperties.getUserTtl(), claims);
+        String token = JwtUtil.createJWT(secretKey, jwtProperties.getTtl(), claims);
         return LoginVO.builder()
                 .openid(loginUser.getOpenid())
                 .accessToken(token)
-                .expiresIn(jwtProperties.getUserTtl())
+                .expiresIn(jwtProperties.getTtl())
                 .build();
     }
 
