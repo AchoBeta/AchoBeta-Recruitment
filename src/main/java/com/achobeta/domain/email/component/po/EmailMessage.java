@@ -12,7 +12,6 @@ import java.util.Date;
 @Data
 public class EmailMessage implements Serializable {
 
-
     private String sender;
 
     String[] recipient;

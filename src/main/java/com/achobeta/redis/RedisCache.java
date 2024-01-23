@@ -3,7 +3,11 @@ package com.achobeta.redis;
 import com.achobeta.redis.component.RedisBloomFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -73,11 +77,11 @@ public class RedisCache {
      *
      * @param key    缓存的键值
      * @param value  缓存的值
-     * @param timout 超时时间
+     * @param timeout 超时时间
      */
-    public <T> void setCacheObject(final String key, final T value, final long timout) {
-        log.info("存入 Redis\t[{}]-[{}]，超时时间:[{}s]", key, value, TimeUnit.MILLISECONDS.toSeconds(timout));
-        redisTemplate.opsForValue().set(key, value, timout, TimeUnit.MILLISECONDS);
+    public <T> void setCacheObject(final String key, final T value, final long timeout) {
+        log.info("存入 Redis\t[{}]-[{}]，超时时间:[{}s]", key, value, TimeUnit.MILLISECONDS.toSeconds(timeout));
+        redisTemplate.opsForValue().set(key, value, timeout, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -237,6 +241,25 @@ public class RedisCache {
     public boolean deleteObject(final String key) {
         log.info("删除 Redis 的键值\tkey[{}]", key);
         return redisTemplate.delete(key);
+    }
+
+    /**
+     * 原子设置过期时间
+     * @param key
+     * @param value
+     * @param timeout
+     */
+    public <T> void execute(final String key, final T value, final long timeout) {
+        log.info("尝试存入 Redis\t[{}]-[{}]，超时时间:[{}s]", key, value, TimeUnit.MILLISECONDS.toSeconds(timeout));
+        redisTemplate.execute(new SessionCallback<>() {
+            @Override
+            public <K, V> Object execute(RedisOperations<K, V> operations) throws DataAccessException {
+                operations.multi();
+                operations.opsForValue().set((K) key, (V) value);
+                operations.expire((K) key, timeout, TimeUnit.MILLISECONDS);
+                return operations.exec();
+            }
+        });
     }
 
 }

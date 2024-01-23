@@ -53,6 +53,7 @@ public class EmailLoginStrategy implements LoginStrategy {
         loginService.checkLogin(LoginTypeEnum.EMAIL, user.getUsername(),
                 () -> !validateEmailCode(email, emailCode));
 
+        // TODO
 //        // 自定义分配，不同用户有不同 token 授权时间，不设置默认走全局
 //        LoginModel loginModel = new LoginModel();
 //        loginModel.setTimeout();
@@ -79,7 +80,7 @@ public class EmailLoginStrategy implements LoginStrategy {
         if (null == user) {
             // 不存在邮箱走注册逻辑
             user = new UserEntity();
-            user.setUsername("bantanger");
+            user.setUsername(email);
             user.setEmail(email);
             // 生成 32 位 uuid 防重
             user.setUuid((UUID.randomUUID().toString().replace("-", "")).substring(0, 32));

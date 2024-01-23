@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import static com.achobeta.common.constants.RedisConstants.LOGIN_FAIL_CNT_KEY;
+
 /**
  * @author BanTanger 半糖
  * @date 2024/1/22 16:39
@@ -66,11 +68,10 @@ public class LoginServiceImpl implements LoginService {
     public void checkLogin(LoginTypeEnum loginTypeEnum, String username, Supplier<Boolean> supplier) {
         // 登录错误统一处理
         // 设置失败 key 为 key + username，限制，也可以是 key + username + ip 自定义限制
-        String failKey = RedisConstants.LOGIN_FAIL_CNT_KEY + username;
+        String failKey = LOGIN_FAIL_CNT_KEY + username;
 
         // 获取用户登录失败次数
-        Optional<Integer> failCountOptional = redisCache.getCacheObject(failKey);
-        int failCount = failCountOptional.orElse(0);
+        int failCount = (int) redisCache.getCacheObject(failKey).orElse(0);
 
         // 锁定时间禁止登录
         if (failCount >= maxRetryCount) {

@@ -6,6 +6,7 @@ import com.achobeta.domain.email.component.po.EmailMessage;
 import com.achobeta.exception.GlobalServiceException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
@@ -20,8 +21,8 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Function;
 
-@Component
 @Slf4j
+@Component
 @RequiredArgsConstructor
 public class EmailSender {
 
@@ -29,7 +30,7 @@ public class EmailSender {
 
     private final TemplateEngine templateEngine;
 
-    public SimpleMailMessage emailToSimpleMailMessage(EmailMessage emailMessage) {
+    public SimpleMailMessage emailToSimpleMailMessage(@NonNull EmailMessage emailMessage) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom(emailMessage.getSender());
         simpleMailMessage.setTo(emailMessage.getRecipient());
@@ -39,7 +40,7 @@ public class EmailSender {
         return simpleMailMessage;
     }
 
-    public MimeMessageHelper emailIntoMimeMessageByHelper(MimeMessage mimeMessage, EmailMessage emailMessage) {
+    public MimeMessageHelper emailIntoMimeMessageByHelper(MimeMessage mimeMessage, @NonNull EmailMessage emailMessage) {
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             mimeMessageHelper.setFrom(emailMessage.getSender());
@@ -52,20 +53,14 @@ public class EmailSender {
         }
     }
 
-    public void sendSimpleMailMessage(EmailMessage emailMessage) {
-        if (Objects.isNull(emailMessage)) {
-            throw new GlobalServiceException("email不能为空", GlobalServiceStatusCode.PARAM_IS_BLANK);
-        }
+    public void sendSimpleMailMessage(@NonNull EmailMessage emailMessage) {
         // 封装simpleMailMessage对象
         SimpleMailMessage simpleMailMessage = emailToSimpleMailMessage(emailMessage);
         // 发送
         javaMailSender.send(simpleMailMessage);
     }
 
-    public void sendMailWithFile(EmailMessage emailMessage, File... files) {
-        if (Objects.isNull(emailMessage)) {
-            throw new GlobalServiceException("email不能为空", GlobalServiceStatusCode.PARAM_IS_BLANK);
-        }
+    public void sendMailWithFile(@NonNull EmailMessage emailMessage, File... files) {
         // 封装对象
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -83,10 +78,7 @@ public class EmailSender {
         }
     }
 
-    public void sendModelMail(EmailMessage emailMessage, String template, Object modelMessage) {
-        if (Objects.isNull(emailMessage)) {
-            throw new GlobalServiceException("email不能为空", GlobalServiceStatusCode.PARAM_IS_BLANK);
-        }
+    public void sendModelMail(@NonNull EmailMessage emailMessage, String template, Object modelMessage) {
         // 封装对象
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -103,10 +95,7 @@ public class EmailSender {
         }
     }
 
-    public void sendModelMailWithFile(EmailMessage emailMessage, String template, Object modelMessage, File... files) {
-        if (Objects.isNull(emailMessage)) {
-            throw new GlobalServiceException("email不能为空", GlobalServiceStatusCode.PARAM_IS_BLANK);
-        }
+    public void sendModelMailWithFile(@NonNull EmailMessage emailMessage, String template, Object modelMessage, File... files) {
         // 封装对象
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -129,10 +118,7 @@ public class EmailSender {
         }
     }
 
-    public <T, R> void customizedSendEmail(EmailMessage emailMessage, String template, Function<T, R> function, File... files) {
-        if (Objects.isNull(emailMessage)) {
-            throw new GlobalServiceException("email不能为空", GlobalServiceStatusCode.PARAM_IS_BLANK);
-        }
+    public <T, R> void customizedSendEmail(@NonNull EmailMessage emailMessage, String template, Function<T, R> function, File... files) {
         String sender = emailMessage.getSender();
         String[] carbonCopy = emailMessage.getCarbonCopy();
         String title = emailMessage.getTitle();
