@@ -3,6 +3,7 @@ package com.achobeta.domain.login.model.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author BanTanger 半糖
@@ -10,6 +11,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 public class SmsLoginDTO extends LoginDTO {
 
     /**

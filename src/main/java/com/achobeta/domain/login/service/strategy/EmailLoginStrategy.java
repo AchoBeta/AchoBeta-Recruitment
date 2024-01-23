@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 import static com.achobeta.common.constants.RedisConstants.CAPTCHA_CODES_KEY;
 import static com.achobeta.common.constants.RedisConstants.CAPTCHA_CODE_KEY;
@@ -70,10 +69,8 @@ public class EmailLoginStrategy implements LoginStrategy {
      */
     private LoginUser buildLoginUser(UserEntity user) {
         LoginUser loginUser = new LoginUser();
-        loginUser.setUserId(user.getId() + user.getUuid());
         loginUser.setUsername(user.getUsername());
         loginUser.setUserType(user.getUserType());
-        loginUser.setOpenid(user.getId() + user.getUuid());
         return loginUser;
     }
 

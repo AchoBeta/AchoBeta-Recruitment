@@ -29,7 +29,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
-    private LoginService loginService;
+    private final LoginService loginService;
 
     /**
      * # curl -X POST -H "Content-Type: application/json" -d '{"loginType": "email", "email": "sharksharkchen@qq.com", "emailCode": "433693"}' http://localhost:8080/api/v1/auth/login

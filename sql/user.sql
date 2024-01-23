@@ -12,7 +12,7 @@ CREATE TABLE `user`
     `nickname`     varchar(10)  NOT NULL DEFAULT '' COMMENT '用户昵称',
     `email`        varchar(50)  NOT NULL DEFAULT '' COMMENT '邮箱',
     `phone_number` varchar(11)  NOT NULL DEFAULT '' COMMENT '手机号码',
-    `password`     varchar(16) NOT NULL DEFAULT '' COMMENT '密码',
+    `password`     varchar(100) NOT NULL DEFAULT '' COMMENT '密码',
     `user_type`    int          NOT NULL DEFAULT 1 COMMENT '用户类型：1.普通用户 2. 管理员',
     `avatar`       bigint(20) COMMENT '头像地址',
     `create_time`  datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
