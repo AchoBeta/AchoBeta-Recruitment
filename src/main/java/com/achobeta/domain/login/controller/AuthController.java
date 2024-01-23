@@ -2,15 +2,18 @@ package com.achobeta.domain.login.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.extra.spring.SpringUtil;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.login.model.dto.LoginDTO;
 import com.achobeta.domain.login.model.dto.RegisterDTO;
 import com.achobeta.domain.login.model.vo.LoginVO;
 import com.achobeta.domain.login.service.LoginService;
 import com.achobeta.domain.login.service.strategy.LoginStrategy;
+import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.util.ValidatorUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
+
+import static com.achobeta.domain.login.service.strategy.LoginStrategy.BASE_NAME;
 
 /**
  * @author BanTanger 半糖
@@ -42,20 +47,36 @@ public class AuthController {
      * "emailCode": "294283"
      * }
      *
-     * @param body
+     * @param loginBody
      * @return
      */
     @PostMapping("/login")
-    public SystemJsonResponse login(@RequestBody Map<String, Object> body) {
-        LoginDTO loginBody = BeanUtil.mapToBean(body, LoginDTO.class, false, new CopyOptions());
+    public SystemJsonResponse login(@RequestBody LoginDTO loginBody) {
         ValidatorUtils.validate(loginBody);
 
-        String loginType = loginBody.getLoginType();
-        LoginVO loginVO = LoginStrategy.doLogin(body, loginType);
+        String beanName = loginBody.getLoginType() + BASE_NAME;
+        ListableBeanFactory beanFactory = SpringUtil.getBeanFactory();
+        if (!beanFactory.containsBean(beanName)) {
+            throw new GlobalServiceException(String.format("ioc 容器未找到 bean:'%s'", beanName));
+        }
+        LoginStrategy instance = (LoginStrategy) beanFactory.getBean(beanName);
+        LoginVO loginVO = instance.doLogin(loginBody);
 
         return SystemJsonResponse.SYSTEM_SUCCESS(loginVO);
     }
 
+    /**
+     * ###
+     * POST http://localhost:8080/api/v1/auth/register
+     * Content-Type: application/json
+     *
+     * {
+     *   "username": "1290288968",
+     *   "password": "123456"
+     * }
+     * @param user
+     * @return
+     */
     @PostMapping("register")
     public SystemJsonResponse register(@Validated @RequestBody RegisterDTO user) {
         loginService.register(user);

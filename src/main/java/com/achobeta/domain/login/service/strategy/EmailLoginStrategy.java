@@ -1,13 +1,12 @@
 package com.achobeta.domain.login.service.strategy;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.ObjectUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.LoginTypeEnum;
 import com.achobeta.domain.login.model.dao.UserEntity;
 import com.achobeta.domain.login.model.dao.mapper.UserMapper;
 import com.achobeta.domain.login.model.dto.EmailLoginDTO;
+import com.achobeta.domain.login.model.dto.LoginDTO;
 import com.achobeta.domain.login.model.entity.LoginUser;
 import com.achobeta.domain.login.model.vo.LoginVO;
 import com.achobeta.domain.login.service.LoginService;
@@ -19,11 +18,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.Optional;
 
 import static com.achobeta.common.constants.RedisConstants.CAPTCHA_CODES_KEY;
 import static com.achobeta.common.constants.RedisConstants.CAPTCHA_CODE_KEY;
+import static com.achobeta.common.enums.GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL;
 
 /**
  * @author BanTanger 半糖
@@ -39,8 +38,12 @@ public class EmailLoginStrategy implements LoginStrategy {
     private final LoginService loginService;
 
     @Override
-    public LoginVO doLogin(Map<String, Object> body) {
-        EmailLoginDTO loginBody = BeanUtil.mapToBean(body, EmailLoginDTO.class, false, new CopyOptions());
+    public LoginVO doLogin(LoginDTO body) {
+        if (LoginTypeEnum.EMAIL.getMessage().equals(body.getLoginType()) && body.getEmailParams() == null) {
+            String message = String.format("'%s'参数为空，原请求参数为:'%s'", body.getLoginType(), body);
+            throw new GlobalServiceException(message, SYSTEM_SERVICE_FAIL);
+        }
+        EmailLoginDTO loginBody = body.getEmailParams();
         ValidatorUtils.validate(loginBody);
 
         String email = loginBody.getEmail();

@@ -1,12 +1,11 @@
 package com.achobeta.domain.login.service.strategy;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import com.achobeta.common.enums.LoginTypeEnum;
 import com.achobeta.domain.login.model.dao.UserEntity;
 import com.achobeta.domain.login.model.dao.mapper.UserMapper;
+import com.achobeta.domain.login.model.dto.LoginDTO;
 import com.achobeta.domain.login.model.dto.PasswordLoginDTO;
 import com.achobeta.domain.login.model.entity.LoginUser;
 import com.achobeta.domain.login.model.vo.LoginVO;
@@ -18,8 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
+import static com.achobeta.common.enums.GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL;
 import static com.achobeta.common.enums.GlobalServiceStatusCode.USER_ACCOUNT_NOT_EXIST;
 import static com.achobeta.domain.login.service.strategy.LoginStrategy.BASE_NAME;
 
@@ -36,8 +34,12 @@ public class PasswordLoginStrategy implements LoginStrategy {
     private final LoginService loginService;
 
     @Override
-    public LoginVO doLogin(Map<String, Object> body) {
-        PasswordLoginDTO loginBody = BeanUtil.mapToBean(body, PasswordLoginDTO.class, false, new CopyOptions());
+    public LoginVO doLogin(LoginDTO body) {
+        if (LoginTypeEnum.PASSWORD.getMessage().equals(body.getLoginType()) && body.getPasswordParams() == null) {
+            String message = String.format("'%s'参数为空，原请求参数为:'%s'", body.getLoginType(), body);
+            throw new GlobalServiceException(message, SYSTEM_SERVICE_FAIL);
+        }
+        PasswordLoginDTO loginBody = body.getPasswordParams();
         ValidatorUtils.validate(loginBody);
 
         String username = loginBody.getUsername();

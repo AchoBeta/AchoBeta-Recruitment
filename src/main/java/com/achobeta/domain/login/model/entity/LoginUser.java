@@ -28,10 +28,6 @@ public class LoginUser implements Serializable {
      * 用户类型
      */
     private int userType;
-    /**
-     * 用户唯一标识
-     */
-    private String openid;
 
     public boolean isAdmin() {
         return UserTypeEnum.ADMIN.getCode().equals(this.userType);

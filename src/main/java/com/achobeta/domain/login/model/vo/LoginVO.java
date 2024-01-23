@@ -27,9 +27,4 @@ public class LoginVO implements Serializable {
     @JsonProperty("expires_in")
     long expiresIn;
 
-    /**
-     * 用户唯一标识 openid
-     */
-    private String openid;
-
 }

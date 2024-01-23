@@ -93,7 +93,6 @@ public class LoginServiceImpl implements LoginService {
 
         String token = JwtUtil.createJWT(secretKey, jwtProperties.getTtl(), claims);
         return LoginVO.builder()
-                .openid(loginUser.getOpenid())
                 .accessToken(token)
                 .expiresIn(jwtProperties.getTtl())
                 .build();

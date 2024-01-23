@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * @author BanTanger 半糖
  * @date 2024/1/22 15:33
@@ -12,7 +15,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class PasswordLoginDTO extends LoginDTO {
+public class PasswordLoginDTO implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * 用户名

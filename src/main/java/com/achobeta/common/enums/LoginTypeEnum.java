@@ -13,9 +13,9 @@ import static com.achobeta.common.enums.GlobalServiceStatusCode.USER_CREDENTIALS
 @AllArgsConstructor
 public enum LoginTypeEnum {
 
-    EMAIL("邮箱登录", USER_CAPTCHA_CODE_ERROR),
-    PASSWORD("密码登录", USER_CREDENTIALS_ERROR),
-    SMS("手机登录", USER_CAPTCHA_CODE_ERROR),
+    EMAIL("email", USER_CAPTCHA_CODE_ERROR),
+    PASSWORD("password", USER_CREDENTIALS_ERROR),
+    SMS("sms", USER_CAPTCHA_CODE_ERROR),
     ;
 
     private final String message;
