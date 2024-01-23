@@ -47,7 +47,7 @@ public class PasswordLoginStrategy implements LoginStrategy {
         UserEntity user = findUserByUsername(username);
 
         // 检查是否能登录
-        loginService.checkLogin(LoginTypeEnum.EMAIL, user.getUsername(),
+        loginService.checkLogin(LoginTypeEnum.PASSWORD, user.getUsername(),
                 () -> !BCrypt.checkpw(password, user.getPassword()));
 
         return loginService.login(buildLoginUser(user));
@@ -70,7 +70,6 @@ public class PasswordLoginStrategy implements LoginStrategy {
 
     private UserEntity findUserByUsername(String username) {
         UserEntity user = userMapper.selectOne(new LambdaQueryWrapper<UserEntity>()
-                .select(UserEntity::getUsername, UserEntity::getPassword)
                 .eq(UserEntity::getUsername, username));
 
         if (ObjectUtil.isNull(user) || ObjectUtil.isEmpty(user.getUsername())) {
