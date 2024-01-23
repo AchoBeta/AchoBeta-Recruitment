@@ -1,6 +1,8 @@
 package com.achobeta.domain.login.service.strategy;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.util.ObjectUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.LoginTypeEnum;
 import com.achobeta.domain.login.model.dao.UserEntity;
@@ -33,13 +35,13 @@ import static com.achobeta.common.constants.RedisConstants.CAPTCHA_CODE_KEY;
 @RequiredArgsConstructor
 public class EmailLoginStrategy implements LoginStrategy {
 
-    private final UserMapper userMapper;
     private final RedisCache redisCache;
+    private final UserMapper userMapper;
     private final LoginService loginService;
 
     @Override
     public LoginVO doLogin(Map<String, Object> body) {
-        EmailLoginDTO loginBody = BeanUtil.mapToBean(body, EmailLoginDTO.class, false);
+        EmailLoginDTO loginBody = BeanUtil.mapToBean(body, EmailLoginDTO.class, false, new CopyOptions());
         ValidatorUtils.validate(loginBody);
 
         String email = loginBody.getEmail();
@@ -60,12 +62,16 @@ public class EmailLoginStrategy implements LoginStrategy {
         return loginService.login(buildLoginUser(user));
     }
 
+    /**
+     * 数据脱敏处理
+     *
+     * @param user
+     * @return
+     */
     private LoginUser buildLoginUser(UserEntity user) {
         LoginUser loginUser = new LoginUser();
         loginUser.setUserId(user.getId() + user.getUuid());
         loginUser.setUsername(user.getUsername());
-        loginUser.setEmail(user.getEmail());
-        loginUser.setPhoneNumber(user.getPhoneNumber());
         loginUser.setUserType(user.getUserType());
         loginUser.setOpenid(user.getId() + user.getUuid());
         return loginUser;
@@ -76,7 +82,7 @@ public class EmailLoginStrategy implements LoginStrategy {
         UserEntity user = userMapper.selectOne(new LambdaQueryWrapper<UserEntity>()
                 .eq(UserEntity::getEmail, email));
 
-        if (null == user) {
+        if (ObjectUtil.isNull(user)) {
             // 不存在邮箱走注册逻辑
             user = new UserEntity();
             user.setUsername(email);

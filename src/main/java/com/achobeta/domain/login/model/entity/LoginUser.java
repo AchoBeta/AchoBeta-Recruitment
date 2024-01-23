@@ -24,14 +24,6 @@ public class LoginUser implements Serializable {
      */
     private String username;
     /**
-     * 邮箱
-     */
-    private String email;
-    /**
-     * 手机号
-     */
-    private String phoneNumber;
-    /**
      * 用户类型
      */
     private int userType;

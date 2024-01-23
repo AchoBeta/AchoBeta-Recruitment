@@ -16,10 +16,6 @@ import lombok.Setter;
 public class UserEntity extends BaseIncrIDEntity {
 
     /**
-     * 用户 id
-     */
-//    private String uid;
-    /**
      * 用户名
      */
     private String username;

@@ -1,14 +1,13 @@
 package com.achobeta.domain.login.service;
 
-import com.achobeta.common.constants.RedisConstants;
 import com.achobeta.common.enums.LoginTypeEnum;
 import com.achobeta.common.enums.UserTypeEnum;
-import com.achobeta.jwt.propertities.JwtProperties;
-import com.achobeta.jwt.util.JwtUtil;
 import com.achobeta.domain.login.model.entity.LoginUser;
 import com.achobeta.domain.login.model.vo.LoginVO;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.interpretor.UserInterpretor;
+import com.achobeta.jwt.propertities.JwtProperties;
+import com.achobeta.jwt.util.JwtUtil;
 import com.achobeta.redis.RedisCache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
