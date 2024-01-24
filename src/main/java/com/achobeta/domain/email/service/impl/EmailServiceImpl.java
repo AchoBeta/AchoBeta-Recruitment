@@ -1,97 +1,114 @@
 package com.achobeta.domain.email.service.impl;
 
-import com.achobeta.common.constants.GlobalServiceStatusCode;
-import com.achobeta.domain.email.component.EmailSender;
-import com.achobeta.domain.email.component.po.EmailMessage;
+import com.achobeta.domain.email.service.EmailSender;
+import com.achobeta.domain.email.model.po.EmailMessage;
 import com.achobeta.domain.email.model.vo.VerificationCodeTemplate;
-import com.achobeta.domain.email.repository.EmailRepository;
 import com.achobeta.domain.email.service.EmailService;
-import com.achobeta.domain.email.util.IdentifyingCodeValidator;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.redis.RedisCache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
+import static com.achobeta.common.constants.RedisConstants.*;
+import static com.achobeta.common.enums.EmailTemplateEnum.CAPTCHA;
+import static com.achobeta.common.enums.GlobalServiceStatusCode.EMAIL_CAPTCHA_CODE_COUNT_EXHAUST;
+import static com.achobeta.common.enums.GlobalServiceStatusCode.EMAIL_SEND_FAIL;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
-    // todo: 将配置写于配置文件
-    private static final int IDENTIFYING_CODE_MINUTES = 5;//过期分钟数
+    @Value("${ab.email.timeout:5}")
+    private Integer timeout;
 
-    private static final long IDENTIFYING_CODE_INTERVAL_Limit = 1 * 60 * 1000; // 两次发送验证码的最短时间间隔
+    @Value("${ab.email.rateLimit:1}")
+    private Integer rateLimit;
 
-    private static final long IDENTIFYING_CODE_TIMEOUT = IDENTIFYING_CODE_MINUTES * 60 * 1000; //单位为毫秒
+    @Value("${ab.email.maxRetryCount:3}")
+    private Integer maxRetryCount;
 
-    private static final int IDENTIFYING_CODE_INTERVAL_LIMIT = 5; // 只有五次验证机会
-
-    private static final String EMAIL_MODEL_HTML = "identifying-code-model.html"; // Email 验证码通知 -模板
+    @Value("${ab.email.riskControlTime:1}")
+    private Integer riskControlTime;
 
     @Value("${spring.mail.username}")
     private String achobetaEmail;
 
+    private final RedisCache redisCache;
     private final EmailSender emailSender;
 
-    private final EmailRepository emailRepository;
+    private Map<String, Object> captchaCodeMap;
 
     @Override
     public void sendIdentifyingCode(String email, String code) {
-        final String redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
-        // 验证一下一分钟以内发过了没有
-        long ttl = emailRepository.getTTLOfCode(redisKey); // 小于 0 则代表没有到期时间或者不存在，允许发送
-        if(ttl > IDENTIFYING_CODE_TIMEOUT - IDENTIFYING_CODE_INTERVAL_Limit) {
-            String message = String.format("请在 %d 分钟后再重新申请", IDENTIFYING_CODE_INTERVAL_Limit / (60 * 1000L));
-            throw new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_SEND_FAIL);
+        final String redisKey = CAPTCHA_CODES_KEY + email;
+
+        // 检查是否为风控用户, 如果是直接跳过
+        if (redisCache.getCacheObject(RISK_CONTROLLER_USERS_KEY + email).isPresent()) {
+            String message = String.format("邮箱'%s'已被风控,'%d'小时后解封", email, TimeUnit.DAYS.toHours(riskControlTime));
+            // 申请验证码次数用尽
+            throw new GlobalServiceException(message, EMAIL_CAPTCHA_CODE_COUNT_EXHAUST);
         }
+
+        // TODO 【扩展】：限流注解简化逻辑
+        //  @RateLimiter(key = "email", time = 60, count = 1)
+        // 验证一下一分钟以内发过了没有
+        long ttl = redisCache.getKeyTTL(redisKey); // 小于 0 则代表没有到期时间或者不存在，允许发送
+        if (ttl > TimeUnit.MINUTES.toMillis((timeout - rateLimit))) {
+            String message = String.format("申请太频繁, 请在'%d'分钟后再重新申请", rateLimit);
+            throw new GlobalServiceException(message, EMAIL_SEND_FAIL);
+        }
+
+        // 获取缓存
+        Optional<Map<String, Object>> cacheOptional = redisCache.getCacheMap(redisKey);
+        cacheOptional.ifPresentOrElse(
+                cache -> {
+                    captchaCodeMap = cache;
+                    long curRetryCount = redisCache.decrementCacheMapNumber(redisKey, CAPTCHA_CODE_CNT_KEY);
+                    if (curRetryCount <= 0) {
+                        redisCache.setCacheObject(RISK_CONTROLLER_USERS_KEY + email, email, TimeUnit.DAYS.toMillis(riskControlTime));
+                        String message = String.format("邮箱[%s]已被风控，'%d'小时后解封", email, TimeUnit.DAYS.toHours(riskControlTime));
+                        // 申请验证码次数用尽
+                        throw new GlobalServiceException(message, EMAIL_CAPTCHA_CODE_COUNT_EXHAUST);
+                    }
+                },
+                // 如果 redis 没有对应 key 值，初始化
+                () -> {
+                    captchaCodeMap = new HashMap<>();
+                    captchaCodeMap.put(CAPTCHA_CODE_KEY, code);
+                    captchaCodeMap.put(CAPTCHA_CODE_CNT_KEY, maxRetryCount);
+                }
+        );
+        redisCache.execute(redisKey, captchaCodeMap, TimeUnit.MINUTES.toMillis(timeout));
+
+        // 发送模板消息
+        buildEmailAndSend(email, code);
+    }
+
+    private void buildEmailAndSend(String email, String code) {
         // 封装 Email
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setContent(code);
         emailMessage.setCreateTime(new Date());
-        emailMessage.setTitle(IdentifyingCodeValidator.IDENTIFYING_CODE_PURPOSE);
+        emailMessage.setTitle(CAPTCHA.getTitle());
         emailMessage.setRecipient(email);
         emailMessage.setCarbonCopy();
         emailMessage.setSender(achobetaEmail);
-        // 存到 redis 中
-        emailRepository.setIdentifyingCode(redisKey, code, IDENTIFYING_CODE_TIMEOUT, IDENTIFYING_CODE_INTERVAL_LIMIT);
         // 构造模板消息
         VerificationCodeTemplate verificationCodeTemplate = VerificationCodeTemplate.builder()
                 .code(code)
-                .minutes(IDENTIFYING_CODE_MINUTES)
+                .timeout(timeout)
                 .build();
         // 发送模板消息
-        emailSender.sendModelMail(emailMessage, EMAIL_MODEL_HTML, verificationCodeTemplate);
+        emailSender.sendModelMail(emailMessage, CAPTCHA.getTemplate(), verificationCodeTemplate);
     }
 
-    @Override
-    public void checkIdentifyingCode(String email, String code) {
-        String redisKey = IdentifyingCodeValidator.REDIS_EMAIL_IDENTIFYING_CODE + email;
-        Map<String, Object> map = emailRepository.getIdentifyingCode(redisKey)
-                .map(value -> (Map<String, Object>)value)
-                .orElseThrow(() -> {
-                    String message = String.format("Redis 中不存在邮箱[%s]的相关记录", email);
-                    return new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_NOT_EXIST_RECORD);
-                });
-        // 取出验证码和过期时间点
-        String codeValue = (String) map.get(IdentifyingCodeValidator.IDENTIFYING_CODE);
-        int opportunities = (int) map.get(IdentifyingCodeValidator.IDENTIFYING_OPPORTUNITIES);
-        // 还有没有验证机会
-        if (opportunities < 1) {
-            throw new GlobalServiceException(GlobalServiceStatusCode.EMAIL_CODE_OPPORTUNITIES_EXHAUST);
-        }
-        // 验证是否正确
-        if (!codeValue.equals(code)) {
-            // 次数减一
-            opportunities = (int)emailRepository.decrementOpportunities(redisKey);
-            String message = String.format("验证码错误，剩余%d次机会", opportunities);
-            throw new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_CODE_NOT_CONSISTENT);
-        }
-        // 验证成功
-        emailRepository.deleteIdentifyingCodeRecord(redisKey);
-    }
 }

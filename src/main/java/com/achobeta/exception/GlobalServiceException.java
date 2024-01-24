@@ -1,6 +1,6 @@
 package com.achobeta.exception;
 
-import com.achobeta.common.constants.GlobalServiceStatusCode;
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import lombok.Getter;
 
 /**

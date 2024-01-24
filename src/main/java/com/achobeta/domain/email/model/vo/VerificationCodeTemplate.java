@@ -12,6 +12,6 @@ public class VerificationCodeTemplate {
 
     private String code; // 验证码
 
-    private int minutes; // 过期时间分钟数
+    private int timeout; // 过期时间分钟数
 
 }

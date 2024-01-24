@@ -2,15 +2,14 @@ package com.achobeta.interpretor;
 
 
 import cn.hutool.core.util.StrUtil;
-import com.achobeta.common.constants.GlobalServiceStatusCode;
-import com.achobeta.common.constants.RoleKinds;
+import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.users.context.BaseContext;
 
 
-import com.achobeta.domain.users.jwt.propertities.JwtProperties;
-import com.achobeta.domain.users.jwt.util.JwtUtil;
+import com.achobeta.jwt.propertities.JwtProperties;
+import com.achobeta.jwt.util.JwtUtil;
 import com.achobeta.domain.users.model.po.UserHelper;
-import com.achobeta.domain.users.service.StudentService;
 import com.achobeta.exception.GlobalServiceException;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +33,6 @@ import javax.crypto.SecretKey;
 public class UserInterpretor implements HandlerInterceptor {
 
     private final JwtProperties jwtProperties;
-    private final StudentService studentService;
 
     public static final String USER_ID = "user_id";
     public static final String UserRoleName = "user";
@@ -45,13 +43,13 @@ public class UserInterpretor implements HandlerInterceptor {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
-        String token = request.getHeader(jwtProperties.getUserTokenName());
+        String token = request.getHeader(jwtProperties.getTokenName());
         //从请求头中获取token
         if (StrUtil.isEmpty(token)) {
             throw new GlobalServiceException("用户未登录,token为空", GlobalServiceStatusCode.USER_NOT_LOGIN);
         }
         //通过明文钥匙生成密钥
-        SecretKey secretKey = JwtUtil.generalKey(jwtProperties.getUserSecretKey());
+        SecretKey secretKey = JwtUtil.generalKey(jwtProperties.getSecretKey());
 
         io.jsonwebtoken.Claims claims = JwtUtil.parseJWT(secretKey, token);
         //通过线程局部变量设置当前线程用户信息
@@ -64,16 +62,16 @@ public class UserInterpretor implements HandlerInterceptor {
     }
 
     private void refreshToken(HttpServletResponse response, SecretKey secretKey, Claims claims) {
-        long ttl = jwtProperties.getUserTtl();
+        long ttl = jwtProperties.getTtl();
         String refreshToken = JwtUtil.createJWT(secretKey, ttl, claims);
         //刷新token,通过请求头返回前端
-        response.setHeader(jwtProperties.getUserTokenName(), refreshToken);
+        response.setHeader(jwtProperties.getTokenName(), refreshToken);
         log.info("无感刷新token:{}", refreshToken);
     }
 
     private void setGlobaleUserInfoByClaims(Claims claims, String token) {
         Long userId = Long.valueOf(claims.get(UserInterpretor.USER_ID).toString());
-        Integer role = Integer.parseInt(claims.get(RoleKinds.USER.getRoleName()).toString());
+        Integer role = Integer.parseInt(claims.get(UserTypeEnum.USER.getName()).toString());
         UserHelper userHelper = UserHelper.builder()
                 .userId(userId)
                 .token(token)
