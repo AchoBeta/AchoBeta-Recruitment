@@ -1,12 +1,14 @@
 package com.achobeta.domain.login.service.strategy;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.crypto.digest.BCrypt;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.LoginTypeEnum;
 import com.achobeta.domain.login.model.dao.UserEntity;
 import com.achobeta.domain.login.model.dao.mapper.UserMapper;
 import com.achobeta.domain.login.model.dto.EmailLoginDTO;
 import com.achobeta.domain.login.model.dto.LoginDTO;
+import com.achobeta.domain.login.model.dto.RegisterDTO;
 import com.achobeta.domain.login.model.entity.LoginUser;
 import com.achobeta.domain.login.model.vo.LoginVO;
 import com.achobeta.domain.login.service.LoginService;
@@ -84,11 +86,10 @@ public class EmailLoginStrategy implements LoginStrategy {
 
         if (ObjectUtil.isNull(user)) {
             // 不存在邮箱走注册逻辑
-            user = new UserEntity();
-            user.setUsername(email);
-            user.setEmail(email);
-            userMapper.insert(user);
-            log.info("用户 email: '{}' 新建完成", email);
+            RegisterDTO registerDTO = new RegisterDTO();
+            registerDTO.setUsername(email);
+            registerDTO.setPassword(BCrypt.hashpw(email));
+            loginService.register(registerDTO);
         }
         return user;
     }
