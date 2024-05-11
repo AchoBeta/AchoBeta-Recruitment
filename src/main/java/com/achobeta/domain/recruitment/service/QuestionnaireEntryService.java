@@ -1,6 +1,8 @@
 package com.achobeta.domain.recruitment.service;
 
+import com.achobeta.domain.recruitment.model.dto.EntryDTO;
 import com.achobeta.domain.recruitment.model.entity.QuestionnaireEntry;
+import com.achobeta.domain.recruitment.model.entity.QuestionnairePeriod;
 import com.achobeta.domain.recruitment.model.vo.EntryVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,8 +15,12 @@ import java.util.List;
 */
 public interface QuestionnaireEntryService extends IService<QuestionnaireEntry> {
 
-    void addQuestionnaireEntry(Long questionnaireId, Long entryId, String content);
+    QuestionnaireEntry getQuestionnaireEntry(Long questionnaireId, Long entryId);
 
-    void updateQuestionnaireEntry(Long questionnaireId, Long entryId, String content);
+    void checkQuestionnaireEntryId(Long questionnaireId, Long entryId);
+
+    void addOrUpdateQuestionnaireEntry(Long questionnaireId, Long entryId, String content);
+
+    void putEntries(Long questionnaireId, List<EntryDTO> entryDTOS);
 
 }

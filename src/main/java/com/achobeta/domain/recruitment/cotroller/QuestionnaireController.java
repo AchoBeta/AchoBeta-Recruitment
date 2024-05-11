@@ -1,6 +1,7 @@
 package com.achobeta.domain.recruitment.cotroller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.domain.recruitment.model.dto.QuestionnaireDTO;
 import com.achobeta.domain.recruitment.model.dto.QuestionnaireEntryDTO;
 import com.achobeta.domain.recruitment.model.dto.QuestionnairePeriodDTO;
 import com.achobeta.domain.recruitment.model.vo.QuestionnaireVO;
@@ -32,10 +33,6 @@ public class QuestionnaireController {
 
     private final QuestionnaireService questionnaireService;
 
-    private final QuestionnaireEntryService questionnaireEntryService;
-
-    private final QuestionnairePeriodService questionnairePeriodService;
-
     @GetMapping("/get/{recId}")
     public SystemJsonResponse createRecruitment(@PathVariable("recId") @NonNull Long recId) {
         // 检测
@@ -48,49 +45,15 @@ public class QuestionnaireController {
         return SystemJsonResponse.SYSTEM_SUCCESS(questionnaireVO);
     }
 
-    @PostMapping("/update/entry")
-    public SystemJsonResponse updateEntry(@RequestBody QuestionnaireEntryDTO questionnaireEntryDTO) {
-        // 检查
-        ValidatorUtils.validate(questionnaireEntryDTO);
+    @PostMapping("/submit")
+    public SystemJsonResponse submitQuestionnaire(@RequestBody QuestionnaireDTO questionnaireDTO) {
+        // 检测
+        ValidatorUtils.validate(questionnaireDTO);
         // 当前用户
         long stuId = BaseContext.getCurrentUser().getUserId();
-        Long questionnaireId = questionnaireEntryDTO.getQuestionnaireId();
-        // 检测是否可以对问卷进行操作
-        questionnaireService.checkUser(stuId, questionnaireId);
-        // 修改
-        Long entryId = questionnaireEntryDTO.getEntryId();
-        String content = questionnaireEntryDTO.getContent();
-        questionnaireEntryService.updateQuestionnaireEntry(questionnaireId, entryId, content);
-        return SystemJsonResponse.SYSTEM_SUCCESS();
-    }
-
-    @PostMapping("/add/period")
-    public SystemJsonResponse addPeriod(@RequestBody QuestionnairePeriodDTO questionnairePeriodDTO) {
-        // 检查
-        ValidatorUtils.validate(questionnairePeriodDTO);
-        // 当前用户
-        long stuId = BaseContext.getCurrentUser().getUserId();
-        Long questionnaireId = questionnairePeriodDTO.getQuestionnaireId();
-        // 检测是否可以对问卷进行操作
-        questionnaireService.checkUser(stuId, questionnaireId);
-        Long periodId = questionnairePeriodDTO.getPeriodId();
-        // 添加
-        questionnairePeriodService.addQuestionnairePeriod(questionnaireId, periodId);
-        return SystemJsonResponse.SYSTEM_SUCCESS();
-    }
-
-    @PostMapping("/remove/period")
-    public SystemJsonResponse removePeriod(@RequestBody QuestionnairePeriodDTO questionnairePeriodDTO) {
-        // 检查
-        ValidatorUtils.validate(questionnairePeriodDTO);
-        // 当前用户
-        long stuId = BaseContext.getCurrentUser().getUserId();
-        Long questionnaireId = questionnairePeriodDTO.getQuestionnaireId();
-        // 检测是否可以对问卷进行操作
-        questionnaireService.checkUser(stuId, questionnaireId);
-        Long periodId = questionnairePeriodDTO.getPeriodId();
-        // 添加
-        questionnairePeriodService.removeQuestionnairePeriod(questionnaireId, periodId);
+        questionnaireService.checkUser(stuId, questionnaireDTO.getQuestionnaireId());
+        // 提交问卷
+        questionnaireService.submitQuestionnaire(questionnaireDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 }

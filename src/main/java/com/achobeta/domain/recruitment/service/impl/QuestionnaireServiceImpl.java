@@ -2,15 +2,14 @@ package com.achobeta.domain.recruitment.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.recruitment.model.dao.mapper.QuestionnaireEntryMapper;
 import com.achobeta.domain.recruitment.model.dao.mapper.QuestionnaireMapper;
+import com.achobeta.domain.recruitment.model.dto.QuestionnaireDTO;
 import com.achobeta.domain.recruitment.model.entity.Questionnaire;
 import com.achobeta.domain.recruitment.model.vo.EntryVO;
 import com.achobeta.domain.recruitment.model.vo.QuestionnaireVO;
 import com.achobeta.domain.recruitment.model.vo.TimePeriodVO;
-import com.achobeta.domain.recruitment.service.CustomEntryService;
-import com.achobeta.domain.recruitment.service.QuestionnaireEntryService;
-import com.achobeta.domain.recruitment.service.QuestionnaireService;
-import com.achobeta.domain.recruitment.service.TimePeriodService;
+import com.achobeta.domain.recruitment.service.*;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
 * @author 马拉圈
@@ -31,15 +29,11 @@ import java.util.stream.Collectors;
 public class QuestionnaireServiceImpl extends ServiceImpl<QuestionnaireMapper, Questionnaire>
     implements QuestionnaireService{
 
-    private final static String DEFAULT_CONTENT = "";
-
     private final QuestionnaireMapper questionnaireMapper;
 
     private final QuestionnaireEntryService questionnaireEntryService;
 
-    private final CustomEntryService customEntryService;
-
-    private final TimePeriodService timePeriodService;
+    private final QuestionnairePeriodService questionnairePeriodService;
 
     @Override
     public QuestionnaireVO createQuestionnaire(Long stuId, Long recId) {
@@ -47,23 +41,8 @@ public class QuestionnaireServiceImpl extends ServiceImpl<QuestionnaireMapper, Q
         questionnaire.setStuId(stuId);
         questionnaire.setRecId(recId);
         this.save(questionnaire);
-        Long questionnaireId = questionnaire.getId();
-        // 设置自定义项
-        List<EntryVO> entryVOS = customEntryService
-                .selectCustomEntry(recId)
-                .stream().map(customEntry -> {
-                    Long entryId = customEntry.getId();
-                    questionnaireEntryService.addQuestionnaireEntry(questionnaireId, entryId, DEFAULT_CONTENT);
-                    EntryVO entryVO = BeanUtil.copyProperties(customEntry, EntryVO.class);
-                    entryVO.setContent(DEFAULT_CONTENT);
-                    return entryVO;
-                }).collect(Collectors.toList());
-        QuestionnaireVO questionnaireVO = BeanUtil.copyProperties(questionnaire, QuestionnaireVO.class);
-        questionnaireVO.setEntryVOS(entryVOS);
-        return questionnaireVO;
+        return BeanUtil.copyProperties(questionnaire, QuestionnaireVO.class);
     }
-
-
 
     @Override
     public QuestionnaireVO getQuestionnaire(Long stuId, Long recId) {
@@ -73,15 +52,25 @@ public class QuestionnaireServiceImpl extends ServiceImpl<QuestionnaireMapper, Q
                 .oneOpt()
                 .map(questionnaire -> {
                     Long questionnaireId = questionnaire.getId();
+                    // 转化
+                    QuestionnaireVO questionnaireVO = BeanUtil.copyProperties(questionnaire, QuestionnaireVO.class);
                     // 获取自定义项
                     List<EntryVO> entryVOS = questionnaireMapper.getEntries(questionnaireId);
+                    questionnaireVO.setEntryVOS(entryVOS);
                     // 获取时间段
                     List<TimePeriodVO> timePeriodVOS = questionnaireMapper.getPeriods(questionnaireId);
-                    QuestionnaireVO questionnaireVO = BeanUtil.copyProperties(questionnaire, QuestionnaireVO.class);
-                    questionnaireVO.setEntryVOS(entryVOS);
                     questionnaireVO.setTimePeriodVOS(timePeriodVOS);
                     return questionnaireVO;
                 }).orElseGet(() -> createQuestionnaire(stuId, recId));
+    }
+
+    @Override
+    public void submitQuestionnaire(QuestionnaireDTO questionnaireDTO) {
+        Long questionnaireId = questionnaireDTO.getQuestionnaireId();
+        // 更新自定义项
+        questionnaireEntryService.putEntries(questionnaireId, questionnaireDTO.getEntryDTOS());
+        // 更新时间段
+        questionnairePeriodService.putPeriods(questionnaireId, questionnaireDTO.getPeriodIds());
     }
 
     @Override
@@ -96,7 +85,3 @@ public class QuestionnaireServiceImpl extends ServiceImpl<QuestionnaireMapper, Q
         }
     }
 }
-
-
-
-

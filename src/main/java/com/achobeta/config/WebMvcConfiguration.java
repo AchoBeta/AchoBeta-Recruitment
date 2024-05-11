@@ -37,6 +37,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
                 .addPathPatterns("/api/v1/shortlink/**")
                 .addPathPatterns("/api/v1/recruit/**")
+                .excludePathPatterns("/api/v1/recruit/get/**")
                 .addPathPatterns("/api/v1/period/**")
                 .excludePathPatterns("/api/v1/period/list/**")
                 .addPathPatterns("/api/v1/entry/**")
@@ -51,6 +52,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         registry.addInterceptor(managerInterceptor)
                 .addPathPatterns("/api/v1/shortlink/**")
                 .addPathPatterns("/api/v1/recruit/**")
+                .excludePathPatterns("/api/v1/recruit/get/**")
                 .addPathPatterns("/api/v1/period/**")
                 .excludePathPatterns("/api/v1/period/list/**")
                 .addPathPatterns("/api/v1/entry/**")

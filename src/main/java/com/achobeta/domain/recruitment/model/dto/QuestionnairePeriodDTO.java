@@ -3,6 +3,8 @@ package com.achobeta.domain.recruitment.model.dto;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Created With Intellij IDEA
  * Description:

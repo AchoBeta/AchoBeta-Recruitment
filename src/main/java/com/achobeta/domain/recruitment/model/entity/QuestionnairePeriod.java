@@ -41,9 +41,10 @@ public class QuestionnairePeriod implements Serializable {
     @Version
     private Integer version;
 
-    @TableField(value = "is_deleted", fill = FieldFill.INSERT)
-    @TableLogic
-    private Integer deleted;
+    // 不进行逻辑删除
+//    @TableField(value = "is_deleted", fill = FieldFill.INSERT)
+//    @TableLogic
+//    private Integer deleted;
 
     private static final long serialVersionUID = 1L;
 }

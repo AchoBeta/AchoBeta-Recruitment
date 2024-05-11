@@ -50,18 +50,6 @@ public class PeriodController {
         return SystemJsonResponse.SYSTEM_SUCCESS(periodId);
     }
 
-    @GetMapping("list/{recId}")
-    public SystemJsonResponse selectTimePeriods(@PathVariable("recId") @NonNull Long recId) {
-        // 校验
-        recruitmentService.checkNotExists(recId);
-        // 查询
-        List<TimePeriod> timePeriods = timePeriodService.selectTimePeriods(recId);
-        List<TimePeriodVO> timePeriodVOS = BeanUtil.copyToList(timePeriods, TimePeriodVO.class);
-        log.info("查询招新({}) 的时间段， 共 {} 段", recId, timePeriodVOS.size());
-        return SystemJsonResponse.SYSTEM_SUCCESS(timePeriodVOS);
-    }
-
-
     @GetMapping("remove/{id}")
     public SystemJsonResponse removeTimePeriod(@PathVariable("id") @NonNull Long id) {
         timePeriodService.removeTimePeriod(id);

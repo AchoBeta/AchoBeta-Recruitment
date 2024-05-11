@@ -3,9 +3,16 @@ package com.achobeta.domain.recruitment.cotroller;
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.recruitment.model.entity.CustomEntry;
 import com.achobeta.domain.recruitment.model.entity.Recruitment;
+import com.achobeta.domain.recruitment.model.entity.TimePeriod;
+import com.achobeta.domain.recruitment.model.vo.CustomEntryVO;
+import com.achobeta.domain.recruitment.model.vo.RecruitmentModelVO;
 import com.achobeta.domain.recruitment.model.vo.RecruitmentVO;
+import com.achobeta.domain.recruitment.model.vo.TimePeriodVO;
+import com.achobeta.domain.recruitment.service.CustomEntryService;
 import com.achobeta.domain.recruitment.service.RecruitmentService;
+import com.achobeta.domain.recruitment.service.TimePeriodService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.exception.GlobalServiceException;
 import lombok.NonNull;
@@ -31,6 +38,10 @@ public class RecruitmentController {
 
     private final RecruitmentService recruitmentService;
 
+    private final CustomEntryService customEntryService;
+
+    private final TimePeriodService timePeriodService;
+
     @PostMapping("/create")
     public SystemJsonResponse createRecruitment(@RequestParam("batch") @NonNull Integer batch) {
         if(batch.compareTo(0) <= 0) {
@@ -54,5 +65,24 @@ public class RecruitmentController {
         }
         List<RecruitmentVO> recruitmentVOS = BeanUtil.copyToList(list, RecruitmentVO.class);
         return SystemJsonResponse.SYSTEM_SUCCESS(recruitmentVOS);
+    }
+
+    @GetMapping("/get/{recId}")
+    public SystemJsonResponse getCustomDefine(@PathVariable("recId") @NonNull Long recId) {
+        Recruitment recruitment = recruitmentService.getById(recId);
+        if(Objects.isNull(recruitment)) {
+            throw new GlobalServiceException(GlobalServiceStatusCode.RECRUITMENT_NOT_EXISTS);
+        }
+        // 查询自定义项
+        List<CustomEntry> customEntries = customEntryService.selectCustomEntry(recId);
+        // 查询时间段
+        List<TimePeriod> timePeriods = timePeriodService.selectTimePeriods(recId);
+        // 构造招新自定义问卷模板
+        RecruitmentModelVO recruitmentModelVO = RecruitmentModelVO.builder()
+                .recruitmentVO(BeanUtil.copyProperties(recruitment, RecruitmentVO.class))
+                .customEntryVOS(BeanUtil.copyToList(customEntries, CustomEntryVO.class))
+                .timePeriodVOS(BeanUtil.copyToList(timePeriods, TimePeriodVO.class))
+                .build();
+        return SystemJsonResponse.SYSTEM_SUCCESS(recruitmentModelVO);
     }
 }

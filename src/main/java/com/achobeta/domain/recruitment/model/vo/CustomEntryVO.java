@@ -14,8 +14,6 @@ public class CustomEntryVO {
 
     private Long id;
 
-    private Long recId;
-
     private String title;
 
 }

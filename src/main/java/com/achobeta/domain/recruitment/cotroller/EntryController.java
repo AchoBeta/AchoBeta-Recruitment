@@ -47,17 +47,6 @@ public class EntryController {
         return SystemJsonResponse.SYSTEM_SUCCESS(id);
     }
 
-    @GetMapping("list/{recId}")
-    public SystemJsonResponse selectTimePeriods(@PathVariable("recId") @NonNull Long recId) {
-        // 校验
-        recruitmentService.checkNotExists(recId);
-        // 查询
-        List<CustomEntry> customEntries = customEntryService.selectCustomEntry(recId);
-        List<CustomEntryVO> customEntryVOS = BeanUtil.copyToList(customEntries, CustomEntryVO.class);
-        log.info("查询招新({}) 的自定义项， 共 {} 项", recId, customEntryVOS.size());
-        return SystemJsonResponse.SYSTEM_SUCCESS(customEntryVOS);
-    }
-
     @GetMapping("remove/{id}")
     public SystemJsonResponse removeTimePeriod(@PathVariable("id") @NonNull Long id) {
         customEntryService.removeCustomEntry(id);
