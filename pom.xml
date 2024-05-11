@@ -29,7 +29,7 @@
             <properties>
                 <!--环境标识，需要与配置文件名称相对应-->
                 <profiles.active>dev</profiles.active>
-                <logging.level>debug</logging.level>
+                <logging.level>info</logging.level>
             </properties>
             <activation>
                 <!--默认环境-->
@@ -64,6 +64,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
+
         <!-- 自定义验证注解 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
