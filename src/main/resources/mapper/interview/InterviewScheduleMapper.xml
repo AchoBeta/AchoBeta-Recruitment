@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.achobeta.domain.interview.model.dao.mapper.InterviewScheduleMapper">
+
+    <resultMap id="BaseResultMap" type="com.achobeta.domain.interview.model.entity.InterviewSchedule">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="stuId" column="stu_id" jdbcType="BIGINT"/>
+            <result property="date" column="date" jdbcType="TIMESTAMP"/>
+            <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+            <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="version" column="version" jdbcType="INTEGER"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,stu_id,date,
+        start_time,end_time,create_time,
+        update_time,version,is_deleted
+    </sql>
+</mapper>
