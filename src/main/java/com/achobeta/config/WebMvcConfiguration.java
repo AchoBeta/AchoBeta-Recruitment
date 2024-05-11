@@ -1,7 +1,10 @@
 package com.achobeta.config;
 
 
+import com.achobeta.interpretor.ManagerInterceptor;
+import com.achobeta.interpretor.StudentInterceptor;
 import com.achobeta.interpretor.UserInterpretor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -15,17 +18,44 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
  */
 //配置类，注册用户端；拦截器
 @Configuration
+@RequiredArgsConstructor
 @Slf4j
 public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
-    @Autowired
-    private UserInterpretor userInterpretor;
+    private final UserInterpretor userInterpretor;
+
+    private final ManagerInterceptor managerInterceptor;
+
+    private final StudentInterceptor studentInterceptor;
+
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
 
         registry.addInterceptor(userInterpretor)
                 .addPathPatterns("/api/v1/user/**")
-                .excludePathPatterns("/api/v1/email/**");
+                .addPathPatterns("/api/v1/questionnaire/**")
+
+                .addPathPatterns("/api/v1/shortlink/**")
+                .addPathPatterns("/api/v1/recruit/**")
+                .addPathPatterns("/api/v1/period/**")
+                .excludePathPatterns("/api/v1/period/list/**")
+                .addPathPatterns("/api/v1/entry/**")
+                .excludePathPatterns("/api/v1/entry/list/**")
+        ;
+
+        registry.addInterceptor(studentInterceptor)
+                .addPathPatterns("/api/v1/user/**")
+                .addPathPatterns("/api/v1/questionnaire/**")
+        ;
+
+        registry.addInterceptor(managerInterceptor)
+                .addPathPatterns("/api/v1/shortlink/**")
+                .addPathPatterns("/api/v1/recruit/**")
+                .addPathPatterns("/api/v1/period/**")
+                .excludePathPatterns("/api/v1/period/list/**")
+                .addPathPatterns("/api/v1/entry/**")
+                .excludePathPatterns("/api/v1/entry/list/**")
+        ;
 
     }
 
