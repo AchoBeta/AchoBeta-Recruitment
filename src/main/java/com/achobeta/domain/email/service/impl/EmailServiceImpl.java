@@ -74,7 +74,7 @@ public class EmailServiceImpl implements EmailService {
                     captchaCodeMap = cache;
                     long curRetryCount = redisCache.decrementCacheMapNumber(redisKey, CAPTCHA_CODE_CNT_KEY);
                     if (curRetryCount <= 0) {
-                        redisCache.setCacheObject(RISK_CONTROLLER_USERS_KEY + email, email, TimeUnit.DAYS.toMillis(riskControlTime));
+                        redisCache.setCacheObject(RISK_CONTROLLER_USERS_KEY + email, email, riskControlTime, TimeUnit.DAYS);
                         String message = String.format("邮箱[%s]已被风控，'%d'小时后解封", email, TimeUnit.DAYS.toHours(riskControlTime));
                         // 申请验证码次数用尽
                         throw new GlobalServiceException(message, EMAIL_CAPTCHA_CODE_COUNT_EXHAUST);
@@ -87,7 +87,7 @@ public class EmailServiceImpl implements EmailService {
                     captchaCodeMap.put(CAPTCHA_CODE_CNT_KEY, maxRetryCount);
                 }
         );
-        redisCache.execute(redisKey, captchaCodeMap, TimeUnit.MINUTES.toMillis(timeout));
+        redisCache.setCacheMap(redisKey, captchaCodeMap, timeout, TimeUnit.MINUTES);
 
         // 发送模板消息
         buildEmailAndSend(email, code);

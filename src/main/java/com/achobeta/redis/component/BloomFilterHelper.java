@@ -34,12 +34,15 @@ public class BloomFilterHelper<T> {
         this((Funnel) BloomFilterHelper::funnel, NUM_BITS, RATE);
     }
     public BloomFilterHelper(Funnel<T> funnel, int expectedInsertions, double fpp) {
-        Preconditions.checkArgument(funnel != null, "funnel不能为空");
         this.funnel = funnel;
         // 计算bit数组长度
         bitSize = optimalNumOfBits(expectedInsertions, fpp);
         // 计算hash方法执行次数
         numHashFunctions = optimalNumOfHashFunctions(expectedInsertions, bitSize);
+    }
+
+    public int[] getHashOffset() {
+        return new int[numHashFunctions];
     }
 
     public int[] murmurHashOffset(T value) {

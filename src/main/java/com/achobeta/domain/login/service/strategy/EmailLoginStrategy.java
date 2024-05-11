@@ -76,6 +76,7 @@ public class EmailLoginStrategy implements LoginStrategy {
         LoginUser loginUser = new LoginUser();
         loginUser.setUsername(user.getUsername());
         loginUser.setUserType(user.getUserType());
+        loginUser.setUserId(user.getId());
         return loginUser;
     }
 
@@ -87,8 +88,8 @@ public class EmailLoginStrategy implements LoginStrategy {
         if (ObjectUtil.isNull(user)) {
             // 不存在邮箱走注册逻辑
             RegisterDTO registerDTO = new RegisterDTO();
+            registerDTO.setEmail(email);
             registerDTO.setUsername(email);
-            registerDTO.setPassword(BCrypt.hashpw(email));
             loginService.register(registerDTO);
         }
         return user;

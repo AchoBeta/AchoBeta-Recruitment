@@ -67,6 +67,7 @@ public class PasswordLoginStrategy implements LoginStrategy {
         LoginUser loginUser = new LoginUser();
         loginUser.setUsername(user.getUsername());
         loginUser.setUserType(user.getUserType());
+        loginUser.setUserId(user.getId());
         return loginUser;
     }
 

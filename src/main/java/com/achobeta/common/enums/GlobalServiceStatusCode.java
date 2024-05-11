@@ -51,6 +51,13 @@ public enum GlobalServiceStatusCode {
     EMAIL_NOT_EXIST_RECORD(3101, "邮箱不存在记录"),
     EMAIL_CAPTCHA_CODE_COUNT_EXHAUST(3103, "申请次数达到上限"),
 
+    /* 招新错误 4001-5000 */
+    RECRUITMENT_NOT_EXISTS(4001, "本场招新不存在"),
+    QUESTIONNAIRE_NOT_EXISTS(4002, "问卷不存在"),
+    PERIOD_NOT_EXISTS(4003, "时间段不存在"),
+    PERIOD_IS_SELECTED(4004, "时间段被选中了"),
+    PERIOD_IS_NOT_SELECTED(4005, "时间段未选中"),
+
     /* -------------- */;
 
     private final Integer code;
