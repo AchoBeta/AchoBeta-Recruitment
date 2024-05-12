@@ -4,18 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.achobeta.domain.recruitment.model.dao.mapper.QuestionnaireMapper">
 
-    <resultMap id="EntryMap" type="com.achobeta.domain.recruitment.model.vo.EntryVO">
-        <id property="id" column="id" jdbcType="BIGINT"/>
-        <result property="title" column="title" jdbcType="VARCHAR"/>
-        <result property="content" column="content" jdbcType="VARCHAR"/>
-    </resultMap>
-
-    <resultMap id="PeriodMap" type="com.achobeta.domain.recruitment.model.vo.TimePeriodVO">
-        <id property="id" column="id" jdbcType="BIGINT"/>
-        <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
-        <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
-    </resultMap>
-
     <select id="getEntries" parameterType="java.lang.Long" resultType="com.achobeta.domain.recruitment.model.vo.EntryVO">
         select
             e.id, e.title, qe.content

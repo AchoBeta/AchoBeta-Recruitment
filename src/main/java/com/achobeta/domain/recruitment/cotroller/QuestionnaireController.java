@@ -1,18 +1,12 @@
 package com.achobeta.domain.recruitment.cotroller;
 
 import com.achobeta.common.SystemJsonResponse;
-import com.achobeta.domain.login.model.dao.UserEntity;
 import com.achobeta.domain.recruitment.model.dto.QuestionnaireDTO;
-import com.achobeta.domain.recruitment.model.dto.QuestionnaireEntryDTO;
-import com.achobeta.domain.recruitment.model.dto.QuestionnairePeriodDTO;
 import com.achobeta.domain.recruitment.model.vo.QuestionnaireVO;
-import com.achobeta.domain.recruitment.service.QuestionnaireEntryService;
-import com.achobeta.domain.recruitment.service.QuestionnairePeriodService;
 import com.achobeta.domain.recruitment.service.QuestionnaireService;
 import com.achobeta.domain.recruitment.service.RecruitmentService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.util.ValidatorUtils;
-import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

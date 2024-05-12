@@ -2,17 +2,18 @@ package com.achobeta.domain.recruitment.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.domain.recruitment.model.dao.mapper.QuestionnaireEntryMapper;
 import com.achobeta.domain.recruitment.model.dao.mapper.QuestionnaireMapper;
 import com.achobeta.domain.recruitment.model.dto.QuestionnaireDTO;
 import com.achobeta.domain.recruitment.model.entity.Questionnaire;
 import com.achobeta.domain.recruitment.model.vo.EntryVO;
 import com.achobeta.domain.recruitment.model.vo.QuestionnaireVO;
 import com.achobeta.domain.recruitment.model.vo.TimePeriodVO;
-import com.achobeta.domain.recruitment.service.*;
+import com.achobeta.domain.recruitment.service.QuestionnaireEntryService;
+import com.achobeta.domain.recruitment.service.QuestionnairePeriodService;
+import com.achobeta.domain.recruitment.service.QuestionnaireService;
+import com.achobeta.domain.recruitment.service.RecruitmentService;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,8 +33,6 @@ public class QuestionnaireServiceImpl extends ServiceImpl<QuestionnaireMapper, Q
     implements QuestionnaireService{
 
     private final QuestionnaireMapper questionnaireMapper;
-
-    private final RecruitmentService recruitmentService;
 
     private final QuestionnaireEntryService questionnaireEntryService;
 

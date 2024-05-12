@@ -1,10 +1,7 @@
 package com.achobeta.domain.recruitment.cotroller;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.recruitment.model.dto.TimePeriodDTO;
-import com.achobeta.domain.recruitment.model.entity.TimePeriod;
-import com.achobeta.domain.recruitment.model.vo.TimePeriodVO;
 import com.achobeta.domain.recruitment.service.RecruitmentService;
 import com.achobeta.domain.recruitment.service.TimePeriodService;
 import com.achobeta.domain.users.context.BaseContext;
@@ -13,10 +10,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created With Intellij IDEA

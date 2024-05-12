@@ -1,13 +1,7 @@
 package com.achobeta.domain.recruitment.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * Created With Intellij IDEA

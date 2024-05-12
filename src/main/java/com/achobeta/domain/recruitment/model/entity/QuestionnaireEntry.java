@@ -1,13 +1,11 @@
 package com.achobeta.domain.recruitment.model.entity;
 
-import com.achobeta.common.base.BaseIncrIDEntity;
 import com.baomidou.mybatisplus.annotation.*;
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
-import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @TableName questionnaire_entry

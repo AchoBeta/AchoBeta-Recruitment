@@ -4,7 +4,6 @@ import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.recruitment.model.dao.mapper.QuestionnairePeriodMapper;
 import com.achobeta.domain.recruitment.model.entity.Questionnaire;
 import com.achobeta.domain.recruitment.model.entity.QuestionnairePeriod;
-import com.achobeta.domain.recruitment.model.entity.TimePeriod;
 import com.achobeta.domain.recruitment.service.QuestionnairePeriodService;
 import com.achobeta.domain.recruitment.service.TimePeriodService;
 import com.achobeta.exception.GlobalServiceException;
