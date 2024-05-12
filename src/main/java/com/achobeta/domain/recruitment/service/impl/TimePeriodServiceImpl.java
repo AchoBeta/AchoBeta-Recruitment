@@ -6,6 +6,7 @@ import com.achobeta.domain.recruitment.model.entity.TimePeriod;
 import com.achobeta.domain.recruitment.service.TimePeriodService;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,15 @@ public class TimePeriodServiceImpl extends ServiceImpl<TimePeriodMapper, TimePer
     @Override
     public void removeTimePeriod(Long id) {
         this.lambdaUpdate().eq(TimePeriod::getId, id).remove();
+    }
+
+    @Override
+    public Long getRecIdById(Long id) {
+        return this.lambdaQuery()
+                .eq(TimePeriod::getId, id)
+                .oneOpt()
+                .orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.PERIOD_NOT_EXISTS))
+                .getRecId();
     }
 
 }

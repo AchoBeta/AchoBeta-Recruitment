@@ -47,8 +47,7 @@ public class QuestionnairePeriodServiceImpl extends ServiceImpl<QuestionnairePer
 
     @Override
     public void checkQuestionnairePeriodId(Long recId1, Long periodId) {
-        Long recId2 = Db.lambdaQuery(TimePeriod.class).eq(TimePeriod::getId, periodId).oneOpt().orElseThrow(() ->
-                new GlobalServiceException(GlobalServiceStatusCode.PERIOD_NOT_EXISTS)).getRecId();
+        Long recId2 = timePeriodService.getRecIdById(periodId);
         if(!recId1.equals(recId2)) {
             throw new GlobalServiceException(String.format("数据不一致，招新活动 id %d 与 %d 对应不上", recId1, periodId),
                     GlobalServiceStatusCode.PARAM_NOT_VALID);

@@ -15,7 +15,13 @@ public interface RecruitmentService extends IService<Recruitment> {
 
     Long createRecruitment(Integer batch, Date deadline);
 
+    Recruitment getRecruitmentById(Long id);
+
     void checkNotExists(Long id);
+
+    void checkNotRun(Long id);
+
+    void checkRun(Long id);
 
     List<Long> getStuIdsByRecId(Long recId);
 

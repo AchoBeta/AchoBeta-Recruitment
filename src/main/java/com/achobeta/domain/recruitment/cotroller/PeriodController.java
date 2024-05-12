@@ -40,7 +40,7 @@ public class PeriodController {
         // 校验
         ValidatorUtils.validate(timePeriodDTO);
         Long recId = timePeriodDTO.getRecId();
-        recruitmentService.checkNotExists(recId);
+        recruitmentService.checkNotRun(recId);
         // 添加
         Long startTime = timePeriodDTO.getStartTime();
         Long endTime = timePeriodDTO.getEndTime();
@@ -52,6 +52,10 @@ public class PeriodController {
 
     @GetMapping("remove/{id}")
     public SystemJsonResponse removeTimePeriod(@PathVariable("id") @NonNull Long id) {
+        // 校验
+        Long recId = timePeriodService.getRecIdById(id);
+        recruitmentService.checkNotRun(recId);
+        // 删除
         timePeriodService.removeTimePeriod(id);
         log.info("管理员({}) 删除时间段 {}",
                 BaseContext.getCurrentUser().getUserId(), id);

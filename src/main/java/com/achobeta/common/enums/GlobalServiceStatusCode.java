@@ -53,11 +53,13 @@ public enum GlobalServiceStatusCode {
 
     /* 招新错误 4001-5000 */
     RECRUITMENT_NOT_EXISTS(4001, "本场招新不存在"),
-    QUESTIONNAIRE_NOT_EXISTS(4002, "问卷不存在"),
-    ENTRY_NOT_EXISTS(4003, "自定义项不存在"),
-    PERIOD_NOT_EXISTS(4004, "时间段不存在"),
-    PERIOD_IS_SELECTED(4005, "时间段被选中了"),
-    PERIOD_IS_NOT_SELECTED(4006, "时间段未选中"),
+    RECRUITMENT_IS_RUN(4002, "招新已开始"),
+    RECRUITMENT_IS_NOT_RUN(4003, "招新未开始"),
+    QUESTIONNAIRE_NOT_EXISTS(4101, "问卷不存在"),
+    ENTRY_NOT_EXISTS(4102, "自定义项不存在"),
+    PERIOD_NOT_EXISTS(4201, "时间段不存在"),
+    PERIOD_IS_SELECTED(4202,"时间段被选中了"),
+    PERIOD_IS_NOT_SELECTED(4203, "时间段未选中"),
 
     /* -------------- */;
 

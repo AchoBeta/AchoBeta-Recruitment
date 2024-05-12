@@ -19,4 +19,6 @@ public interface CustomEntryService extends IService<CustomEntry> {
 
     void removeCustomEntry(Long id);
 
+    Long getRecIdById(Long id);
+
 }

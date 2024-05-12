@@ -69,9 +69,13 @@ public class QuestionnaireController {
     public SystemJsonResponse submitQuestionnaire(@RequestBody QuestionnaireDTO questionnaireDTO) {
         // 检测
         ValidatorUtils.validate(questionnaireDTO);
+        // 检测招新是否开始
+        Long questionnaireId = questionnaireDTO.getQuestionnaireId();
+        Long recId = questionnaireService.getQuestionnaireRecId(questionnaireId);
+        recruitmentService.checkRun(recId);
         // 当前用户
         long stuId = BaseContext.getCurrentUser().getUserId();
-        questionnaireService.checkUser(stuId, questionnaireDTO.getQuestionnaireId());
+        questionnaireService.checkUser(stuId, questionnaireId);
         // 提交问卷
         questionnaireService.submitQuestionnaire(questionnaireDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS();

@@ -12,10 +12,12 @@ import com.achobeta.domain.recruitment.model.vo.TimePeriodVO;
 import com.achobeta.domain.recruitment.service.*;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +33,8 @@ public class QuestionnaireServiceImpl extends ServiceImpl<QuestionnaireMapper, Q
 
     private final QuestionnaireMapper questionnaireMapper;
 
+    private final RecruitmentService recruitmentService;
+
     private final QuestionnaireEntryService questionnaireEntryService;
 
     private final QuestionnairePeriodService questionnairePeriodService;
@@ -41,7 +45,10 @@ public class QuestionnaireServiceImpl extends ServiceImpl<QuestionnaireMapper, Q
         questionnaire.setStuId(stuId);
         questionnaire.setRecId(recId);
         this.save(questionnaire);
-        return BeanUtil.copyProperties(questionnaire, QuestionnaireVO.class);
+        QuestionnaireVO questionnaireVO = BeanUtil.copyProperties(questionnaire, QuestionnaireVO.class);
+        questionnaireVO.setEntryVOS(new ArrayList<>());
+        questionnaireVO.setTimePeriodVOS(new ArrayList<>());
+        return questionnaireVO;
     }
 
     @Override
@@ -83,5 +90,14 @@ public class QuestionnaireServiceImpl extends ServiceImpl<QuestionnaireMapper, Q
         if(!userId.equals(stuId)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
         }
+    }
+
+    @Override
+    public Long getQuestionnaireRecId(Long id) {
+        return this.lambdaQuery()
+                .eq(Questionnaire::getId, id)
+                .oneOpt()
+                .orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.QUESTIONNAIRE_NOT_EXISTS))
+                .getRecId();
     }
 }

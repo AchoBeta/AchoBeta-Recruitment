@@ -22,4 +22,6 @@ public interface QuestionnaireService extends IService<Questionnaire> {
 
     void checkUser(Long stuId, Long questionnaireId);
 
+    Long getQuestionnaireRecId(Long id);
+
 }

@@ -4,7 +4,9 @@ import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.recruitment.model.dao.mapper.QuestionnaireEntryMapper;
 import com.achobeta.domain.recruitment.model.dto.EntryDTO;
 import com.achobeta.domain.recruitment.model.entity.*;
+import com.achobeta.domain.recruitment.service.CustomEntryService;
 import com.achobeta.domain.recruitment.service.QuestionnaireEntryService;
+import com.achobeta.domain.recruitment.service.RecruitmentService;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
@@ -26,6 +28,8 @@ import java.util.Optional;
 public class QuestionnaireEntryServiceImpl extends ServiceImpl<QuestionnaireEntryMapper, QuestionnaireEntry>
     implements QuestionnaireEntryService{
 
+    private final CustomEntryService customEntryService;
+
     private Long getQuestionnaireRecId(Long questionnaireId) {
         return Db.lambdaQuery(Questionnaire.class).eq(Questionnaire::getId, questionnaireId).oneOpt().orElseThrow(() ->
                 new GlobalServiceException(GlobalServiceStatusCode.QUESTIONNAIRE_NOT_EXISTS)).getRecId();
@@ -41,8 +45,7 @@ public class QuestionnaireEntryServiceImpl extends ServiceImpl<QuestionnaireEntr
 
     @Override
     public void checkQuestionnaireEntryId(Long recId1, Long entryId) {
-        Long recId2 = Db.lambdaQuery(CustomEntry.class).eq(CustomEntry::getId, entryId).oneOpt().orElseThrow(() ->
-                new GlobalServiceException(GlobalServiceStatusCode.ENTRY_NOT_EXISTS)).getRecId();
+        Long recId2 = customEntryService.getRecIdById(entryId);
         if(!recId1.equals(recId2)) {
             throw new GlobalServiceException(String.format("数据不一致，招新活动 id %d 与 %d 对应不上", recId1, entryId),
                     GlobalServiceStatusCode.PARAM_NOT_VALID);

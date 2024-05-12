@@ -1,9 +1,12 @@
 package com.achobeta.domain.recruitment.service.impl;
 
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.recruitment.model.dao.mapper.CustomEntryMapper;
 import com.achobeta.domain.recruitment.model.entity.CustomEntry;
 import com.achobeta.domain.recruitment.service.CustomEntryService;
+import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,6 +41,15 @@ public class CustomEntryServiceImpl extends ServiceImpl<CustomEntryMapper, Custo
     @Override
     public void removeCustomEntry(Long id) {
         this.lambdaUpdate().eq(CustomEntry::getId, id).remove();
+    }
+
+    @Override
+    public Long getRecIdById(Long id) {
+        return this.lambdaQuery()
+                .eq(CustomEntry::getId, id)
+                .oneOpt()
+                .orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.ENTRY_NOT_EXISTS))
+                .getRecId();
     }
 }
 

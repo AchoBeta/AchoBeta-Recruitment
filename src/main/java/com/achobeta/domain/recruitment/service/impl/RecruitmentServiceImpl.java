@@ -37,9 +37,36 @@ public class RecruitmentServiceImpl extends ServiceImpl<RecruitmentMapper, Recru
     }
 
     @Override
+    public Recruitment getRecruitmentById(Long id) {
+        return this.getById(id);
+    }
+
+    @Override
     public void checkNotExists(Long id) {
-        if(Objects.isNull(this.getById(id))) {
+        if(Objects.isNull(getRecruitmentById(id))) {
             throw new GlobalServiceException(GlobalServiceStatusCode.RECRUITMENT_NOT_EXISTS);
+        }
+    }
+
+    @Override
+    public void checkNotRun(Long id) {
+        Recruitment recruitment = getRecruitmentById(id);
+        if(Objects.isNull(recruitment)) {
+            throw new GlobalServiceException(GlobalServiceStatusCode.RECRUITMENT_NOT_EXISTS);
+        }
+        if(Boolean.TRUE.equals(recruitment.getIsRun())) {
+            throw new GlobalServiceException(GlobalServiceStatusCode.RECRUITMENT_IS_RUN);
+        }
+    }
+
+    @Override
+    public void checkRun(Long id) {
+        Recruitment recruitment = getRecruitmentById(id);
+        if(Objects.isNull(recruitment)) {
+            throw new GlobalServiceException(GlobalServiceStatusCode.RECRUITMENT_NOT_EXISTS);
+        }
+        if(Boolean.FALSE.equals(recruitment.getIsRun())) {
+            throw new GlobalServiceException(GlobalServiceStatusCode.RECRUITMENT_IS_NOT_RUN);
         }
     }
 

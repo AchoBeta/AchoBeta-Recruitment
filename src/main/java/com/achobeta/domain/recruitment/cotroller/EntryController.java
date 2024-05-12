@@ -38,7 +38,7 @@ public class EntryController {
         // 校验
         ValidatorUtils.validate(customEntryDTO);
         Long recId = customEntryDTO.getRecId();
-        recruitmentService.checkNotExists(recId);
+        recruitmentService.checkNotRun(recId);
         // 添加
         String title = customEntryDTO.getTitle();
         Long id = customEntryService.addCustomEntry(recId, title);
@@ -49,6 +49,10 @@ public class EntryController {
 
     @GetMapping("remove/{id}")
     public SystemJsonResponse removeTimePeriod(@PathVariable("id") @NonNull Long id) {
+        // 校验
+        Long recId = customEntryService.getRecIdById(id);
+        recruitmentService.checkNotRun(recId);
+        // 删除
         customEntryService.removeCustomEntry(id);
         log.info("管理员({}) 删除自定义项 {}",
                 BaseContext.getCurrentUser().getUserId(), id);

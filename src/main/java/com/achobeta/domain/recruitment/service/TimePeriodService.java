@@ -20,4 +20,6 @@ public interface TimePeriodService extends IService<TimePeriod> {
 
     void removeTimePeriod(Long id);
 
+    Long getRecIdById(Long id);
+
 }
