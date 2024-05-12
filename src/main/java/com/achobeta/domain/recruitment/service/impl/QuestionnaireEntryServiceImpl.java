@@ -26,6 +26,11 @@ import java.util.Optional;
 public class QuestionnaireEntryServiceImpl extends ServiceImpl<QuestionnaireEntryMapper, QuestionnaireEntry>
     implements QuestionnaireEntryService{
 
+    private Long getQuestionnaireRecId(Long questionnaireId) {
+        return Db.lambdaQuery(Questionnaire.class).eq(Questionnaire::getId, questionnaireId).oneOpt().orElseThrow(() ->
+                new GlobalServiceException(GlobalServiceStatusCode.QUESTIONNAIRE_NOT_EXISTS)).getRecId();
+    }
+
     @Override
     public QuestionnaireEntry getQuestionnaireEntry(Long questionnaireId, Long entryId) {
         return this.lambdaQuery()
@@ -35,21 +40,18 @@ public class QuestionnaireEntryServiceImpl extends ServiceImpl<QuestionnaireEntr
     }
 
     @Override
-    public void checkQuestionnaireEntryId(Long questionnaireId, Long entryId) {
-        Long recId1 = Db.lambdaQuery(Questionnaire.class).eq(Questionnaire::getId, questionnaireId).oneOpt().orElseThrow(() ->
-                new GlobalServiceException(GlobalServiceStatusCode.QUESTIONNAIRE_NOT_EXISTS)).getRecId();
+    public void checkQuestionnaireEntryId(Long recId1, Long entryId) {
         Long recId2 = Db.lambdaQuery(CustomEntry.class).eq(CustomEntry::getId, entryId).oneOpt().orElseThrow(() ->
                 new GlobalServiceException(GlobalServiceStatusCode.ENTRY_NOT_EXISTS)).getRecId();
         if(!recId1.equals(recId2)) {
-            throw new GlobalServiceException(String.format("数据不一致，%d 与 %d 对应不上", questionnaireId, entryId),
+            throw new GlobalServiceException(String.format("数据不一致，招新活动 id %d 与 %d 对应不上", recId1, entryId),
                     GlobalServiceStatusCode.PARAM_NOT_VALID);
         }
     }
 
-    @Override
-    public void addOrUpdateQuestionnaireEntry(Long questionnaireId, Long entryId, String content) {
+    private void addOrUpdateQuestionnaireEntry(Long questionnaireId, Long recId, Long entryId, String content) {
         // 判断招新 id 是否一致
-        checkQuestionnaireEntryId(questionnaireId, entryId);
+        checkQuestionnaireEntryId(recId, entryId);
         Optional.ofNullable(getQuestionnaireEntry(questionnaireId, entryId))
                 .ifPresentOrElse(questionnaireEntry -> {
                     this.lambdaUpdate()
@@ -68,10 +70,11 @@ public class QuestionnaireEntryServiceImpl extends ServiceImpl<QuestionnaireEntr
 
     @Override
     public void putEntries(Long questionnaireId, List<EntryDTO> entryDTOS) {
-        entryDTOS.stream().parallel().forEach(entryDTO -> {
+        Long recId = getQuestionnaireRecId(questionnaireId);
+        entryDTOS.forEach(entryDTO -> {
             Long entryId = entryDTO.getEntryId();
             String content = entryDTO.getContent();
-            addOrUpdateQuestionnaireEntry(questionnaireId, entryId, content);
+            addOrUpdateQuestionnaireEntry(questionnaireId, recId, entryId, content);
         });
     }
 

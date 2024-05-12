@@ -17,6 +17,7 @@ public interface QuestionnaireService extends IService<Questionnaire> {
 
     QuestionnaireVO getQuestionnaire(Long stuId, Long recId);
 
+    @Transactional
     void submitQuestionnaire(QuestionnaireDTO questionnaireDTO);
 
     void checkUser(Long stuId, Long questionnaireId);

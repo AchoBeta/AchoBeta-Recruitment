@@ -47,7 +47,7 @@ public class RecruitmentController {
         if(batch.compareTo(0) <= 0) {
             throw new GlobalServiceException("ab版本非法", GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
         }
-        // 调用服务常见一次招新
+        // 调用服务创建一次招新活动
         Long recruitmentId = recruitmentService.createRecruitment(batch);
         log.info("管理员({}) 创建了一次招新，版本：{}，id：{}",
                 BaseContext.getCurrentUser().getUserId(), batch, recruitmentId);
@@ -77,7 +77,7 @@ public class RecruitmentController {
         List<CustomEntry> customEntries = customEntryService.selectCustomEntry(recId);
         // 查询时间段
         List<TimePeriod> timePeriods = timePeriodService.selectTimePeriods(recId);
-        // 构造招新自定义问卷模板
+        // 构造招新活动的自定义问卷模板
         RecruitmentModelVO recruitmentModelVO = RecruitmentModelVO.builder()
                 .recruitmentVO(BeanUtil.copyProperties(recruitment, RecruitmentVO.class))
                 .customEntryVOS(BeanUtil.copyToList(customEntries, CustomEntryVO.class))

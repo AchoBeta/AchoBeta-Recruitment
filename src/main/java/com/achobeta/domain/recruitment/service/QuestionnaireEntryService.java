@@ -19,8 +19,6 @@ public interface QuestionnaireEntryService extends IService<QuestionnaireEntry> 
 
     void checkQuestionnaireEntryId(Long questionnaireId, Long entryId);
 
-    void addOrUpdateQuestionnaireEntry(Long questionnaireId, Long entryId, String content);
-
     void putEntries(Long questionnaireId, List<EntryDTO> entryDTOS);
 
 }

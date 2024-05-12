@@ -16,10 +16,6 @@ public interface QuestionnairePeriodService extends IService<QuestionnairePeriod
 
     void checkQuestionnairePeriodId(Long questionnaireId, Long periodId);
 
-    void addQuestionnairePeriod(Long questionnaireId, Long periodId);
-
-    void removeQuestionnairePeriod(Long questionnaireId, Long periodId);
-
     void putPeriods(Long questionnaireId, List<Long> periodIds);
 
 }
