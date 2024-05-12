@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,9 +28,10 @@ public class RecruitmentServiceImpl extends ServiceImpl<RecruitmentMapper, Recru
     private final RecruitmentMapper recruitmentMapper;
 
     @Override
-    public Long createRecruitment(Integer batch) {
+    public Long createRecruitment(Integer batch, Date deadline) {
         Recruitment recruitment = new Recruitment();
         recruitment.setBatch(batch);
+        recruitment.setDeadline(deadline);
         this.save(recruitment);
         return recruitment.getId();
     }
@@ -44,6 +46,14 @@ public class RecruitmentServiceImpl extends ServiceImpl<RecruitmentMapper, Recru
     @Override
     public List<Long> getStuIdsByRecId(Long recId) {
         return recruitmentMapper.getStuIdsByRecId(recId);
+    }
+
+    @Override
+    public void shiftRecruitment(Long recId, Boolean isRun) {
+        this.lambdaUpdate()
+                .eq(Recruitment::getId, recId)
+                .set(Recruitment::getIsRun, isRun)
+                .update();
     }
 
 }

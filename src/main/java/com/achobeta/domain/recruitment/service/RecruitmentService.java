@@ -3,6 +3,7 @@ package com.achobeta.domain.recruitment.service;
 import com.achobeta.domain.recruitment.model.entity.Recruitment;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,10 +13,12 @@ import java.util.List;
 */
 public interface RecruitmentService extends IService<Recruitment> {
 
-    Long createRecruitment(Integer batch);
+    Long createRecruitment(Integer batch, Date deadline);
 
     void checkNotExists(Long id);
 
     List<Long> getStuIdsByRecId(Long recId);
+
+    void shiftRecruitment(Long recId, Boolean isRun);
 
 }

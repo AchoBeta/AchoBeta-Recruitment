@@ -3,6 +3,7 @@ package com.achobeta.domain.recruitment.cotroller;
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.recruitment.model.dto.RecruitmentDTO;
 import com.achobeta.domain.recruitment.model.entity.CustomEntry;
 import com.achobeta.domain.recruitment.model.entity.Recruitment;
 import com.achobeta.domain.recruitment.model.entity.TimePeriod;
@@ -15,11 +16,13 @@ import com.achobeta.domain.recruitment.service.RecruitmentService;
 import com.achobeta.domain.recruitment.service.TimePeriodService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.util.ValidatorUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,14 +46,18 @@ public class RecruitmentController {
     private final TimePeriodService timePeriodService;
 
     @PostMapping("/create")
-    public SystemJsonResponse createRecruitment(@RequestParam("batch") @NonNull Integer batch) {
+    public SystemJsonResponse createRecruitment(@RequestBody RecruitmentDTO recruitmentDTO) {
+        // 检测
+        ValidatorUtils.validate(recruitmentDTO);
+        Integer batch = recruitmentDTO.getBatch();
         if(batch.compareTo(0) <= 0) {
             throw new GlobalServiceException("ab版本非法", GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
         }
         // 调用服务创建一次招新活动
-        Long recruitmentId = recruitmentService.createRecruitment(batch);
-        log.info("管理员({}) 创建了一次招新，版本：{}，id：{}",
-                BaseContext.getCurrentUser().getUserId(), batch, recruitmentId);
+        Date deadline = new Date(recruitmentDTO.getDeadline());
+        Long recruitmentId = recruitmentService.createRecruitment(batch, deadline);
+        log.info("管理员({}) 创建了一次招新，版本：{} {}，id：{}",
+                BaseContext.getCurrentUser().getUserId(), batch, deadline, recruitmentId);
         // 返回招新id
         return SystemJsonResponse.SYSTEM_SUCCESS(recruitmentId);
     }
@@ -84,5 +91,15 @@ public class RecruitmentController {
                 .timePeriodVOS(BeanUtil.copyToList(timePeriods, TimePeriodVO.class))
                 .build();
         return SystemJsonResponse.SYSTEM_SUCCESS(recruitmentModelVO);
+    }
+
+    @GetMapping("/shift/{recId}")
+    public SystemJsonResponse shiftRecruitment(@PathVariable("recId") @NonNull Long recId,
+                                               @RequestParam(name = "isRun") @NonNull Boolean isRun) {
+        // 检测
+        recruitmentService.checkNotExists(recId);
+        // 修改
+        recruitmentService.shiftRecruitment(recId, isRun);
+        return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 }

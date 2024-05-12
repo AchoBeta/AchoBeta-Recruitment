@@ -20,5 +20,7 @@ public class Recruitment extends BaseIncrIDEntity implements Serializable {
 
     private Boolean isRun;
 
+    private Date deadline;
+
     private static final long serialVersionUID = 1L;
 }

@@ -8,6 +8,7 @@
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="batch" column="batch" jdbcType="INTEGER"/>
             <result property="isRun" column="is_run" jdbcType="BIT"/>
+            <result property="deadline" column="deadline" jdbcType="TIMESTAMP"/>
             <result property="version" column="version" jdbcType="INTEGER"/>
             <result property="deleted" column="is_deleted" jdbcType="BIT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -15,7 +16,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,batch,is_run,
+        id,batch,is_run,deadline,
         version,is_deleted,create_time,
         update_time
     </sql>
