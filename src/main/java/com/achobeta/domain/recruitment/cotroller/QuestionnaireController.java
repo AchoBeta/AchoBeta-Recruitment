@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,10 +56,11 @@ public class QuestionnaireController {
         // 检测
         recruitmentService.checkNotExists(recId);
         // 获取参与本次招新的所有用户问卷
-        List<QuestionnaireVO> questionnaireVOS = recruitmentService.getStuIdsByRecId(recId).stream().map(stuId -> {
-            // 尝试获取问卷
-            return questionnaireService.getQuestionnaire(stuId, recId);
-        }).collect(Collectors.toList());
+        List<QuestionnaireVO> questionnaireVOS = recruitmentService.getStuIdsByRecId(recId)
+                .stream()
+                .map(stuId -> questionnaireService.getQuestionnaire(stuId, recId))
+                .sorted(Comparator.comparingInt(x -> x.getTimePeriodVOS().size()))
+                .collect(Collectors.toList());
         // 返回问卷
         return SystemJsonResponse.SYSTEM_SUCCESS(questionnaireVOS);
     }
