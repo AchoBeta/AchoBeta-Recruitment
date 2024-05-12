@@ -2,6 +2,9 @@ package com.achobeta.domain.recruitment.model.dao.mapper;
 
 import com.achobeta.domain.recruitment.model.entity.Recruitment;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author 马拉圈
@@ -10,6 +13,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.achobeta.domain.recruitment.model.entity.Recruitment
 */
 public interface RecruitmentMapper extends BaseMapper<Recruitment> {
+
+    List<Long> getStuIdsByRecId(@Param("recId") Long recId);
 
 }
 

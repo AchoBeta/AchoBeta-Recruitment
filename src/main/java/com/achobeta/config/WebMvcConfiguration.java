@@ -47,6 +47,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         registry.addInterceptor(studentInterceptor)
                 .addPathPatterns("/api/v1/user/**")
                 .addPathPatterns("/api/v1/questionnaire/**")
+                .excludePathPatterns("/api/v1/questionnaire/list/**")
         ;
 
         registry.addInterceptor(managerInterceptor)
@@ -57,6 +58,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 .excludePathPatterns("/api/v1/period/list/**")
                 .addPathPatterns("/api/v1/entry/**")
                 .excludePathPatterns("/api/v1/entry/list/**")
+                .addPathPatterns("/api/v1/questionnaire/list/**")
         ;
 
     }

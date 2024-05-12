@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -22,6 +23,8 @@ import java.util.Objects;
 @Slf4j
 public class RecruitmentServiceImpl extends ServiceImpl<RecruitmentMapper, Recruitment>
     implements RecruitmentService{
+
+    private final RecruitmentMapper recruitmentMapper;
 
     @Override
     public Long createRecruitment(Integer batch) {
@@ -36,6 +39,11 @@ public class RecruitmentServiceImpl extends ServiceImpl<RecruitmentMapper, Recru
         if(Objects.isNull(this.getById(id))) {
             throw new GlobalServiceException(GlobalServiceStatusCode.RECRUITMENT_NOT_EXISTS);
         }
+    }
+
+    @Override
+    public List<Long> getStuIdsByRecId(Long recId) {
+        return recruitmentMapper.getStuIdsByRecId(recId);
     }
 
 }
