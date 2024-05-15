@@ -2,12 +2,11 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.achobeta.domain.recruitment.model.dao.mapper.CustomEntryMapper">
+<mapper namespace="com.achobeta.domain.paper.model.dao.mapper.PaperEntryMapper">
 
-    <resultMap id="BaseResultMap" type="com.achobeta.domain.recruitment.model.entity.CustomEntry">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="recId" column="rec_id" jdbcType="BIGINT"/>
-            <result property="title" column="title" jdbcType="VARCHAR"/>
+    <resultMap id="BaseResultMap" type="com.achobeta.domain.paper.model.entity.PaperEntry">
+            <result property="paperId" column="paper_id" jdbcType="BIGINT"/>
+            <result property="questionId" column="question_id" jdbcType="BIGINT"/>
             <result property="version" column="version" jdbcType="INTEGER"/>
             <result property="deleted" column="is_deleted" jdbcType="BIT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -15,8 +14,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,rec_id,title,
-        version,is_deleted,create_time,
-        update_time
+        paper_id,question_id,version,
+        is_deleted,create_time,update_time
     </sql>
 </mapper>

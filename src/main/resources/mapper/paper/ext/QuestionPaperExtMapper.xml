@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.achobeta.domain.paper.model.dao.mapper.QuestionPaperMapper">
+
+    <select id="getQuestionPapers" parameterType="java.lang.Long"
+            resultType="com.achobeta.domain.paper.model.vo.QuestionPaperVO">
+        select
+            qp.id `id`, pl.lib_type `type`, qp.title `title`
+        from question_paper qp, question_paper_library pl
+        where qp.is_deleted = 0 and pl.is_deleted = 0
+          and pl.id = #{libId,jdbcType=BIGINT}
+          and qp.lib_id = pl.id
+        order by qp.create_time
+    </select>
+
+</mapper>

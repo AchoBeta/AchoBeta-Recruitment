@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.achobeta.domain.paper.model.dao.mapper.PaperEntryMapper">
+
+    <resultMap id="QuestionMap" type="com.achobeta.domain.paper.model.vo.QuestionEntryVO">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="type" column="lib_type" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="QuestionsOnPaper" type="com.achobeta.domain.paper.model.vo.PaperQuestionsVO">
+        <result property="id" column="p_id" jdbcType="BIGINT"/>
+        <result property="type" column="p_lib_type" jdbcType="VARCHAR"/>
+        <result property="title" column="p_title" jdbcType="VARCHAR"/>
+        <collection property="questions" ofType="com.achobeta.domain.paper.model.vo.QuestionPaperVO"
+                    resultMap="QuestionMap" columnPrefix="q_"/>
+    </resultMap>
+
+    <select id="getQuestionsOnPaper" parameterType="java.lang.Long" resultMap="QuestionsOnPaper">
+        select
+            qp.id p_id, pl.lib_type p_lib_type, qp.title p_title,
+            qe.id q_id, ql.lib_type q_lib_type, qe.title q_title
+        from question_paper_library pl, question_paper qp
+            left join paper_entry pe on qp.id = pe.paper_id and qp.is_deleted = 0 and pe.is_deleted = 0
+            left join question_entry qe on pe.question_id = qe.id and pe.is_deleted = 0 and qe.is_deleted = 0
+            left join question_library ql on ql.id = qe.lib_id and ql.is_deleted = 0 and qe.is_deleted = 0
+        where qp.is_deleted = 0 and pl.is_deleted = 0
+          and qp.id = #{paperId,jdbcType=BIGINT}
+          and qp.lib_id = pl.id
+        order by qe.create_time
+    </select>
+
+</mapper>
