@@ -7,7 +7,7 @@
     <resultMap id="BaseResultMap" type="com.achobeta.domain.recruitment.model.entity.QuestionnaireEntry">
             <id property="questionnaireId" column="questionnaire_id" jdbcType="BIGINT"/>
             <id property="entryId" column="entry_id" jdbcType="BIGINT"/>
-            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="answer" column="answer" jdbcType="VARCHAR"/>
             <result property="version" column="version" jdbcType="INTEGER"/>
             <result property="deleted" column="is_deleted" jdbcType="BIT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -15,7 +15,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        questionnaire_id,entry_id,content,
+        questionnaire_id,entry_id,answer,
         version,is_deleted,create_time,
         update_time
     </sql>

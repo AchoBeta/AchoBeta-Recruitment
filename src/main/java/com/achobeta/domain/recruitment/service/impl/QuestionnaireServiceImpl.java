@@ -2,16 +2,16 @@ package com.achobeta.domain.recruitment.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.recruitment.service.RecruitmentActivityService;
 import com.achobeta.domain.recruitment.model.dao.mapper.QuestionnaireMapper;
 import com.achobeta.domain.recruitment.model.dto.QuestionnaireDTO;
 import com.achobeta.domain.recruitment.model.entity.Questionnaire;
-import com.achobeta.domain.recruitment.model.vo.EntryVO;
+import com.achobeta.domain.recruitment.model.vo.QuestionnaireEntryVO;
 import com.achobeta.domain.recruitment.model.vo.QuestionnaireVO;
 import com.achobeta.domain.recruitment.model.vo.TimePeriodVO;
 import com.achobeta.domain.recruitment.service.QuestionnaireEntryService;
 import com.achobeta.domain.recruitment.service.QuestionnairePeriodService;
 import com.achobeta.domain.recruitment.service.QuestionnaireService;
-import com.achobeta.domain.recruitment.service.RecruitmentService;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
 * @author 马拉圈
@@ -32,6 +34,8 @@ import java.util.List;
 public class QuestionnaireServiceImpl extends ServiceImpl<QuestionnaireMapper, Questionnaire>
     implements QuestionnaireService{
 
+    private final RecruitmentActivityService recruitmentActivityService;
+
     private final QuestionnaireMapper questionnaireMapper;
 
     private final QuestionnaireEntryService questionnaireEntryService;
@@ -39,19 +43,29 @@ public class QuestionnaireServiceImpl extends ServiceImpl<QuestionnaireMapper, Q
     private final QuestionnairePeriodService questionnairePeriodService;
 
     @Override
+    public Optional<Questionnaire> getQuestionnaire(Long questionnaireId) {
+        return this.lambdaQuery()
+                .eq(Questionnaire::getId, questionnaireId)
+                .oneOpt();
+    }
+
+    @Override
     public QuestionnaireVO createQuestionnaire(Long stuId, Long recId) {
+        // 判断招新活动是否开始
+        recruitmentActivityService.checkActivityRun(recId);
         Questionnaire questionnaire = new Questionnaire();
         questionnaire.setStuId(stuId);
         questionnaire.setRecId(recId);
         this.save(questionnaire);
         QuestionnaireVO questionnaireVO = BeanUtil.copyProperties(questionnaire, QuestionnaireVO.class);
-        questionnaireVO.setEntryVOS(new ArrayList<>());
+        questionnaireVO.setQuestionnaireEntryVOS(new ArrayList<>());
         questionnaireVO.setTimePeriodVOS(new ArrayList<>());
         return questionnaireVO;
     }
 
     @Override
     public QuestionnaireVO getQuestionnaire(Long stuId, Long recId) {
+        // 如果有问卷，那无论有没有启动，都可以获得问卷，但是如果之前没填写过，则不会生成一份新的
         return this.lambdaQuery()
                 .eq(Questionnaire::getStuId, stuId)
                 .eq(Questionnaire::getRecId, recId)
@@ -61,8 +75,8 @@ public class QuestionnaireServiceImpl extends ServiceImpl<QuestionnaireMapper, Q
                     // 转化
                     QuestionnaireVO questionnaireVO = BeanUtil.copyProperties(questionnaire, QuestionnaireVO.class);
                     // 获取自定义项
-                    List<EntryVO> entryVOS = questionnaireMapper.getEntries(questionnaireId);
-                    questionnaireVO.setEntryVOS(entryVOS);
+                    List<QuestionnaireEntryVO> questionnaireEntryVOS = questionnaireMapper.getEntries(questionnaireId);
+                    questionnaireVO.setQuestionnaireEntryVOS(questionnaireEntryVOS);
                     // 获取时间段
                     List<TimePeriodVO> timePeriodVOS = questionnaireMapper.getPeriods(questionnaireId);
                     questionnaireVO.setTimePeriodVOS(timePeriodVOS);
@@ -74,16 +88,15 @@ public class QuestionnaireServiceImpl extends ServiceImpl<QuestionnaireMapper, Q
     public void submitQuestionnaire(QuestionnaireDTO questionnaireDTO) {
         Long questionnaireId = questionnaireDTO.getQuestionnaireId();
         // 更新自定义项
-        questionnaireEntryService.putEntries(questionnaireId, questionnaireDTO.getEntryDTOS());
+        questionnaireEntryService.putEntries(questionnaireId, questionnaireDTO.getQuestionnaireEntryDTOS());
         // 更新时间段
         questionnairePeriodService.putPeriods(questionnaireId, questionnaireDTO.getPeriodIds());
     }
 
     @Override
     public void checkUser(Long stuId, Long questionnaireId) {
-        Long userId = this.lambdaQuery()
-                .eq(Questionnaire::getId, questionnaireId)
-                .oneOpt().orElseThrow(() ->
+        Long userId = getQuestionnaire(questionnaireId)
+                .orElseThrow(() ->
                         new GlobalServiceException(GlobalServiceStatusCode.QUESTIONNAIRE_NOT_EXISTS)
                 ).getStuId();
         if(!userId.equals(stuId)) {
@@ -92,11 +105,21 @@ public class QuestionnaireServiceImpl extends ServiceImpl<QuestionnaireMapper, Q
     }
 
     @Override
-    public Long getQuestionnaireRecId(Long id) {
-        return this.lambdaQuery()
-                .eq(Questionnaire::getId, id)
-                .oneOpt()
-                .orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.QUESTIONNAIRE_NOT_EXISTS))
-                .getRecId();
+    public Long getQuestionnaireRecId(Long questionnaireId) {
+        return getQuestionnaire(questionnaireId)
+                .orElseThrow(() ->
+                        new GlobalServiceException(GlobalServiceStatusCode.QUESTIONNAIRE_NOT_EXISTS)
+                ).getRecId();
     }
+
+    @Override
+    public List<Long> getQuestionnaireIdsByPaperId(Long paperId) {
+        return recruitmentActivityService.getRecIdsByPaperId(paperId)
+                .stream()
+                .parallel()
+                .map(recruitmentActivityService::getQuestionnaireIds)
+                .flatMap(Collection::stream)
+                .toList();
+    }
+
 }

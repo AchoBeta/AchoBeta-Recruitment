@@ -19,7 +19,7 @@ public class QuestionnaireDTO {
     private Long questionnaireId;
 
     @NotNull(message = "自定义项集合不能为 null")
-    private List<EntryDTO> entryDTOS; // 自定义项集合
+    private List<QuestionnaireEntryDTO> questionnaireEntryDTOS; // 自定义项集合
 
     @NotNull(message = "选中时间段的 id 集合不能为 null")
     private List<Long> periodIds; // 选中时间段的 id 集合

@@ -2,20 +2,20 @@ package com.achobeta.domain.recruitment.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.recruitment.model.dao.mapper.QuestionnaireEntryMapper;
-import com.achobeta.domain.recruitment.model.dto.EntryDTO;
+import com.achobeta.domain.recruitment.model.dto.QuestionnaireEntryDTO;
 import com.achobeta.domain.recruitment.model.entity.Questionnaire;
 import com.achobeta.domain.recruitment.model.entity.QuestionnaireEntry;
-import com.achobeta.domain.recruitment.service.CustomEntryService;
 import com.achobeta.domain.recruitment.service.QuestionnaireEntryService;
+import com.achobeta.domain.recruitment.service.RecruitmentActivityService;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
 * @author 马拉圈
@@ -28,7 +28,9 @@ import java.util.Optional;
 public class QuestionnaireEntryServiceImpl extends ServiceImpl<QuestionnaireEntryMapper, QuestionnaireEntry>
     implements QuestionnaireEntryService{
 
-    private final CustomEntryService customEntryService;
+    private final static String DEFAULT_ANSWER = "";
+
+    private final RecruitmentActivityService recruitmentActivityService;
 
     private Long getQuestionnaireRecId(Long questionnaireId) {
         return Db.lambdaQuery(Questionnaire.class).eq(Questionnaire::getId, questionnaireId).oneOpt().orElseThrow(() ->
@@ -36,53 +38,48 @@ public class QuestionnaireEntryServiceImpl extends ServiceImpl<QuestionnaireEntr
     }
 
     @Override
-    public QuestionnaireEntry getQuestionnaireEntry(Long questionnaireId, Long entryId) {
+    public Optional<QuestionnaireEntry> getQuestionnaireEntry(Long questionnaireId, Long entryId) {
         return this.lambdaQuery()
                 .eq(QuestionnaireEntry::getQuestionnaireId, questionnaireId)
                 .eq(QuestionnaireEntry::getEntryId, entryId)
-                .one();
+                .oneOpt();
     }
 
-    @Override
-    public void checkQuestionnaireEntryId(Long recId1, Long entryId) {
-        Long recId2 = customEntryService.getRecIdById(entryId);
-        if(!recId1.equals(recId2)) {
-            throw new GlobalServiceException(String.format("数据不一致，招新活动 id %d 与 %d 对应不上", recId1, entryId),
-                    GlobalServiceStatusCode.PARAM_NOT_VALID);
-        }
-    }
-
-    private void addOrUpdateQuestionnaireEntry(Long questionnaireId, Long recId, Long entryId, String content) {
-        // 判断招新 id 是否一致
-        checkQuestionnaireEntryId(recId, entryId);
-        Optional.ofNullable(getQuestionnaireEntry(questionnaireId, entryId))
+    private void addOrUpdateQuestionnaireEntry(Long questionnaireId, Long entryId, String answer) {
+        getQuestionnaireEntry(questionnaireId, entryId)
                 .ifPresentOrElse(questionnaireEntry -> {
                     this.lambdaUpdate()
                             .eq(QuestionnaireEntry::getQuestionnaireId, questionnaireId)
                             .eq(QuestionnaireEntry::getEntryId, entryId)
-                            .set(QuestionnaireEntry::getContent, content)
+                            .set(QuestionnaireEntry::getAnswer, answer)
                             .update();
                 }, () -> {
                     QuestionnaireEntry questionnaireEntry = new QuestionnaireEntry();
                     questionnaireEntry.setQuestionnaireId(questionnaireId);
                     questionnaireEntry.setEntryId(entryId);
-                    questionnaireEntry.setContent(content);
+                    questionnaireEntry.setAnswer(answer);
                     this.save(questionnaireEntry);
                 });
     }
 
     @Override
-    public void putEntries(Long questionnaireId, List<EntryDTO> entryDTOS) {
+    public void putEntries(Long questionnaireId, List<QuestionnaireEntryDTO> questionnaireEntryDTOS) {
         Long recId = getQuestionnaireRecId(questionnaireId);
-        entryDTOS.forEach(entryDTO -> {
-            Long entryId = entryDTO.getEntryId();
-            String content = entryDTO.getContent();
-            addOrUpdateQuestionnaireEntry(questionnaireId, recId, entryId, content);
+        Map<Long, String> map = new HashMap<>();
+        // 获取答题模板
+        recruitmentActivityService.getPaperQuestions(recId).forEach(questionEntry -> {
+            map.put(questionEntry.getId(), DEFAULT_ANSWER);
+        });
+        // 将答案填入模板
+        questionnaireEntryDTOS.stream()
+                .filter(questionnaireEntryDTO -> map.containsKey(questionnaireEntryDTO.getEntryId()))
+                .filter(questionnaireEntryDTO -> StringUtils.hasText(questionnaireEntryDTO.getAnswer()))
+                .forEach(questionnaireEntryDTO -> {
+                    map.put(questionnaireEntryDTO.getEntryId(), questionnaireEntryDTO.getAnswer());
+                });
+        map.forEach((entryId, answer) -> {
+            addOrUpdateQuestionnaireEntry(questionnaireId, entryId, answer);
         });
     }
 
 }
-
-
-
-

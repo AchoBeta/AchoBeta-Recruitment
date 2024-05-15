@@ -18,7 +18,7 @@ public class QuestionnaireEntry implements Serializable {
 
     private Long entryId;
 
-    private String content;
+    private String answer;
 
     /**
      * 创建时间

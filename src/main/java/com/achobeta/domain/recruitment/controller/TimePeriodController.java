@@ -1,8 +1,9 @@
-package com.achobeta.domain.recruitment.cotroller;
+package com.achobeta.domain.recruitment.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.recruitment.model.dto.TimePeriodDTO;
-import com.achobeta.domain.recruitment.service.RecruitmentService;
+import com.achobeta.domain.recruitment.service.QuestionnairePeriodService;
+import com.achobeta.domain.recruitment.service.RecruitmentActivityService;
 import com.achobeta.domain.recruitment.service.TimePeriodService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.util.ValidatorUtils;
@@ -22,18 +23,20 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/period")
-public class PeriodController {
+public class TimePeriodController {
 
-    private final RecruitmentService recruitmentService;
+    private final RecruitmentActivityService recruitmentActivityService;
 
     private final TimePeriodService timePeriodService;
+
+    private final QuestionnairePeriodService questionnairePeriodService;
 
     @PostMapping("/add")
     public SystemJsonResponse addTimePeriod(@RequestBody TimePeriodDTO timePeriodDTO) {
         // 校验
         ValidatorUtils.validate(timePeriodDTO);
         Long recId = timePeriodDTO.getRecId();
-        recruitmentService.checkNotRun(recId);
+        recruitmentActivityService.checkActivityNotRun(recId);
         // 添加
         Long startTime = timePeriodDTO.getStartTime();
         Long endTime = timePeriodDTO.getEndTime();
@@ -47,7 +50,7 @@ public class PeriodController {
     public SystemJsonResponse removeTimePeriod(@PathVariable("id") @NonNull Long id) {
         // 校验
         Long recId = timePeriodService.getRecIdById(id);
-        recruitmentService.checkNotRun(recId);
+        recruitmentActivityService.checkActivityNotRun(recId);
         // 删除
         timePeriodService.removeTimePeriod(id);
         log.info("管理员({}) 删除时间段 {}",

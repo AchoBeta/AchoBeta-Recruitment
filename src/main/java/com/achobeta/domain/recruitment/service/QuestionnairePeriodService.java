@@ -4,6 +4,7 @@ import com.achobeta.domain.recruitment.model.entity.QuestionnairePeriod;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
 * @author 马拉圈
@@ -12,9 +13,7 @@ import java.util.List;
 */
 public interface QuestionnairePeriodService extends IService<QuestionnairePeriod> {
 
-    QuestionnairePeriod getQuestionnairePeriod(Long questionnaireId, Long periodId);
-
-    void checkQuestionnairePeriodId(Long questionnaireId, Long periodId);
+    Optional<QuestionnairePeriod> getQuestionnairePeriod(Long questionnaireId, Long periodId);
 
     void putPeriods(Long questionnaireId, List<Long> periodIds);
 

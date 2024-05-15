@@ -11,15 +11,12 @@ import lombok.Data;
  * Time: 16:19
  */
 @Data
-public class EntryVO {
+public class QuestionnaireEntryVO {
 
-    @TableField("id")
     private Long id;
 
-    @TableField("title")
     private String title;
 
-    @TableField("content")
-    private String content;
+    private String answer;
 
 }

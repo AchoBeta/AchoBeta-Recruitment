@@ -1,8 +1,10 @@
 package com.achobeta.domain.recruitment.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.recruitment.model.dao.mapper.TimePeriodMapper;
 import com.achobeta.domain.recruitment.model.entity.TimePeriod;
+import com.achobeta.domain.recruitment.model.vo.TimePeriodVO;
 import com.achobeta.domain.recruitment.service.TimePeriodService;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -31,6 +33,7 @@ public class TimePeriodServiceImpl extends ServiceImpl<TimePeriodMapper, TimePer
 
     private final static TimeUnit GAP_UNIT = TimeUnit.HOURS;
 
+
     private void timePeriodValidate(Long startTime, Long endTime) {
         long gap = endTime - startTime;
         if(startTime.compareTo(System.currentTimeMillis()) < 0 ||
@@ -51,13 +54,15 @@ public class TimePeriodServiceImpl extends ServiceImpl<TimePeriodMapper, TimePer
     }
 
     @Override
-    public List<TimePeriod> selectTimePeriods(Long recId) {
-        return this.lambdaQuery().eq(TimePeriod::getRecId, recId).list();
+    public List<TimePeriodVO> getTimePeriods(Long recId) {
+        List<TimePeriod> timePeriods = this.lambdaQuery().eq(TimePeriod::getRecId, recId).list();
+        return BeanUtil.copyToList(timePeriods, TimePeriodVO.class);
     }
 
     @Override
     public void removeTimePeriod(Long id) {
         this.lambdaUpdate().eq(TimePeriod::getId, id).remove();
+
     }
 
     @Override
@@ -70,7 +75,3 @@ public class TimePeriodServiceImpl extends ServiceImpl<TimePeriodMapper, TimePer
     }
 
 }
-
-
-
-

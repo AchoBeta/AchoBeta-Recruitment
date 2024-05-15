@@ -1,9 +1,6 @@
 package com.achobeta.domain.recruitment.model.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.Version;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -42,10 +39,9 @@ public class QuestionnairePeriod implements Serializable {
     @Version
     private Integer version;
 
-    // 不进行逻辑删除
-//    @TableField(value = "is_deleted", fill = FieldFill.INSERT)
-//    @TableLogic
-//    private Integer deleted;
+    @TableField(value = "is_deleted", fill = FieldFill.INSERT)
+    @TableLogic
+    private Integer deleted;
 
     private static final long serialVersionUID = 1L;
 }

@@ -2,13 +2,14 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.achobeta.domain.recruitment.model.dao.mapper.RecruitmentMapper">
+<mapper namespace="com.achobeta.domain.recruitment.model.dao.mapper.RecruitmentActivityMapper">
 
-    <resultMap id="BaseResultMap" type="com.achobeta.domain.recruitment.model.entity.Recruitment">
+    <resultMap id="BaseResultMap" type="com.achobeta.domain.recruitment.model.entity.RecruitmentActivity">
             <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="paperId" column="paper_id" jdbcType="BIGINT"/>
             <result property="batch" column="batch" jdbcType="INTEGER"/>
-            <result property="isRun" column="is_run" jdbcType="BIT"/>
             <result property="deadline" column="deadline" jdbcType="TIMESTAMP"/>
+            <result property="isRun" column="is_run" jdbcType="BIT"/>
             <result property="version" column="version" jdbcType="INTEGER"/>
             <result property="deleted" column="is_deleted" jdbcType="BIT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -16,8 +17,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,batch,is_run,deadline,
-        version,is_deleted,create_time,
-        update_time
+        id,paper_id,batch,
+        deadline,is_run,version,
+        is_deleted,create_time,update_time
     </sql>
 </mapper>

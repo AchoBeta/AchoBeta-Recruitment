@@ -1,8 +1,7 @@
 package com.achobeta.domain.recruitment.model.dao.mapper;
 
 import com.achobeta.domain.recruitment.model.entity.Questionnaire;
-import com.achobeta.domain.recruitment.model.vo.EntryVO;
-import com.achobeta.domain.recruitment.model.vo.QuestionnaireVO;
+import com.achobeta.domain.recruitment.model.vo.QuestionnaireEntryVO;
 import com.achobeta.domain.recruitment.model.vo.TimePeriodVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
@@ -17,7 +16,7 @@ import java.util.List;
 */
 public interface QuestionnaireMapper extends BaseMapper<Questionnaire> {
 
-    List<EntryVO> getEntries(@Param("questionnaireId") Long questionnaireId);
+    List<QuestionnaireEntryVO> getEntries(@Param("questionnaireId") Long questionnaireId);
 
     List<TimePeriodVO> getPeriods(@Param("questionnaireId") Long questionnaireId);
 

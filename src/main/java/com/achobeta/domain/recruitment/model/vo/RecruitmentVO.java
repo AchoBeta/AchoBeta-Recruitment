@@ -18,6 +18,8 @@ public class RecruitmentVO {
 
     private Long id;
 
+    private Long paperId;
+
     private Integer batch;
 
     private Boolean isRun;

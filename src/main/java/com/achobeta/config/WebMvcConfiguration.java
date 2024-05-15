@@ -30,36 +30,40 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
+        String[] studentIntercept = {
+                "/api/v1/user/**",
+                "/api/v1/questionnaire/**"
+        };
+
+        String[] managerIntercept = {
+                "/api/v1/shortlink/**",
+                "/api/v1/recruit/**",
+                "/api/v1/period/**",
+                "/api/v1/library/**",
+                "/api/v1/paperentry/**",
+                "/api/v1/question/entry/**",
+                "/api/v1/question/paper/**"
+        };
 
         registry.addInterceptor(userInterpretor)
-                .addPathPatterns("/api/v1/user/**")
-                .addPathPatterns("/api/v1/questionnaire/**")
+                .addPathPatterns(studentIntercept)
 
-                .addPathPatterns("/api/v1/shortlink/**")
-                .addPathPatterns("/api/v1/recruit/**")
+                .addPathPatterns(managerIntercept)
                 .excludePathPatterns("/api/v1/recruit/get/**")
                 .excludePathPatterns("/api/v1/recruit/list/**")
-                .addPathPatterns("/api/v1/period/**")
                 .excludePathPatterns("/api/v1/period/list/**")
-                .addPathPatterns("/api/v1/entry/**")
-                .excludePathPatterns("/api/v1/entry/list/**")
         ;
 
         registry.addInterceptor(studentInterceptor)
-                .addPathPatterns("/api/v1/user/**")
-                .addPathPatterns("/api/v1/questionnaire/**")
+                .addPathPatterns(studentIntercept)
                 .excludePathPatterns("/api/v1/questionnaire/list/**")
         ;
 
         registry.addInterceptor(managerInterceptor)
-                .addPathPatterns("/api/v1/shortlink/**")
-                .addPathPatterns("/api/v1/recruit/**")
+                .addPathPatterns(managerIntercept)
                 .excludePathPatterns("/api/v1/recruit/get/**")
                 .excludePathPatterns("/api/v1/recruit/list/**")
-                .addPathPatterns("/api/v1/period/**")
                 .excludePathPatterns("/api/v1/period/list/**")
-                .addPathPatterns("/api/v1/entry/**")
-                .excludePathPatterns("/api/v1/entry/list/**")
                 .addPathPatterns("/api/v1/questionnaire/list/**")
         ;
 

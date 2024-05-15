@@ -1,18 +1,17 @@
-package com.achobeta.domain.recruitment.cotroller;
+package com.achobeta.domain.recruitment.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.paper.model.vo.QuestionEntryVO;
+import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.domain.recruitment.model.dto.RecruitmentDTO;
-import com.achobeta.domain.recruitment.model.entity.CustomEntry;
-import com.achobeta.domain.recruitment.model.entity.Recruitment;
-import com.achobeta.domain.recruitment.model.entity.TimePeriod;
-import com.achobeta.domain.recruitment.model.vo.CustomEntryVO;
-import com.achobeta.domain.recruitment.model.vo.RecruitmentModelVO;
+import com.achobeta.domain.recruitment.model.dto.RecruitmentPaperDTO;
+import com.achobeta.domain.recruitment.model.entity.RecruitmentActivity;
+import com.achobeta.domain.recruitment.model.vo.RecruitmentTemplate;
 import com.achobeta.domain.recruitment.model.vo.RecruitmentVO;
 import com.achobeta.domain.recruitment.model.vo.TimePeriodVO;
-import com.achobeta.domain.recruitment.service.CustomEntryService;
-import com.achobeta.domain.recruitment.service.RecruitmentService;
+import com.achobeta.domain.recruitment.service.RecruitmentActivityService;
 import com.achobeta.domain.recruitment.service.TimePeriodService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.exception.GlobalServiceException;
@@ -39,11 +38,11 @@ import java.util.Objects;
 @RequestMapping("/api/v1/recruit")
 public class RecruitmentController {
 
-    private final RecruitmentService recruitmentService;
-
-    private final CustomEntryService customEntryService;
+    private final RecruitmentActivityService recruitmentActivityService;
 
     private final TimePeriodService timePeriodService;
+
+    private final QuestionPaperService questionPaperService;
 
     @PostMapping("/create")
     public SystemJsonResponse createRecruitment(@RequestBody RecruitmentDTO recruitmentDTO) {
@@ -55,7 +54,7 @@ public class RecruitmentController {
         }
         // 调用服务创建一次招新活动
         Date deadline = new Date(recruitmentDTO.getDeadline());
-        Long recruitmentId = recruitmentService.createRecruitment(batch, deadline);
+        Long recruitmentId = recruitmentActivityService.createRecruitmentActivity(batch, deadline);
         log.info("管理员({}) 创建了一次招新，版本：{} {}，id：{}",
                 BaseContext.getCurrentUser().getUserId(), batch, deadline, recruitmentId);
         // 返回招新id
@@ -64,11 +63,11 @@ public class RecruitmentController {
 
     @GetMapping("/list")
     public SystemJsonResponse getRecruitments(@RequestParam(name = "isRun", required = false) Boolean isRun) {
-        List<Recruitment> list = null;
+        List<RecruitmentActivity> list = null;
         if(Objects.isNull(isRun)) {
-            list = recruitmentService.list();
+            list = recruitmentActivityService.list();
         } else {
-            list = recruitmentService.lambdaQuery().eq(Recruitment::getIsRun, isRun).list();
+            list = recruitmentActivityService.lambdaQuery().eq(RecruitmentActivity::getIsRun, isRun).list();
         }
         List<RecruitmentVO> recruitmentVOS = BeanUtil.copyToList(list, RecruitmentVO.class);
         return SystemJsonResponse.SYSTEM_SUCCESS(recruitmentVOS);
@@ -76,30 +75,40 @@ public class RecruitmentController {
 
     @GetMapping("/get/{recId}")
     public SystemJsonResponse getCustomDefine(@PathVariable("recId") @NonNull Long recId) {
-        Recruitment recruitment = recruitmentService.getById(recId);
-        if(Objects.isNull(recruitment)) {
-            throw new GlobalServiceException(GlobalServiceStatusCode.RECRUITMENT_NOT_EXISTS);
-        }
+        RecruitmentActivity recruitment = recruitmentActivityService.checkAndGetRecruitment(recId);
         // 查询自定义项
-        List<CustomEntry> customEntries = customEntryService.selectCustomEntry(recId);
+        List<QuestionEntryVO> questionEntryVOS = recruitmentActivityService.getPaperQuestions(recId);
         // 查询时间段
-        List<TimePeriod> timePeriods = timePeriodService.selectTimePeriods(recId);
+        List<TimePeriodVO> timePeriodVOS = timePeriodService.getTimePeriods(recId);
         // 构造招新活动的自定义问卷模板
-        RecruitmentModelVO recruitmentModelVO = RecruitmentModelVO.builder()
+        RecruitmentTemplate recruitmentTemplate = RecruitmentTemplate.builder()
                 .recruitmentVO(BeanUtil.copyProperties(recruitment, RecruitmentVO.class))
-                .customEntryVOS(BeanUtil.copyToList(customEntries, CustomEntryVO.class))
-                .timePeriodVOS(BeanUtil.copyToList(timePeriods, TimePeriodVO.class))
+                .questionEntryVOS(questionEntryVOS)
+                .timePeriodVOS(timePeriodVOS)
                 .build();
-        return SystemJsonResponse.SYSTEM_SUCCESS(recruitmentModelVO);
+        return SystemJsonResponse.SYSTEM_SUCCESS(recruitmentTemplate);
     }
 
     @GetMapping("/shift/{recId}")
     public SystemJsonResponse shiftRecruitment(@PathVariable("recId") @NonNull Long recId,
                                                @RequestParam(name = "isRun") @NonNull Boolean isRun) {
         // 检测
-        recruitmentService.checkNotExists(recId);
+        recruitmentActivityService.checkRecruitmentExists(recId);
         // 修改
-        recruitmentService.shiftRecruitment(recId, isRun);
+        recruitmentActivityService.shiftRecruitmentActivity(recId, isRun);
+        return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
+
+    @PostMapping("/set/paper")
+    public SystemJsonResponse setRecruitmentQuestionPaper(@RequestBody RecruitmentPaperDTO recruitmentPaperDTO) {
+        // 检查
+        ValidatorUtils.validate(recruitmentPaperDTO);
+        Long recId = recruitmentPaperDTO.getRecId();
+        recruitmentActivityService.checkActivityNotRun(recId);
+        Long paperId = recruitmentPaperDTO.getPaperId();
+        questionPaperService.checkPaperExists(paperId);
+        // 设置
+        recruitmentActivityService.setRecruitmentQuestionPaper(recId, paperId);
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 }

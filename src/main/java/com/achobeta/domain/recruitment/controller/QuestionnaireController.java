@@ -1,10 +1,10 @@
-package com.achobeta.domain.recruitment.cotroller;
+package com.achobeta.domain.recruitment.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.recruitment.model.dto.QuestionnaireDTO;
 import com.achobeta.domain.recruitment.model.vo.QuestionnaireVO;
 import com.achobeta.domain.recruitment.service.QuestionnaireService;
-import com.achobeta.domain.recruitment.service.RecruitmentService;
+import com.achobeta.domain.recruitment.service.RecruitmentActivityService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.util.ValidatorUtils;
 import lombok.NonNull;
@@ -29,14 +29,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/questionnaire")
 public class QuestionnaireController {
 
-    private final RecruitmentService recruitmentService;
+    private final RecruitmentActivityService recruitmentActivityService;
 
     private final QuestionnaireService questionnaireService;
 
     @GetMapping("/get/{recId}")
     public SystemJsonResponse getQuestionnaire(@PathVariable("recId") @NonNull Long recId) {
         // 检测
-        recruitmentService.checkNotExists(recId);
+        recruitmentActivityService.checkRecruitmentExists(recId);
         // 当前用户
         long stuId = BaseContext.getCurrentUser().getUserId();
         // 尝试获取问卷
@@ -48,11 +48,11 @@ public class QuestionnaireController {
     @GetMapping("/list/{recId}")
     public SystemJsonResponse getQuestionnaires(@PathVariable("recId") @NonNull Long recId) {
         // 检测
-        recruitmentService.checkNotExists(recId);
+        recruitmentActivityService.checkRecruitmentExists(recId);
         // 获取参与本次招新的所有用户问卷
-        List<QuestionnaireVO> questionnaireVOS = recruitmentService.getStuIdsByRecId(recId)
+        List<QuestionnaireVO> questionnaireVOS = recruitmentActivityService.getStuIdsByRecId(recId)
                 .stream()
-                .map(stuId -> questionnaireService.getQuestionnaire(stuId, recId))
+                .map(stuId -> questionnaireService.getQuestionnaire(stuId, recId)) // 这里的 stuId 一定是有问卷的
                 .sorted(Comparator.comparingInt(x -> x.getTimePeriodVOS().size()))
                 .collect(Collectors.toList());
         // 返回问卷
@@ -66,7 +66,7 @@ public class QuestionnaireController {
         // 检测招新是否开始
         Long questionnaireId = questionnaireDTO.getQuestionnaireId();
         Long recId = questionnaireService.getQuestionnaireRecId(questionnaireId);
-        recruitmentService.checkRun(recId);
+        recruitmentActivityService.checkActivityRun(recId);
         // 当前用户
         long stuId = BaseContext.getCurrentUser().getUserId();
         questionnaireService.checkUser(stuId, questionnaireId);

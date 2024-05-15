@@ -1,6 +1,7 @@
 package com.achobeta.domain.recruitment.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.recruitment.service.RecruitmentActivityService;
 import com.achobeta.domain.recruitment.model.dao.mapper.QuestionnairePeriodMapper;
 import com.achobeta.domain.recruitment.model.entity.Questionnaire;
 import com.achobeta.domain.recruitment.model.entity.QuestionnairePeriod;
@@ -37,24 +38,15 @@ public class QuestionnairePeriodServiceImpl extends ServiceImpl<QuestionnairePer
     }
 
     @Override
-    public QuestionnairePeriod getQuestionnairePeriod(Long questionnaireId, Long periodId) {
+    public Optional<QuestionnairePeriod> getQuestionnairePeriod(Long questionnaireId, Long periodId) {
         return this.lambdaQuery()
                 .eq(QuestionnairePeriod::getQuestionnaireId, questionnaireId)
                 .eq(QuestionnairePeriod::getPeriodId, periodId)
-                .one();
-    }
-
-    @Override
-    public void checkQuestionnairePeriodId(Long recId1, Long periodId) {
-        Long recId2 = timePeriodService.getRecIdById(periodId);
-        if(!recId1.equals(recId2)) {
-            throw new GlobalServiceException(String.format("数据不一致，招新活动 id %d 与 %d 对应不上", recId1, periodId),
-                    GlobalServiceStatusCode.PARAM_NOT_VALID);
-        }
+                .oneOpt();
     }
 
     private void addQuestionnairePeriod(Long questionnaireId, Long periodId) {
-        Optional.ofNullable(getQuestionnairePeriod(questionnaireId, periodId))
+        getQuestionnairePeriod(questionnaireId, periodId)
                 .ifPresentOrElse(questionnairePeriod -> {
                 }, () -> {
                     // 插入一条新的
@@ -66,7 +58,7 @@ public class QuestionnairePeriodServiceImpl extends ServiceImpl<QuestionnairePer
     }
 
     private void removeQuestionnairePeriod(Long questionnaireId, Long periodId) {
-        Optional.ofNullable(getQuestionnairePeriod(questionnaireId, periodId))
+        getQuestionnairePeriod(questionnaireId, periodId)
                 .ifPresentOrElse(questionnairePeriod -> {
                     // 删除一条旧的
                     this.lambdaUpdate()
@@ -81,7 +73,7 @@ public class QuestionnairePeriodServiceImpl extends ServiceImpl<QuestionnairePer
     public void putPeriods(Long questionnaireId, List<Long> periodIds) {
         Long recId = getQuestionnaireRecId(questionnaireId);
         Map<Long, Boolean> map = new HashMap<>();
-        timePeriodService.selectTimePeriods(recId).forEach(timePeriod -> {
+        timePeriodService.getTimePeriods(recId).forEach(timePeriod -> {
             map.put(timePeriod.getId(), Boolean.FALSE);
         });
         // 将选中的时间段设置为 true（不存在于 map 的忽略即可）
@@ -98,7 +90,3 @@ public class QuestionnairePeriodServiceImpl extends ServiceImpl<QuestionnairePer
         });
     }
 }
-
-
-
-

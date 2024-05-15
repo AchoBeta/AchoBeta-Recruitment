@@ -20,7 +20,7 @@ public class QuestionnaireVO {
 
     private Long recId;
 
-    private List<EntryVO> entryVOS;
+    private List<QuestionnaireEntryVO> questionnaireEntryVOS;
 
     private List<TimePeriodVO> timePeriodVOS;
 }

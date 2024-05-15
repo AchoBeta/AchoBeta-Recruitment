@@ -55,6 +55,7 @@ public enum GlobalServiceStatusCode {
     RECRUITMENT_NOT_EXISTS(4001, "本场招新不存在"),
     RECRUITMENT_IS_RUN(4002, "招新已开始"),
     RECRUITMENT_IS_NOT_RUN(4003, "招新未开始"),
+    RECRUITMENT_NOT_SET_PAPER(4004, "招新未设置题单"),
 
     QUESTIONNAIRE_NOT_EXISTS(4101, "问卷不存在"),
     ENTRY_NOT_EXISTS(4102, "自定义项不存在"),
@@ -62,6 +63,12 @@ public enum GlobalServiceStatusCode {
     PERIOD_NOT_EXISTS(4201, "时间段不存在"),
     PERIOD_IS_SELECTED(4202,"时间段被选中了"),
     PERIOD_IS_NOT_SELECTED(4203, "时间段未选中"),
+
+    QUESTION_LIBRARY_NOT_EXISTS(4301, "题库不存在"),
+    QUESTION_PAPER_LIBRARY_NOT_EXISTS(4302, "题单库不存在"),
+    QUESTION_NOT_EXISTS(4303, "题目不存在"),
+    QUESTION_PAPER_NOT_EXISTS(4304, "题单不存在"),
+
 
     /* -------------- */;
 

@@ -16,15 +16,12 @@ import java.util.Date;
 @Data
 public class TimePeriodVO {
 
-    @TableField("id")
     private Long id;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @TableField("start_time")
     private Date startTime;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @TableField("end_time")
     private Date endTime;
 
 }

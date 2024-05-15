@@ -1,6 +1,7 @@
 package com.achobeta.domain.recruitment.service;
 
 import com.achobeta.domain.recruitment.model.entity.TimePeriod;
+import com.achobeta.domain.recruitment.model.vo.TimePeriodVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.time.LocalDateTime;
@@ -16,7 +17,7 @@ public interface TimePeriodService extends IService<TimePeriod> {
 
     Long addTimePeriod(Long recId, Long startTime, Long endTime);
 
-    List<TimePeriod> selectTimePeriods(Long recId);
+    List<TimePeriodVO>  getTimePeriods(Long recId);
 
     void removeTimePeriod(Long id);
 
