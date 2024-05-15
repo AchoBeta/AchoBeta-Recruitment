@@ -4,10 +4,15 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.achobeta.domain.paper.model.dao.mapper.QuestionEntryMapper">
 
-    <select id="getQuestionEntries" parameterType="java.lang.Long"
-            resultType="com.achobeta.domain.paper.model.vo.QuestionEntryVO">
+    <resultMap id="QuestionEntryMap" type="com.achobeta.domain.paper.model.vo.QuestionEntryVO">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="type" column="lib_type" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getQuestionEntries" parameterType="java.lang.Long" resultMap="QuestionEntryMap">
         select
-            qe.id `id`, ql.lib_type `type`, qe.title `title`
+            qe.id, ql.lib_type, qe.title
         from question_entry qe, question_library ql
         where qe.is_deleted = 0 and ql.is_deleted = 0
           and ql.id = #{libId,jdbcType=BIGINT}

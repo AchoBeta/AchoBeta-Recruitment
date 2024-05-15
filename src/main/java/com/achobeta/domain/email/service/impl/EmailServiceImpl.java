@@ -45,8 +45,6 @@ public class EmailServiceImpl implements EmailService {
     private final RedisCache redisCache;
     private final EmailSender emailSender;
 
-    private Map<String, Object> captchaCodeMap;
-
     @Override
     public void sendIdentifyingCode(String email, String code) {
         final String redisKey = CAPTCHA_CODES_KEY + email;
@@ -71,7 +69,6 @@ public class EmailServiceImpl implements EmailService {
         Optional<Map<String, Object>> cacheOptional = redisCache.getCacheMap(redisKey);
         cacheOptional.ifPresentOrElse(
                 cache -> {
-                    captchaCodeMap = cache;
                     long curRetryCount = redisCache.decrementCacheMapNumber(redisKey, CAPTCHA_CODE_CNT_KEY);
                     if (curRetryCount <= 0) {
                         redisCache.setCacheObject(RISK_CONTROLLER_USERS_KEY + email, email, riskControlTime, TimeUnit.DAYS);
@@ -79,16 +76,19 @@ public class EmailServiceImpl implements EmailService {
                         // 申请验证码次数用尽
                         throw new GlobalServiceException(message, EMAIL_CAPTCHA_CODE_COUNT_EXHAUST);
                     }
+                    redisCache.execute(() -> {
+                        redisCache.setCacheMapValue(redisKey, CAPTCHA_CODE_KEY, code);
+                        redisCache.expire(redisKey, timeout, TimeUnit.MINUTES);
+                    });
                 },
                 // 如果 redis 没有对应 key 值，初始化
                 () -> {
-                    captchaCodeMap = new HashMap<>();
-                    captchaCodeMap.put(CAPTCHA_CODE_KEY, code);
+                    Map<String, Object> captchaCodeMap = new HashMap<>();
                     captchaCodeMap.put(CAPTCHA_CODE_CNT_KEY, maxRetryCount);
+                    captchaCodeMap.put(CAPTCHA_CODE_KEY, code);
+                    redisCache.setCacheMap(redisKey, captchaCodeMap, timeout, TimeUnit.MINUTES);
                 }
         );
-        redisCache.setCacheMap(redisKey, captchaCodeMap, timeout, TimeUnit.MINUTES);
-
         // 发送模板消息
         buildEmailAndSend(email, code);
     }
