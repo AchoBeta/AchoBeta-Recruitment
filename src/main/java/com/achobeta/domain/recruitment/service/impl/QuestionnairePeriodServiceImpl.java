@@ -1,7 +1,6 @@
 package com.achobeta.domain.recruitment.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.domain.recruitment.service.RecruitmentActivityService;
 import com.achobeta.domain.recruitment.model.dao.mapper.QuestionnairePeriodMapper;
 import com.achobeta.domain.recruitment.model.entity.Questionnaire;
 import com.achobeta.domain.recruitment.model.entity.QuestionnairePeriod;

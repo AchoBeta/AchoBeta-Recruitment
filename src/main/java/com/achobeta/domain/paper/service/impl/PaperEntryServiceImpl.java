@@ -1,17 +1,13 @@
 package com.achobeta.domain.paper.service.impl;
 
-import com.achobeta.domain.paper.handler.chain.RemoveQuestionHandlerChain;
-import com.achobeta.domain.paper.model.entity.QuestionEntry;
-import com.achobeta.domain.paper.model.entity.QuestionPaper;
-import com.achobeta.domain.paper.model.vo.PaperQuestionsVO;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.achobeta.domain.paper.model.entity.PaperEntry;
-import com.achobeta.domain.paper.service.PaperEntryService;
 import com.achobeta.domain.paper.model.dao.mapper.PaperEntryMapper;
+import com.achobeta.domain.paper.model.entity.PaperEntry;
+import com.achobeta.domain.paper.model.vo.PaperQuestionsVO;
+import com.achobeta.domain.paper.service.PaperEntryService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 /**

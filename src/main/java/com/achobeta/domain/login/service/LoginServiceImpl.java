@@ -28,7 +28,6 @@ import java.util.function.Supplier;
 
 import static com.achobeta.common.constants.RedisConstants.LOGIN_FAIL_CNT_KEY;
 import static com.achobeta.common.enums.GlobalServiceStatusCode.USER_ACCOUNT_ALREADY_EXIST;
-import static com.achobeta.common.enums.GlobalServiceStatusCode.USER_ACCOUNT_REGISTER_ERROR;
 
 /**
  * @author BanTanger 半糖

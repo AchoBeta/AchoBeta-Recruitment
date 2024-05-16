@@ -41,8 +41,8 @@ public class RemovePaperHandlerChain extends RemovePaperHandler {
 
     @Override
     public void handle(Long paperId) {
-        log.warn("责任链开始处理 paperId: {}", paperId);
+        log.info("责任链开始处理 [paperId 为 {}] 的“删除题单”事件", paperId);
         super.doNextHandler(paperId);
-        log.warn("责任链处理完毕！");
+        log.info("责任链处理完毕！");
     }
 }

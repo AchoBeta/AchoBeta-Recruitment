@@ -1,9 +1,6 @@
 package com.achobeta.domain.paper.handler.chain;
 
 import com.achobeta.domain.paper.handler.RemoveQuestionHandler;
-import com.achobeta.domain.paper.model.dto.PaperEntryDTO;
-import com.achobeta.domain.paper.model.dto.QuestionEntryDTO;
-import com.achobeta.domain.paper.model.vo.QuestionEntryVO;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,8 +40,8 @@ public class RemoveQuestionHandlerChain extends RemoveQuestionHandler {
 
     @Override
     public void handle(Long paperId, Long questionId) {
-        log.warn("责任链开始处理 paperId: {} questionId: {}", paperId, questionId);
+        log.info("责任链开始处理 [paperId 为 {}，questionId 为{}] 的“从题单中移除一道题”事件", paperId, questionId);
         super.doNextHandler(paperId, questionId);
-        log.warn("责任链处理完毕！");
+        log.info("责任链处理完毕！");
     }
 }

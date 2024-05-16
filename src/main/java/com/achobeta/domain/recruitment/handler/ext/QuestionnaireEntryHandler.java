@@ -2,9 +2,7 @@ package com.achobeta.domain.recruitment.handler.ext;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.achobeta.domain.paper.handler.RemoveQuestionHandler;
-import com.achobeta.domain.paper.model.entity.QuestionEntry;
 import com.achobeta.domain.recruitment.model.entity.QuestionnaireEntry;
-import com.achobeta.domain.recruitment.model.entity.RecruitmentActivity;
 import com.achobeta.domain.recruitment.service.QuestionnaireService;
 import com.achobeta.domain.recruitment.service.RecruitmentActivityService;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
@@ -12,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Created With Intellij IDEA

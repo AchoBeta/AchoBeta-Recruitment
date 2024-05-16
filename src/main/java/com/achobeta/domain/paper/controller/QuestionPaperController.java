@@ -2,13 +2,10 @@ package com.achobeta.domain.paper.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.paper.handler.chain.RemovePaperHandlerChain;
-import com.achobeta.domain.paper.model.dto.QuestionEntryDTO;
 import com.achobeta.domain.paper.model.dto.QuestionPaperDTO;
-import com.achobeta.domain.paper.model.vo.QuestionEntryVO;
 import com.achobeta.domain.paper.model.vo.QuestionPaperVO;
 import com.achobeta.domain.paper.service.QuestionPaperLibraryService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
-import com.achobeta.domain.recruitment.service.QuestionnairePeriodService;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
