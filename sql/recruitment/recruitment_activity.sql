@@ -1,7 +1,7 @@
 drop table if exists `recruitment_activity`;
 create table `recruitment_activity`(
     `id` bigint primary key auto_increment comment '招新 id',
-    `paper_id` bigint default null comment '题单 id',
+    `paper_id` bigint default null comment '试卷 id',
     `batch` int not null comment 'ab版本',
     `deadline` datetime not null comment '招新截止时间',
     `is_run` bit not null default b'0' comment '是否启动',
