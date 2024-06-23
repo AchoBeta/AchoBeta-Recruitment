@@ -8,6 +8,6 @@ create table `question_paper_library`
     `is_deleted` bit not null default b'0' comment '伪删除标记',
     `create_time` datetime not null default current_timestamp comment '创建时间',
     `update_time` datetime not null default current_timestamp on update current_timestamp comment '更新时间',
-    -- 索引
+    -- index
     index `idx_lib_type`(`lib_type` asc) using btree
-) comment '试卷库 表';
+) comment '试卷库表';
