@@ -47,6 +47,7 @@ CREATE TABLE `stu_resume`
     `student_id`       varchar(13) CHARACTER SET utf8 COLLATE utf8_bin  NOT NULL DEFAULT '' COMMENT '学号',
     `name`             varchar(10) CHARACTER SET utf8 COLLATE utf8_bin  NOT NULL DEFAULT '' COMMENT '姓名',
     `gender`           tinyint UNSIGNED                                 NOT NULL DEFAULT 0 COMMENT '性别',
+    `grade`            int                                              NOT NULL COMMENT '年级',
     `major`            varchar(20) CHARACTER SET utf8 COLLATE utf8_bin  NOT NULL DEFAULT '' COMMENT '专业',
     `class`            varchar(30) CHARACTER SET utf8 COLLATE utf8_bin  NOT NULL DEFAULT '' COMMENT '班级',
     `email`            varchar(50) CHARACTER SET utf8 COLLATE utf8_bin  NOT NULL DEFAULT '' COMMENT '邮箱',
