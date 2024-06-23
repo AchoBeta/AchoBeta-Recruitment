@@ -3,6 +3,7 @@ create table `recruitment_activity`
 (
     `id` bigint primary key auto_increment comment '招新活动 id',
     `paper_id` bigint default null comment '试卷 id',
+    `target` varchar(100) not null default '' comment '面向的年级（多个年级之间用 & 分隔）',
     `title` varchar(100) not null default '' comment '活动标题',
     `description` text not null comment '活动说明',
     `deadline` datetime not null comment '截止时间',
