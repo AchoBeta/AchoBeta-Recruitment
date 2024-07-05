@@ -2,7 +2,7 @@ drop table if exists `question_paper_library`;
 create table `question_paper_library`
 (
     `id` bigint primary key auto_increment comment '试卷库 id',
-    `lib_type` varchar(100) not null default '' comment '试卷库的类别',
+    `lib_type` varchar(100) not null default '' comment '试卷库的类别，例如技术类的后端试卷，前端试卷；非技术的信息收集试卷；筛选的笔试试卷...',
     -- common column
     `version` int not null default 0 comment '乐观锁',
     `is_deleted` bit not null default b'0' comment '伪删除标记',

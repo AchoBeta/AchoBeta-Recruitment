@@ -2,7 +2,7 @@ drop table if exists `question`;
 create table `question`
 (
     `id` bigint primary key auto_increment comment '问题 id',
-    `title` varchar(100) not null default '' comment '问题标题',
+    `title` varchar(2048) not null default '' comment '问题标题',
     `standard` text not null comment '问题标答',
     -- common column
     `version` int not null default 0 comment '乐观锁',
