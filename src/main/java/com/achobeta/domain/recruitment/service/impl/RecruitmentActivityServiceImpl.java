@@ -127,7 +127,7 @@ public class RecruitmentActivityServiceImpl extends ServiceImpl<RecruitmentActiv
             Db.lambdaUpdate(QuestionnaireEntry.class)
                     .in(QuestionnaireEntry::getQuestionnaireId, questionnaireIds)
                     .remove();
-            // 设置题单
+            // 设置试卷
             this.lambdaUpdate()
                     .eq(RecruitmentActivity::getId, recId)
                     .set(RecruitmentActivity::getPaperId, paperId)

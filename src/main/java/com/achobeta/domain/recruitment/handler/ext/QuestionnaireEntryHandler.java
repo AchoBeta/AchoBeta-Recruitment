@@ -24,8 +24,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QuestionnaireEntryHandler extends RemoveQuestionHandler {
 
-    private final RecruitmentActivityService recruitmentActivityService;
-
     private final QuestionnaireService questionnaireService;
 
     @Override

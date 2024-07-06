@@ -48,20 +48,28 @@ public class QuestionnaireEntryServiceImpl extends ServiceImpl<QuestionnaireEntr
                 .oneOpt();
     }
 
+    private void addQuestionnaireEntry(Long questionnaireId, Long entryId, String answer) {
+        QuestionnaireEntry questionnaireEntry = new QuestionnaireEntry();
+        questionnaireEntry.setQuestionnaireId(questionnaireId);
+        questionnaireEntry.setEntryId(entryId);
+        questionnaireEntry.setAnswer(answer);
+        this.save(questionnaireEntry);
+    }
+
+    private void updateQuestionnaireEntry(Long questionnaireId, Long entryId, String answer) {
+        this.lambdaUpdate()
+                .eq(QuestionnaireEntry::getQuestionnaireId, questionnaireId)
+                .eq(QuestionnaireEntry::getEntryId, entryId)
+                .set(QuestionnaireEntry::getAnswer, answer)
+                .update();
+    }
+
     private void addOrUpdateQuestionnaireEntry(Long questionnaireId, Long entryId, String answer) {
         getQuestionnaireEntry(questionnaireId, entryId)
                 .ifPresentOrElse(questionnaireEntry -> {
-                    this.lambdaUpdate()
-                            .eq(QuestionnaireEntry::getQuestionnaireId, questionnaireId)
-                            .eq(QuestionnaireEntry::getEntryId, entryId)
-                            .set(QuestionnaireEntry::getAnswer, answer)
-                            .update();
+                    updateQuestionnaireEntry(questionnaireId, entryId, answer);
                 }, () -> {
-                    QuestionnaireEntry questionnaireEntry = new QuestionnaireEntry();
-                    questionnaireEntry.setQuestionnaireId(questionnaireId);
-                    questionnaireEntry.setEntryId(entryId);
-                    questionnaireEntry.setAnswer(answer);
-                    this.save(questionnaireEntry);
+                    addQuestionnaireEntry(questionnaireId, entryId, answer);
                 });
     }
 

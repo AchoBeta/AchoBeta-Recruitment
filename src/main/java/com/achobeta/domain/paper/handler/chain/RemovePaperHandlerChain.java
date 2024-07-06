@@ -1,7 +1,6 @@
 package com.achobeta.domain.paper.handler.chain;
 
 import com.achobeta.domain.paper.handler.RemovePaperHandler;
-import com.achobeta.domain.paper.handler.RemoveQuestionHandler;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +40,7 @@ public class RemovePaperHandlerChain extends RemovePaperHandler {
 
     @Override
     public void handle(Long paperId) {
-        log.info("责任链开始处理 [paperId 为 {}] 的“删除题单”事件", paperId);
+        log.info("责任链开始处理 [paperId 为 {}] 的“删除试卷”事件", paperId);
         super.doNextHandler(paperId);
         log.info("责任链处理完毕！");
     }

@@ -40,7 +40,7 @@ public class RemoveQuestionHandlerChain extends RemoveQuestionHandler {
 
     @Override
     public void handle(Long paperId, Long questionId) {
-        log.info("责任链开始处理 [paperId 为 {}，questionId 为{}] 的“从题单中移除一道题”事件", paperId, questionId);
+        log.info("责任链开始处理 [paperId 为 {}，questionId 为{}] 的“从试卷中移除一道题”事件", paperId, questionId);
         super.doNextHandler(paperId, questionId);
         log.info("责任链处理完毕！");
     }

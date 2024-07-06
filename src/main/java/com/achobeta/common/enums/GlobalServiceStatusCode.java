@@ -57,8 +57,10 @@ public enum GlobalServiceStatusCode {
     RECRUITMENT_IS_NOT_RUN(4003, "招新未开始"),
     RECRUITMENT_NOT_SET_PAPER(4004, "招新未设置题单"),
 
+    // todo: 同步更新一下这些枚举
     QUESTIONNAIRE_NOT_EXISTS(4101, "问卷不存在"),
-    ENTRY_NOT_EXISTS(4102, "自定义项不存在"),
+    ENTRY_NOT_EXISTS(4102, "问题不存在"),
+    ENTRY_EXISTS_IN_PAPER(4103, "问题已出现在试卷中"),
 
     PERIOD_NOT_EXISTS(4201, "时间段不存在"),
     PERIOD_IS_SELECTED(4202,"时间段被选中了"),

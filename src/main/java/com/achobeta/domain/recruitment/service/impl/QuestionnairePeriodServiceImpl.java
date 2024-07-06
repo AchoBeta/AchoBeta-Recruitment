@@ -57,15 +57,19 @@ public class QuestionnairePeriodServiceImpl extends ServiceImpl<QuestionnairePer
     }
 
     private void removeQuestionnairePeriod(Long questionnaireId, Long periodId) {
-        getQuestionnairePeriod(questionnaireId, periodId)
-                .ifPresentOrElse(questionnairePeriod -> {
-                    // 删除一条旧的
-                    this.lambdaUpdate()
-                            .eq(QuestionnairePeriod::getQuestionnaireId, questionnaireId)
-                            .eq(QuestionnairePeriod::getPeriodId, periodId)
-                            .remove();
-                }, () -> {
-                });
+        // 删除一条旧的
+        this.lambdaUpdate()
+                .eq(QuestionnairePeriod::getQuestionnaireId, questionnaireId)
+                .eq(QuestionnairePeriod::getPeriodId, periodId)
+                .remove();
+    }
+
+    private void addOrRemoveQuestionnairePeriod(Long questionnaireId, Long periodId, Boolean value) {
+        if (Boolean.TRUE.equals(value)) {
+            addQuestionnairePeriod(questionnaireId, periodId);
+        } else {
+            removeQuestionnairePeriod(questionnaireId, periodId);
+        }
     }
 
     @Override
@@ -81,11 +85,7 @@ public class QuestionnairePeriodServiceImpl extends ServiceImpl<QuestionnairePer
         });
         // map 中 true 的尝试添加，false 的尝试删除
         map.forEach((periodId, value) -> {
-            if (Boolean.TRUE.equals(value)) {
-                addQuestionnairePeriod(questionnaireId, periodId);
-            } else {
-                removeQuestionnairePeriod(questionnaireId, periodId);
-            }
+            addOrRemoveQuestionnairePeriod(questionnaireId, periodId, value);
         });
     }
 }

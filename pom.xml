@@ -21,6 +21,7 @@
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <lombok.version>1.18.30</lombok.version>
         <com.google.guava.version>31.1-jre</com.google.guava.version>
+        <org.redisson.version>3.27.2</org.redisson.version>
     </properties>
 
     <profiles>
@@ -100,6 +101,12 @@
             <artifactId>commons-codec</artifactId>
         </dependency>
         <!--redis-->
+        <!--  redission  -->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-data-27</artifactId>
+            <version>${org.redisson.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>

@@ -1,9 +1,11 @@
 package com.achobeta.domain.paper.service.impl;
 
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.paper.model.dao.mapper.PaperEntryMapper;
 import com.achobeta.domain.paper.model.entity.PaperEntry;
 import com.achobeta.domain.paper.model.vo.PaperQuestionsVO;
 import com.achobeta.domain.paper.service.PaperEntryService;
+import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ public class PaperEntryServiceImpl extends ServiceImpl<PaperEntryMapper, PaperEn
     @Override
     public void addQuestionForPaper(Long paperId, Long questionId) {
         getPaperEntry(paperId, questionId).ifPresentOrElse(paperEntry -> {
+            throw new GlobalServiceException(GlobalServiceStatusCode.ENTRY_EXISTS_IN_PAPER);
         }, () -> {
             PaperEntry paperEntry = new PaperEntry();
             paperEntry.setPaperId(paperId);

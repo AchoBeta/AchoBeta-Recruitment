@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.achobeta.domain.qpaper.model.dao.mapper.PaperQuestionLinkMapper">
+
+    <select id="getQuestionsOnPaper" parameterType="java.lang.Long"
+            resultType="com.achobeta.domain.question.model.vo.QuestionVO">
+        select
+            q.id, q.title, q.standard
+        from question_paper p
+             left join paper_question_link pq on p.id  = pq.paper_id and p.is_deleted = 0 and pq.is_deleted = 0
+             left join question q on q.id = pq.question_id and q.is_deleted = 0 and pq.is_deleted = 0
+        where p.id = #{paperId,jdbcType=BIGINT}
+        order by q.create_time asc
+    </select>
+
+
+</mapper>
