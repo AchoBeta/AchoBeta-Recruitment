@@ -57,7 +57,7 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
                 .map(activityParticipation -> {
                     Long participationId = activityParticipation.getId();
                     // 转化
-                    ParticipationUserVO participationUserVO = BeanUtil.copyProperties(activityParticipation, ParticipationUserVO.class);
+                    ParticipationVO participationUserVO = BeanUtil.copyProperties(activityParticipation, ParticipationVO.class);
                     // 获取用户回答的问题
                     List<QuestionAnswerVO> questions = activityParticipationMapper.getQuestions(participationId);
                     participationUserVO.setQuestionAnswerVOS(questions);
