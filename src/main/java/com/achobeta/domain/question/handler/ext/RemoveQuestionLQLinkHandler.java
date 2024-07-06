@@ -25,5 +25,6 @@ public class RemoveQuestionLQLinkHandler extends RemoveQuestionHandler {
         libraryQuestionLinkService.lambdaUpdate()
                 .eq(LibraryQuestionLink::getQuestionId, questionId)
                 .remove();
+        super.doNextHandler(questionId);
     }
 }

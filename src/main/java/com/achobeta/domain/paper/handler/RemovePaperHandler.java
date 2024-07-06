@@ -6,8 +6,8 @@ import java.util.Objects;
  * Created With Intellij IDEA
  * Description:
  * User: 马拉圈
- * Date: 2024-05-15
- * Time: 13:03
+ * Date: 2024-07-06
+ * Time: 8:41
  */
 public abstract class RemovePaperHandler {
 

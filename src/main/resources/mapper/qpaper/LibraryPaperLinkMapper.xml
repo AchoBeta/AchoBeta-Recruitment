@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.achobeta.domain.qpaper.model.dao.mapper.LibraryPaperLinkMapper">
 
-    <resultMap id="BaseResultMap" type="com.achobeta.domain.qpaper.model.entity.LibraryPaperLink">
+    <resultMap id="BaseResultMap" type="com.achobeta.domain.paper.model.entity.LibraryPaperLink">
             <result property="libId" column="lib_id" jdbcType="BIGINT"/>
             <result property="paperId" column="paper_id" jdbcType="BIGINT"/>
             <result property="version" column="version" jdbcType="INTEGER"/>

@@ -5,7 +5,7 @@
 <mapper namespace="com.achobeta.domain.qpaper.model.dao.mapper.QuestionPaperMapper">
 
     <select id="getQuestionPapersByLibId" parameterType="java.lang.Long"
-            resultType="com.achobeta.domain.qpaper.model.vo.QuestionPaperVO">
+            resultType="com.achobeta.domain.paper.model.vo.QuestionPaperVO">
         select
             p.id, p.title, p.description
         from question_paper p

@@ -71,6 +71,18 @@ public enum GlobalServiceStatusCode {
     QUESTION_NOT_EXISTS(4303, "题目不存在"),
     QUESTION_PAPER_NOT_EXISTS(4304, "题单不存在"),
 
+    RECRUITMENT_BATCH_NOT_EXISTS(4401, "招新批次不存在"),
+    RECRUITMENT_BATCH_IS_RUN(4402, "招新已开始"),
+    RECRUITMENT_BATCH_IS_NOT_RUN(4403, "招新未开始"),
+
+    RECRUITMENT_ACTIVITY_NOT_EXISTS(4501, "招新活动不存在"),
+    RECRUITMENT_ACTIVITY_IS_RUN(4502, "招新活动已开始"),
+    RECRUITMENT_ACTIVITY_IS_NOT_RUN(4503, "招新活动未开始"),
+    USER_CANNOT_PARTICIPATE_IN_ACTIVITY(4504, "用户不能参与此活动"),
+
+    USER_RESUME_NOT_EXISTS(4601, "用户简历不存在"),
+    USER_DID_NOT_PARTICIPATE(4602, "用户并没有参与活动"),
+
 
     /* -------------- */;
 

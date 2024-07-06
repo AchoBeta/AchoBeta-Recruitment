@@ -8,8 +8,8 @@ import lombok.Data;
  * Created With Intellij IDEA
  * Description:
  * User: 马拉圈
- * Date: 2024-05-15
- * Time: 1:39
+ * Date: 2024-07-06
+ * Time: 0:57
  */
 @Data
 public class PaperLibraryDTO {
@@ -19,5 +19,4 @@ public class PaperLibraryDTO {
 
     @NotBlank(message = "库的类型不能为空")
     private String libType;
-
 }

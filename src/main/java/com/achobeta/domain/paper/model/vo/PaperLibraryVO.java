@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
  * Created With Intellij IDEA
  * Description:
  * User: 马拉圈
- * Date: 2024-05-15
- * Time: 2:35
+ * Date: 2024-07-06
+ * Time: 0:56
  */
 @Data
 public class PaperLibraryVO {
@@ -21,5 +21,4 @@ public class PaperLibraryVO {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
-
 }

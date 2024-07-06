@@ -1,7 +1,6 @@
 package com.achobeta.domain.question.controller;
 
 import com.achobeta.common.SystemJsonResponse;
-import com.achobeta.domain.qpaper.model.vo.QuestionPaperDetailVO;
 import com.achobeta.domain.question.handler.chain.RemoveQuestionHandlerChain;
 import com.achobeta.domain.question.model.dto.QuestionDTO;
 import com.achobeta.domain.question.model.vo.QuestionDetailVO;

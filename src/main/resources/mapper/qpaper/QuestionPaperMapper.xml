@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.achobeta.domain.qpaper.model.dao.mapper.QuestionPaperMapper">
 
-    <resultMap id="BaseResultMap" type="com.achobeta.domain.qpaper.model.entity.QuestionPaper">
+    <resultMap id="BaseResultMap" type="com.achobeta.domain.paper.model.entity.QuestionPaper">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="title" column="title" jdbcType="VARCHAR"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>

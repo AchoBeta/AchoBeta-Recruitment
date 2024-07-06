@@ -7,7 +7,6 @@ import com.achobeta.domain.paper.model.vo.QuestionPaperVO;
 import com.achobeta.domain.paper.service.QuestionPaperLibraryService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.util.ValidatorUtils;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +18,8 @@ import java.util.List;
  * Created With Intellij IDEA
  * Description:
  * User: 马拉圈
- * Date: 2024-05-15
- * Time: 1:28
+ * Date: 2024-07-06
+ * Time: 8:35
  */
 @Slf4j
 @RestController
@@ -34,24 +33,24 @@ public class QuestionPaperController {
 
     private final RemovePaperHandlerChain removePaperHandlerChain;
 
-    @PostMapping("/add/{libId}")
-    public SystemJsonResponse addQuestionPaper(@PathVariable("libId") @NotNull Long libId,
-                                               @RequestParam("title") @NotBlank String title) {
-        // 检查
-        questionPaperLibraryService.checkPaperLibraryExists(libId);
-        // 添加
-        Long paperId = questionPaperService.addQuestionPaper(libId, title);
-        return SystemJsonResponse.SYSTEM_SUCCESS(paperId);
-    }
-
-    @PostMapping("/rename")
-    public SystemJsonResponse renamePaperTitle(@RequestBody QuestionPaperDTO questionPaperDTO){
+    @PostMapping("/add")
+    public SystemJsonResponse addQuestionPaper(@RequestBody QuestionPaperDTO questionPaperDTO) {
         // 检查
         ValidatorUtils.validate(questionPaperDTO);
-        Long paperId = questionPaperDTO.getPaperId();
+        // 添加
+        questionPaperService.addQuestionPaper(questionPaperDTO.getLibIds(), questionPaperDTO.getTitle(), questionPaperDTO.getDescription());
+        return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
+
+    @PostMapping("/update/{paperId}")
+    public SystemJsonResponse renamePaperTitle(@PathVariable("paperId") @NotNull Long paperId,
+                                               @RequestBody QuestionPaperDTO questionPaperDTO){
+        // 检查
+        ValidatorUtils.validate(questionPaperDTO);
         questionPaperService.checkPaperExists(paperId);
         // 重命名
-        questionPaperService.renamePaperTitle(paperId, questionPaperDTO.getTitle());
+        questionPaperService.updateQuestionPaper(paperId, questionPaperDTO.getLibIds(),
+                questionPaperDTO.getTitle(), questionPaperDTO.getDescription());
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
@@ -61,7 +60,7 @@ public class QuestionPaperController {
         questionPaperService.checkPaperExists(paperId);
         // 删除
         questionPaperService.removeQuestionPaper(paperId);
-        // 删除一些关联的东西
+        // 触发责任链
         removePaperHandlerChain.handle(paperId);
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
@@ -71,7 +70,7 @@ public class QuestionPaperController {
         // 检查
         questionPaperLibraryService.checkPaperLibraryExists(libId);
         // 查询
-        List<QuestionPaperVO> questionPapers = questionPaperService.getQuestionPapers(libId);
+        List<QuestionPaperVO> questionPapers = questionPaperService.getQuestionPapersByLibId(libId);
         return SystemJsonResponse.SYSTEM_SUCCESS(questionPapers);
     }
 
