@@ -4,6 +4,7 @@ import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.recruit.model.dao.mapper.RecruitmentBatchMapper;
 import com.achobeta.domain.recruit.model.entity.RecruitmentBatch;
 import com.achobeta.domain.recruit.service.RecruitmentBatchService;
+import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +42,8 @@ public class RecruitmentBatchServiceImpl extends ServiceImpl<RecruitmentBatchMap
     }
 
     @Override
-    public List<Long> getStuIdsByBatchId(Long batchId) {
-        return recruitmentBatchMapper.getStuIdsByBatchId(batchId);
+    public List<SimpleStudentVO> getStuResumeByBatchId(Long batchId) {
+        return recruitmentBatchMapper.getStuResumeByBatchId(batchId);
     }
 
     @Override

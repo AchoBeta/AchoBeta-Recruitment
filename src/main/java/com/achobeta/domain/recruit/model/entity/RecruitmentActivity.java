@@ -24,7 +24,7 @@ public class RecruitmentActivity extends BaseIncrIDEntity implements Serializabl
 
     private String title;
 
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    @TableField(typeHandler = JacksonTypeHandler.class) // 这里和 xml 两边都得设置，一个针对 java，一个针对 mysql
     private StudentGroup target;
 
     private String description;

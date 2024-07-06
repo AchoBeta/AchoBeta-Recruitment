@@ -57,14 +57,14 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
                 .map(activityParticipation -> {
                     Long participationId = activityParticipation.getId();
                     // 转化
-                    ParticipationVO participationVO = BeanUtil.copyProperties(activityParticipation, ParticipationVO.class);
+                    ParticipationUserVO participationUserVO = BeanUtil.copyProperties(activityParticipation, ParticipationUserVO.class);
                     // 获取用户回答的问题
                     List<QuestionAnswerVO> questions = activityParticipationMapper.getQuestions(participationId);
-                    participationVO.setQuestionAnswerVOS(questions);
+                    participationUserVO.setQuestionAnswerVOS(questions);
                     // 获取用户选择的时间段
                     List<TimePeriodVO> periods = activityParticipationMapper.getPeriods(participationId);
-                    participationVO.setTimePeriodVOS(periods);
-                    return participationVO;
+                    participationUserVO.setTimePeriodVOS(periods);
+                    return participationUserVO;
                 }).orElseGet(() -> createActivityParticipation(stuId, actId));
     }
 
@@ -103,10 +103,10 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
         activityParticipation.setStuId(stuId);
         activityParticipation.setActId(actId);
         this.save(activityParticipation);
-        ParticipationVO participationVO = BeanUtil.copyProperties(activityParticipation, ParticipationVO.class);
-        participationVO.setQuestionAnswerVOS(new ArrayList<>());
-        participationVO.setTimePeriodVOS(new ArrayList<>());
-        return participationVO;
+        ParticipationVO participationUserVO = BeanUtil.copyProperties(activityParticipation, ParticipationVO.class);
+        participationUserVO.setQuestionAnswerVOS(new ArrayList<>());
+        participationUserVO.setTimePeriodVOS(new ArrayList<>());
+        return participationUserVO;
     }
 
     @Override

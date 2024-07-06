@@ -8,6 +8,7 @@ import com.achobeta.domain.recruit.model.dto.RecruitmentBatchUpdateDTO;
 import com.achobeta.domain.recruit.model.entity.RecruitmentBatch;
 import com.achobeta.domain.recruit.model.vo.RecruitmentBatchVO;
 import com.achobeta.domain.recruit.service.RecruitmentBatchService;
+import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
@@ -61,11 +62,24 @@ public class RecruitmentBatchController {
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
-    @GetMapping("/list")
+    @GetMapping("/list/manager")
     public SystemJsonResponse getRecruitBatches(@RequestParam(name = "isRun", required = false) Boolean isRun) {
         List<RecruitmentBatch> recruitmentBatches = recruitmentBatchService.getRecruitmentBatches(isRun);
         List<RecruitmentBatchVO> recruitmentBatchVOS = BeanUtil.copyToList(recruitmentBatches, RecruitmentBatchVO.class);
         return SystemJsonResponse.SYSTEM_SUCCESS(recruitmentBatchVOS);
+    }
+
+    @GetMapping("/list/user")
+    public SystemJsonResponse getRecruitBatches() {
+        List<RecruitmentBatch> recruitmentBatches = recruitmentBatchService.getRecruitmentBatches(Boolean.TRUE);
+        List<RecruitmentBatchVO> recruitmentBatchVOS = BeanUtil.copyToList(recruitmentBatches, RecruitmentBatchVO.class);
+        return SystemJsonResponse.SYSTEM_SUCCESS(recruitmentBatchVOS);
+    }
+
+    @GetMapping("/participants/{batchId}")
+    public SystemJsonResponse getParticipants(@PathVariable("batchId") @NotNull Long batchId) {
+        List<SimpleStudentVO> simpleStudentVOS = recruitmentBatchService.getStuResumeByBatchId(batchId);
+        return SystemJsonResponse.SYSTEM_SUCCESS(simpleStudentVOS);
     }
 
     @GetMapping("/shift/{batchId}")

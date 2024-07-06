@@ -1,6 +1,7 @@
 package com.achobeta.domain.recruit.model.dao.mapper;
 
 import com.achobeta.domain.recruit.model.entity.RecruitmentBatch;
+import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -14,7 +15,7 @@ import java.util.List;
 */
 public interface RecruitmentBatchMapper extends BaseMapper<RecruitmentBatch> {
 
-    List<Long> getStuIdsByBatchId(@Param("batchId") Long batchId);
+    List<SimpleStudentVO> getStuResumeByBatchId(@Param("batchId") Long batchId);
 
 }
 

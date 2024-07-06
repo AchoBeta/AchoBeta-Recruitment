@@ -1,6 +1,7 @@
 package com.achobeta.domain.recruit.service;
 
 import com.achobeta.domain.recruit.model.entity.RecruitmentBatch;
+import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Date;
@@ -25,7 +26,7 @@ public interface RecruitmentBatchService extends IService<RecruitmentBatch> {
      */
     List<RecruitmentBatch> getRecruitmentBatches(Boolean isRun);
 
-    List<Long> getStuIdsByBatchId(Long batchId);
+    List<SimpleStudentVO> getStuResumeByBatchId(Long batchId);
 
     // 写入 ------------------------------------------
 

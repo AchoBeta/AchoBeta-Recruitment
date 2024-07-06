@@ -9,7 +9,7 @@ import java.util.List;
  * Description:
  * User: 马拉圈
  * Date: 2024-07-06
- * Time: 13:26
+ * Time: 23:52
  */
 @Data
 public class ParticipationVO {
@@ -18,9 +18,8 @@ public class ParticipationVO {
 
     private Long stuId;
 
-    private Long racId;
-
     private List<QuestionAnswerVO> questionAnswerVOS;
 
     private List<TimePeriodVO> timePeriodVOS;
+
 }

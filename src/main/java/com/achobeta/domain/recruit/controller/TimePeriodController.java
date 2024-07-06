@@ -6,7 +6,7 @@ import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.recruit.service.TimePeriodService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.util.ValidatorUtils;
-import lombok.NonNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -43,8 +43,8 @@ public class TimePeriodController {
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
-    @GetMapping("remove/{periodId}")
-    public SystemJsonResponse removeTimePeriod(@PathVariable("periodId") @NonNull Long periodId) {
+    @GetMapping("/remove/{periodId}")
+    public SystemJsonResponse removeTimePeriod(@PathVariable("periodId") @NotNull Long periodId) {
         // 校验
         Long actId = timePeriodService.getActIdByPeriodId(periodId);
         recruitmentActivityService.checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE);

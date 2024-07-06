@@ -1,13 +1,22 @@
 package com.achobeta.domain.recruit.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.paper.service.QuestionPaperService;
+import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.achobeta.domain.recruit.model.dto.ActivityPaperDTO;
 import com.achobeta.domain.recruit.model.dto.RecruitmentActivityDTO;
 import com.achobeta.domain.recruit.model.dto.RecruitmentActivityUpdateDTO;
+import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
 import com.achobeta.domain.recruit.model.entity.StudentGroup;
+import com.achobeta.domain.recruit.model.vo.ActivityManagerVO;
+import com.achobeta.domain.recruit.model.vo.ActivityUserVO;
+import com.achobeta.domain.recruit.model.vo.RecruitmentTemplate;
+import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.recruit.service.RecruitmentBatchService;
+import com.achobeta.domain.recruit.service.TimePeriodService;
+import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created With Intellij IDEA
@@ -30,6 +40,8 @@ import java.util.Date;
 public class RecruitmentActivityController {
 
     private final QuestionPaperService questionPaperService;
+
+    private final TimePeriodService timePeriodService;
 
     private final RecruitmentBatchService recruitmentBatchService;
 
@@ -86,6 +98,40 @@ public class RecruitmentActivityController {
         // 设置
         recruitmentActivityService.setPaperForActivity(actId, paperId);
         return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
+
+    @GetMapping("/template/{actId}")
+    public SystemJsonResponse getCustomDefine(@PathVariable("actId") @NotNull Long actId) {
+        RecruitmentActivity recruitmentActivity = recruitmentActivityService.checkAndGetRecruitmentActivity(actId);
+        // 查询试卷
+        List<QuestionVO> questionEntryVOS = recruitmentActivityService.getQuestionsByActId(actId);
+        // 查询时间段
+        List<TimePeriodVO> timePeriodVOS = timePeriodService.getTimePeriodsByActId(actId);
+        // 构造招新活动的自定义模板
+        RecruitmentTemplate recruitmentTemplate = RecruitmentTemplate.builder()
+                .activityManagerVO(BeanUtil.copyProperties(recruitmentActivity, ActivityManagerVO.class))
+                .questionVOS(questionEntryVOS)
+                .timePeriodVOS(timePeriodVOS)
+                .build();
+        return SystemJsonResponse.SYSTEM_SUCCESS(recruitmentTemplate);
+    }
+
+    @GetMapping("/list/manager/{batchId}")
+    public SystemJsonResponse getRecruitmentActivities(@PathVariable("batchId") @NotNull Long batchId,
+                                                       @RequestParam(name = "isRun", required = false) Boolean isRun) {
+        List<RecruitmentActivity> list = recruitmentActivityService.getRecruitmentActivities(batchId, isRun);
+        List<ActivityManagerVO> activityVOS = BeanUtil.copyToList(list, ActivityManagerVO.class);
+        return SystemJsonResponse.SYSTEM_SUCCESS(activityVOS);
+    }
+
+    @GetMapping("/list/user/{batchId}")
+    public SystemJsonResponse getRecruitmentActivities(@PathVariable("batchId") @NotNull Long batchId) {
+        // 当前用户
+        Long stuId = BaseContext.getCurrentUser().getUserId();
+        // 获取其能够看到的活动
+        List<RecruitmentActivity> list = recruitmentActivityService.getRecruitmentActivities(batchId, stuId);
+        List<ActivityUserVO> activityVOS = BeanUtil.copyToList(list, ActivityUserVO.class);
+        return SystemJsonResponse.SYSTEM_SUCCESS(activityVOS);
     }
 
 }
