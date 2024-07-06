@@ -4,20 +4,26 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.achobeta.domain.question.model.dao.mapper.QuestionLibraryMapper">
 
+    <resultMap id="QuestionLibraryMap" type="com.achobeta.domain.question.model.vo.QuestionLibraryVO">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="libType" column="lib_type" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
     <resultMap id="QuestionDetail" type="com.achobeta.domain.question.model.vo.QuestionDetailVO">
         <result property="id" column="id" jdbcType="BIGINT"/>
         <result property="title" column="title" jdbcType="VARCHAR"/>
         <result property="standard" column="standard" jdbcType="VARCHAR"/>
-        <collection property="types" column="lib_type" ofType="java.lang.String"/>
+        <collection property="types" columnPrefix="l_" resultMap="QuestionLibraryMap"/>
     </resultMap>
 
     <select id="getQuestionDetail" parameterType="java.lang.Long" resultMap="QuestionDetail">
         select
-            q.id, q.title, q.standard, l.lib_type
+            q.id, q.title, q.standard, l.id l_id, l.lib_type l_lib_type, l.create_time l_create_time
         from question q
-                 left join library_question_link lq on q.id = lq.question_id and q.is_deleted = 0 and lq.is_deleted = 0
-                 left join question_library l on l.id = lq.lib_id and l.is_deleted = 0 and lq.is_deleted = 0
-        where q.id = #{libId,jdbcType=BIGINT}
+             left join library_question_link lq on q.id = lq.question_id and q.is_deleted = 0 and lq.is_deleted = 0
+             left join question_library l on l.id = lq.lib_id and l.is_deleted = 0 and lq.is_deleted = 0
+        where q.id = #{questionId,jdbcType=BIGINT}
         order by lq.create_time asc
     </select>
 

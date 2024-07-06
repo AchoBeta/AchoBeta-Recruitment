@@ -76,13 +76,13 @@ public class RecruitmentBatchServiceImpl extends ServiceImpl<RecruitmentBatchMap
     @Override
     public void checkRecruitmentBatchExists(Long batchId) {
         getRecruitmentBatch(batchId).orElseThrow(() ->
-                new GlobalServiceException(GlobalServiceStatusCode.RECRUITMENT_NOT_EXISTS));
+                new GlobalServiceException(GlobalServiceStatusCode.RECRUITMENT_BATCH_NOT_EXISTS));
     }
 
     @Override
     public RecruitmentBatch checkAndGetRecruitmentBatch(Long batchId) {
         return getRecruitmentBatch(batchId).orElseThrow(() ->
-                new GlobalServiceException(GlobalServiceStatusCode.RECRUITMENT_NOT_EXISTS));
+                new GlobalServiceException(GlobalServiceStatusCode.RECRUITMENT_BATCH_NOT_EXISTS));
     }
 
     @Override

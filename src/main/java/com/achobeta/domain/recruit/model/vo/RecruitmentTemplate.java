@@ -19,7 +19,7 @@ import java.util.List;
 @Builder
 public class RecruitmentTemplate {
 
-    private ActivityManagerVO activityManagerVO;
+    private RecruitmentActivityVO recruitmentActivityVO;
 
     private List<QuestionVO> questionVOS;
 

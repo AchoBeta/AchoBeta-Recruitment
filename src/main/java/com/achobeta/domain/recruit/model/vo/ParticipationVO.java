@@ -22,4 +22,8 @@ public class ParticipationVO {
 
     private List<TimePeriodVO> timePeriodVOS;
 
+    public void shield() {
+        setStuId(null);
+    }
+
 }

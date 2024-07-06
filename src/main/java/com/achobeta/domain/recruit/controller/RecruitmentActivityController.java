@@ -9,8 +9,7 @@ import com.achobeta.domain.recruit.model.dto.RecruitmentActivityDTO;
 import com.achobeta.domain.recruit.model.dto.RecruitmentActivityUpdateDTO;
 import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
 import com.achobeta.domain.recruit.model.entity.StudentGroup;
-import com.achobeta.domain.recruit.model.vo.ActivityManagerVO;
-import com.achobeta.domain.recruit.model.vo.ActivityUserVO;
+import com.achobeta.domain.recruit.model.vo.RecruitmentActivityVO;
 import com.achobeta.domain.recruit.model.vo.RecruitmentTemplate;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
@@ -38,6 +37,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/recruit/activity")
 public class RecruitmentActivityController {
+
+    private final static Integer STUDENT_TYPE = 1; // 学生
 
     private final QuestionPaperService questionPaperService;
 
@@ -107,30 +108,31 @@ public class RecruitmentActivityController {
         List<QuestionVO> questionEntryVOS = recruitmentActivityService.getQuestionsByActId(actId);
         // 查询时间段
         List<TimePeriodVO> timePeriodVOS = timePeriodService.getTimePeriodsByActId(actId);
+
         // 构造招新活动的自定义模板
         RecruitmentTemplate recruitmentTemplate = RecruitmentTemplate.builder()
-                .activityManagerVO(BeanUtil.copyProperties(recruitmentActivity, ActivityManagerVO.class))
+                .recruitmentActivityVO(BeanUtil.copyProperties(recruitmentActivity, RecruitmentActivityVO.class))
                 .questionVOS(questionEntryVOS)
                 .timePeriodVOS(timePeriodVOS)
                 .build();
+        // 当前用户的身份，
+        Integer role = BaseContext.getCurrentUser().getRole();
+        if(STUDENT_TYPE.equals(role)) {
+            recruitmentTemplate.getRecruitmentActivityVO().shield();
+        }
         return SystemJsonResponse.SYSTEM_SUCCESS(recruitmentTemplate);
     }
 
-    @GetMapping("/list/manager/{batchId}")
+    @GetMapping("/list/{batchId}")
     public SystemJsonResponse getRecruitmentActivities(@PathVariable("batchId") @NotNull Long batchId,
                                                        @RequestParam(name = "isRun", required = false) Boolean isRun) {
         List<RecruitmentActivity> list = recruitmentActivityService.getRecruitmentActivities(batchId, isRun);
-        List<ActivityManagerVO> activityVOS = BeanUtil.copyToList(list, ActivityManagerVO.class);
-        return SystemJsonResponse.SYSTEM_SUCCESS(activityVOS);
-    }
-
-    @GetMapping("/list/user/{batchId}")
-    public SystemJsonResponse getRecruitmentActivities(@PathVariable("batchId") @NotNull Long batchId) {
-        // 当前用户
-        Long stuId = BaseContext.getCurrentUser().getUserId();
-        // 获取其能够看到的活动
-        List<RecruitmentActivity> list = recruitmentActivityService.getRecruitmentActivities(batchId, stuId);
-        List<ActivityUserVO> activityVOS = BeanUtil.copyToList(list, ActivityUserVO.class);
+        List<RecruitmentActivityVO> activityVOS = BeanUtil.copyToList(list, RecruitmentActivityVO.class);
+        // 当前用户的身份，
+        Integer role = BaseContext.getCurrentUser().getRole();
+        if(STUDENT_TYPE.equals(role)) {
+            activityVOS.forEach(RecruitmentActivityVO::shield);
+        }
         return SystemJsonResponse.SYSTEM_SUCCESS(activityVOS);
     }
 

@@ -24,7 +24,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/question/paper")
+@RequestMapping("/api/v1/qpaper")
 public class QuestionPaperController {
 
     private final QuestionPaperLibraryService questionPaperLibraryService;

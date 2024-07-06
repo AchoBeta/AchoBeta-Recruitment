@@ -49,13 +49,14 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     }
 
     @Override
-    public void addQuestion(List<Long> libIds, String title, String standard) {
+    public Long addQuestion(List<Long> libIds, String title, String standard) {
         Question question = new Question();
         question.setTitle(title);
         question.setStandard(standard);
         this.save(question);
         Long questionId = question.getId();
         libraryQuestionLinkService.addLibraryQuestionLinkBatch(libIds, questionId);
+        return questionId;
     }
 
     @Override

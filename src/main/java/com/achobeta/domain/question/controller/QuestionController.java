@@ -39,8 +39,8 @@ public class QuestionController {
         // 检查
         ValidatorUtils.validate(questionDTO);
         // 添加
-        questionService.addQuestion(questionDTO.getLibIds(), questionDTO.getTitle(), questionDTO.getStandard());
-        return SystemJsonResponse.SYSTEM_SUCCESS();
+        Long questionId =questionService.addQuestion(questionDTO.getLibIds(), questionDTO.getTitle(), questionDTO.getStandard());
+        return SystemJsonResponse.SYSTEM_SUCCESS(questionId);
     }
 
     @PostMapping("/update/{questionId}")
@@ -55,8 +55,8 @@ public class QuestionController {
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
-    @PostMapping("/remove/{questionId}")
-    public SystemJsonResponse removeQuestionEntry(@PathVariable("questionId") @NotNull Long questionId) {
+    @GetMapping("/remove/{questionId}")
+    public SystemJsonResponse removeQuestion(@PathVariable("questionId") @NotNull Long questionId) {
         // 检查
         questionService.checkQuestionExists(questionId);
         // 删除
@@ -67,7 +67,7 @@ public class QuestionController {
     }
 
     @GetMapping("/list/{libId}")
-    public SystemJsonResponse getQuestionEntries(@PathVariable("libId") @NotNull Long libId) {
+    public SystemJsonResponse getQuestions(@PathVariable("libId") @NotNull Long libId) {
         // 检查
         questionLibraryService.checkQuestionLibraryExists(libId);
         // 查询

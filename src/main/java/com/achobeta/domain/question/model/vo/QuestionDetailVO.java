@@ -14,6 +14,6 @@ import java.util.List;
 @Data
 public class QuestionDetailVO extends QuestionVO {
 
-    private List<String> types;
+    private List<QuestionLibraryVO> types;
 
 }

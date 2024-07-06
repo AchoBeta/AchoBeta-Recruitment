@@ -48,7 +48,7 @@ public class ActivityParticipationController {
         // 获取参与情况
         recruitmentActivityService.checkCanUserParticipateInActivity(stuId, actId);
         ParticipationVO participationUserVO = activityParticipationService.getActivityParticipation(stuId, actId);
-        participationUserVO.setStuId(null); // 忽略 stuId
+        participationUserVO.shield(); // 忽略一些字段
         return SystemJsonResponse.SYSTEM_SUCCESS(participationUserVO);
     }
 

@@ -30,41 +30,64 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
+
+        String[] noneIntercept = {
+                "/api/v1/auth/**",
+                "/api/v1/resource/email/code/**",
+                "/api/v1/shortlink/*",
+        };
+
+        String[] studentOrManagerIntercept = {
+            "/api/v1/recruit/activity/template/**",
+            "/api/v1/recruit/activity/list/**",
+        };
+
         String[] studentIntercept = {
-                "/api/v1/user/**",
-                "/api/v1/questionnaire/**"
+                "/api/v1/resume/submit/**",
+
+                "/api/v1/participate/get/**",
+                "/api/v1/participate/submit/**",
+
+                "/api/v1/recruit/batch/list/user/**"
         };
 
         String[] managerIntercept = {
-                "/api/v1/shortlink/**",
-                "/api/v1/recruit/**",
+                "/api/v1/library/question/**",
+                "/api/v1/library/paper/**",
+                "/api/v1/question/**",
+                "/api/v1/qpaper/**",
+                "/api/v1/pqlink/**",
+
                 "/api/v1/period/**",
-                "/api/v1/library/**",
-                "/api/v1/paperentry/**",
-                "/api/v1/question/entry/**",
-                "/api/v1/question/paper/**"
+
+                "/api/v1/participate/situations/**",
+
+                "/api/v1/recruit/activity/create/**",
+                "/api/v1/recruit/activity/shift/**",
+                "/api/v1/recruit/activity/update/**",
+                "/api/v1/recruit/activity/set/paper/**",
+
+                "/api/v1/recruit/batch/create/**",
+                "/api/v1/recruit/batch/update/**",
+                "/api/v1/recruit/batch/list/manager/**",
+                "/api/v1/recruit/batch/participants/**",
+                "/api/v1/recruit/batch/shift/**",
+
+                "/api/v1/shortlink/trans/**",
         };
 
         registry.addInterceptor(userInterpretor)
+                .addPathPatterns(studentOrManagerIntercept)
                 .addPathPatterns(studentIntercept)
-
                 .addPathPatterns(managerIntercept)
-                .excludePathPatterns("/api/v1/recruit/get/**")
-                .excludePathPatterns("/api/v1/recruit/list/**")
-                .excludePathPatterns("/api/v1/period/list/**")
         ;
 
         registry.addInterceptor(studentInterceptor)
                 .addPathPatterns(studentIntercept)
-                .excludePathPatterns("/api/v1/questionnaire/list/**")
         ;
 
         registry.addInterceptor(managerInterceptor)
                 .addPathPatterns(managerIntercept)
-                .excludePathPatterns("/api/v1/recruit/get/**")
-                .excludePathPatterns("/api/v1/recruit/list/**")
-                .excludePathPatterns("/api/v1/period/list/**")
-                .addPathPatterns("/api/v1/questionnaire/list/**")
         ;
 
     }

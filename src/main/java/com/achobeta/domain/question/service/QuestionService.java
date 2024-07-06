@@ -21,7 +21,7 @@ public interface QuestionService extends IService<Question> {
     Optional<Question> getQuestion(Long questionId);
 
     @Transactional
-    void addQuestion(List<Long> libIds, String title, String standard);
+    Long addQuestion(List<Long> libIds, String title, String standard);
 
     @Transactional
     void updateQuestion(Long questionId, List<Long> libIds, String title, String standard);
