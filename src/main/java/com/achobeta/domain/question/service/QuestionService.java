@@ -1,13 +1,9 @@
 package com.achobeta.domain.question.service;
 
-import com.achobeta.domain.paper.model.entity.QuestionEntry;
-import com.achobeta.domain.paper.model.vo.QuestionEntryVO;
 import com.achobeta.domain.question.model.entity.Question;
 import com.achobeta.domain.question.model.vo.QuestionDetailVO;
 import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.baomidou.mybatisplus.extension.service.IService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

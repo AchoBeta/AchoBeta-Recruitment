@@ -1,7 +1,5 @@
 package com.achobeta.domain.paper.service;
 
-import com.achobeta.domain.paper.model.entity.PaperEntry;
-import com.achobeta.domain.paper.model.vo.PaperQuestionsVO;
 import com.achobeta.domain.paper.model.entity.PaperQuestionLink;
 import com.achobeta.domain.paper.model.vo.QuestionPaperDetailVO;
 import com.achobeta.domain.question.model.vo.QuestionVO;

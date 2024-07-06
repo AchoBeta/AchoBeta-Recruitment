@@ -1,7 +1,5 @@
 package com.achobeta.domain.recruit.model.dto;
 
-import com.achobeta.domain.question.model.dto.QuestionDTO;
-import com.achobeta.domain.recruitment.model.dto.QuestionnaireEntryDTO;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

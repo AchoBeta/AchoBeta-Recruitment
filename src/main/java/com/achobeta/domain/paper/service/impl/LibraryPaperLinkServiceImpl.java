@@ -1,9 +1,9 @@
 package com.achobeta.domain.paper.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.achobeta.domain.paper.model.dao.mapper.LibraryPaperLinkMapper;
 import com.achobeta.domain.paper.model.entity.LibraryPaperLink;
 import com.achobeta.domain.paper.service.LibraryPaperLinkService;
-import com.achobeta.domain.paper.model.dao.mapper.LibraryPaperLinkMapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,8 +1,6 @@
 package com.achobeta.domain.question.model.dao.mapper;
 
-import com.achobeta.domain.paper.model.vo.QuestionEntryVO;
 import com.achobeta.domain.question.model.entity.Question;
-import com.achobeta.domain.question.model.vo.QuestionDetailVO;
 import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;

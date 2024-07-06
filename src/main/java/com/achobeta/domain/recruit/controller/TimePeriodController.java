@@ -4,7 +4,6 @@ import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.recruit.model.dto.TimePeriodDTO;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.recruit.service.TimePeriodService;
-import com.achobeta.domain.recruitment.service.QuestionnairePeriodService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.util.ValidatorUtils;
 import lombok.NonNull;

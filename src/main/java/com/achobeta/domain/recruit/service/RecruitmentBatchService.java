@@ -1,6 +1,5 @@
 package com.achobeta.domain.recruit.service;
 
-import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
 import com.achobeta.domain.recruit.model.entity.RecruitmentBatch;
 import com.baomidou.mybatisplus.extension.service.IService;
 

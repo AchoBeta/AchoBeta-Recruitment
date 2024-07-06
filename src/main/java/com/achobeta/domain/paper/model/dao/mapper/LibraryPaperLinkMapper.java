@@ -1,9 +1,7 @@
 package com.achobeta.domain.paper.model.dao.mapper;
 
-import com.achobeta.domain.paper.model.vo.PaperQuestionsVO;
 import com.achobeta.domain.paper.model.entity.LibraryPaperLink;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Param;
 
 /**
 * @author 马拉圈
@@ -12,8 +10,6 @@ import org.apache.ibatis.annotations.Param;
 * @Entity com.achobeta.domain.qpaper.model.entity.LibraryPaperLink
 */
 public interface LibraryPaperLinkMapper extends BaseMapper<LibraryPaperLink> {
-
-    PaperQuestionsVO getPaperDetail(@Param("paperId") Long paperId);
 
 }
 

@@ -1,6 +1,5 @@
 package com.achobeta.domain.paper.handler.chain;
 
-import com.achobeta.domain.paper.handler.RemoveQuestionHandler;
 import com.achobeta.domain.paper.handler.RemoveQuestionFromPaperHandler;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

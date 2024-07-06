@@ -1,8 +1,8 @@
 package com.achobeta.domain.paper.handler.ext;
 
-import com.achobeta.domain.question.handler.RemoveQuestionHandler;
 import com.achobeta.domain.paper.model.entity.PaperQuestionLink;
 import com.achobeta.domain.paper.service.PaperQuestionLinkService;
+import com.achobeta.domain.question.handler.RemoveQuestionHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

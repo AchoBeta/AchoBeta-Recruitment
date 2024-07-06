@@ -2,20 +2,19 @@ package com.achobeta.domain.recruit.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.recruit.model.dao.mapper.ActivityParticipationMapper;
 import com.achobeta.domain.recruit.model.dto.QuestionAnswerDTO;
+import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
 import com.achobeta.domain.recruit.model.vo.ParticipationVO;
 import com.achobeta.domain.recruit.model.vo.QuestionAnswerVO;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
+import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.ParticipationPeriodLinkService;
 import com.achobeta.domain.recruit.service.ParticipationQuestionLinkService;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
-import com.achobeta.domain.recruit.service.ActivityParticipationService;
-import com.achobeta.domain.recruit.model.dao.mapper.ActivityParticipationMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

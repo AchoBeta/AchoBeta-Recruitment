@@ -1,19 +1,16 @@
 package com.achobeta.domain.question.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.domain.paper.model.dao.mapper.QuestionEntryMapper;
-import com.achobeta.domain.paper.model.entity.QuestionEntry;
-import com.achobeta.domain.paper.model.vo.QuestionEntryVO;
 import com.achobeta.domain.question.model.dao.mapper.QuestionLibraryMapper;
+import com.achobeta.domain.question.model.dao.mapper.QuestionMapper;
 import com.achobeta.domain.question.model.entity.LibraryQuestionLink;
+import com.achobeta.domain.question.model.entity.Question;
 import com.achobeta.domain.question.model.vo.QuestionDetailVO;
 import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.achobeta.domain.question.service.LibraryQuestionLinkService;
+import com.achobeta.domain.question.service.QuestionService;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.achobeta.domain.question.model.entity.Question;
-import com.achobeta.domain.question.service.QuestionService;
-import com.achobeta.domain.question.model.dao.mapper.QuestionMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
 * @author 马拉圈

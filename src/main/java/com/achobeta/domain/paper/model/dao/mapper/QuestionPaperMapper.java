@@ -1,6 +1,5 @@
 package com.achobeta.domain.paper.model.dao.mapper;
 
-import com.achobeta.domain.paper.model.vo.PaperQuestionsVO;
 import com.achobeta.domain.paper.model.entity.QuestionPaper;
 import com.achobeta.domain.paper.model.vo.QuestionPaperVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

@@ -1,20 +1,15 @@
 package com.achobeta.domain.recruit.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.recruit.model.dao.mapper.ParticipationPeriodLinkMapper;
 import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
-import com.achobeta.domain.recruit.model.entity.ParticipationQuestionLink;
-import com.achobeta.domain.recruit.service.TimePeriodService;
-import com.achobeta.domain.recruitment.model.entity.Questionnaire;
-import com.achobeta.domain.recruitment.model.entity.QuestionnairePeriod;
-import com.achobeta.exception.GlobalServiceException;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.achobeta.domain.recruit.model.entity.ParticipationPeriodLink;
 import com.achobeta.domain.recruit.service.ParticipationPeriodLinkService;
-import com.achobeta.domain.recruit.model.dao.mapper.ParticipationPeriodLinkMapper;
+import com.achobeta.domain.recruit.service.TimePeriodService;
+import com.achobeta.exception.GlobalServiceException;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
-import jdk.jfr.Registered;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

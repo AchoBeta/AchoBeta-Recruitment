@@ -1,17 +1,11 @@
 package com.achobeta.domain.paper.controller;
 
 import com.achobeta.common.SystemJsonResponse;
-import com.achobeta.domain.paper.handler.chain.RemoveQuestionHandlerChain;
-import com.achobeta.domain.paper.model.dto.PaperEntryDTO;
-import com.achobeta.domain.paper.model.vo.PaperQuestionsVO;
-import com.achobeta.domain.paper.service.PaperEntryService;
-import com.achobeta.domain.paper.service.QuestionEntryService;
 import com.achobeta.domain.paper.handler.chain.RemoveQuestionFromPaperHandlerChain;
 import com.achobeta.domain.paper.model.dto.PaperQuestionLinkDTO;
 import com.achobeta.domain.paper.model.vo.QuestionPaperDetailVO;
 import com.achobeta.domain.paper.service.PaperQuestionLinkService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
-import com.achobeta.domain.question.service.QuestionService;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +27,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/pqlink")
 public class PaperQuestionLinkController {
-
-    private final QuestionService questionService;
 
     private final QuestionPaperService questionPaperService;
 

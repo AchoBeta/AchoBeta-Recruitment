@@ -3,7 +3,6 @@ package com.achobeta.domain.recruit.service;
 import com.achobeta.domain.recruit.model.dto.QuestionAnswerDTO;
 import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
 import com.achobeta.domain.recruit.model.vo.ParticipationVO;
-import com.achobeta.domain.recruit.model.vo.QuestionAnswerVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 

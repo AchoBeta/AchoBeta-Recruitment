@@ -2,11 +2,12 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.achobeta.domain.qpaper.model.dao.mapper.PaperQuestionLinkMapper">
+<mapper namespace="com.achobeta.domain.paper.model.dao.mapper.QuestionPaperMapper">
 
-    <resultMap id="BaseResultMap" type="com.achobeta.domain.paper.model.entity.PaperQuestionLink">
-            <result property="paperId" column="paper_id" jdbcType="BIGINT"/>
-            <result property="questionId" column="question_id" jdbcType="BIGINT"/>
+    <resultMap id="BaseResultMap" type="com.achobeta.domain.paper.model.entity.QuestionPaper">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
             <result property="version" column="version" jdbcType="INTEGER"/>
             <result property="deleted" column="is_deleted" jdbcType="BIT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -14,7 +15,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        paper_id,question_id,version,
-        is_deleted,create_time,update_time
+        id,title,description,
+        version,is_deleted,create_time,
+        update_time
     </sql>
 </mapper>

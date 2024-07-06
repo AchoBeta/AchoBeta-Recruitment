@@ -3,7 +3,6 @@ package com.achobeta.domain.recruit.model.dao.mapper;
 import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
 import com.achobeta.domain.recruit.model.vo.QuestionAnswerVO;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
-import com.achobeta.domain.recruitment.model.vo.QuestionnaireEntryVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 

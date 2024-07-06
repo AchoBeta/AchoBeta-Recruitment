@@ -5,8 +5,6 @@ import com.achobeta.domain.recruit.model.dto.ActivityParticipationDTO;
 import com.achobeta.domain.recruit.model.vo.ParticipationVO;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
-import com.achobeta.domain.recruit.service.RecruitmentBatchService;
-import com.achobeta.domain.recruitment.model.vo.QuestionnaireVO;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.util.ValidatorUtils;
 import lombok.NonNull;

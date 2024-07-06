@@ -5,8 +5,6 @@ import com.achobeta.domain.paper.handler.RemoveQuestionFromPaperHandler;
 import com.achobeta.domain.recruit.model.entity.ParticipationQuestionLink;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.ParticipationQuestionLinkService;
-import com.achobeta.domain.recruitment.model.entity.QuestionnaireEntry;
-import com.achobeta.domain.recruitment.service.QuestionnaireService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

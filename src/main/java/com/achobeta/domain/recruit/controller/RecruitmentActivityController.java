@@ -8,7 +8,6 @@ import com.achobeta.domain.recruit.model.dto.RecruitmentActivityUpdateDTO;
 import com.achobeta.domain.recruit.model.entity.StudentGroup;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.recruit.service.RecruitmentBatchService;
-import com.achobeta.domain.recruitment.model.dto.RecruitmentPaperDTO;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
