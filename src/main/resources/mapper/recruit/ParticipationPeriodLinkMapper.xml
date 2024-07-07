@@ -5,6 +5,7 @@
 <mapper namespace="com.achobeta.domain.recruit.model.dao.mapper.ParticipationPeriodLinkMapper">
 
     <resultMap id="BaseResultMap" type="com.achobeta.domain.recruit.model.entity.ParticipationPeriodLink">
+            <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="participationId" column="participation_id" jdbcType="BIGINT"/>
             <result property="periodId" column="period_id" jdbcType="BIGINT"/>
             <result property="version" column="version" jdbcType="INTEGER"/>
@@ -14,7 +15,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        participation_id,period_id,version,
+        id,participation_id,period_id,version,
         is_deleted,create_time,update_time
     </sql>
 </mapper>

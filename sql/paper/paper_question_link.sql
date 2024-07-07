@@ -1,6 +1,7 @@
 drop table if exists `paper_question_link`;
 create table `paper_question_link`
 (
+    `id` bigint primary key auto_increment comment 'id',
     `paper_id` bigint not null comment '试卷 id',
     `question_id` bigint not null comment '问题 id',
     -- common column

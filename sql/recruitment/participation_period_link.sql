@@ -1,6 +1,7 @@
 drop table if exists `participation_period_link`;
 create table `participation_period_link`
 (
+    `id` bigint primary key auto_increment comment 'id',
     `participation_id` bigint not null comment '“活动参与” id',
     `period_id` bigint not null comment '时间段 id',
     -- common column

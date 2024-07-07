@@ -5,6 +5,7 @@
 <mapper namespace="com.achobeta.domain.paper.model.dao.mapper.PaperQuestionLinkMapper">
 
     <resultMap id="BaseResultMap" type="com.achobeta.domain.paper.model.entity.PaperQuestionLink">
+            <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="paperId" column="paper_id" jdbcType="BIGINT"/>
             <result property="questionId" column="question_id" jdbcType="BIGINT"/>
             <result property="version" column="version" jdbcType="INTEGER"/>
@@ -14,7 +15,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        paper_id,question_id,version,
+        id,paper_id,question_id,version,
         is_deleted,create_time,update_time
     </sql>
 </mapper>

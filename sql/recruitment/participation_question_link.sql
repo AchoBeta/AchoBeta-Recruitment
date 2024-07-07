@@ -1,6 +1,7 @@
 drop table if exists `participation_question_link`;
 create table `participation_question_link`
 (
+    `id` bigint primary key auto_increment comment 'id',
     `participation_id` bigint not null comment '“活动参与” id',
     `question_id` bigint not null comment '问题 id',
     `answer` text not null comment '回答',

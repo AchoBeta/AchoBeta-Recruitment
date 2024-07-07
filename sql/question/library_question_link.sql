@@ -1,6 +1,7 @@
 drop table if exists `library_question_link`;
 create table `library_question_link`
 (
+    `id` bigint primary key auto_increment comment 'id',
     `lib_id` bigint not null comment '题库 id',
     `question_id` bigint not null comment '问题 id',
     -- common column

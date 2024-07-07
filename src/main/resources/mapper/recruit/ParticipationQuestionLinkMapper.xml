@@ -5,6 +5,7 @@
 <mapper namespace="com.achobeta.domain.recruit.model.dao.mapper.ParticipationQuestionLinkMapper">
 
     <resultMap id="BaseResultMap" type="com.achobeta.domain.recruit.model.entity.ParticipationQuestionLink">
+            <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="participationId" column="participation_id" jdbcType="BIGINT"/>
             <result property="questionId" column="question_id" jdbcType="BIGINT"/>
             <result property="answer" column="answer" jdbcType="VARCHAR"/>
@@ -15,7 +16,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        participation_id,question_id,answer,
+        id,participation_id,question_id,answer,
         version,is_deleted,create_time,
         update_time
     </sql>
