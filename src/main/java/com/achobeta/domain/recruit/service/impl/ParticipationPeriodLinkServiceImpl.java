@@ -72,7 +72,7 @@ public class ParticipationPeriodLinkServiceImpl extends ServiceImpl<Participatio
         timePeriodService.getTimePeriodsByActId(recId).forEach(timePeriod -> {
             hash.put(timePeriod.getId(), Boolean.FALSE);
         });
-        // 将选中的时间段设置为 true（不存在于 map 的忽略即可）
+        // 将选中的时间段设置为 true（不存在于 map 的忽略即可），并且不会重复~
         periodIds.stream().filter(hash::containsKey).forEach(periodId -> {
             hash.put(periodId, Boolean.TRUE);
         });

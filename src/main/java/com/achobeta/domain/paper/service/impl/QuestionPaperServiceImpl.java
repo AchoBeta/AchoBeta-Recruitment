@@ -44,13 +44,14 @@ public class QuestionPaperServiceImpl extends ServiceImpl<QuestionPaperMapper, Q
     }
 
     @Override
-    public void addQuestionPaper(List<Long> libIds, String title, String description) {
+    public Long addQuestionPaper(List<Long> libIds, String title, String description) {
         QuestionPaper questionPaper = new QuestionPaper();
         questionPaper.setTitle(title);
         questionPaper.setDescription(description);
         this.save(questionPaper);
         Long paperId = questionPaper.getId();
         libraryPaperLinkService.addLibraryPaperLinkBatch(libIds, paperId);
+        return paperId;
     }
 
     @Override

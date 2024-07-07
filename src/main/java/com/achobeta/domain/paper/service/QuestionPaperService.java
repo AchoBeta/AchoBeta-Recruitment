@@ -20,7 +20,7 @@ public interface QuestionPaperService extends IService<QuestionPaper> {
     Optional<QuestionPaper> getQuestionPaper(Long paperId);
 
     @Transactional
-    void addQuestionPaper(List<Long> libIds, String title, String description);
+    Long addQuestionPaper(List<Long> libIds, String title, String description);
 
     @Transactional
     void updateQuestionPaper(Long paperId, List<Long> libIds, String title, String description);

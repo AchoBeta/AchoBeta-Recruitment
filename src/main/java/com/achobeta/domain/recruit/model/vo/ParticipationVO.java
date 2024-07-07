@@ -16,14 +16,8 @@ public class ParticipationVO {
 
     private Long id;
 
-    private Long stuId;
-
     private List<QuestionAnswerVO> questionAnswerVOS;
 
     private List<TimePeriodVO> timePeriodVOS;
-
-    public void shield() {
-        setStuId(null);
-    }
 
 }

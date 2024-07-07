@@ -82,7 +82,7 @@ public class ParticipationQuestionLinkServiceImpl extends ServiceImpl<Participat
         recruitmentActivityService.getQuestionsByActId(recId).forEach(questionVO -> {
             hash.put(questionVO.getId(), DEFAULT_ANSWER);
         });
-        // 将答案填入模板
+        // 将答案填入模板，这样还不会重复，如果是恶意数据，按照顺序后来的值会覆盖前面的~
         questionAnswerDTOS.stream()
                 .filter(questionAnswerDTO -> hash.containsKey(questionAnswerDTO.getQuestionId()))
                 .filter(questionAnswerDTO -> StringUtils.hasText(questionAnswerDTO.getAnswer()))

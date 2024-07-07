@@ -35,7 +35,7 @@ public class RecruitmentActivityVO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 
-    public void shield() {
+    public void hidden() {
         setPaperId(null);
         setTarget(null);
         setIsRun(null);

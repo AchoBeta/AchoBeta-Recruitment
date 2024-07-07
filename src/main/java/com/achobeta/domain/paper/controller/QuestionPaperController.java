@@ -38,8 +38,8 @@ public class QuestionPaperController {
         // 检查
         ValidatorUtils.validate(questionPaperDTO);
         // 添加
-        questionPaperService.addQuestionPaper(questionPaperDTO.getLibIds(), questionPaperDTO.getTitle(), questionPaperDTO.getDescription());
-        return SystemJsonResponse.SYSTEM_SUCCESS();
+        Long paperId = questionPaperService.addQuestionPaper(questionPaperDTO.getLibIds(), questionPaperDTO.getTitle(), questionPaperDTO.getDescription());
+        return SystemJsonResponse.SYSTEM_SUCCESS(paperId);
     }
 
     @PostMapping("/update/{paperId}")

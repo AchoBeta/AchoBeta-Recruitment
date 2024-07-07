@@ -17,4 +17,8 @@ public class QuestionVO {
     private String title;
 
     private String standard;
+
+    public void hidden() {
+        setStandard(null);
+    }
 }

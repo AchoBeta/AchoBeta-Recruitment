@@ -39,7 +39,6 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
         String[] studentOrManagerIntercept = {
             "/api/v1/recruit/activity/template/**",
-            "/api/v1/recruit/activity/list/**",
         };
 
         String[] studentIntercept = {
@@ -48,7 +47,9 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 "/api/v1/participate/get/**",
                 "/api/v1/participate/submit/**",
 
-                "/api/v1/recruit/batch/list/user/**"
+                "/api/v1/recruit/activity/list/user/**",
+
+                "/api/v1/recruit/batch/list/user/**",
         };
 
         String[] managerIntercept = {
@@ -66,6 +67,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 "/api/v1/recruit/activity/shift/**",
                 "/api/v1/recruit/activity/update/**",
                 "/api/v1/recruit/activity/set/paper/**",
+                "/api/v1/recruit/activity/list/manager/**",
 
                 "/api/v1/recruit/batch/create/**",
                 "/api/v1/recruit/batch/update/**",

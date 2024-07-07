@@ -136,12 +136,11 @@ public class RecruitmentActivityServiceImpl extends ServiceImpl<RecruitmentActiv
         if(!paperId.equals(oldPaperId)) {
             // 获取用户填的 id 列表，删除原本的所有回答（哪怕两份卷子有相同的问题，也照样删除）
             List<Long> participationIds = getParticipationIdsByActId(actId);
-            if (CollectionUtil.isEmpty(participationIds)) {
-                return;
+            if (!CollectionUtil.isEmpty(participationIds)) {
+                Db.lambdaUpdate(ParticipationQuestionLink.class)
+                        .in(ParticipationQuestionLink::getParticipationId, participationIds)
+                        .remove();
             }
-            Db.lambdaUpdate(ParticipationQuestionLink.class)
-                    .in(ParticipationQuestionLink::getParticipationId, participationIds)
-                    .remove();
             // 设置试卷
             this.lambdaUpdate()
                     .eq(RecruitmentActivity::getId, actId)

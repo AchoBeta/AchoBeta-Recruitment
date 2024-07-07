@@ -24,4 +24,9 @@ public class RecruitmentTemplate {
     private List<QuestionVO> questionVOS;
 
     private List<TimePeriodVO> timePeriodVOS;
+
+    public void hidden() {
+        recruitmentActivityVO.hidden();
+        questionVOS.forEach(QuestionVO::hidden);
+    }
 }

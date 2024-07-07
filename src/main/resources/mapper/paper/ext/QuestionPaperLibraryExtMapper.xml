@@ -4,16 +4,22 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.achobeta.domain.paper.model.dao.mapper.QuestionPaperLibraryMapper">
 
+    <resultMap id="PaperLibraryMap" type="com.achobeta.domain.paper.model.vo.PaperLibraryVO">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="libType" column="lib_type" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
     <resultMap id="QuestionPaperDetail" type="com.achobeta.domain.paper.model.vo.QuestionPaperDetailVO">
         <result property="id" column="id" jdbcType="BIGINT"/>
         <result property="title" column="title" jdbcType="VARCHAR"/>
         <result property="description" column="description" jdbcType="VARCHAR"/>
-        <collection property="types" column="lib_type" ofType="java.lang.String"/>
+        <collection property="types" columnPrefix="l_" resultMap="PaperLibraryMap"/>
     </resultMap>
 
     <select id="getQuestionPaperDetail" parameterType="java.lang.Long" resultMap="QuestionPaperDetail">
         select
-            p.id, p.title, p.description, l.lib_type
+            p.id, p.title, p.description, l.id l_id, l.lib_type l_lib_type, l.create_time l_create_time
         from question_paper p
              left join library_paper_link lp on p.id = lp.paper_id and p.is_deleted = 0 and lp.is_deleted = 0
              left join question_paper_library l on l.id = lp.lib_id and l.is_deleted = 0 and lp.is_deleted = 0
