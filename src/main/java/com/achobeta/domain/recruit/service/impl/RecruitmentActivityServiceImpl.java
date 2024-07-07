@@ -16,6 +16,7 @@ import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -26,6 +27,7 @@ import java.util.*;
 * @createDate 2024-07-06 12:33:02
 */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class RecruitmentActivityServiceImpl extends ServiceImpl<RecruitmentActivityMapper, RecruitmentActivity>
     implements RecruitmentActivityService{
@@ -86,12 +88,17 @@ public class RecruitmentActivityServiceImpl extends ServiceImpl<RecruitmentActiv
 
     @Override
     public List<RecruitmentActivity> getRecruitmentActivities(Long batchId, Long stuId) {
-        Integer grade = stuResumeService.getGradeByBatchIdAndStuId(batchId, stuId);
-        // 过滤出用户可见的
-        return getRecruitmentActivities(batchId, Boolean.TRUE).stream().filter(recruitmentActivity -> {
-            StudentGroup target = recruitmentActivity.getTarget();
-            return target.getGrade().contains(grade) || target.getUid().contains(stuId);
-        }).toList();
+        try {
+            Integer grade = stuResumeService.getGradeByBatchIdAndStuId(batchId, stuId);
+            // 过滤出用户可见的
+            return getRecruitmentActivities(batchId, Boolean.TRUE).stream().filter(recruitmentActivity -> {
+                StudentGroup target = recruitmentActivity.getTarget();
+                return target.getGrade().contains(grade) || target.getUid().contains(stuId);
+            }).toList();
+        } catch (GlobalServiceException e) {
+            log.warn("stuId: {} batchId: {}, exception: {}", stuId, batchId, e.getMessage());
+        }
+        return new ArrayList<>();
     }
 
     @Override
@@ -132,16 +139,16 @@ public class RecruitmentActivityServiceImpl extends ServiceImpl<RecruitmentActiv
         Long oldPaperId = checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE).getPaperId();
         // 检测
         questionPaperService.checkPaperExists(paperId);
-        // 如果不一样才有必要进行以下操作
+        // 只有新试卷和老试卷不一样才有必要进行
         if(!paperId.equals(oldPaperId)) {
-            // 获取用户填的 id 列表，删除原本的所有回答（哪怕两份卷子有相同的问题，也照样删除）
+            // 获取此活动已有的，“活动参与”列表，删除原本的所有回答（哪怕两份卷子有相同的问题，也照样删除）
             List<Long> participationIds = getParticipationIdsByActId(actId);
             if (!CollectionUtil.isEmpty(participationIds)) {
                 Db.lambdaUpdate(ParticipationQuestionLink.class)
                         .in(ParticipationQuestionLink::getParticipationId, participationIds)
                         .remove();
             }
-            // 设置试卷
+            // 设置新试卷
             this.lambdaUpdate()
                     .eq(RecruitmentActivity::getId, actId)
                     .set(RecruitmentActivity::getPaperId, paperId)

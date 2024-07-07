@@ -15,6 +15,8 @@ import java.util.Date;
 @Data
 public class RecruitmentBatchVO {
 
+    private Long id;
+
     private Integer batch;
 
     private String title;

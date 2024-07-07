@@ -52,6 +52,11 @@ public interface RecruitmentActivityService extends IService<RecruitmentActivity
 
     void shiftRecruitmentActivity(Long actId, Boolean isRun);
 
+    /**
+     * 为招新活动设置一张试卷（给用户回答的特殊问题）
+     * @param actId
+     * @param paperId
+     */
     @Transactional
     void setPaperForActivity(Long actId, Long paperId);
 
