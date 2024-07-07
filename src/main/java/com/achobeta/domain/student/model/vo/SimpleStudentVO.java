@@ -1,6 +1,5 @@
 package com.achobeta.domain.student.model.vo;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 /**
