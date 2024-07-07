@@ -1,5 +1,6 @@
 package com.achobeta.domain.paper.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.paper.model.dao.mapper.QuestionPaperMapper;
 import com.achobeta.domain.paper.model.entity.LibraryPaperLink;
@@ -30,6 +31,11 @@ public class QuestionPaperServiceImpl extends ServiceImpl<QuestionPaperMapper, Q
     private final QuestionPaperMapper questionPaperMapper;
 
     private final LibraryPaperLinkService libraryPaperLinkService;
+
+    @Override
+    public List<QuestionPaperVO> getQuestionPapers() {
+        return BeanUtil.copyToList(this.list(), QuestionPaperVO.class);
+    }
 
     @Override
     public List<QuestionPaperVO> getQuestionPapersByLibId(Long libId) {

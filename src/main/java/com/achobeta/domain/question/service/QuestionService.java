@@ -16,6 +16,8 @@ import java.util.Optional;
 */
 public interface QuestionService extends IService<Question> {
 
+    List<QuestionVO> getQuestions();
+
     List<QuestionVO> getQuestionsByLibId(Long libId);
 
     Optional<Question> getQuestion(Long questionId);

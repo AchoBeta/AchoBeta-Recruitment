@@ -15,6 +15,8 @@ import java.util.Optional;
 */
 public interface QuestionPaperService extends IService<QuestionPaper> {
 
+    List<QuestionPaperVO> getQuestionPapers();
+
     List<QuestionPaperVO> getQuestionPapersByLibId(Long libId);
 
     Optional<QuestionPaper> getQuestionPaper(Long paperId);

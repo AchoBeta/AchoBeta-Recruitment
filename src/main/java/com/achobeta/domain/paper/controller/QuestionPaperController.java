@@ -3,9 +3,11 @@ package com.achobeta.domain.paper.controller;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.paper.handler.chain.RemovePaperHandlerChain;
 import com.achobeta.domain.paper.model.dto.QuestionPaperDTO;
+import com.achobeta.domain.paper.model.entity.QuestionPaper;
 import com.achobeta.domain.paper.model.vo.QuestionPaperVO;
 import com.achobeta.domain.paper.service.QuestionPaperLibraryService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
+import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +65,13 @@ public class QuestionPaperController {
         // 触发责任链
         removePaperHandlerChain.handle(paperId);
         return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
+
+    @GetMapping("/list/all")
+    public SystemJsonResponse getQuestionPapers() {
+        // 查询
+        List<QuestionPaperVO> questionPapers = questionPaperService.getQuestionPapers();
+        return SystemJsonResponse.SYSTEM_SUCCESS(questionPapers);
     }
 
     @GetMapping("/list/{libId}")

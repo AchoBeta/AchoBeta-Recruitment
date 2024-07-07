@@ -66,6 +66,13 @@ public class QuestionController {
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
+    @GetMapping("/list/all")
+    public SystemJsonResponse getQuestions() {
+        // 查询
+        List<QuestionVO> questions = questionService.getQuestions();
+        return SystemJsonResponse.SYSTEM_SUCCESS(questions);
+    }
+
     @GetMapping("/list/{libId}")
     public SystemJsonResponse getQuestions(@PathVariable("libId") @NotNull Long libId) {
         // 检查
