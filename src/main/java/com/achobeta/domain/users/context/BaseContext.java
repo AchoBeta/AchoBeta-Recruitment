@@ -8,7 +8,7 @@ import com.achobeta.domain.users.model.po.UserHelper;
  */
 public class BaseContext {
 
-    public static ThreadLocal<UserHelper> threadLocal = new ThreadLocal<>();
+    private final static ThreadLocal<UserHelper> threadLocal = new ThreadLocal<>();
 
     public static void setCurrentUser(UserHelper userHelper ) {
         threadLocal.set(userHelper);

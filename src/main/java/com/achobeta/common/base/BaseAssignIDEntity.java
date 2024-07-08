@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class BaseAssignIDEntity implements Serializable {
+
     /**
      * id, incr
      */
@@ -47,10 +48,8 @@ public class BaseAssignIDEntity implements Serializable {
     @Version
     private Integer version;
 
-    /**
-     * 逻辑删除标识
-     */
     @TableField(value = "is_deleted", fill = FieldFill.INSERT)
     @TableLogic
     private Integer deleted;
+
 }

@@ -1,6 +1,7 @@
 package com.achobeta.common.base;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class BaseIncrIDEntity implements Serializable {
+
     /**
      * id, incr
      */
@@ -49,4 +51,5 @@ public class BaseIncrIDEntity implements Serializable {
     @TableField(value = "is_deleted", fill = FieldFill.INSERT)
     @TableLogic
     private Integer deleted;
+
 }

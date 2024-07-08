@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -51,7 +52,7 @@ public class UserInterpretor implements HandlerInterceptor {
         //通过明文钥匙生成密钥
         SecretKey secretKey = JwtUtil.generalKey(jwtProperties.getSecretKey());
 
-        io.jsonwebtoken.Claims claims = JwtUtil.parseJWT(secretKey, token);
+        Claims claims = JwtUtil.parseJWT(secretKey, token);
         //通过线程局部变量设置当前线程用户信息
         setGlobaleUserInfoByClaims(claims, token);
         //判断token是否即将过期

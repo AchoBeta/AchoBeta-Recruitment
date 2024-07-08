@@ -1,6 +1,5 @@
 package com.achobeta.domain.login.service.strategy;
 
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import com.achobeta.common.enums.LoginTypeEnum;
 import com.achobeta.domain.login.model.dao.UserEntity;
@@ -67,6 +66,7 @@ public class PasswordLoginStrategy implements LoginStrategy {
         LoginUser loginUser = new LoginUser();
         loginUser.setUsername(user.getUsername());
         loginUser.setUserType(user.getUserType());
+        loginUser.setUserId(user.getId());
         return loginUser;
     }
 

@@ -33,4 +33,6 @@ public class RegisterDTO {
      */
 //    private String userType;
 
+    private String email;
+
 }

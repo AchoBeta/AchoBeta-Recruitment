@@ -18,15 +18,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static com.achobeta.common.constants.RedisConstants.LOGIN_FAIL_CNT_KEY;
 import static com.achobeta.common.enums.GlobalServiceStatusCode.USER_ACCOUNT_ALREADY_EXIST;
-import static com.achobeta.common.enums.GlobalServiceStatusCode.USER_ACCOUNT_REGISTER_ERROR;
 
 /**
  * @author BanTanger 半糖
@@ -43,12 +44,14 @@ public class LoginServiceImpl implements LoginService {
     @Value("${ab.user.password.lockTime:10}")
     private Integer lockTime;
 
+    private final static Integer DEFAULT_ROLE = 1; // 非管理员
+
     private final RedisCache redisCache;
     private final UserMapper userMapper;
     private final JwtProperties jwtProperties;
 
     @Override
-    public void register(RegisterDTO registerBody) {
+    public UserEntity register(RegisterDTO registerBody) {
         String username = registerBody.getUsername();
 
         // TODO 验证码校验
@@ -63,21 +66,23 @@ public class LoginServiceImpl implements LoginService {
         }
 
         // 注册
-        boolean regFlag = registerUser(registerBody);
-        if (!regFlag) {
-            String message = String.format("账号名称:'%s'注册异常, 数据库插入数据失败", username);
-            throw new GlobalServiceException(message, USER_ACCOUNT_REGISTER_ERROR);
-        }
+        UserEntity user = registerUser(registerBody);
         log.info("账号名称:'{}'注册成功!", username);
+        return user;
     }
 
-    private boolean registerUser(RegisterDTO registerBody) {
+    private UserEntity registerUser(RegisterDTO registerBody) {
         UserEntity user = new UserEntity();
+        user.setUserType(DEFAULT_ROLE);
         user.setUsername(registerBody.getUsername());
         user.setNickname(registerBody.getUsername());
-        user.setPassword(BCrypt.hashpw(registerBody.getPassword()));
-
-        return userMapper.insert(user) > 0;
+        String password = registerBody.getPassword();
+        if(StringUtils.hasText(password)) {
+            user.setPassword(BCrypt.hashpw(password));
+        }
+        user.setEmail(registerBody.getEmail());
+        userMapper.insert(user);
+        return user;
     }
 
     @Override
@@ -88,7 +93,7 @@ public class LoginServiceImpl implements LoginService {
         //将id存入claims
         if (Optional.ofNullable(loginUser.getUserId()).isPresent()) {
             claims.put(UserInterpretor.USER_ID, loginUser.getUserId());
-            claims.put(UserTypeEnum.USER.getName(), loginUser.getUsername());
+            claims.put(UserTypeEnum.USER.getName(), loginUser.getUserType());
         }
 
         String token = JwtUtil.createJWT(secretKey, jwtProperties.getTtl(), claims);
@@ -120,7 +125,7 @@ public class LoginServiceImpl implements LoginService {
             // 用户登录失败次数缓存 ttl 设置为密码锁定周期
             // lockTime 默认单位是分钟，分钟转秒，秒转毫秒
             // 10 min = 10 * 60 * 1000 ms
-            redisCache.setCacheObject(failKey, failCount, lockTime * 60 * 1000L); // 单位是 ms
+            redisCache.setCacheObject(failKey, failCount, lockTime, TimeUnit.MINUTES); // 单位是 ms
             if (failCount >= maxRetryCount) {
                 // 达到失败上限，锁定登录
                 String message = String.format("连续'%d'次登录失败, 请过'%d'分钟后再登录", maxRetryCount, lockTime);

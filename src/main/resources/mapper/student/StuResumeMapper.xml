@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper">
+
+    <resultMap id="BaseResultMap" type="com.achobeta.domain.student.model.entity.StuResume">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="batchId" column="batch_id" jdbcType="BIGINT"/>
+            <result property="studentId" column="student_id" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="gender" column="gender" jdbcType="TINYINT"/>
+            <result property="grade" column="grade" jdbcType="INTEGER"/>
+            <result property="major" column="major" jdbcType="VARCHAR"/>
+            <result property="className" column="class" jdbcType="VARCHAR"/>
+            <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="phoneNumber" column="phone_number" jdbcType="VARCHAR"/>
+            <result property="reason" column="reason" jdbcType="VARCHAR"/>
+            <result property="introduce" column="introduce" jdbcType="VARCHAR"/>
+            <result property="experience" column="experience" jdbcType="VARCHAR"/>
+            <result property="awards" column="awards" jdbcType="VARCHAR"/>
+            <result property="image" column="image" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="submitCount" column="submit_count" jdbcType="INTEGER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="version" column="version" jdbcType="INTEGER"/>
+            <result property="deleted" column="is_deleted" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,batch_id,
+        student_id,name,gender,
+        grade,major,class,
+        email,phone_number,reason,
+        introduce,experience,awards,
+        image,remark,status,
+        submit_count,create_time,update_time,
+        version,is_deleted
+    </sql>
+</mapper>

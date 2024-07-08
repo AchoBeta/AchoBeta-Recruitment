@@ -1,7 +1,5 @@
 package com.achobeta.domain.login.service.strategy;
 
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.crypto.digest.BCrypt;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.LoginTypeEnum;
 import com.achobeta.domain.login.model.dao.UserEntity;
@@ -76,6 +74,7 @@ public class EmailLoginStrategy implements LoginStrategy {
         LoginUser loginUser = new LoginUser();
         loginUser.setUsername(user.getUsername());
         loginUser.setUserType(user.getUserType());
+        loginUser.setUserId(user.getId());
         return loginUser;
     }
 
@@ -83,15 +82,13 @@ public class EmailLoginStrategy implements LoginStrategy {
         // 查询是否存在该邮箱
         UserEntity user = userMapper.selectOne(new LambdaQueryWrapper<UserEntity>()
                 .eq(UserEntity::getEmail, email));
-
-        if (ObjectUtil.isNull(user)) {
+        return Optional.ofNullable(user).orElseGet(() -> {
             // 不存在邮箱走注册逻辑
             RegisterDTO registerDTO = new RegisterDTO();
+            registerDTO.setEmail(email);
             registerDTO.setUsername(email);
-            registerDTO.setPassword(BCrypt.hashpw(email));
-            loginService.register(registerDTO);
-        }
-        return user;
+            return loginService.register(registerDTO);
+        });
     }
 
     private boolean validateEmailCode(String email, String emailCode) {

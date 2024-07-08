@@ -21,6 +21,7 @@
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <lombok.version>1.18.30</lombok.version>
         <com.google.guava.version>31.1-jre</com.google.guava.version>
+        <org.redisson.version>3.27.2</org.redisson.version>
     </properties>
 
     <profiles>
@@ -29,7 +30,7 @@
             <properties>
                 <!--环境标识，需要与配置文件名称相对应-->
                 <profiles.active>dev</profiles.active>
-                <logging.level>debug</logging.level>
+                <logging.level>info</logging.level>
             </properties>
             <activation>
                 <!--默认环境-->
@@ -64,6 +65,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
+
         <!-- 自定义验证注解 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -99,6 +101,12 @@
             <artifactId>commons-codec</artifactId>
         </dependency>
         <!--redis-->
+        <!--  redission  -->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-data-27</artifactId>
+            <version>${org.redisson.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.achobeta.domain.recruit.model.dao.mapper.RecruitmentBatchMapper">
+
+    <select id="getStuResumeByBatchId" parameterType="java.lang.Long" resultMap="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.SimpleResumeMap">
+        select
+            s.id, s.user_id, s.student_id, s.name, u.username, s.gender, s.grade, s.major, s.class, s.status
+        from recruitment_batch rb
+             left join stu_resume s on s.batch_id = rb.id and s.is_deleted = 0 and rb.is_deleted = 0
+             left join user u on s.user_id = u.id and s.is_deleted = 0 and u.is_deleted = 0
+        where rb.id = #{batchId,jdbcType=BIGINT} and s.id is not null
+        order by s.create_time asc
+    </select>
+</mapper>

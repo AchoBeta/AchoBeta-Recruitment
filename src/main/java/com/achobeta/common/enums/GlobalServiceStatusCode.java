@@ -51,6 +51,27 @@ public enum GlobalServiceStatusCode {
     EMAIL_NOT_EXIST_RECORD(3101, "邮箱不存在记录"),
     EMAIL_CAPTCHA_CODE_COUNT_EXHAUST(3103, "申请次数达到上限"),
 
+    /* 组卷错误 4001-5000 */
+    QUESTION_LIBRARY_NOT_EXISTS(4001, "题库不存在"),
+    QUESTION_PAPER_LIBRARY_NOT_EXISTS(4002, "试卷库不存在"),
+    QUESTION_NOT_EXISTS(4003, "题目不存在"),
+    QUESTION_PAPER_NOT_EXISTS(4004, "试卷不存在"),
+
+    /* 招新错误 5001-6000 */
+    RECRUITMENT_BATCH_NOT_EXISTS(5001, "招新批次不存在"),
+    RECRUITMENT_BATCH_IS_RUN(5002, "招新已开始"),
+    RECRUITMENT_BATCH_IS_NOT_RUN(5003, "招新未开始"),
+
+    RECRUITMENT_ACTIVITY_NOT_EXISTS(5101, "招新活动不存在"),
+    RECRUITMENT_ACTIVITY_IS_RUN(5102, "招新活动已开始"),
+    RECRUITMENT_ACTIVITY_IS_NOT_RUN(5103, "招新活动未开始"),
+    PERIOD_NOT_EXISTS(5104, "时间段不存在"),
+    USER_CANNOT_PARTICIPATE_IN_ACTIVITY(5105, "用户不能参与此活动"),
+
+    USER_RESUME_NOT_EXISTS(5201, "用户简历不存在"),
+    USER_DID_NOT_PARTICIPATE(5202, "用户并没有参与活动"),
+
+
     /* -------------- */;
 
     private final Integer code;

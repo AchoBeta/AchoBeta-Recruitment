@@ -19,7 +19,7 @@ public class LoginUser implements Serializable {
     /**
      * 用户 id
      */
-    private String userId;
+    private Long userId;
     /**
      * 用户名
      */

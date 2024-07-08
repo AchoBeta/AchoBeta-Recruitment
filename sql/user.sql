@@ -8,8 +8,8 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`
 (
     `id`           bigint(20)   NOT NULL AUTO_INCREMENT COMMENT '用户唯一ID',
-    `username`     varchar(10)  NOT NULL DEFAULT '' COMMENT '用户名',
-    `nickname`     varchar(10)  NOT NULL DEFAULT '' COMMENT '用户昵称',
+    `username`     varchar(50)  NOT NULL DEFAULT '' COMMENT '用户名',
+    `nickname`     varchar(50)  NOT NULL DEFAULT '' COMMENT '用户昵称',
     `email`        varchar(50)  NOT NULL DEFAULT '' COMMENT '邮箱',
     `phone_number` varchar(11)  NOT NULL DEFAULT '' COMMENT '手机号码',
     `password`     varchar(100) NOT NULL DEFAULT '' COMMENT '密码',
@@ -20,8 +20,8 @@ CREATE TABLE `user`
     `version`      int          NOT NULL DEFAULT 0 COMMENT '乐观锁',
     `is_deleted`   tinyint      NOT NULL DEFAULT 0 COMMENT '伪删除标记',
     PRIMARY KEY (`id`),
-    UNIQUE INDEX `uni_email` (`email`),
-    UNIQUE INDEX `uni_phone` (`phone_number`),
+    INDEX `idx_email` (`email`),
+    INDEX `idx_phone` (`phone_number`),
     UNIQUE INDEX `uni_name` (`username`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 10000
@@ -30,3 +30,11 @@ CREATE TABLE `user`
   ROW_FORMAT = DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- 管理员，username: root; password: AchoBeta666
+
+insert into user
+(`username`, `nickname`, `password`, `user_type`)
+values
+    ('root', 'root', '$2a$10$YPKp0kzLjnNrW5CgKuDdiuF4tZO0KXacmhy2KT7N9Zey49Cmi/rfu', 2)
+;
