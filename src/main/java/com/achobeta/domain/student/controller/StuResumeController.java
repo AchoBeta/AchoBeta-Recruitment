@@ -1,17 +1,16 @@
 package com.achobeta.domain.student.controller;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.student.model.dto.StuResumeDTO;
-import com.achobeta.domain.student.model.entity.StuResume;
+import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.achobeta.domain.student.service.StuResumeService;
-import com.achobeta.domain.users.context.BaseContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created With Intellij IDEA
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Time: 22:50
  */
 @Slf4j
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/resume")
@@ -29,19 +29,24 @@ public class StuResumeController {
     private final StuResumeService stuResumeService;
 
     /**
-     * 此接口单纯为了提供简历
-     * todo：需要编写更多细节的业务~
+     * 提交简历
      * @param stuResumeDTO
      * @return
      */
     @PostMapping("/submit")
-    public SystemJsonResponse submitResume(@RequestBody StuResumeDTO stuResumeDTO) {
-        // 当前用户
-        long stuId = BaseContext.getCurrentUser().getUserId();
-        StuResume stuResume = BeanUtil.copyProperties(stuResumeDTO, StuResume.class);
-        stuResume.setUserId(stuId);
-        stuResumeService.save(stuResume);
-        return SystemJsonResponse.SYSTEM_SUCCESS(stuResume.getId());
+    public SystemJsonResponse submitResume(@RequestBody @Valid StuResumeDTO stuResumeDTO) {
+        stuResumeService.submitResume(stuResumeDTO);
+        return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
+    /**
+     * 查询详细简历信息
+     * @param resumeId
+     * @return stuResumeVO
+     */
+    @GetMapping("/get/{resumeId}")
+    public SystemJsonResponse queryResumeInfo(@PathVariable("resumeId") @NotNull(message = "简历id不能为空") Long resumeId) {
+        StuResumeVO stuResumeVO= stuResumeService.getResumeInfo(resumeId);
+        return SystemJsonResponse.SYSTEM_SUCCESS(stuResumeVO);
+    }
 }

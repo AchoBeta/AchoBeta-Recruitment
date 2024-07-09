@@ -70,6 +70,7 @@ public enum GlobalServiceStatusCode {
 
     USER_RESUME_NOT_EXISTS(5201, "用户简历不存在"),
     USER_DID_NOT_PARTICIPATE(5202, "用户并没有参与活动"),
+    USER_RESUME_SUBMIT_OVER_COUNT(5203, "用户简历提交次数已达最大"),
 
 
     /* -------------- */;

@@ -1,7 +1,9 @@
 package com.achobeta.domain.student.service;
 
+import com.achobeta.domain.student.model.dto.StuResumeDTO;
 import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
+import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Optional;
@@ -19,4 +21,7 @@ public interface StuResumeService extends IService<StuResume> {
 
     Integer getGradeByBatchIdAndStuId(Long batchId, Long stuId);
 
+    void submitResume(StuResumeDTO stuResumeDTO);
+
+    StuResumeVO getResumeInfo(Long resumeId);
 }
