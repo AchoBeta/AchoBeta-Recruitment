@@ -17,17 +17,17 @@ public class StuSimpleResumeDTO implements Serializable {
     private Long batchId;
     @NotNull(message = "学号不能为空")
     private Long studentId;
-    @NotNull(message = "名字不能为空")
+    @NotBlank(message = "名字不能为空")
     private String name;
     @NotNull(message = "性别不能为空")
     private Integer gender;
     @NotNull(message = "年级不能为空")
     private Integer grade;
-    @NotNull(message = "专业不能为空")
+    @NotBlank(message = "专业不能为空")
     private String major;
-    @NotNull(message = "班名不能为空")
+    @NotBlank(message = "班名不能为空")
     private String className;
-    @NotNull(message = "邮箱不能为空")
+    @NotBlank(message = "邮箱不能为空")
     private String email;
     @NotBlank(message = "手机号不能为空")
     private String phoneNumber;

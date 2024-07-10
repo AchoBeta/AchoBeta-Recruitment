@@ -1,6 +1,7 @@
 package com.achobeta.domain.student.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.domain.student.model.dto.QueryResumeDTO;
 import com.achobeta.domain.student.model.dto.StuResumeDTO;
 import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.achobeta.domain.student.service.StuResumeService;
@@ -10,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 /**
  * Created With Intellij IDEA
@@ -34,19 +34,21 @@ public class StuResumeController {
      * @return
      */
     @PostMapping("/submit")
-    public SystemJsonResponse submitResume(@RequestBody @Valid StuResumeDTO stuResumeDTO) {
+    public SystemJsonResponse submitResume( @Valid @RequestBody StuResumeDTO stuResumeDTO) {
         stuResumeService.submitResume(stuResumeDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
     /**
-     * 查询详细简历信息
-     * @param resumeId
+     * 根据简历id或(batchId+userId)查询个人详细简历信息
+     * @param queryResumeDTO
      * @return stuResumeVO
      */
-    @GetMapping("/get/{resumeId}")
-    public SystemJsonResponse queryResumeInfo(@PathVariable("resumeId") @NotNull(message = "简历id不能为空") Long resumeId) {
-        StuResumeVO stuResumeVO= stuResumeService.getResumeInfo(resumeId);
+    @PostMapping("/query")
+    public SystemJsonResponse queryResumeInfo(@RequestBody @Valid QueryResumeDTO queryResumeDTO) {
+        StuResumeVO stuResumeVO= stuResumeService.getResumeInfo(queryResumeDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS(stuResumeVO);
     }
+
+
 }

@@ -4,9 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.ResumeStatusEnum;
 import com.achobeta.domain.student.model.dao.mapper.StuResumeMapper;
-import com.achobeta.domain.student.model.dto.StuAttachmentDTO;
-import com.achobeta.domain.student.model.dto.StuResumeDTO;
-import com.achobeta.domain.student.model.dto.StuSimpleResumeDTO;
+import com.achobeta.domain.student.model.dto.*;
 import com.achobeta.domain.student.model.entity.StuAttachment;
 import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
@@ -75,19 +73,18 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         List<StuAttachmentDTO> stuAttachmentDTOList = stuResumeDTO.getStuAttachmentDTOList();
 
         //查询数据库
-        StuResume stuResume = getStuResume(resumeDTO.getBatchId(), Long.valueOf(resumeDTO.getStudentId())).orElse(new StuResume());
+        StuResume stuResume = getStuResume(resumeDTO.getBatchId(), Long.valueOf(userId)).orElse(new StuResume());
         //简历状态更新为待筛选
         stuResume.setStatus(ResumeStatusEnum.TO_BE_SCREENED.getResumeStatusCode());
         //是否存在已有简历信息
-        if(!Objects.isNull(stuResume)){
+        if (stuResume.getId() != null) {
             //检查简历提交否超过最大次数
             checkResumeSubmitCount(stuResume.getSubmitCount());
             //更新简历信息
-            updateResumeInfo(stuResume,resumeDTO);
-        }
-        else{
+            updateResumeInfo(stuResume, resumeDTO);
+        } else {
             //保存简历信息
-            saveResumeInfo(stuResume, resumeDTO,userId);
+            saveResumeInfo(stuResume, resumeDTO, userId);
         }
 
         //保存附件信息
@@ -95,44 +92,64 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     }
 
     @Override
-    public StuResumeVO getResumeInfo(Long resumeId) {
+    public StuResumeVO getResumeInfo(QueryResumeDTO queryResumeDTO) {
+        //查询简历信息
+        StuResume stuResume = getStuResume(queryResumeDTO);
+        //封装返回结果
+        return buildStuResumeVO(queryResumeDTO, stuResume);
 
-        StuResumeVO stuResumeVO = buildStuResumeVO(resumeId);
-
-        return stuResumeVO;
     }
 
-    private StuResumeVO buildStuResumeVO(Long resumeId) {
+    private StuResumeVO buildStuResumeVO(QueryResumeDTO queryResumeDTO, StuResume stuResume) {
         //返回信息实体
         StuResumeVO stuResumeVO = new StuResumeVO();
-        //查询简历信息
-        StuResume stuResume = lambdaQuery().eq(StuResume::getId, resumeId).one();
         //判断简历是否存在
-        Optional.ofNullable(stuResume).orElseThrow(()->new GlobalServiceException(GlobalServiceStatusCode.USER_RESUME_NOT_EXISTS));
+        Optional.ofNullable(stuResume).orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.USER_RESUME_NOT_EXISTS));
         //构造返回的简历表信息
         StuSimpleResumeVO simpleResumeVO = new StuSimpleResumeVO();
-        BeanUtil.copyProperties(stuResume,simpleResumeVO);
+        BeanUtil.copyProperties(stuResume, simpleResumeVO);
 
         //查询并构造附件集合
-        List<StuAttachment> stuAttachmentList = stuAttachmentService.lambdaQuery().eq(StuAttachment::getResumeId, resumeId).list();
+        List<StuAttachment> stuAttachmentList = stuAttachmentService.lambdaQuery().eq(StuAttachment::getResumeId, queryResumeDTO.getResumeId()).list();
         List<StuAttachmentVO> stuAttachmentVOList = BeanUtil.copyToList(stuAttachmentList, StuAttachmentVO.class);
 
-        //封装简历返回结果
+        //将简历表信息和附件信息封装返回
         stuResumeVO.setStuSimpleResumeVO(simpleResumeVO);
         stuResumeVO.setStuAttachmentVOList(stuAttachmentVOList);
-
         return stuResumeVO;
     }
 
-    private void updateResumeInfo(StuResume stuResume,StuSimpleResumeDTO resumeDTO) {
-        BeanUtil.copyProperties(resumeDTO,stuResume);
+    private StuResume getStuResume(QueryResumeDTO queryResumeDTO) {
+        QueryResumeOfUserDTO resumeOfUserDTO = queryResumeDTO.getQueryResumeOfUserDTO();
+
+        StuResume stuResume;
+        //查询简历信息
+        if (Objects.nonNull(resumeOfUserDTO)) {
+            //根据batchId和userId查询
+            stuResume = lambdaQuery()
+                    .eq(queryResumeDTO.getResumeId() != null, StuResume::getId, queryResumeDTO.getResumeId())
+                    .eq(resumeOfUserDTO.getUserId() != null, StuResume::getUserId, resumeOfUserDTO.getUserId())
+                    .eq(resumeOfUserDTO.getBatchId() != null, StuResume::getBatchId, resumeOfUserDTO.getBatchId())
+                    .one();
+        } else {
+            //根据resumeId查询
+            stuResume = lambdaQuery()
+                    .eq(queryResumeDTO.getResumeId() != null, StuResume::getId, queryResumeDTO.getResumeId())
+                    .one();
+        }
+        return stuResume;
+    }
+
+
+    private void updateResumeInfo(StuResume stuResume, StuSimpleResumeDTO resumeDTO) {
+        BeanUtil.copyProperties(resumeDTO, stuResume);
         //简历提交次数加1
-        stuResume.setSubmitCount(stuResume.getSubmitCount()+1);
+        stuResume.setSubmitCount(stuResume.getSubmitCount() + 1);
         //更新简历信息
         updateById(stuResume);
     }
 
-    private void saveResumeInfo(StuResume stuResume,StuSimpleResumeDTO resumeDTO,Long userId) {
+    private void saveResumeInfo(StuResume stuResume, StuSimpleResumeDTO resumeDTO, Long userId) {
         //构建简历实体信息
         BeanUtil.copyProperties(resumeDTO, stuResume);
         stuResume.setUserId(userId);
@@ -146,16 +163,20 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         stuAttachmentService.lambdaUpdate().eq(StuAttachment::getResumeId, resumeId).remove();
         //构造附件保存信息列表
         List<StuAttachment> stuAttachmentList = new ArrayList<>();
-        if (!stuAttachmentList.isEmpty()) {
+
+        if (!stuAttachmentDTOList.isEmpty()) {
+            //类型转换
             stuAttachmentList = stuAttachmentDTOList.stream().map(attach -> {
                 StuAttachment stuAttachment = new StuAttachment();
                 BeanUtil.copyProperties(attach, stuAttachment);
                 stuAttachment.setResumeId(resumeId);
                 return stuAttachment;
             }).toList();
+
+            //批量插入附件信息
+            stuAttachmentService.saveBatch(stuAttachmentList);
         }
-        //批量插入附件信息
-        stuAttachmentService.saveBatch(stuAttachmentList);
+
     }
 
     private void checkResumeSubmitCount(Integer submitCount) {

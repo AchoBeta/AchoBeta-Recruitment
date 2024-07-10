@@ -2,7 +2,7 @@ package com.achobeta.domain.student.model.dto;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,9 +15,10 @@ import java.util.List;
  */
 @Data
 public class StuResumeDTO implements Serializable {
-    @NotNull
+    @Valid
     private StuSimpleResumeDTO stuSimpleResumeDTO;
 
+    @Valid
     private List<StuAttachmentDTO> stuAttachmentDTOList;
 
 }

@@ -12,11 +12,10 @@ import java.io.Serializable;
  */
 @Data
 public class StuAttachmentDTO implements Serializable {
-    @NotNull(message = "用户id不能为空")
-    private Long stuId;
+
     @NotBlank(message = "文件名不能为空")
-    private String fileName;
-    @NotBlank(message = "附件为空")
+    private String filename;
+    @NotBlank(message = "附件路径不能为空")
     private String attachment;
 
 }

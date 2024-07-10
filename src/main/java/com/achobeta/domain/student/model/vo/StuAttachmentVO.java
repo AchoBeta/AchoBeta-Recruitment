@@ -13,9 +13,7 @@ import java.io.Serializable;
 @Data
 public class StuAttachmentVO implements Serializable {
 
-    private Long stuId;
-
-    private String fileName;
+    private String filename;
 
     private String attachment;
 

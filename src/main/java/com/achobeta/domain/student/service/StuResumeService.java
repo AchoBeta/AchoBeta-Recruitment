@@ -1,5 +1,6 @@
 package com.achobeta.domain.student.service;
 
+import com.achobeta.domain.student.model.dto.QueryResumeDTO;
 import com.achobeta.domain.student.model.dto.StuResumeDTO;
 import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
@@ -23,5 +24,5 @@ public interface StuResumeService extends IService<StuResume> {
 
     void submitResume(StuResumeDTO stuResumeDTO);
 
-    StuResumeVO getResumeInfo(Long resumeId);
+    StuResumeVO getResumeInfo(QueryResumeDTO queryResumeDTO);
 }
