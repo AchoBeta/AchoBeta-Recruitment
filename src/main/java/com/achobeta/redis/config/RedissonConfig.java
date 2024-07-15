@@ -32,8 +32,8 @@ public class RedissonConfig {
         // 配置 Redisson 连接信息
         config.useSingleServer()
                 .setAddress(url)
-                .setDatabase(database) // 设置数据库索引
                 .setPassword(password) // 设置密码（如果需要）
+                .setDatabase(database) // 设置数据库索引
         ;
         return Redisson.create(config);
     }
