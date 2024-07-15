@@ -1,5 +1,6 @@
 package com.achobeta.redis;
 
+import com.achobeta.redis.strategy.LockStrategy;
 import com.achobeta.redis.strategy.SimpleLockStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -62,9 +62,9 @@ public class RedisLock {
     }
 
     public void tryLockDoSomething(final String key, final Long wait, final Long timeout, final TimeUnit timeUnit,
-                                   Runnable behavior1, Runnable behavior2, Function<String, RLock> getRLock) {
+                                   Runnable behavior1, Runnable behavior2, LockStrategy lockStrategy) {
         // 获得锁实例
-        RLock rLock = getRLock.apply(key);
+        RLock rLock = lockStrategy.apply(key);
         // 在 Redis 中尝试获取锁
         try {
             boolean flag = tryLock(rLock, wait, timeout, timeUnit);
@@ -81,8 +81,8 @@ public class RedisLock {
     }
 
     public void tryLockDoSomething(final String key, Runnable behavior1, Runnable behavior2,
-                                   Function<String, RLock> getRLock) {
-        tryLockDoSomething(key, this.wait, this.timeout, this.unit, behavior1, behavior2, getRLock);
+                                   LockStrategy lockStrategy) {
+        tryLockDoSomething(key, this.wait, this.timeout, this.unit, behavior1, behavior2, lockStrategy);
     }
 
     public void tryLockDoSomething(final String key, final Long wait, final Long timeout, final TimeUnit timeUnit,
@@ -95,9 +95,9 @@ public class RedisLock {
     }
 
     public <T> T tryLockGetSomething(final String key, final Long wait, final Long timeout, final TimeUnit timeUnit,
-                                    Supplier<T> supplier1, Supplier<T> supplier2, Function<String, RLock> getRLock) {
+                                    Supplier<T> supplier1, Supplier<T> supplier2, LockStrategy lockStrategy) {
         // 获得锁实例
-        RLock rLock = getRLock.apply(key);
+        RLock rLock = lockStrategy.apply(key);
         // 在 Redis 中尝试获取锁
         try {
             boolean flag = tryLock(rLock, wait, timeout, timeUnit);
@@ -114,8 +114,8 @@ public class RedisLock {
     }
 
     public <T> T tryLockGetSomething(final String key, Supplier<T> supplier1, Supplier<T> supplier2,
-                                     Function<String, RLock> getRLock) {
-        return tryLockGetSomething(key, this.wait, this.timeout, this.unit, supplier1, supplier2, getRLock);
+                                     LockStrategy lockStrategy) {
+        return tryLockGetSomething(key, this.wait, this.timeout, this.unit, supplier1, supplier2, lockStrategy);
     }
 
     public <T> T tryLockGetSomething(final String key, final Long wait, final Long timeout, final TimeUnit timeUnit,

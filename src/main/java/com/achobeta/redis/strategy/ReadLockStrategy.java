@@ -18,7 +18,7 @@ import java.util.function.Function;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class ReadLockStrategy implements Function<String, RLock> {
+public class ReadLockStrategy implements LockStrategy {
 
     private final RedissonClient redisClient;
 
