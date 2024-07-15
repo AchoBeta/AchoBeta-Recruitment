@@ -34,11 +34,11 @@ public class RedisLock {
 
     private final SimpleLockStrategy simpleLockStrategy;
 
-    private boolean tryLock(RLock rLock, final Long var1,
-                           final Long var2, final TimeUnit timeUnit) throws InterruptedException {
+    private boolean tryLock(RLock rLock, final Long wait,
+                           final Long timeout, final TimeUnit timeUnit) throws InterruptedException {
         String key = rLock.getName();
-        log.info("尝试获取锁 {}, wait {} {}, timeout {} {}", key, var1, timeUnit, var2, timeUnit);
-        boolean flag = rLock.tryLock(var1, var2, timeUnit);
+        log.info("尝试获取锁 {}, wait {} {}, timeout {} {}", key, wait, timeUnit, timeout, timeUnit);
+        boolean flag = rLock.tryLock(wait, timeout, timeUnit);
         if(Boolean.TRUE.equals(flag)) {
             log.info("尝试获取锁 {} 成功", key);
         } else {
@@ -61,13 +61,13 @@ public class RedisLock {
         return null;
     }
 
-    public void tryLockDoSomething(final String key, final Long var1, final Long var2, final TimeUnit timeUnit,
+    public void tryLockDoSomething(final String key, final Long wait, final Long timeout, final TimeUnit timeUnit,
                                    Runnable behavior1, Runnable behavior2, Function<String, RLock> getRLock) {
         // 获得锁实例
         RLock rLock = getRLock.apply(key);
         // 在 Redis 中尝试获取锁
         try {
-            boolean flag = tryLock(rLock, var1, var2, timeUnit);
+            boolean flag = tryLock(rLock, wait, timeout, timeUnit);
             if(Boolean.TRUE.equals(flag)) {
                 behavior1.run();
             } else {
@@ -82,25 +82,25 @@ public class RedisLock {
 
     public void tryLockDoSomething(final String key, Runnable behavior1, Runnable behavior2,
                                    Function<String, RLock> getRLock) {
-        tryLockDoSomething(key, wait, timeout, unit, behavior1, behavior2, getRLock);
+        tryLockDoSomething(key, this.wait, this.timeout, this.unit, behavior1, behavior2, getRLock);
     }
 
-    public void tryLockDoSomething(final String key, final Long var1, final Long var2, final TimeUnit timeUnit,
+    public void tryLockDoSomething(final String key, final Long wait, final Long timeout, final TimeUnit timeUnit,
                                    Runnable behavior1, Runnable behavior2) {
-        tryLockDoSomething(key, var1, var2, timeUnit, behavior1, behavior2, simpleLockStrategy);
+        tryLockDoSomething(key, wait, timeout, timeUnit, behavior1, behavior2, simpleLockStrategy);
     }
 
     public void tryLockDoSomething(final String key, Runnable behavior1, Runnable behavior2) {
-        tryLockDoSomething(key, wait, timeout, unit, behavior1, behavior2);
+        tryLockDoSomething(key, this.wait, this.timeout, this.unit, behavior1, behavior2);
     }
 
-    public <T> T tryLockGetSomething(final String key, final Long var1, final Long var2, final TimeUnit timeUnit,
+    public <T> T tryLockGetSomething(final String key, final Long wait, final Long timeout, final TimeUnit timeUnit,
                                     Supplier<T> supplier1, Supplier<T> supplier2, Function<String, RLock> getRLock) {
         // 获得锁实例
         RLock rLock = getRLock.apply(key);
         // 在 Redis 中尝试获取锁
         try {
-            boolean flag = tryLock(rLock, var1, var2, timeUnit);
+            boolean flag = tryLock(rLock, wait, timeout, timeUnit);
             if(Boolean.TRUE.equals(flag)) {
                 return supplier1.get();
             } else {
@@ -115,16 +115,16 @@ public class RedisLock {
 
     public <T> T tryLockGetSomething(final String key, Supplier<T> supplier1, Supplier<T> supplier2,
                                      Function<String, RLock> getRLock) {
-        return tryLockGetSomething(key, wait, timeout, unit, supplier1, supplier2, getRLock);
+        return tryLockGetSomething(key, this.wait, this.timeout, this.unit, supplier1, supplier2, getRLock);
     }
 
-    public <T> T tryLockGetSomething(final String key, final Long var1, final Long var2, final TimeUnit timeUnit,
+    public <T> T tryLockGetSomething(final String key, final Long wait, final Long timeout, final TimeUnit timeUnit,
                                      Supplier<T> supplier1, Supplier<T> supplier2) {
-        return tryLockGetSomething(key, var1, var2, timeUnit, supplier1, supplier2, simpleLockStrategy);
+        return tryLockGetSomething(key, wait, timeout, timeUnit, supplier1, supplier2, simpleLockStrategy);
     }
 
     public <T> T tryLockGetSomething(final String key, Supplier<T> supplier1, Supplier<T> supplier2) {
-        return tryLockGetSomething(key, wait, timeout, unit, supplier1, supplier2);
+        return tryLockGetSomething(key, this.wait, this.timeout, this.unit, supplier1, supplier2);
     }
 
 }
