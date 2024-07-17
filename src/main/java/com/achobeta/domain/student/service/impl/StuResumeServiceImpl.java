@@ -64,7 +64,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
 
     @Override
     @Transactional
-    public void submitResume(StuResumeDTO stuResumeDTO) {
+    public void submitResume(StuResumeDTO stuResumeDTO,StuResume stuResume) {
         Long userId = BaseContext.getCurrentUser().getUserId();
         //简历表信息
         StuSimpleResumeDTO resumeDTO = stuResumeDTO.getStuSimpleResumeDTO();
@@ -72,14 +72,11 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         //附件列表
         List<StuAttachmentDTO> stuAttachmentDTOList = stuResumeDTO.getStuAttachmentDTOList();
 
-        //查询数据库
-        StuResume stuResume = getStuResume(resumeDTO.getBatchId(), Long.valueOf(userId)).orElse(new StuResume());
+        Optional.ofNullable(stuResume).orElse(new StuResume());
         //简历状态更新为待筛选
         stuResume.setStatus(ResumeStatusEnum.TO_BE_SCREENED.getResumeStatusCode());
         //是否存在已有简历信息
         if (stuResume.getId() != null) {
-            //检查简历提交否超过最大次数
-            checkResumeSubmitCount(stuResume.getSubmitCount());
             //更新简历信息
             updateResumeInfo(stuResume, resumeDTO);
         } else {
@@ -132,6 +129,8 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
                     .eq(resumeOfUserDTO.getBatchId() != null, StuResume::getBatchId, resumeOfUserDTO.getBatchId())
                     .one();
         } else {
+            //参数校验
+            Optional.ofNullable(queryResumeDTO.getResumeId()).orElseThrow(()->new GlobalServiceException(GlobalServiceStatusCode.PARAM_IS_BLANK));
             //根据resumeId查询
             stuResume = lambdaQuery()
                     .eq(queryResumeDTO.getResumeId() != null, StuResume::getId, queryResumeDTO.getResumeId())
@@ -179,11 +178,16 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
 
     }
 
-    private void checkResumeSubmitCount(Integer submitCount) {
-        if (submitCount >= MAX_SUBMIT_COUNT) {
+    @Override
+    public StuResume checkResumeSubmitCount(StuSimpleResumeDTO resumeDTO,Long userId) {
+
+        StuResume stuResume = getStuResume(resumeDTO.getBatchId(), Long.valueOf(userId)).get();
+
+        if (stuResume!=null&&stuResume.getSubmitCount()>MAX_SUBMIT_COUNT) {
             String message = "提交失败，简历最大提交次数为" + MAX_SUBMIT_COUNT;
             throw new GlobalServiceException(message, GlobalServiceStatusCode.USER_RESUME_SUBMIT_OVER_COUNT);
         }
+        return stuResume;
     }
 }
 

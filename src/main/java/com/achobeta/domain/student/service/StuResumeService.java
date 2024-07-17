@@ -2,6 +2,7 @@ package com.achobeta.domain.student.service;
 
 import com.achobeta.domain.student.model.dto.QueryResumeDTO;
 import com.achobeta.domain.student.model.dto.StuResumeDTO;
+import com.achobeta.domain.student.model.dto.StuSimpleResumeDTO;
 import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import com.achobeta.domain.student.model.vo.StuResumeVO;
@@ -22,7 +23,9 @@ public interface StuResumeService extends IService<StuResume> {
 
     Integer getGradeByBatchIdAndStuId(Long batchId, Long stuId);
 
-    void submitResume(StuResumeDTO stuResumeDTO);
+    void submitResume(StuResumeDTO stuResumeDTO,StuResume stuResume);
 
     StuResumeVO getResumeInfo(QueryResumeDTO queryResumeDTO);
+
+    StuResume checkResumeSubmitCount(StuSimpleResumeDTO stuSimpleResumeDTO,Long userId);
 }
