@@ -3,7 +3,6 @@ create table `interview_schedule`
 (
     `id` bigint primary key auto_increment comment '面试预约 id',
     `participation_id` bigint not null comment '用户的“活动参与” id',
-    `date` datetime not null comment  '预约日期',
     `start_time` datetime not null comment '预约开始时间',
     `end_time` datetime not null comment '预约结束时间',
     -- common column
