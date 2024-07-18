@@ -158,6 +158,18 @@
             <version>2.3.1</version>
         </dependency>
 
+        <!--mapperstruct相关配置-->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.4.1.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>1.4.1.Final</version>
+        </dependency>
+
 
     </dependencies>
 

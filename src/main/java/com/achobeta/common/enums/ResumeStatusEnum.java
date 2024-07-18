@@ -18,7 +18,6 @@ import lombok.Getter;
 //- 13 - Pending
 //- 14 - Pending
 @Getter
-@AllArgsConstructor
 public enum ResumeStatusEnum {
     DRAFT("草稿",0),
     TO_BE_SCREENED("待筛选",1),
@@ -32,8 +31,13 @@ public enum ResumeStatusEnum {
     PENDING_FINAL_TEST("待终试", 10),
     FINAL_EXAM_TO_BE_SCHEDULED("待安排终试", 11),
     FINAL_TEST_PASSED("终试通过", 12),
-
     ;
+
+    ResumeStatusEnum(String message, Integer resumeStatusCode) {
+        this.message = message;
+        this.resumeStatusCode = resumeStatusCode;
+    }
+
     private final String message;
     private final Integer resumeStatusCode;
 

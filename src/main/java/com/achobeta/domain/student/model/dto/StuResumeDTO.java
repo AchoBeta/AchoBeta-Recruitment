@@ -1,8 +1,10 @@
 package com.achobeta.domain.student.model.dto;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,6 +18,7 @@ import java.util.List;
 @Data
 public class StuResumeDTO implements Serializable {
     @Valid
+    @NotNull()
     private StuSimpleResumeDTO stuSimpleResumeDTO;
 
     @Valid

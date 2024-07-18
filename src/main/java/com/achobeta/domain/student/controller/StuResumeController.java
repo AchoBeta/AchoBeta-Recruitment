@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 /**
  * Created With Intellij IDEA
@@ -39,13 +40,17 @@ public class StuResumeController {
     @PostMapping("/submit")
     public SystemJsonResponse submitResume(@RequestBody StuResumeDTO stuResumeDTO) {
         //校验
-        ValidatorUtils.validate(stuResumeDTO);
+        ValidatorUtils.validate(stuResumeDTO.getStuSimpleResumeDTO());
+        Optional.ofNullable(stuResumeDTO.getStuAttachmentDTOList())
+                .ifPresent(data->ValidatorUtils.validate(data));
+        /*ValidatorUtils.validate(stuResumeDTO.getStuAttachmentDTOList());*/
         //当前用户id
         Long userId = BaseContext.getCurrentUser().getUserId();
         //检查简历提交否超过最大次数
         StuResume stuResume = stuResumeService.checkResumeSubmitCount(stuResumeDTO.getStuSimpleResumeDTO(),userId);
         //提交简历
         stuResumeService.submitResume(stuResumeDTO,stuResume);
+
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
@@ -57,7 +62,8 @@ public class StuResumeController {
     @PostMapping("/query")
     public SystemJsonResponse queryResumeInfo(@RequestBody QueryResumeDTO queryResumeDTO) {
         //校验
-        ValidatorUtils.validate(queryResumeDTO);
+        Optional.ofNullable(queryResumeDTO.getQueryResumeOfUserDTO())
+                .ifPresent(data->ValidatorUtils.validate(data));
         //获取简历信息
         StuResumeVO stuResumeVO= stuResumeService.getResumeInfo(queryResumeDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS(stuResumeVO);
