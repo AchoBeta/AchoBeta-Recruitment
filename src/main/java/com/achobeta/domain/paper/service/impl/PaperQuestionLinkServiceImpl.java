@@ -9,6 +9,7 @@ import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +44,7 @@ public class PaperQuestionLinkServiceImpl extends ServiceImpl<PaperQuestionLinkM
     }
 
     @Override
+    @Transactional
     public void addQuestionsForPaper(Long paperId, List<Long> questionIds) {
         Map<Long, Boolean> hash = new HashMap<>();
         // 获取试卷的所有题，并标记为 false

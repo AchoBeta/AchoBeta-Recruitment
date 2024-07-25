@@ -5,6 +5,7 @@ import com.achobeta.domain.paper.model.entity.LibraryPaperLink;
 import com.achobeta.domain.paper.service.LibraryPaperLinkService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class LibraryPaperLinkServiceImpl extends ServiceImpl<LibraryPaperLinkMap
     implements LibraryPaperLinkService{
 
     @Override
+    @Transactional
     public void addLibraryPaperLinkBatch(List<Long> libIds, Long paperId) {
         List<LibraryPaperLink> libraryPaperLinks = libIds.stream().map(libId -> {
             LibraryPaperLink libraryPaperLink = new LibraryPaperLink();
