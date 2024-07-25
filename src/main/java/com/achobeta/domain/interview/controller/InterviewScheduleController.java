@@ -1,13 +1,18 @@
 package com.achobeta.domain.interview.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.interview.model.dto.ScheduleDTO;
 import com.achobeta.domain.interview.model.dto.ScheduleUpdateDTO;
 import com.achobeta.domain.interview.model.vo.ScheduleResumeVO;
+import com.achobeta.domain.interview.model.vo.UserSituationVO;
 import com.achobeta.domain.interview.service.InterviewScheduleService;
 import com.achobeta.domain.interview.service.InterviewerService;
+import com.achobeta.domain.recruit.model.vo.ParticipationDetailVO;
+import com.achobeta.domain.recruit.model.vo.ParticipationVO;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
+import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +20,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created With Intellij IDEA
@@ -104,6 +111,20 @@ public class InterviewScheduleController {
         // 查询
         List<ScheduleResumeVO> interviewScheduleList = interviewScheduleService.getInterviewScheduleList(managerId, actId);
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewScheduleList);
+    }
+
+    /**
+     * 管理员查看用户参与和预约情况
+     * @param actId
+     * @return
+     */
+    @GetMapping("/situations/{actId}")
+    public SystemJsonResponse getUserParticipationSituationByActId(@PathVariable("actId") @NotNull Long actId) {
+        // 检测
+        Long batchId = recruitmentActivityService.checkAndGetRecruitmentActivity(actId).getBatchId();
+        // 获取参与本次招新活动的所有用户参与和预约情况
+        UserSituationVO situations = interviewScheduleService.getSituationsByActId(actId);
+        return SystemJsonResponse.SYSTEM_SUCCESS(situations);
     }
 
 }

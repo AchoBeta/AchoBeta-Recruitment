@@ -1,9 +1,18 @@
 package com.achobeta.domain.interview.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.interview.model.entity.Interviewer;
 import com.achobeta.domain.interview.model.vo.ScheduleResumeVO;
+import com.achobeta.domain.interview.model.vo.TimePeriodCountVO;
+import com.achobeta.domain.interview.model.vo.UserParticipationVO;
+import com.achobeta.domain.interview.model.vo.UserSituationVO;
 import com.achobeta.domain.interview.service.InterviewerService;
+import com.achobeta.domain.recruit.model.dao.mapper.ActivityParticipationMapper;
+import com.achobeta.domain.recruit.model.dao.mapper.ParticipationPeriodLinkMapper;
+import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
+import com.achobeta.domain.recruit.service.RecruitmentActivityService;
+import com.achobeta.domain.recruit.service.TimePeriodService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.RedisLock;
 import com.achobeta.redis.strategy.SimpleLockStrategy;
@@ -43,7 +52,11 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
 
     private final InterviewScheduleMapper interviewScheduleMapper;
 
+    private final ActivityParticipationMapper activityParticipationMapper;
+
     private final InterviewerService interviewerService;
+
+    private final TimePeriodService timePeriodService;
 
     private void timePeriodValidate(Long startTime, Long endTime) {
         long gap = endTime - startTime;
@@ -63,6 +76,39 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
     @Override
     public List<ScheduleResumeVO> getInterviewScheduleList(Long managerId, Long actId) {
         return interviewScheduleMapper.getInterviewScheduleList(managerId, actId);
+    }
+
+    @Override
+    public UserSituationVO getSituationsByActId(Long actId) {
+        Map<Long, TimePeriodCountVO> countMap = timePeriodService.getTimePeriodsByActId(actId)
+                .stream()
+                .collect(Collectors.toMap(
+                        TimePeriodVO::getId,
+                        t -> {
+                            TimePeriodCountVO timePeriodCountVO = BeanUtil.copyProperties(t, TimePeriodCountVO.class);
+                            timePeriodCountVO.setCount(0);
+                            return timePeriodCountVO;
+                        },
+                        (oldData, newData) -> newData)
+                );
+        // 查询并统计
+        List<UserParticipationVO> userParticipationVOS = interviewScheduleMapper.getSituationsByActId(actId)
+                .stream()
+                .peek(userParticipationVO -> {
+                    List<TimePeriodVO> periods = activityParticipationMapper.getPeriods(userParticipationVO.getParticipationId());
+                    periods.stream().map(TimePeriodVO::getId).filter(countMap::containsKey).forEach(id -> {
+                        countMap.get(id).increment();
+                    });
+                    userParticipationVO.setTimePeriodVOS(periods);
+                })
+                // 按照选择时间段的个数排序
+                .sorted(Comparator.comparingInt(p -> p.getTimePeriodVOS().size()))
+                .toList();
+        List<TimePeriodCountVO> timePeriodCountVOS = countMap.values().stream().toList();
+        UserSituationVO userSituationVO = new UserSituationVO();
+        userSituationVO.setUserParticipationVOS(userParticipationVOS);
+        userSituationVO.setTimePeriodCountVOS(timePeriodCountVOS);
+        return userSituationVO;
     }
 
     @Override
