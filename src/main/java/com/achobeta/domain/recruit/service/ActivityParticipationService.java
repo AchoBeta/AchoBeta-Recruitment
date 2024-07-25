@@ -46,4 +46,6 @@ public interface ActivityParticipationService extends IService<ActivityParticipa
 
     void checkActivityParticipationUser(Long stuId, Long participationId);
 
+    void checkParticipationExists(Long participationId);
+
 }

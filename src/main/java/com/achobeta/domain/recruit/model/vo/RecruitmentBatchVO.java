@@ -24,4 +24,6 @@ public class RecruitmentBatchVO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date deadline;
 
+    private Boolean isRun;
+
 }

@@ -10,4 +10,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface InterviewerService extends IService<Interviewer> {
 
+    // 写入 ------------------------------------------
+
+    Long createInterviewer(Long managerId, Long scheduleId);
+
 }

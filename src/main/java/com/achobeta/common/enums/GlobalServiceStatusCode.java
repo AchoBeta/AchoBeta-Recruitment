@@ -67,6 +67,7 @@ public enum GlobalServiceStatusCode {
     RECRUITMENT_ACTIVITY_IS_NOT_RUN(5103, "招新活动未开始"),
     PERIOD_NOT_EXISTS(5104, "时间段不存在"),
     USER_CANNOT_PARTICIPATE_IN_ACTIVITY(5105, "用户不能参与此活动"),
+    ACTIVITY_PARTICIPATION_NOT_EXISTS(5106, "用户活动参与票据不存在"),
 
     USER_RESUME_NOT_EXISTS(5201, "用户简历不存在"),
     USER_DID_NOT_PARTICIPATE(5202, "用户并没有参与活动"),

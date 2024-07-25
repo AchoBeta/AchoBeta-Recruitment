@@ -127,6 +127,12 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
         }
     }
+
+    @Override
+    public void checkParticipationExists(Long participationId) {
+        getActivityParticipation(participationId).orElseThrow(() ->
+                new GlobalServiceException(GlobalServiceStatusCode.ACTIVITY_PARTICIPATION_NOT_EXISTS));
+    }
 }
 
 

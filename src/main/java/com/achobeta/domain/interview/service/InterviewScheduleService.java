@@ -2,6 +2,7 @@ package com.achobeta.domain.interview.service;
 
 import com.achobeta.domain.interview.model.entity.InterviewSchedule;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
 * @author 马拉圈
@@ -9,5 +10,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2024-07-25 22:34:52
 */
 public interface InterviewScheduleService extends IService<InterviewSchedule> {
+
+    // 写入 ------------------------------------------
+
+    @Transactional
+    Long createInterviewSchedule(Long managerId, Long participationId, Long startTime, Long endTime);
+
+
 
 }

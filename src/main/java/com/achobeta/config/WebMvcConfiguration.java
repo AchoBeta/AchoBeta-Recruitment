@@ -76,6 +76,8 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 "/api/v1/recruit/batch/shift/**",
 
                 "/api/v1/shortlink/trans/**",
+
+                "/api/v1/schedule/create/**",
         };
 
         registry.addInterceptor(userInterpretor)
