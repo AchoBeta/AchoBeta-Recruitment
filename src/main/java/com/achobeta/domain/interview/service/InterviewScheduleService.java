@@ -1,8 +1,11 @@
 package com.achobeta.domain.interview.service;
 
 import com.achobeta.domain.interview.model.entity.InterviewSchedule;
+import com.achobeta.domain.interview.model.vo.ScheduleResumeVO;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
 * @author 马拉圈
@@ -11,11 +14,24 @@ import org.springframework.transaction.annotation.Transactional;
 */
 public interface InterviewScheduleService extends IService<InterviewSchedule> {
 
+    // 查询 ------------------------------------------
+
+    Optional<InterviewSchedule> getInterviewSchedule(Long scheduleId);
+
+    List<ScheduleResumeVO> getInterviewScheduleList(Long managerId, Long actId);
+
     // 写入 ------------------------------------------
 
-    @Transactional
     Long createInterviewSchedule(Long managerId, Long participationId, Long startTime, Long endTime);
 
+    void removeInterviewSchedule(Long scheduleId);
 
+    void exitInterview(Long managerId, Long scheduleId);
+
+    void updateInterviewSchedule(Long scheduleId, Long startTime, Long endTime);
+
+    // 检测 ------------------------------------------
+
+    void checkInterviewScheduleExists(Long scheduleId);
 
 }

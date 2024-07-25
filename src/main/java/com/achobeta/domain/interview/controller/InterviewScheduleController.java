@@ -2,16 +2,20 @@ package com.achobeta.domain.interview.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.interview.model.dto.ScheduleDTO;
+import com.achobeta.domain.interview.model.dto.ScheduleUpdateDTO;
+import com.achobeta.domain.interview.model.vo.ScheduleResumeVO;
 import com.achobeta.domain.interview.service.InterviewScheduleService;
+import com.achobeta.domain.interview.service.InterviewerService;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
+import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created With Intellij IDEA
@@ -30,6 +34,10 @@ public class InterviewScheduleController {
 
     private final InterviewScheduleService interviewScheduleService;
 
+    private final InterviewerService interviewerService;
+
+    private final RecruitmentActivityService recruitmentActivityService;
+
     @PostMapping("/create")
     public SystemJsonResponse createInterviewSchedule(@RequestBody ScheduleDTO scheduleDTO) {
         // 校验
@@ -41,6 +49,61 @@ public class InterviewScheduleController {
         Long scheduleId = interviewScheduleService.createInterviewSchedule(managerId, participationId,
                 scheduleDTO.getStartTime(), scheduleDTO.getEndTime());
         return SystemJsonResponse.SYSTEM_SUCCESS(scheduleId);
+    }
+
+    @GetMapping("/remove/{scheduleId}")
+    public SystemJsonResponse removeInterviewSchedule(@PathVariable("scheduleId") @NotNull Long scheduleId) {
+        // 检测
+        Long managerId = BaseContext.getCurrentUser().getUserId();
+        interviewScheduleService.checkInterviewScheduleExists(scheduleId);
+        interviewerService.checkInterviewerExists(managerId, scheduleId);
+        // 删除
+        interviewScheduleService.removeInterviewSchedule(scheduleId);
+        return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
+
+    @PostMapping("/update")
+    public SystemJsonResponse updateInterviewSchedule(@RequestBody ScheduleUpdateDTO scheduleUpdateDTO) {
+        // 检测
+        ValidatorUtils.validate(scheduleUpdateDTO);
+        Long managerId = BaseContext.getCurrentUser().getUserId();
+        Long scheduleId = scheduleUpdateDTO.getScheduleId();
+        interviewScheduleService.checkInterviewScheduleExists(scheduleId);
+        interviewerService.checkInterviewerExists(managerId, scheduleId);
+        // 删除
+        interviewScheduleService.updateInterviewSchedule(scheduleId,
+                scheduleUpdateDTO.getStartTime(), scheduleUpdateDTO.getEndTime());
+        return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
+
+    @GetMapping("/attend/{scheduleId}")
+    public SystemJsonResponse attendSchedule(@PathVariable("scheduleId") @NotNull Long scheduleId) {
+        // 检测
+        interviewScheduleService.checkInterviewScheduleExists(scheduleId);
+        Long managerId = BaseContext.getCurrentUser().getUserId();
+        // 添加（如果存在则返回对应面试官的 id）
+        Long interviewerId = interviewerService.createInterviewer(managerId, scheduleId);
+        return SystemJsonResponse.SYSTEM_SUCCESS(interviewerId);
+    }
+
+    @GetMapping("/exit/{scheduleId}")
+    public SystemJsonResponse exitInterview(@PathVariable("scheduleId") @NotNull Long scheduleId) {
+        // 检测
+        interviewScheduleService.checkInterviewScheduleExists(scheduleId);
+        Long managerId = BaseContext.getCurrentUser().getUserId();
+        // 退出
+        interviewScheduleService.exitInterview(managerId, scheduleId);
+        return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
+
+    @GetMapping("/list/{actId}")
+    public SystemJsonResponse getInterviewScheduleList(@PathVariable("actId") @NotNull Long actId) {
+        // 检测
+        Long managerId = BaseContext.getCurrentUser().getUserId();
+        recruitmentActivityService.checkRecruitmentActivityExists(actId);
+        // 查询
+        List<ScheduleResumeVO> interviewScheduleList = interviewScheduleService.getInterviewScheduleList(managerId, actId);
+        return SystemJsonResponse.SYSTEM_SUCCESS(interviewScheduleList);
     }
 
 }

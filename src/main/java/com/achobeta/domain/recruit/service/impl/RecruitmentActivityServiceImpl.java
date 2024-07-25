@@ -74,16 +74,10 @@ public class RecruitmentActivityServiceImpl extends ServiceImpl<RecruitmentActiv
 
     @Override
     public List<RecruitmentActivity> getRecruitmentActivities(Long batchId, Boolean isRun) {
-        if(Objects.isNull(isRun)) {
-            return this.lambdaQuery()
-                    .eq(RecruitmentActivity::getBatchId, batchId)
-                    .list();
-        }else {
-            return this.lambdaQuery()
-                    .eq(RecruitmentActivity::getBatchId, batchId)
-                    .eq(RecruitmentActivity::getIsRun, isRun)
-                    .list();
-        }
+        return this.lambdaQuery()
+                .eq(RecruitmentActivity::getBatchId, batchId)
+                .eq(Objects.nonNull(isRun), RecruitmentActivity::getIsRun, isRun)
+                .list();
     }
 
     @Override

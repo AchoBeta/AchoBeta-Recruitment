@@ -1,7 +1,11 @@
 package com.achobeta.domain.interview.model.dao.mapper;
 
 import com.achobeta.domain.interview.model.entity.InterviewSchedule;
+import com.achobeta.domain.interview.model.vo.ScheduleResumeVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author 马拉圈
@@ -10,6 +14,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.achobeta.domain.interview.model.enity.InterviewSchedule
 */
 public interface InterviewScheduleMapper extends BaseMapper<InterviewSchedule> {
+
+    List<ScheduleResumeVO> getInterviewScheduleList(@Param("managerId") Long managerId, @Param("actId") Long actId);
 
 }
 

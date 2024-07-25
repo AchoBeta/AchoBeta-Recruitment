@@ -77,7 +77,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
                 "/api/v1/shortlink/trans/**",
 
-                "/api/v1/schedule/create/**",
+                "/api/v1/schedule/**",
         };
 
         registry.addInterceptor(userInterpretor)
