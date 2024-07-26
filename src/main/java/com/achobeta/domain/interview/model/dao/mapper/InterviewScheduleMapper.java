@@ -1,8 +1,8 @@
 package com.achobeta.domain.interview.model.dao.mapper;
 
 import com.achobeta.domain.interview.model.entity.InterviewSchedule;
+import com.achobeta.domain.interview.model.vo.ParticipationScheduleVO;
 import com.achobeta.domain.interview.model.vo.ScheduleResumeVO;
-import com.achobeta.domain.interview.model.vo.UserParticipationVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,7 +18,9 @@ public interface InterviewScheduleMapper extends BaseMapper<InterviewSchedule> {
 
     List<ScheduleResumeVO> getInterviewScheduleList(@Param("managerId") Long managerId, @Param("actId") Long actId);
 
-    List<UserParticipationVO> getSituationsByActId(@Param("actId") Long actId);
+    List<ParticipationScheduleVO> getSituationsByActId(@Param("actId") Long actId);
+
+    ParticipationScheduleVO getSituationsByParticipationId(@Param("participationId") Long participationId);
 
 }
 

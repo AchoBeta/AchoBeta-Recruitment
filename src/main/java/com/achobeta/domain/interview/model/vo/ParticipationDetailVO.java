@@ -1,7 +1,10 @@
-package com.achobeta.domain.recruit.model.vo;
+package com.achobeta.domain.interview.model.vo;
 
+import com.achobeta.domain.recruit.model.vo.ParticipationVO;
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * Created With Intellij IDEA
@@ -11,8 +14,10 @@ import lombok.Data;
  * Time: 13:22
  */
 @Data
-public class ParticipationDetailVO extends ParticipationVO{
+public class ParticipationDetailVO extends ParticipationVO {
 
     private SimpleStudentVO simpleStudentVO;
+
+    private List<ScheduleVO> scheduleVOS;
 
 }

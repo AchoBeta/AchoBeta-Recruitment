@@ -61,8 +61,6 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
                 "/api/v1/period/**",
 
-                "/api/v1/participate/situations/**",
-
                 "/api/v1/recruit/activity/create/**",
                 "/api/v1/recruit/activity/shift/**",
                 "/api/v1/recruit/activity/update/**",

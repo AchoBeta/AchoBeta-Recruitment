@@ -11,11 +11,15 @@ import java.util.List;
  * Description:
  * User: 马拉圈
  * Date: 2024-07-26
- * Time: 2:56
+ * Time: 17:56
  */
 @Data
-public class UserParticipationVO extends ParticipationScheduleVO {
+public class ParticipationScheduleVO {
 
-    private List<TimePeriodVO> timePeriodVOS;
+    private Long participationId;
+
+    private SimpleStudentVO simpleStudentVO;
+
+    private List<ScheduleVO> scheduleVOS;
 
 }

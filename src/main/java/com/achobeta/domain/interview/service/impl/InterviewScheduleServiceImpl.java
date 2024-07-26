@@ -3,16 +3,13 @@ package com.achobeta.domain.interview.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.interview.model.entity.Interviewer;
-import com.achobeta.domain.interview.model.vo.ScheduleResumeVO;
-import com.achobeta.domain.interview.model.vo.TimePeriodCountVO;
-import com.achobeta.domain.interview.model.vo.UserParticipationVO;
-import com.achobeta.domain.interview.model.vo.UserSituationVO;
+import com.achobeta.domain.interview.model.vo.*;
 import com.achobeta.domain.interview.service.InterviewerService;
 import com.achobeta.domain.recruit.model.dao.mapper.ActivityParticipationMapper;
-import com.achobeta.domain.recruit.model.dao.mapper.ParticipationPeriodLinkMapper;
+import com.achobeta.domain.recruit.model.vo.QuestionAnswerVO;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
-import com.achobeta.domain.recruit.service.RecruitmentActivityService;
+import com.achobeta.domain.recruit.service.RecruitmentBatchService;
 import com.achobeta.domain.recruit.service.TimePeriodService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.RedisLock;
@@ -53,7 +50,11 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
 
     private final InterviewScheduleMapper interviewScheduleMapper;
 
+    private final ActivityParticipationMapper activityParticipationMapper;
+
     private final ActivityParticipationService activityParticipationService;
+
+    private final RecruitmentBatchService recruitmentBatchService;
 
     private final InterviewerService interviewerService;
 
@@ -97,8 +98,8 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
         Map<Long, UserParticipationVO> userParticipationVOMap = interviewScheduleMapper.getSituationsByActId(actId)
                 .stream()
                 .collect(Collectors.toMap(
-                        UserParticipationVO::getParticipationId,
-                        userParticipationVO -> userParticipationVO,
+                        ParticipationScheduleVO::getParticipationId,
+                        userParticipationVO -> BeanUtil.copyProperties(userParticipationVO, UserParticipationVO.class),
                         (oldData, newData) -> newData
                 ));
         // 查询时间段选择情况
@@ -130,6 +131,25 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
         userSituationVO.setUserParticipationVOS(userParticipationVOS);
         userSituationVO.setTimePeriodCountVOS(timePeriodCountVOS);
         return userSituationVO;
+    }
+
+    @Override
+    public ParticipationDetailVO getDetailActivityParticipation(Long participationId) {
+        return activityParticipationService.getActivityParticipation(participationId).map(activityParticipation -> {
+            // 转化
+            ParticipationDetailVO participationDetailVO = BeanUtil.copyProperties(activityParticipation, ParticipationDetailVO.class);
+            // 获取用户回答的问题
+            List<QuestionAnswerVO> questions = activityParticipationMapper.getQuestions(participationId);
+            participationDetailVO.setQuestionAnswerVOS(questions);
+            // 获取用户选择的时间段
+            List<TimePeriodVO> periods = activityParticipationMapper.getPeriods(participationId);
+            participationDetailVO.setTimePeriodVOS(periods);
+            // 获取学生的简单简历信息
+            ParticipationScheduleVO situations = interviewScheduleMapper.getSituationsByParticipationId(participationId);
+            participationDetailVO.setSimpleStudentVO(situations.getSimpleStudentVO());
+            participationDetailVO.setScheduleVOS(situations.getScheduleVOS());
+            return participationDetailVO;
+        }).orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.ACTIVITY_PARTICIPATION_NOT_EXISTS));
     }
 
     @Override

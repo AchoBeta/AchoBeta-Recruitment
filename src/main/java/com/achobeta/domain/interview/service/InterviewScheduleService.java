@@ -2,8 +2,8 @@ package com.achobeta.domain.interview.service;
 
 import com.achobeta.domain.interview.model.entity.InterviewSchedule;
 import com.achobeta.domain.interview.model.vo.ScheduleResumeVO;
-import com.achobeta.domain.interview.model.vo.UserParticipationVO;
 import com.achobeta.domain.interview.model.vo.UserSituationVO;
+import com.achobeta.domain.interview.model.vo.ParticipationDetailVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -23,6 +23,8 @@ public interface InterviewScheduleService extends IService<InterviewSchedule> {
     List<ScheduleResumeVO> getInterviewScheduleList(Long managerId, Long actId);
 
     UserSituationVO getSituationsByActId(Long actId);
+
+    ParticipationDetailVO getDetailActivityParticipation(Long participationId);
 
     // 写入 ------------------------------------------
 
