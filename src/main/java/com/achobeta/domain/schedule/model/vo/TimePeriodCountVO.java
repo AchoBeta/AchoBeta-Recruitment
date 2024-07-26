@@ -1,4 +1,4 @@
-package com.achobeta.domain.interview.model.vo;
+package com.achobeta.domain.schedule.model.vo;
 
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
 import lombok.Data;

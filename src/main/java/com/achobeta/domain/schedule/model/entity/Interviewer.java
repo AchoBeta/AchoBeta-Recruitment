@@ -1,9 +1,9 @@
-package com.achobeta.domain.interview.model.entity;
+package com.achobeta.domain.schedule.model.entity;
 
 import com.achobeta.common.base.BaseIncrIDEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import java.util.Date;
+
 import lombok.Data;
 
 /**

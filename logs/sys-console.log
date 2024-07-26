@@ -1,0 +1,495 @@
+2024-07-26 00:13:07 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-07-26 00:13:07 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2024-07-26 00:13:12 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2024-07-26 00:13:12 [main] INFO  c.a.AchobetaRecruitmentApplication - Starting AchobetaRecruitmentApplication using Java 21.0.1 with PID 4216 (D:\javawork\AchoBeta-Recruitment\target\classes started by 马拉圈 in D:\javawork\AchoBeta-Recruitment)
+2024-07-26 00:13:12 [main] INFO  c.a.AchobetaRecruitmentApplication - The following 1 profile is active: "dev"
+2024-07-26 00:13:13 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9001"]
+2024-07-26 00:13:13 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-07-26 00:13:13 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.7]
+2024-07-26 00:13:13 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-07-26 00:13:14 [main] INFO  org.redisson.Version - Redisson 3.27.2
+2024-07-26 00:13:14 [main] WARN  o.r.c.SequentialDnsAddressResolverFactory - DNS TCP fallback on UDP query timeout disabled. Upgrade Netty to 4.1.105 or higher.
+2024-07-26 00:13:14 [redisson-netty-4-5] INFO  o.r.connection.ConnectionsHolder - 1 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 00:13:14 [redisson-netty-4-20] INFO  o.r.connection.ConnectionsHolder - 24 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 00:13:15 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9001"]
+2024-07-26 00:13:15 [main] INFO  c.a.AchobetaRecruitmentApplication - Started AchobetaRecruitmentApplication in 3.243 seconds (process running for 3.72)
+2024-07-26 00:13:22 [http-nio-9001-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-07-26 00:13:22 [http-nio-9001-exec-1] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 00:13:22 [http-nio-9001-exec-1] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTI5MTUxLCJ1c2VyIjoyfQ.VZ27ASd1M5WMVgXkPY9nTDMG0_tphRg3a1tcN4nv4mc, userId=10000, role=2)
+2024-07-26 00:13:23 [http-nio-9001-exec-1] WARN  c.b.m.c.t.support.ReflectLambdaMeta - Unable to make field private final java.lang.Class java.lang.invoke.SerializedLambda.capturingClass accessible: module java.base does not "opens java.lang.invoke" to unnamed module @2cdd0d4b
+2024-07-26 00:13:23 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-07-26 00:13:23 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7861b09c
+2024-07-26 00:13:23 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-07-26 00:14:54 [http-nio-9001-exec-2] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: java.lang.NullPointerException: Cannot invoke "com.achobeta.domain.users.model.po.UserHelper.getUserId()" because the return value of "com.achobeta.domain.users.context.BaseContext.getCurrentUser()" is null] with root cause
+java.lang.NullPointerException: Cannot invoke "com.achobeta.domain.users.model.po.UserHelper.getUserId()" because the return value of "com.achobeta.domain.users.context.BaseContext.getCurrentUser()" is null
+	at com.achobeta.domain.schedule.controller.InterviewScheduleController.removeInterviewSchedule(InterviewScheduleController.java:50)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:207)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:152)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:537)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:631)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:166)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:493)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:390)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:894)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2024-07-26 00:15:19 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-07-26 00:15:19 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2024-07-26 00:15:24 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2024-07-26 00:15:24 [main] INFO  c.a.AchobetaRecruitmentApplication - Starting AchobetaRecruitmentApplication using Java 21.0.1 with PID 25740 (D:\javawork\AchoBeta-Recruitment\target\classes started by 马拉圈 in D:\javawork\AchoBeta-Recruitment)
+2024-07-26 00:15:24 [main] INFO  c.a.AchobetaRecruitmentApplication - The following 1 profile is active: "dev"
+2024-07-26 00:15:25 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9001"]
+2024-07-26 00:15:25 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-07-26 00:15:25 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.7]
+2024-07-26 00:15:25 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-07-26 00:15:26 [main] INFO  org.redisson.Version - Redisson 3.27.2
+2024-07-26 00:15:26 [main] WARN  o.r.c.SequentialDnsAddressResolverFactory - DNS TCP fallback on UDP query timeout disabled. Upgrade Netty to 4.1.105 or higher.
+2024-07-26 00:15:26 [redisson-netty-4-5] INFO  o.r.connection.ConnectionsHolder - 1 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 00:15:26 [redisson-netty-4-20] INFO  o.r.connection.ConnectionsHolder - 24 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 00:15:27 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9001"]
+2024-07-26 00:15:27 [main] INFO  c.a.AchobetaRecruitmentApplication - Started AchobetaRecruitmentApplication in 3.238 seconds (process running for 3.73)
+2024-07-26 00:15:29 [http-nio-9001-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-07-26 00:15:29 [http-nio-9001-exec-1] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 00:15:29 [http-nio-9001-exec-1] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTI5MTUxLCJ1c2VyIjoyfQ.VZ27ASd1M5WMVgXkPY9nTDMG0_tphRg3a1tcN4nv4mc, userId=10000, role=2)
+2024-07-26 00:15:29 [http-nio-9001-exec-1] WARN  c.b.m.c.t.support.ReflectLambdaMeta - Unable to make field private final java.lang.Class java.lang.invoke.SerializedLambda.capturingClass accessible: module java.base does not "opens java.lang.invoke" to unnamed module @2cdd0d4b
+2024-07-26 00:15:29 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-07-26 00:15:29 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@466b3394
+2024-07-26 00:15:29 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-07-26 00:24:58 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-07-26 00:24:58 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2024-07-26 00:25:02 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2024-07-26 00:25:02 [main] INFO  c.a.AchobetaRecruitmentApplication - Starting AchobetaRecruitmentApplication using Java 21.0.1 with PID 2756 (D:\javawork\AchoBeta-Recruitment\target\classes started by 马拉圈 in D:\javawork\AchoBeta-Recruitment)
+2024-07-26 00:25:02 [main] INFO  c.a.AchobetaRecruitmentApplication - The following 1 profile is active: "dev"
+2024-07-26 00:25:03 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9001"]
+2024-07-26 00:25:03 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-07-26 00:25:03 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.7]
+2024-07-26 00:25:04 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-07-26 00:25:05 [main] INFO  org.redisson.Version - Redisson 3.27.2
+2024-07-26 00:25:05 [main] WARN  o.r.c.SequentialDnsAddressResolverFactory - DNS TCP fallback on UDP query timeout disabled. Upgrade Netty to 4.1.105 or higher.
+2024-07-26 00:25:05 [redisson-netty-4-5] INFO  o.r.connection.ConnectionsHolder - 1 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 00:25:05 [redisson-netty-4-20] INFO  o.r.connection.ConnectionsHolder - 24 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 00:25:05 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9001"]
+2024-07-26 00:25:05 [main] INFO  c.a.AchobetaRecruitmentApplication - Started AchobetaRecruitmentApplication in 3.325 seconds (process running for 3.867)
+2024-07-26 00:25:28 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2024-07-26 00:25:28 [main] INFO  c.a.AchobetaRecruitmentApplication - Starting AchobetaRecruitmentApplication using Java 21.0.1 with PID 16448 (D:\javawork\AchoBeta-Recruitment\target\classes started by 马拉圈 in D:\javawork\AchoBeta-Recruitment)
+2024-07-26 00:25:28 [main] INFO  c.a.AchobetaRecruitmentApplication - The following 1 profile is active: "dev"
+2024-07-26 00:25:29 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9001"]
+2024-07-26 00:25:29 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-07-26 00:25:29 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.7]
+2024-07-26 00:25:29 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-07-26 00:25:30 [main] INFO  org.redisson.Version - Redisson 3.27.2
+2024-07-26 00:25:30 [main] WARN  o.r.c.SequentialDnsAddressResolverFactory - DNS TCP fallback on UDP query timeout disabled. Upgrade Netty to 4.1.105 or higher.
+2024-07-26 00:25:30 [redisson-netty-4-5] INFO  o.r.connection.ConnectionsHolder - 1 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 00:25:30 [redisson-netty-4-20] INFO  o.r.connection.ConnectionsHolder - 24 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 00:25:31 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9001"]
+2024-07-26 00:25:31 [main] INFO  c.a.AchobetaRecruitmentApplication - Started AchobetaRecruitmentApplication in 3.378 seconds (process running for 4.559)
+2024-07-26 00:25:35 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2024-07-26 00:25:35 [main] INFO  c.a.AchobetaRecruitmentApplication - Starting AchobetaRecruitmentApplication using Java 21.0.1 with PID 16576 (D:\javawork\AchoBeta-Recruitment\target\classes started by 马拉圈 in D:\javawork\AchoBeta-Recruitment)
+2024-07-26 00:25:35 [main] INFO  c.a.AchobetaRecruitmentApplication - The following 1 profile is active: "dev"
+2024-07-26 00:25:36 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9001"]
+2024-07-26 00:25:36 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-07-26 00:25:36 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.7]
+2024-07-26 00:25:36 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-07-26 00:25:37 [main] INFO  org.redisson.Version - Redisson 3.27.2
+2024-07-26 00:25:37 [main] WARN  o.r.c.SequentialDnsAddressResolverFactory - DNS TCP fallback on UDP query timeout disabled. Upgrade Netty to 4.1.105 or higher.
+2024-07-26 00:25:37 [redisson-netty-4-5] INFO  o.r.connection.ConnectionsHolder - 1 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 00:25:37 [redisson-netty-4-20] INFO  o.r.connection.ConnectionsHolder - 24 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 00:25:38 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9001"]
+2024-07-26 00:25:38 [main] INFO  c.a.AchobetaRecruitmentApplication - Started AchobetaRecruitmentApplication in 3.258 seconds (process running for 3.756)
+2024-07-26 00:26:56 [http-nio-9001-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-07-26 00:26:56 [http-nio-9001-exec-1] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 00:26:56 [http-nio-9001-exec-1] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTI5MTUxLCJ1c2VyIjoyfQ.VZ27ASd1M5WMVgXkPY9nTDMG0_tphRg3a1tcN4nv4mc, userId=10000, role=2)
+2024-07-26 00:26:56 [http-nio-9001-exec-1] WARN  c.b.m.c.t.support.ReflectLambdaMeta - Unable to make field private final java.lang.Class java.lang.invoke.SerializedLambda.capturingClass accessible: module java.base does not "opens java.lang.invoke" to unnamed module @2cdd0d4b
+2024-07-26 00:26:56 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-07-26 00:26:56 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@f759446
+2024-07-26 00:26:56 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-07-26 00:26:56 [http-nio-9001-exec-1] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.dao.DataIntegrityViolationException: 
+### Error updating database.  Cause: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Incorrect datetime value: '1721991700000' for column 'start_time' at row 1
+### The error may exist in com/achobeta/domain/interview/model/dao/mapper/InterviewScheduleMapper.java (best guess)
+### The error may involve com.achobeta.domain.schedule.model.dao.mapper.InterviewScheduleMapper.update-Inline
+### The error occurred while setting parameters
+### SQL: UPDATE interview_schedule  SET start_time=?,end_time=?    WHERE  is_deleted=0  AND (id = ?)
+### Cause: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Incorrect datetime value: '1721991700000' for column 'start_time' at row 1
+; Data truncation: Incorrect datetime value: '1721991700000' for column 'start_time' at row 1] with root cause
+com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Incorrect datetime value: '1721991700000' for column 'start_time' at row 1
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:104)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:960)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.execute(ClientPreparedStatement.java:388)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.execute(ProxyPreparedStatement.java:44)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.execute(HikariProxyPreparedStatement.java)
+	at org.apache.ibatis.executor.statement.PreparedStatementHandler.update(PreparedStatementHandler.java:47)
+	at org.apache.ibatis.executor.statement.RoutingStatementHandler.update(RoutingStatementHandler.java:74)
+	at org.apache.ibatis.executor.SimpleExecutor.doUpdate(SimpleExecutor.java:50)
+	at org.apache.ibatis.executor.BaseExecutor.update(BaseExecutor.java:117)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.update(DefaultSqlSession.java:194)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
+	at jdk.proxy2/jdk.proxy2.$Proxy81.update(Unknown Source)
+	at org.mybatis.spring.SqlSessionTemplate.update(SqlSessionTemplate.java:288)
+	at com.baomidou.mybatisplus.core.override.MybatisMapperMethod.execute(MybatisMapperMethod.java:64)
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy$PlainMethodInvoker.invoke(MybatisMapperProxy.java:148)
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy.invoke(MybatisMapperProxy.java:89)
+	at jdk.proxy2/jdk.proxy2.$Proxy93.update(Unknown Source)
+	at com.baomidou.mybatisplus.extension.conditions.update.ChainUpdate.lambda$update$eb4b7d7c$1(ChainUpdate.java:45)
+	at com.baomidou.mybatisplus.extension.conditions.ChainWrapper.execute(ChainWrapper.java:63)
+	at com.baomidou.mybatisplus.extension.conditions.update.ChainUpdate.update(ChainUpdate.java:45)
+	at com.baomidou.mybatisplus.extension.conditions.update.ChainUpdate.update(ChainUpdate.java:35)
+	at com.achobeta.domain.schedule.service.impl.InterviewScheduleServiceImpl.updateInterviewSchedule(InterviewScheduleServiceImpl.java:84)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:698)
+	at com.achobeta.domain.schedule.service.impl.InterviewScheduleServiceImpl$$SpringCGLIB$$0.updateInterviewSchedule(<generated>)
+	at com.achobeta.domain.schedule.controller.InterviewScheduleController.updateInterviewSchedule(InterviewScheduleController.java:68)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:207)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:152)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:563)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:631)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:166)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:493)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:390)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:894)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2024-07-26 00:27:26 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-07-26 00:27:26 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2024-07-26 00:27:30 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2024-07-26 00:27:30 [main] INFO  c.a.AchobetaRecruitmentApplication - Starting AchobetaRecruitmentApplication using Java 21.0.1 with PID 23436 (D:\javawork\AchoBeta-Recruitment\target\classes started by 马拉圈 in D:\javawork\AchoBeta-Recruitment)
+2024-07-26 00:27:30 [main] INFO  c.a.AchobetaRecruitmentApplication - The following 1 profile is active: "dev"
+2024-07-26 00:27:31 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9001"]
+2024-07-26 00:27:31 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-07-26 00:27:31 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.7]
+2024-07-26 00:27:31 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-07-26 00:27:32 [main] INFO  org.redisson.Version - Redisson 3.27.2
+2024-07-26 00:27:32 [main] WARN  o.r.c.SequentialDnsAddressResolverFactory - DNS TCP fallback on UDP query timeout disabled. Upgrade Netty to 4.1.105 or higher.
+2024-07-26 00:27:32 [redisson-netty-4-5] INFO  o.r.connection.ConnectionsHolder - 1 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 00:27:32 [redisson-netty-4-20] INFO  o.r.connection.ConnectionsHolder - 24 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 00:27:33 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9001"]
+2024-07-26 00:27:33 [main] INFO  c.a.AchobetaRecruitmentApplication - Started AchobetaRecruitmentApplication in 3.148 seconds (process running for 3.629)
+2024-07-26 00:27:42 [http-nio-9001-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-07-26 00:27:42 [http-nio-9001-exec-1] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 00:27:42 [http-nio-9001-exec-1] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTI5MTUxLCJ1c2VyIjoyfQ.VZ27ASd1M5WMVgXkPY9nTDMG0_tphRg3a1tcN4nv4mc, userId=10000, role=2)
+2024-07-26 00:27:42 [http-nio-9001-exec-1] WARN  c.b.m.c.t.support.ReflectLambdaMeta - Unable to make field private final java.lang.Class java.lang.invoke.SerializedLambda.capturingClass accessible: module java.base does not "opens java.lang.invoke" to unnamed module @2cdd0d4b
+2024-07-26 00:27:42 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-07-26 00:27:42 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5eaeaed2
+2024-07-26 00:27:42 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-07-26 00:34:35 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-07-26 00:34:35 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2024-07-26 00:34:39 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2024-07-26 00:34:39 [main] INFO  c.a.AchobetaRecruitmentApplication - Starting AchobetaRecruitmentApplication using Java 21.0.1 with PID 18664 (D:\javawork\AchoBeta-Recruitment\target\classes started by 马拉圈 in D:\javawork\AchoBeta-Recruitment)
+2024-07-26 00:34:39 [main] INFO  c.a.AchobetaRecruitmentApplication - The following 1 profile is active: "dev"
+2024-07-26 00:34:40 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9001"]
+2024-07-26 00:34:40 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-07-26 00:34:40 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.7]
+2024-07-26 00:34:40 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-07-26 00:34:41 [main] INFO  org.redisson.Version - Redisson 3.27.2
+2024-07-26 00:34:41 [main] WARN  o.r.c.SequentialDnsAddressResolverFactory - DNS TCP fallback on UDP query timeout disabled. Upgrade Netty to 4.1.105 or higher.
+2024-07-26 00:34:42 [redisson-netty-4-5] INFO  o.r.connection.ConnectionsHolder - 1 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 00:34:42 [redisson-netty-4-20] INFO  o.r.connection.ConnectionsHolder - 24 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 00:34:42 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9001"]
+2024-07-26 00:34:42 [main] INFO  c.a.AchobetaRecruitmentApplication - Started AchobetaRecruitmentApplication in 3.307 seconds (process running for 3.811)
+2024-07-26 00:34:51 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2024-07-26 00:34:51 [main] INFO  c.a.AchobetaRecruitmentApplication - Starting AchobetaRecruitmentApplication using Java 21.0.1 with PID 3236 (D:\javawork\AchoBeta-Recruitment\target\classes started by 马拉圈 in D:\javawork\AchoBeta-Recruitment)
+2024-07-26 00:34:51 [main] INFO  c.a.AchobetaRecruitmentApplication - The following 1 profile is active: "dev"
+2024-07-26 00:34:52 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9001"]
+2024-07-26 00:34:52 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-07-26 00:34:52 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.7]
+2024-07-26 00:34:52 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-07-26 00:34:53 [main] INFO  org.redisson.Version - Redisson 3.27.2
+2024-07-26 00:34:53 [main] WARN  o.r.c.SequentialDnsAddressResolverFactory - DNS TCP fallback on UDP query timeout disabled. Upgrade Netty to 4.1.105 or higher.
+2024-07-26 00:34:53 [redisson-netty-4-5] INFO  o.r.connection.ConnectionsHolder - 1 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 00:34:53 [redisson-netty-4-20] INFO  o.r.connection.ConnectionsHolder - 24 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 00:34:54 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9001"]
+2024-07-26 00:34:54 [main] INFO  c.a.AchobetaRecruitmentApplication - Started AchobetaRecruitmentApplication in 3.149 seconds (process running for 3.664)
+2024-07-26 00:37:15 [http-nio-9001-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-07-26 00:37:15 [http-nio-9001-exec-1] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 00:37:15 [http-nio-9001-exec-1] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTI5MTUxLCJ1c2VyIjoyfQ.VZ27ASd1M5WMVgXkPY9nTDMG0_tphRg3a1tcN4nv4mc, userId=10000, role=2)
+2024-07-26 00:37:15 [http-nio-9001-exec-1] WARN  c.b.m.c.t.support.ReflectLambdaMeta - Unable to make field private final java.lang.Class java.lang.invoke.SerializedLambda.capturingClass accessible: module java.base does not "opens java.lang.invoke" to unnamed module @2cdd0d4b
+2024-07-26 00:37:15 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-07-26 00:37:16 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@305e14bd
+2024-07-26 00:37:16 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-07-26 00:37:46 [http-nio-9001-exec-3] INFO  com.achobeta.redis.RedisCache - 查询 Redis	[risk_controller_users:2040484356@qq.com]-[null]
+2024-07-26 00:37:46 [http-nio-9001-exec-3] INFO  com.achobeta.redis.RedisCache - 查询 Redis key[captcha_codes:2040484356@qq.com] 剩余存活时间:key不存在
+2024-07-26 00:37:46 [http-nio-9001-exec-3] INFO  com.achobeta.redis.RedisCache - 获取 Redis 中的 Map 缓存	[captcha_codes:2040484356@qq.com]-[null]
+2024-07-26 00:37:46 [http-nio-9001-exec-3] INFO  com.achobeta.redis.RedisCache - 尝试存入 Redis	[captcha_codes:2040484356@qq.com]-[{captcha_code_cnt:=3, captcha_code=187765}] 超时时间:[5  MINUTES]
+2024-07-26 00:37:46 [http-nio-9001-exec-3] INFO  com.achobeta.redis.RedisCache - Redis 执行原子任务
+2024-07-26 00:37:47 [http-nio-9001-exec-3] INFO  com.achobeta.redis.RedisCache - 为 Redis 的键值设置超时时间	[captcha_codes:2040484356@qq.com]-[5  MINUTES]
+2024-07-26 00:37:49 [http-nio-9001-exec-3] INFO  c.a.d.e.controller.EmailController - 发送验证码:187765 -> email:2040484356@qq.com
+2024-07-26 00:37:54 [http-nio-9001-exec-2] INFO  com.achobeta.redis.RedisCache - 查询 Redis	[login_fail_cnt:2040484356@qq.com]-[null]
+2024-07-26 00:37:54 [http-nio-9001-exec-2] INFO  com.achobeta.redis.RedisCache - 获取 Redis 中的 Map 的键值	[captcha_codes:2040484356@qq.com.captcha_code]-[187765]
+2024-07-26 00:37:54 [http-nio-9001-exec-2] INFO  com.achobeta.redis.RedisCache - 删除 Redis 的键值	key[login_fail_cnt:2040484356@qq.com]
+2024-07-26 00:37:54 [http-nio-9001-exec-2] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 00:45:54 [http-nio-9001-exec-5] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 00:45:54 [http-nio-9001-exec-5] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMSwiZXhwIjoxNzIxOTMyNjc0LCJ1c2VyIjoxfQ.7bTcE8WhX5hRJNZZ-rvVrvMw5KAuJnNWwwPd35vYDRY, userId=10001, role=1)
+2024-07-26 00:45:54 [http-nio-9001-exec-5] ERROR c.a.handler.GlobalExceptionHandler - 请求地址'/api/v1/schedule/attend/1', USER_NO_PERMISSION: '用户无权限'
+2024-07-26 00:46:23 [http-nio-9001-exec-6] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 00:46:23 [http-nio-9001-exec-6] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMSwiZXhwIjoxNzIxOTMyNjc0LCJ1c2VyIjoxfQ.7bTcE8WhX5hRJNZZ-rvVrvMw5KAuJnNWwwPd35vYDRY, userId=10001, role=1)
+2024-07-26 00:46:23 [http-nio-9001-exec-6] ERROR c.a.handler.GlobalExceptionHandler - 请求地址'/api/v1/schedule/attend/1', USER_NO_PERMISSION: '用户无权限'
+2024-07-26 00:48:41 [http-nio-9001-exec-8] INFO  com.achobeta.redis.RedisCache - 查询 Redis	[login_fail_cnt:root2]-[null]
+2024-07-26 00:48:42 [http-nio-9001-exec-8] INFO  com.achobeta.redis.RedisCache - 删除 Redis 的键值	key[login_fail_cnt:root2]
+2024-07-26 00:48:42 [http-nio-9001-exec-8] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 00:49:26 [http-nio-9001-exec-9] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 00:49:26 [http-nio-9001-exec-9] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMywiZXhwIjoxNzIxOTMzMzIyLCJ1c2VyIjoyfQ.UjNX2oFxeEUUE25CSpbZ5ItQMpF-WQpvC0VH6atk150, userId=10003, role=2)
+2024-07-26 01:25:20 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-07-26 01:25:20 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2024-07-26 01:25:25 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2024-07-26 01:25:25 [main] INFO  c.a.AchobetaRecruitmentApplication - Starting AchobetaRecruitmentApplication using Java 21.0.1 with PID 20372 (D:\javawork\AchoBeta-Recruitment\target\classes started by 马拉圈 in D:\javawork\AchoBeta-Recruitment)
+2024-07-26 01:25:25 [main] INFO  c.a.AchobetaRecruitmentApplication - The following 1 profile is active: "dev"
+2024-07-26 01:25:26 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9001"]
+2024-07-26 01:25:26 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-07-26 01:25:26 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.7]
+2024-07-26 01:25:26 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-07-26 01:25:27 [main] INFO  org.redisson.Version - Redisson 3.27.2
+2024-07-26 01:25:27 [main] WARN  o.r.c.SequentialDnsAddressResolverFactory - DNS TCP fallback on UDP query timeout disabled. Upgrade Netty to 4.1.105 or higher.
+2024-07-26 01:25:27 [redisson-netty-4-5] INFO  o.r.connection.ConnectionsHolder - 1 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 01:25:27 [redisson-netty-4-20] INFO  o.r.connection.ConnectionsHolder - 24 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 01:25:28 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9001"]
+2024-07-26 01:25:28 [main] INFO  c.a.AchobetaRecruitmentApplication - Started AchobetaRecruitmentApplication in 3.151 seconds (process running for 3.622)
+2024-07-26 01:28:19 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2024-07-26 01:28:19 [main] INFO  c.a.AchobetaRecruitmentApplication - Starting AchobetaRecruitmentApplication using Java 21.0.1 with PID 9612 (D:\javawork\AchoBeta-Recruitment\target\classes started by 马拉圈 in D:\javawork\AchoBeta-Recruitment)
+2024-07-26 01:28:19 [main] INFO  c.a.AchobetaRecruitmentApplication - The following 1 profile is active: "dev"
+2024-07-26 01:28:20 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9001"]
+2024-07-26 01:28:20 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-07-26 01:28:20 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.7]
+2024-07-26 01:28:20 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-07-26 01:28:21 [main] INFO  org.redisson.Version - Redisson 3.27.2
+2024-07-26 01:28:21 [main] WARN  o.r.c.SequentialDnsAddressResolverFactory - DNS TCP fallback on UDP query timeout disabled. Upgrade Netty to 4.1.105 or higher.
+2024-07-26 01:28:22 [redisson-netty-4-5] INFO  o.r.connection.ConnectionsHolder - 1 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 01:28:22 [redisson-netty-4-20] INFO  o.r.connection.ConnectionsHolder - 24 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 01:28:22 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9001"]
+2024-07-26 01:28:22 [main] INFO  c.a.AchobetaRecruitmentApplication - Started AchobetaRecruitmentApplication in 3.336 seconds (process running for 3.881)
+2024-07-26 01:29:03 [http-nio-9001-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-07-26 01:29:03 [http-nio-9001-exec-1] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 01:29:04 [http-nio-9001-exec-1] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMywiZXhwIjoxNzIxOTMzMzIyLCJ1c2VyIjoyfQ.UjNX2oFxeEUUE25CSpbZ5ItQMpF-WQpvC0VH6atk150, userId=10003, role=2)
+2024-07-26 01:29:04 [http-nio-9001-exec-1] WARN  c.b.m.c.t.support.ReflectLambdaMeta - Unable to make field private final java.lang.Class java.lang.invoke.SerializedLambda.capturingClass accessible: module java.base does not "opens java.lang.invoke" to unnamed module @2cdd0d4b
+2024-07-26 01:29:04 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-07-26 01:29:04 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@33198fde
+2024-07-26 01:29:04 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-07-26 01:29:43 [http-nio-9001-exec-2] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 01:29:43 [http-nio-9001-exec-2] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTI5MTUxLCJ1c2VyIjoyfQ.VZ27ASd1M5WMVgXkPY9nTDMG0_tphRg3a1tcN4nv4mc, userId=10000, role=2)
+2024-07-26 01:29:43 [http-nio-9001-exec-2] INFO  c.a.interpretor.UserInterpretor - 无感刷新token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTM1NzgzLCJ1c2VyIjoyfQ.5yGxrQxUBD2BUYuu-I424_5TTyo1snOoevDKjQncTCw
+2024-07-26 02:15:37 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-07-26 02:15:37 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2024-07-26 02:15:42 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2024-07-26 02:15:42 [main] INFO  c.a.AchobetaRecruitmentApplication - Starting AchobetaRecruitmentApplication using Java 21.0.1 with PID 24892 (D:\javawork\AchoBeta-Recruitment\target\classes started by 马拉圈 in D:\javawork\AchoBeta-Recruitment)
+2024-07-26 02:15:42 [main] INFO  c.a.AchobetaRecruitmentApplication - The following 1 profile is active: "dev"
+2024-07-26 02:15:43 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9001"]
+2024-07-26 02:15:43 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-07-26 02:15:43 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.7]
+2024-07-26 02:15:43 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-07-26 02:15:44 [main] INFO  org.redisson.Version - Redisson 3.27.2
+2024-07-26 02:15:44 [main] WARN  o.r.c.SequentialDnsAddressResolverFactory - DNS TCP fallback on UDP query timeout disabled. Upgrade Netty to 4.1.105 or higher.
+2024-07-26 02:15:44 [redisson-netty-4-5] INFO  o.r.connection.ConnectionsHolder - 1 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 02:15:44 [redisson-netty-4-20] INFO  o.r.connection.ConnectionsHolder - 24 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 02:15:45 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9001"]
+2024-07-26 02:15:45 [main] INFO  c.a.AchobetaRecruitmentApplication - Started AchobetaRecruitmentApplication in 3.357 seconds (process running for 3.928)
+2024-07-26 02:20:11 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2024-07-26 02:20:11 [main] INFO  c.a.AchobetaRecruitmentApplication - Starting AchobetaRecruitmentApplication using Java 21.0.1 with PID 9164 (D:\javawork\AchoBeta-Recruitment\target\classes started by 马拉圈 in D:\javawork\AchoBeta-Recruitment)
+2024-07-26 02:20:11 [main] INFO  c.a.AchobetaRecruitmentApplication - The following 1 profile is active: "dev"
+2024-07-26 02:20:13 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9001"]
+2024-07-26 02:20:13 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-07-26 02:20:13 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.7]
+2024-07-26 02:20:13 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-07-26 02:20:14 [main] INFO  org.redisson.Version - Redisson 3.27.2
+2024-07-26 02:20:14 [main] WARN  o.r.c.SequentialDnsAddressResolverFactory - DNS TCP fallback on UDP query timeout disabled. Upgrade Netty to 4.1.105 or higher.
+2024-07-26 02:20:14 [redisson-netty-4-5] INFO  o.r.connection.ConnectionsHolder - 1 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 02:20:14 [redisson-netty-4-20] INFO  o.r.connection.ConnectionsHolder - 24 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 02:20:14 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9001"]
+2024-07-26 02:20:14 [main] INFO  c.a.AchobetaRecruitmentApplication - Started AchobetaRecruitmentApplication in 3.259 seconds (process running for 3.848)
+2024-07-26 02:20:50 [http-nio-9001-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-07-26 02:20:50 [http-nio-9001-exec-1] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:20:51 [http-nio-9001-exec-1] ERROR c.a.handler.GlobalExceptionHandler - 请求地址'/api/v1/schedule/list/1', USER_ACCOUNT_USE_BY_OTHERS: '无效的token:'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTI5MTUxLCJ1c2VyIjoyfQ.VZ27ASd1M5WMVgXkPY9nTDMG0_tphRg3a1tcN4nv4mc''
+2024-07-26 02:20:59 [http-nio-9001-exec-2] WARN  c.b.m.c.t.support.ReflectLambdaMeta - Unable to make field private final java.lang.Class java.lang.invoke.SerializedLambda.capturingClass accessible: module java.base does not "opens java.lang.invoke" to unnamed module @2cdd0d4b
+2024-07-26 02:20:59 [http-nio-9001-exec-2] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-07-26 02:20:59 [http-nio-9001-exec-2] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@542c0887
+2024-07-26 02:20:59 [http-nio-9001-exec-2] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-07-26 02:20:59 [http-nio-9001-exec-2] INFO  com.achobeta.redis.RedisCache - 查询 Redis	[login_fail_cnt:root]-[null]
+2024-07-26 02:21:00 [http-nio-9001-exec-2] INFO  com.achobeta.redis.RedisCache - 删除 Redis 的键值	key[login_fail_cnt:root]
+2024-07-26 02:21:00 [http-nio-9001-exec-2] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:21:32 [http-nio-9001-exec-3] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:21:32 [http-nio-9001-exec-3] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTM4ODYwLCJ1c2VyIjoyfQ.x35ZFd5DHkZGikV9mKCf6Fuhc3tQMQJ5AKttIhoJUzY, userId=10000, role=2)
+2024-07-26 02:24:54 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-07-26 02:24:54 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2024-07-26 02:24:59 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2024-07-26 02:24:59 [main] INFO  c.a.AchobetaRecruitmentApplication - Starting AchobetaRecruitmentApplication using Java 21.0.1 with PID 22612 (D:\javawork\AchoBeta-Recruitment\target\classes started by 马拉圈 in D:\javawork\AchoBeta-Recruitment)
+2024-07-26 02:24:59 [main] INFO  c.a.AchobetaRecruitmentApplication - The following 1 profile is active: "dev"
+2024-07-26 02:25:00 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9001"]
+2024-07-26 02:25:00 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-07-26 02:25:00 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.7]
+2024-07-26 02:25:00 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-07-26 02:25:01 [main] INFO  org.redisson.Version - Redisson 3.27.2
+2024-07-26 02:25:01 [main] WARN  o.r.c.SequentialDnsAddressResolverFactory - DNS TCP fallback on UDP query timeout disabled. Upgrade Netty to 4.1.105 or higher.
+2024-07-26 02:25:02 [redisson-netty-4-5] INFO  o.r.connection.ConnectionsHolder - 1 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 02:25:02 [redisson-netty-4-20] INFO  o.r.connection.ConnectionsHolder - 24 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 02:25:02 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9001"]
+2024-07-26 02:25:02 [main] INFO  c.a.AchobetaRecruitmentApplication - Started AchobetaRecruitmentApplication in 3.067 seconds (process running for 3.596)
+2024-07-26 02:25:33 [http-nio-9001-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-07-26 02:25:33 [http-nio-9001-exec-1] WARN  c.b.m.c.t.support.ReflectLambdaMeta - Unable to make field private final java.lang.Class java.lang.invoke.SerializedLambda.capturingClass accessible: module java.base does not "opens java.lang.invoke" to unnamed module @2cdd0d4b
+2024-07-26 02:25:33 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-07-26 02:25:33 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@72f86c65
+2024-07-26 02:25:33 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-07-26 02:25:34 [http-nio-9001-exec-1] INFO  com.achobeta.redis.RedisCache - 查询 Redis	[login_fail_cnt:Bitter-Macaron]-[null]
+2024-07-26 02:25:34 [http-nio-9001-exec-1] INFO  com.achobeta.redis.RedisCache - 删除 Redis 的键值	key[login_fail_cnt:Bitter-Macaron]
+2024-07-26 02:25:34 [http-nio-9001-exec-1] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:25:55 [http-nio-9001-exec-3] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:25:55 [http-nio-9001-exec-3] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMiwiZXhwIjoxNzIxOTM5MTM0LCJ1c2VyIjoxfQ.55u0SY0BN9nsN1vYaQCAOUyfj5MaYzNazMrUUyHXndQ, userId=10002, role=1)
+2024-07-26 02:26:14 [http-nio-9001-exec-2] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:26:14 [http-nio-9001-exec-2] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMSwiZXhwIjoxNzIxOTMyNjc0LCJ1c2VyIjoxfQ.7bTcE8WhX5hRJNZZ-rvVrvMw5KAuJnNWwwPd35vYDRY, userId=10001, role=1)
+2024-07-26 02:26:14 [http-nio-9001-exec-2] INFO  c.a.interpretor.UserInterpretor - 无感刷新token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMSwiZXhwIjoxNzIxOTM5MTc0LCJ1c2VyIjoxfQ.LC8vCa09EJaJ9IT8ccjWC2BbGK0pVpueLMxocpXpeNQ
+2024-07-26 02:26:14 [http-nio-9001-exec-2] ERROR c.a.handler.GlobalExceptionHandler - 请求地址'/api/v1/participate/get/1', USER_RESUME_NOT_EXISTS: '用户简历不存在'
+2024-07-26 02:26:30 [http-nio-9001-exec-9] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:26:30 [http-nio-9001-exec-9] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMSwiZXhwIjoxNzIxOTMyNjc0LCJ1c2VyIjoxfQ.7bTcE8WhX5hRJNZZ-rvVrvMw5KAuJnNWwwPd35vYDRY, userId=10001, role=1)
+2024-07-26 02:26:30 [http-nio-9001-exec-9] INFO  c.a.interpretor.UserInterpretor - 无感刷新token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMSwiZXhwIjoxNzIxOTM5MTkwLCJ1c2VyIjoxfQ.S978YbCeAgnuAMKxh0wEJb1JZtjvNEbWIiky9VVzZF4
+2024-07-26 02:26:34 [http-nio-9001-exec-5] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:26:34 [http-nio-9001-exec-5] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMSwiZXhwIjoxNzIxOTMyNjc0LCJ1c2VyIjoxfQ.7bTcE8WhX5hRJNZZ-rvVrvMw5KAuJnNWwwPd35vYDRY, userId=10001, role=1)
+2024-07-26 02:26:34 [http-nio-9001-exec-5] INFO  c.a.interpretor.UserInterpretor - 无感刷新token:eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMSwiZXhwIjoxNzIxOTM5MTk0LCJ1c2VyIjoxfQ.18tMJFXRtl4wlXWb1vg6Rwy8UNbIoCR5p9uAsd-4fmE
+2024-07-26 02:27:02 [http-nio-9001-exec-6] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:27:02 [http-nio-9001-exec-6] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTM4ODYwLCJ1c2VyIjoyfQ.x35ZFd5DHkZGikV9mKCf6Fuhc3tQMQJ5AKttIhoJUzY, userId=10000, role=2)
+2024-07-26 02:27:11 [http-nio-9001-exec-7] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:27:11 [http-nio-9001-exec-7] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTM4ODYwLCJ1c2VyIjoyfQ.x35ZFd5DHkZGikV9mKCf6Fuhc3tQMQJ5AKttIhoJUzY, userId=10000, role=2)
+2024-07-26 02:27:16 [http-nio-9001-exec-8] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:27:16 [http-nio-9001-exec-8] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTM4ODYwLCJ1c2VyIjoyfQ.x35ZFd5DHkZGikV9mKCf6Fuhc3tQMQJ5AKttIhoJUzY, userId=10000, role=2)
+2024-07-26 02:27:20 [http-nio-9001-exec-4] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:27:20 [http-nio-9001-exec-4] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTM4ODYwLCJ1c2VyIjoyfQ.x35ZFd5DHkZGikV9mKCf6Fuhc3tQMQJ5AKttIhoJUzY, userId=10000, role=2)
+2024-07-26 02:27:56 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-07-26 02:27:56 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2024-07-26 02:28:00 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2024-07-26 02:28:00 [main] INFO  c.a.AchobetaRecruitmentApplication - Starting AchobetaRecruitmentApplication using Java 21.0.1 with PID 26892 (D:\javawork\AchoBeta-Recruitment\target\classes started by 马拉圈 in D:\javawork\AchoBeta-Recruitment)
+2024-07-26 02:28:00 [main] INFO  c.a.AchobetaRecruitmentApplication - The following 1 profile is active: "dev"
+2024-07-26 02:28:01 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9001"]
+2024-07-26 02:28:01 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-07-26 02:28:01 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.7]
+2024-07-26 02:28:01 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-07-26 02:28:02 [main] INFO  org.redisson.Version - Redisson 3.27.2
+2024-07-26 02:28:02 [main] WARN  o.r.c.SequentialDnsAddressResolverFactory - DNS TCP fallback on UDP query timeout disabled. Upgrade Netty to 4.1.105 or higher.
+2024-07-26 02:28:02 [redisson-netty-4-5] INFO  o.r.connection.ConnectionsHolder - 1 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 02:28:02 [redisson-netty-4-20] INFO  o.r.connection.ConnectionsHolder - 24 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 02:28:02 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9001"]
+2024-07-26 02:28:02 [main] INFO  c.a.AchobetaRecruitmentApplication - Started AchobetaRecruitmentApplication in 3.087 seconds (process running for 3.577)
+2024-07-26 02:28:05 [http-nio-9001-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-07-26 02:28:05 [http-nio-9001-exec-1] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:28:05 [http-nio-9001-exec-1] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTM4ODYwLCJ1c2VyIjoyfQ.x35ZFd5DHkZGikV9mKCf6Fuhc3tQMQJ5AKttIhoJUzY, userId=10000, role=2)
+2024-07-26 02:28:05 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-07-26 02:28:05 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@79e36f69
+2024-07-26 02:28:05 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-07-26 02:29:31 [http-nio-9001-exec-2] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:29:31 [http-nio-9001-exec-2] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTM4ODYwLCJ1c2VyIjoyfQ.x35ZFd5DHkZGikV9mKCf6Fuhc3tQMQJ5AKttIhoJUzY, userId=10000, role=2)
+2024-07-26 02:29:32 [http-nio-9001-exec-2] WARN  c.b.m.c.t.support.ReflectLambdaMeta - Unable to make field private final java.lang.Class java.lang.invoke.SerializedLambda.capturingClass accessible: module java.base does not "opens java.lang.invoke" to unnamed module @2cdd0d4b
+2024-07-26 02:29:32 [http-nio-9001-exec-2] ERROR c.a.handler.GlobalExceptionHandler - 请求地址'/api/v1/schedule/update', PARAM_FAILED_VALIDATE: '时间段非法'
+2024-07-26 02:29:57 [http-nio-9001-exec-4] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:29:57 [http-nio-9001-exec-4] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTM4ODYwLCJ1c2VyIjoyfQ.x35ZFd5DHkZGikV9mKCf6Fuhc3tQMQJ5AKttIhoJUzY, userId=10000, role=2)
+2024-07-26 02:29:57 [http-nio-9001-exec-4] ERROR c.a.handler.GlobalExceptionHandler - 请求地址'/api/v1/schedule/update', PARAM_FAILED_VALIDATE: '时间段非法'
+2024-07-26 02:31:23 [http-nio-9001-exec-6] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:31:23 [http-nio-9001-exec-6] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTM4ODYwLCJ1c2VyIjoyfQ.x35ZFd5DHkZGikV9mKCf6Fuhc3tQMQJ5AKttIhoJUzY, userId=10000, role=2)
+2024-07-26 02:31:25 [http-nio-9001-exec-7] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:31:25 [http-nio-9001-exec-7] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNzIxOTM4ODYwLCJ1c2VyIjoyfQ.x35ZFd5DHkZGikV9mKCf6Fuhc3tQMQJ5AKttIhoJUzY, userId=10000, role=2)
+2024-07-26 02:32:53 [http-nio-9001-exec-9] INFO  com.achobeta.redis.RedisCache - 查询 Redis	[login_fail_cnt:root2]-[null]
+2024-07-26 02:32:53 [http-nio-9001-exec-9] INFO  com.achobeta.redis.RedisCache - 删除 Redis 的键值	key[login_fail_cnt:root2]
+2024-07-26 02:32:53 [http-nio-9001-exec-9] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:33:07 [http-nio-9001-exec-10] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:33:07 [http-nio-9001-exec-10] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMywiZXhwIjoxNzIxOTM5NTczLCJ1c2VyIjoyfQ.hFJm_3H2myU2sU2l6SkKIgHXkJJOtEZuqhU5YareKO0, userId=10003, role=2)
+2024-07-26 02:33:13 [http-nio-9001-exec-1] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:33:13 [http-nio-9001-exec-1] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMywiZXhwIjoxNzIxOTM5NTczLCJ1c2VyIjoyfQ.hFJm_3H2myU2sU2l6SkKIgHXkJJOtEZuqhU5YareKO0, userId=10003, role=2)
+2024-07-26 02:33:16 [http-nio-9001-exec-3] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:33:16 [http-nio-9001-exec-3] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMywiZXhwIjoxNzIxOTM5NTczLCJ1c2VyIjoyfQ.hFJm_3H2myU2sU2l6SkKIgHXkJJOtEZuqhU5YareKO0, userId=10003, role=2)
+2024-07-26 02:33:19 [http-nio-9001-exec-2] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:33:19 [http-nio-9001-exec-2] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMywiZXhwIjoxNzIxOTM5NTczLCJ1c2VyIjoyfQ.hFJm_3H2myU2sU2l6SkKIgHXkJJOtEZuqhU5YareKO0, userId=10003, role=2)
+2024-07-26 02:33:22 [http-nio-9001-exec-4] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:33:22 [http-nio-9001-exec-4] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMywiZXhwIjoxNzIxOTM5NTczLCJ1c2VyIjoyfQ.hFJm_3H2myU2sU2l6SkKIgHXkJJOtEZuqhU5YareKO0, userId=10003, role=2)
+2024-07-26 02:33:24 [http-nio-9001-exec-5] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:33:24 [http-nio-9001-exec-5] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMywiZXhwIjoxNzIxOTM5NTczLCJ1c2VyIjoyfQ.hFJm_3H2myU2sU2l6SkKIgHXkJJOtEZuqhU5YareKO0, userId=10003, role=2)
+2024-07-26 02:47:23 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-07-26 02:47:23 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2024-07-26 02:47:28 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2024-07-26 02:47:28 [main] INFO  c.a.AchobetaRecruitmentApplication - Starting AchobetaRecruitmentApplication using Java 21.0.1 with PID 26576 (D:\javawork\AchoBeta-Recruitment\target\classes started by 马拉圈 in D:\javawork\AchoBeta-Recruitment)
+2024-07-26 02:47:28 [main] INFO  c.a.AchobetaRecruitmentApplication - The following 1 profile is active: "dev"
+2024-07-26 02:47:29 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9001"]
+2024-07-26 02:47:29 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-07-26 02:47:29 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.7]
+2024-07-26 02:47:29 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-07-26 02:47:30 [main] INFO  org.redisson.Version - Redisson 3.27.2
+2024-07-26 02:47:30 [main] WARN  o.r.c.SequentialDnsAddressResolverFactory - DNS TCP fallback on UDP query timeout disabled. Upgrade Netty to 4.1.105 or higher.
+2024-07-26 02:47:30 [redisson-netty-4-5] INFO  o.r.connection.ConnectionsHolder - 1 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 02:47:30 [redisson-netty-4-20] INFO  o.r.connection.ConnectionsHolder - 24 connections initialized for localhost/127.0.0.1:6379
+2024-07-26 02:47:31 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9001"]
+2024-07-26 02:47:31 [main] INFO  c.a.AchobetaRecruitmentApplication - Started AchobetaRecruitmentApplication in 3.149 seconds (process running for 3.654)
+2024-07-26 02:47:40 [http-nio-9001-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-07-26 02:47:41 [http-nio-9001-exec-1] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:47:41 [http-nio-9001-exec-1] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMywiZXhwIjoxNzIxOTM5NTczLCJ1c2VyIjoyfQ.hFJm_3H2myU2sU2l6SkKIgHXkJJOtEZuqhU5YareKO0, userId=10003, role=2)
+2024-07-26 02:47:41 [http-nio-9001-exec-1] WARN  c.b.m.c.t.support.ReflectLambdaMeta - Unable to make field private final java.lang.Class java.lang.invoke.SerializedLambda.capturingClass accessible: module java.base does not "opens java.lang.invoke" to unnamed module @2cdd0d4b
+2024-07-26 02:47:41 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-07-26 02:47:41 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@16185c4b
+2024-07-26 02:47:41 [http-nio-9001-exec-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-07-26 02:47:41 [http-nio-9001-exec-1] INFO  c.a.r.strategy.SimpleLockStrategy - 普通锁 RLock scheduleExitLock:4
+2024-07-26 02:47:41 [http-nio-9001-exec-1] INFO  com.achobeta.redis.RedisLock - 尝试获取锁 scheduleExitLock:4, wait 10 SECONDS, timeout 10 SECONDS
+2024-07-26 02:47:41 [http-nio-9001-exec-1] INFO  com.achobeta.redis.RedisLock - 尝试获取锁 scheduleExitLock:4 成功
+2024-07-26 02:47:41 [http-nio-9001-exec-1] INFO  com.achobeta.redis.RedisLock - 释放锁 scheduleExitLock:4
+2024-07-26 02:47:47 [http-nio-9001-exec-2] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:47:47 [http-nio-9001-exec-2] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMywiZXhwIjoxNzIxOTM5NTczLCJ1c2VyIjoyfQ.hFJm_3H2myU2sU2l6SkKIgHXkJJOtEZuqhU5YareKO0, userId=10003, role=2)
+2024-07-26 02:50:02 [http-nio-9001-exec-4] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:50:02 [http-nio-9001-exec-4] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMywiZXhwIjoxNzIxOTM5NTczLCJ1c2VyIjoyfQ.hFJm_3H2myU2sU2l6SkKIgHXkJJOtEZuqhU5YareKO0, userId=10003, role=2)
+2024-07-26 02:50:05 [http-nio-9001-exec-5] INFO  com.achobeta.jwt.util.JwtUtil - 生成的key -> AES
+2024-07-26 02:50:05 [http-nio-9001-exec-5] INFO  c.a.interpretor.UserInterpretor - 登录信息->UserHelper(token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDAwMywiZXhwIjoxNzIxOTM5NTczLCJ1c2VyIjoyfQ.hFJm_3H2myU2sU2l6SkKIgHXkJJOtEZuqhU5YareKO0, userId=10003, role=2)
+2024-07-26 04:12:24 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-07-26 04:12:24 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

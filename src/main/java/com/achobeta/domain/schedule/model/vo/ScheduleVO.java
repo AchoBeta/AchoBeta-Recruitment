@@ -1,4 +1,4 @@
-package com.achobeta.domain.interview.model.vo;
+package com.achobeta.domain.schedule.model.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

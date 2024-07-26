@@ -1,9 +1,7 @@
-package com.achobeta.domain.interview.model.vo;
+package com.achobeta.domain.schedule.model.vo;
 
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import lombok.Data;
-
-import java.util.Date;
 
 /**
  * Created With Intellij IDEA

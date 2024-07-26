@@ -1,10 +1,10 @@
-package com.achobeta.domain.interview.service;
+package com.achobeta.domain.schedule.service;
 
-import com.achobeta.domain.interview.model.entity.InterviewSchedule;
-import com.achobeta.domain.interview.model.vo.ScheduleDetailVO;
-import com.achobeta.domain.interview.model.vo.ScheduleResumeVO;
-import com.achobeta.domain.interview.model.vo.UserSituationVO;
-import com.achobeta.domain.interview.model.vo.ParticipationDetailVO;
+import com.achobeta.domain.schedule.model.entity.InterviewSchedule;
+import com.achobeta.domain.schedule.model.vo.ScheduleDetailVO;
+import com.achobeta.domain.schedule.model.vo.ScheduleResumeVO;
+import com.achobeta.domain.schedule.model.vo.UserSituationVO;
+import com.achobeta.domain.schedule.model.vo.ParticipationDetailVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

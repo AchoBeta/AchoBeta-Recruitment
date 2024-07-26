@@ -1,6 +1,6 @@
-package com.achobeta.domain.interview.service;
+package com.achobeta.domain.schedule.service;
 
-import com.achobeta.domain.interview.model.entity.Interviewer;
+import com.achobeta.domain.schedule.model.entity.Interviewer;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

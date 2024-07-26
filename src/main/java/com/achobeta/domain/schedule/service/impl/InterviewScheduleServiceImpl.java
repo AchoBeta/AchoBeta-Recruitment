@@ -1,10 +1,10 @@
-package com.achobeta.domain.interview.service.impl;
+package com.achobeta.domain.schedule.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.domain.interview.model.entity.Interviewer;
-import com.achobeta.domain.interview.model.vo.*;
-import com.achobeta.domain.interview.service.InterviewerService;
+import com.achobeta.domain.schedule.model.entity.Interviewer;
+import com.achobeta.domain.schedule.model.vo.*;
+import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.domain.recruit.model.dao.mapper.ActivityParticipationMapper;
 import com.achobeta.domain.recruit.model.vo.QuestionAnswerVO;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
@@ -15,9 +15,9 @@ import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.RedisLock;
 import com.achobeta.redis.strategy.SimpleLockStrategy;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.achobeta.domain.interview.model.entity.InterviewSchedule;
-import com.achobeta.domain.interview.service.InterviewScheduleService;
-import com.achobeta.domain.interview.model.dao.mapper.InterviewScheduleMapper;
+import com.achobeta.domain.schedule.model.entity.InterviewSchedule;
+import com.achobeta.domain.schedule.service.InterviewScheduleService;
+import com.achobeta.domain.schedule.model.dao.mapper.InterviewScheduleMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

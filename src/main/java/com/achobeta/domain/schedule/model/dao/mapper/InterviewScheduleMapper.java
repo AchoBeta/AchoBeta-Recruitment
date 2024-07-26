@@ -1,9 +1,9 @@
-package com.achobeta.domain.interview.model.dao.mapper;
+package com.achobeta.domain.schedule.model.dao.mapper;
 
-import com.achobeta.domain.interview.model.entity.InterviewSchedule;
-import com.achobeta.domain.interview.model.vo.ParticipationScheduleVO;
-import com.achobeta.domain.interview.model.vo.ScheduleDetailVO;
-import com.achobeta.domain.interview.model.vo.ScheduleResumeVO;
+import com.achobeta.domain.schedule.model.entity.InterviewSchedule;
+import com.achobeta.domain.schedule.model.vo.ParticipationScheduleVO;
+import com.achobeta.domain.schedule.model.vo.ScheduleDetailVO;
+import com.achobeta.domain.schedule.model.vo.ScheduleResumeVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 

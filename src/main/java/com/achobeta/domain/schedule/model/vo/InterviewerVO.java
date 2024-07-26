@@ -1,7 +1,6 @@
-package com.achobeta.domain.interview.model.vo;
+package com.achobeta.domain.schedule.model.vo;
 
 import lombok.Data;
-import org.mockito.internal.matchers.Or;
 
 /**
  * Created With Intellij IDEA

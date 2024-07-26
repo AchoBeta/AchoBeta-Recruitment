@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.achobeta.domain.interview.model.dao.mapper.InterviewScheduleMapper">
+<mapper namespace="com.achobeta.domain.schedule.model.dao.mapper.InterviewScheduleMapper">
 
-    <resultMap id="InterviewMap" type="com.achobeta.domain.interview.model.vo.InterviewerVO">
+    <resultMap id="InterviewMap" type="com.achobeta.domain.schedule.model.vo.InterviewerVO">
         <id property="managerId" column="id" jdbcType="BIGINT"/>
         <result property="username" column="username" jdbcType="VARCHAR"/>
         <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
@@ -13,22 +13,22 @@
         <result property="avatar" column="avatar" jdbcType="BIGINT"/>
     </resultMap>
 
-    <resultMap id="ScheduleMap" type="com.achobeta.domain.interview.model.vo.ScheduleVO">
+    <resultMap id="ScheduleMap" type="com.achobeta.domain.schedule.model.vo.ScheduleVO">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
         <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-    <resultMap id="ScheduleResumeMap" extends="ScheduleMap" type="com.achobeta.domain.interview.model.vo.ScheduleResumeVO">
+    <resultMap id="ScheduleResumeMap" extends="ScheduleMap" type="com.achobeta.domain.schedule.model.vo.ScheduleResumeVO">
         <result property="participationId" column="participation_id" jdbcType="BIGINT"/>
         <association property="simpleStudentVO" columnPrefix="r_" resultMap="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.SimpleResumeMap" />
     </resultMap>
 
-    <resultMap id="ScheduleDetailMap" extends="ScheduleResumeMap" type="com.achobeta.domain.interview.model.vo.ScheduleDetailVO">
+    <resultMap id="ScheduleDetailMap" extends="ScheduleResumeMap" type="com.achobeta.domain.schedule.model.vo.ScheduleDetailVO">
         <collection property="interviewerVOS" columnPrefix="m_" resultMap="InterviewMap"/>
     </resultMap>
 
-    <resultMap id="ParticipationScheduleMap" type="com.achobeta.domain.interview.model.vo.ParticipationScheduleVO">
+    <resultMap id="ParticipationScheduleMap" type="com.achobeta.domain.schedule.model.vo.ParticipationScheduleVO">
         <id property="participationId" column="id" jdbcType="BIGINT"/>
         <association property="simpleStudentVO" columnPrefix="r_" resultMap="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.SimpleResumeMap" />
         <collection property="scheduleVOS" columnPrefix="s_" resultMap="ScheduleMap"/>

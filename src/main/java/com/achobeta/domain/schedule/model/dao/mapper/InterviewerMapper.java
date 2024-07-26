@@ -1,6 +1,6 @@
-package com.achobeta.domain.interview.model.dao.mapper;
+package com.achobeta.domain.schedule.model.dao.mapper;
 
-import com.achobeta.domain.interview.model.entity.Interviewer;
+import com.achobeta.domain.schedule.model.entity.Interviewer;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
