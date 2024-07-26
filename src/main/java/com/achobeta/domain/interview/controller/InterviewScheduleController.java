@@ -124,7 +124,7 @@ public class InterviewScheduleController {
     }
 
     @GetMapping("/detail/{scheduleId}")
-    public SystemJsonResponse getScheduleDetail(@PathVariable("participationId") @NotNull Long scheduleId) {
+    public SystemJsonResponse getScheduleDetail(@PathVariable("scheduleId") @NotNull Long scheduleId) {
         // 检测
         interviewScheduleService.checkInterviewScheduleExists(scheduleId);
         // 获取详细信息
