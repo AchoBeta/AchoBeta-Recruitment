@@ -114,7 +114,7 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
                     userParticipationVOMap.get(participationId).setTimePeriodVOS(timePeriodVOS);
                     // 统计时间段选中次数
                     timePeriodVOS.stream().map(TimePeriodVO::getId).filter(countMap::containsKey).forEach(periodId -> {
-                        countMap.get(participationId).increment();
+                        countMap.get(periodId).increment();
                     });
                 });
         // 构造返回值
