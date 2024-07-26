@@ -11,6 +11,7 @@ import com.achobeta.domain.interview.service.InterviewerService;
 import com.achobeta.domain.recruit.model.dao.mapper.ActivityParticipationMapper;
 import com.achobeta.domain.recruit.model.dao.mapper.ParticipationPeriodLinkMapper;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
+import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.recruit.service.TimePeriodService;
 import com.achobeta.exception.GlobalServiceException;
@@ -52,7 +53,7 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
 
     private final InterviewScheduleMapper interviewScheduleMapper;
 
-    private final ActivityParticipationMapper activityParticipationMapper;
+    private final ActivityParticipationService activityParticipationService;
 
     private final InterviewerService interviewerService;
 
@@ -80,6 +81,7 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
 
     @Override
     public UserSituationVO getSituationsByActId(Long actId) {
+        // periodId --> 时间段计数器
         Map<Long, TimePeriodCountVO> countMap = timePeriodService.getTimePeriodsByActId(actId)
                 .stream()
                 .collect(Collectors.toMap(
@@ -91,20 +93,39 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
                         },
                         (oldData, newData) -> newData)
                 );
-        // 查询并统计
-        List<UserParticipationVO> userParticipationVOS = interviewScheduleMapper.getSituationsByActId(actId)
+        // participationId --> 用户预约情况
+        Map<Long, UserParticipationVO> userParticipationVOMap = interviewScheduleMapper.getSituationsByActId(actId)
                 .stream()
-                .peek(userParticipationVO -> {
-                    List<TimePeriodVO> periods = activityParticipationMapper.getPeriods(userParticipationVO.getParticipationId());
-                    periods.stream().map(TimePeriodVO::getId).filter(countMap::containsKey).forEach(id -> {
-                        countMap.get(id).increment();
-                    });
-                    userParticipationVO.setTimePeriodVOS(periods);
-                })
-                // 按照选择时间段的个数排序
-                .sorted(Comparator.comparingInt(p -> p.getTimePeriodVOS().size()))
+                .collect(Collectors.toMap(
+                        UserParticipationVO::getParticipationId,
+                        userParticipationVO -> userParticipationVO,
+                        (oldData, newData) -> newData
+                ));
+        // 查询时间段选择情况
+        List<Long> participationIds = userParticipationVOMap.keySet()
+                .stream()
                 .toList();
-        List<TimePeriodCountVO> timePeriodCountVOS = countMap.values().stream().toList();
+        activityParticipationService.getParticipationPeriods(participationIds).stream()
+                .filter(participationPeriodVO -> userParticipationVOMap.containsKey(participationPeriodVO.getId()))
+                .forEach(participationPeriodVO -> {
+                    Long participationId = participationPeriodVO.getId();
+                    List<TimePeriodVO> timePeriodVOS = participationPeriodVO.getTimePeriodVOS();
+                    userParticipationVOMap.get(participationId).setTimePeriodVOS(timePeriodVOS);
+                    // 统计时间段选中次数
+                    timePeriodVOS.stream().map(TimePeriodVO::getId).filter(countMap::containsKey).forEach(periodId -> {
+                        countMap.get(participationId).increment();
+                    });
+                });
+        // 构造返回值
+        List<UserParticipationVO> userParticipationVOS = userParticipationVOMap.values()
+                .stream()
+                .sorted(Comparator.comparingInt(up -> up.getTimePeriodVOS().size())) // 根据选择时间段排序
+                .sorted(Comparator.comparingInt(up -> up.getScheduleVOS().size())) // 没被安排的会被排在前面
+                .toList();
+        List<TimePeriodCountVO> timePeriodCountVOS = countMap.values()
+                .stream()
+                .sorted((x1, x2) -> x2.getCount().compareTo(x1.getCount()))
+                .toList();
         UserSituationVO userSituationVO = new UserSituationVO();
         userSituationVO.setUserParticipationVOS(userParticipationVOS);
         userSituationVO.setTimePeriodCountVOS(timePeriodCountVOS);

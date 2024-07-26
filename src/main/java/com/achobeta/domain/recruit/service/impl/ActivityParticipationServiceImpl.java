@@ -5,6 +5,7 @@ import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.recruit.model.dao.mapper.ActivityParticipationMapper;
 import com.achobeta.domain.recruit.model.dto.QuestionAnswerDTO;
 import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
+import com.achobeta.domain.recruit.model.vo.ParticipationPeriodVO;
 import com.achobeta.domain.recruit.model.vo.ParticipationVO;
 import com.achobeta.domain.recruit.model.vo.QuestionAnswerVO;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
@@ -93,6 +94,14 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
                 .map(recruitmentActivityService::getParticipationIdsByActId)
                 .flatMap(Collection::stream)
                 .toList();
+    }
+
+    @Override
+    public List<ParticipationPeriodVO> getParticipationPeriods(List<Long> participationIds) {
+        if(participationIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return activityParticipationMapper.getParticipationPeriods(participationIds);
     }
 
     @Override
