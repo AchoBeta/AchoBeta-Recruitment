@@ -53,7 +53,7 @@ public class RecruitmentActivityController {
         // 检测
         ValidatorUtils.validate(recruitmentActivityDTO);
         Long batchId = recruitmentActivityDTO.getBatchId();
-        recruitmentBatchService.checkRecruitmentBatchExists(batchId);
+        recruitmentBatchService.checkAndGetRecruitmentBatchIsRun(batchId, Boolean.TRUE);
         // 创建
         StudentGroup target = recruitmentActivityDTO.getTarget();
         String title = recruitmentActivityDTO.getTitle();
