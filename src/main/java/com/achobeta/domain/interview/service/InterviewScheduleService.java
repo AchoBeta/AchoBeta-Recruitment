@@ -1,6 +1,7 @@
 package com.achobeta.domain.interview.service;
 
 import com.achobeta.domain.interview.model.entity.InterviewSchedule;
+import com.achobeta.domain.interview.model.vo.ScheduleDetailVO;
 import com.achobeta.domain.interview.model.vo.ScheduleResumeVO;
 import com.achobeta.domain.interview.model.vo.UserSituationVO;
 import com.achobeta.domain.interview.model.vo.ParticipationDetailVO;
@@ -23,6 +24,8 @@ public interface InterviewScheduleService extends IService<InterviewSchedule> {
     List<ScheduleResumeVO> getInterviewScheduleList(Long managerId, Long actId);
 
     UserSituationVO getSituationsByActId(Long actId);
+
+    ScheduleDetailVO getInterviewScheduleDetail(Long scheduleId);
 
     ParticipationDetailVO getDetailActivityParticipation(Long participationId);
 

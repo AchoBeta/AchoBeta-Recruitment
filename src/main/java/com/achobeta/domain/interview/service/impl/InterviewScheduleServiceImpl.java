@@ -133,6 +133,12 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
         return userSituationVO;
     }
 
+
+    @Override
+    public ScheduleDetailVO getInterviewScheduleDetail(Long scheduleId) {
+        return interviewScheduleMapper.getInterviewerScheduleDetail(scheduleId);
+    }
+
     @Override
     public ParticipationDetailVO getDetailActivityParticipation(Long participationId) {
         return activityParticipationService.getActivityParticipation(participationId).map(activityParticipation -> {

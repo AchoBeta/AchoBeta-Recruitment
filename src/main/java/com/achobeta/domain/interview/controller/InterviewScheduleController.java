@@ -4,6 +4,7 @@ import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.interview.model.dto.ScheduleDTO;
 import com.achobeta.domain.interview.model.dto.ScheduleUpdateDTO;
 import com.achobeta.domain.interview.model.vo.ParticipationDetailVO;
+import com.achobeta.domain.interview.model.vo.ScheduleDetailVO;
 import com.achobeta.domain.interview.model.vo.ScheduleResumeVO;
 import com.achobeta.domain.interview.model.vo.UserSituationVO;
 import com.achobeta.domain.interview.service.InterviewScheduleService;
@@ -120,6 +121,15 @@ public class InterviewScheduleController {
         // 获取参与本次招新活动的所有用户参与和预约情况
         UserSituationVO situations = interviewScheduleService.getSituationsByActId(actId);
         return SystemJsonResponse.SYSTEM_SUCCESS(situations);
+    }
+
+    @GetMapping("/detail/{scheduleId}")
+    public SystemJsonResponse getScheduleDetail(@PathVariable("participationId") @NotNull Long scheduleId) {
+        // 检测
+        interviewScheduleService.checkInterviewScheduleExists(scheduleId);
+        // 获取详细信息
+        ScheduleDetailVO detail = interviewScheduleService.getInterviewScheduleDetail(scheduleId);
+        return SystemJsonResponse.SYSTEM_SUCCESS(detail);
     }
 
     @GetMapping("/situation/detail/{participationId}")
