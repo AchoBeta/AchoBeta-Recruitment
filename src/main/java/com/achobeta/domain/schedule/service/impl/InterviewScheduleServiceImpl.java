@@ -2,6 +2,9 @@ package com.achobeta.domain.schedule.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.recruit.model.convert.TimePeriodConverter;
+import com.achobeta.domain.recruit.model.vo.TimePeriodCountVO;
+import com.achobeta.domain.schedule.model.converter.SituationConverter;
 import com.achobeta.domain.schedule.model.entity.Interviewer;
 import com.achobeta.domain.schedule.model.vo.*;
 import com.achobeta.domain.schedule.service.InterviewerService;
@@ -9,7 +12,6 @@ import com.achobeta.domain.recruit.model.dao.mapper.ActivityParticipationMapper;
 import com.achobeta.domain.recruit.model.vo.QuestionAnswerVO;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
-import com.achobeta.domain.recruit.service.RecruitmentBatchService;
 import com.achobeta.domain.recruit.service.TimePeriodService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.RedisLock;
@@ -54,8 +56,6 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
 
     private final ActivityParticipationService activityParticipationService;
 
-    private final RecruitmentBatchService recruitmentBatchService;
-
     private final InterviewerService interviewerService;
 
     private final TimePeriodService timePeriodService;
@@ -87,11 +87,7 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
                 .stream()
                 .collect(Collectors.toMap(
                         TimePeriodVO::getId,
-                        t -> {
-                            TimePeriodCountVO timePeriodCountVO = BeanUtil.copyProperties(t, TimePeriodCountVO.class);
-                            timePeriodCountVO.setCount(0);
-                            return timePeriodCountVO;
-                        },
+                        TimePeriodConverter.INSTANCE::timePeriodVOToCountVO,
                         (oldData, newData) -> newData)
                 );
         // participationId --> 用户预约情况
@@ -99,7 +95,7 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
                 .stream()
                 .collect(Collectors.toMap(
                         ParticipationScheduleVO::getParticipationId,
-                        userParticipationVO -> BeanUtil.copyProperties(userParticipationVO, UserParticipationVO.class),
+                        SituationConverter.INSTANCE::participationScheduleVOToUserParticipationVO,
                         (oldData, newData) -> newData
                 ));
         // 查询时间段选择情况
@@ -111,11 +107,15 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
                 .forEach(participationPeriodVO -> {
                     Long participationId = participationPeriodVO.getId();
                     List<TimePeriodVO> timePeriodVOS = participationPeriodVO.getTimePeriodVOS();
-                    userParticipationVOMap.get(participationId).setTimePeriodVOS(timePeriodVOS);
-                    // 统计时间段选中次数
-                    timePeriodVOS.stream().map(TimePeriodVO::getId).filter(countMap::containsKey).forEach(periodId -> {
-                        countMap.get(periodId).increment();
-                    });
+                    UserParticipationVO userParticipationVO = userParticipationVOMap.get(participationId);
+                    userParticipationVO.setTimePeriodVOS(timePeriodVOS);
+                    // 统计时间段选中次数（未预约的参与统计） ScheduleVOS 可能为空集合不可能为 null
+                    if(userParticipationVO.getScheduleVOS().isEmpty()) {
+                        timePeriodVOS.stream()
+                                .map(TimePeriodVO::getId)
+                                .filter(countMap::containsKey)
+                                .forEach(periodId -> countMap.get(periodId).increment());
+                    }
                 });
         // 构造返回值
         List<UserParticipationVO> userParticipationVOS = userParticipationVOMap.values()
@@ -143,7 +143,8 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
     public ParticipationDetailVO getDetailActivityParticipation(Long participationId) {
         return activityParticipationService.getActivityParticipation(participationId).map(activityParticipation -> {
             // 转化
-            ParticipationDetailVO participationDetailVO = BeanUtil.copyProperties(activityParticipation, ParticipationDetailVO.class);
+            ParticipationDetailVO participationDetailVO =
+                    SituationConverter.INSTANCE.activityParticipationToParticipationDetailVO(activityParticipation);
             // 获取用户回答的问题
             List<QuestionAnswerVO> questions = activityParticipationMapper.getQuestions(participationId);
             participationDetailVO.setQuestionAnswerVOS(questions);

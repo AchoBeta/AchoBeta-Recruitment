@@ -11,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
 * @author 马拉圈
@@ -46,21 +43,12 @@ public class PaperQuestionLinkServiceImpl extends ServiceImpl<PaperQuestionLinkM
     @Override
     @Transactional
     public void addQuestionsForPaper(Long paperId, List<Long> questionIds) {
-        Map<Long, Boolean> hash = new HashMap<>();
-        // 获取试卷的所有题，并标记为 false
-        getQuestionsOnPaper(paperId).forEach(questionVO -> hash.put(questionVO.getId(), Boolean.FALSE));
-        // questionIds 导入 hash
-        questionIds.forEach(questionId -> {
-            if(hash.containsKey(questionId)) {
-                hash.remove(questionId);
-            }else {
-                hash.put(questionId, Boolean.TRUE);
-            }
-        });
-        // true 的新增，false 的忽略
-        List<PaperQuestionLink> paperQuestionLinks = hash.entrySet().stream()
-                .filter(entry -> Boolean.TRUE.equals(entry.getValue()))
-                .map(Map.Entry::getKey)
+        Set<Long> hash = new HashSet<>();
+        // 获取试卷的所有题
+        getQuestionsOnPaper(paperId).forEach(questionVO -> hash.add(questionVO.getId()));
+        // 将不存在于原试卷的题滤出来
+        List<PaperQuestionLink> paperQuestionLinks = questionIds.stream()
+                .filter(questionId -> !hash.contains(questionId))
                 .map(questionId -> {
                     PaperQuestionLink paperQuestionLink = new PaperQuestionLink();
                     paperQuestionLink.setPaperId(paperId);

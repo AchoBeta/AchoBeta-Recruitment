@@ -1,5 +1,6 @@
 package com.achobeta.domain.recruit.model.entity;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.List;
@@ -14,8 +15,10 @@ import java.util.List;
 @Data
 public class StudentGroup {
 
+    @NotNull(message = "面向的年级列表可以为空集合但不能为 null")
     List<Integer> grade; // 特定年级
 
+    @NotNull(message = "面向的学生 id 列表可以为空集合但不能为 null")
     List<Long> uid; // 特定学生
 
 }

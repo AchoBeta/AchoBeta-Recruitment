@@ -2,6 +2,7 @@ package com.achobeta.domain.recruit.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.recruit.model.convert.ParticipationConvert;
 import com.achobeta.domain.recruit.model.dao.mapper.ActivityParticipationMapper;
 import com.achobeta.domain.recruit.model.dto.QuestionAnswerDTO;
 import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
@@ -58,7 +59,8 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
                 .map(activityParticipation -> {
                     Long participationId = activityParticipation.getId();
                     // 转化
-                    ParticipationVO participationUserVO = BeanUtil.copyProperties(activityParticipation, ParticipationVO.class);
+                    ParticipationVO participationUserVO =
+                            ParticipationConvert.INSTANCE.activityParticipationToParticipationVO(activityParticipation);
                     // 获取用户回答的问题
                     List<QuestionAnswerVO> questions = activityParticipationMapper.getQuestions(participationId);
                     participationUserVO.setQuestionAnswerVOS(questions);
@@ -112,7 +114,8 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
         activityParticipation.setStuId(stuId);
         activityParticipation.setActId(actId);
         this.save(activityParticipation);
-        ParticipationVO participationUserVO = BeanUtil.copyProperties(activityParticipation, ParticipationVO.class);
+        ParticipationVO participationUserVO =
+                ParticipationConvert.INSTANCE.activityParticipationToParticipationVO(activityParticipation);
         participationUserVO.setQuestionAnswerVOS(new ArrayList<>());
         participationUserVO.setTimePeriodVOS(new ArrayList<>());
         return participationUserVO;
