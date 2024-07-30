@@ -80,6 +80,12 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
         return interviewScheduleMapper.getInterviewScheduleList(managerId, actId);
     }
 
+    /**
+     * 1. 获取活动的可选时间段，生成【periodId --> 时间段计数器】的 map
+     * 2. 获取该活动的预约情况，生成【participationId --> 用户参与情况对象】的 map
+     * 3. 根据活动的预约情况得到 participationIds，查询每个学生的时间段选择情况，通过 map 设置到 VO 对象里并进行时间段次数统计
+     * 4. 构造返回值返回
+     */
     @Override
     public UserSituationVO getSituationsByActId(Long actId) {
         // periodId --> 时间段计数器

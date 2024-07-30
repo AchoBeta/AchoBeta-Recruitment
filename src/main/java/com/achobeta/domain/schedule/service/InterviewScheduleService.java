@@ -23,6 +23,14 @@ public interface InterviewScheduleService extends IService<InterviewSchedule> {
 
     List<ScheduleResumeVO> getInterviewScheduleList(Long managerId, Long actId);
 
+    /**
+     * @param actId 活动 id
+     * @return 学生们参与情况，每一个学生包括：
+     *  1. 学生的基础信息
+     *  2. 学生时间段选择情况
+     *  3. 学生面试预约情况
+     *  并统计各个时间段选中次数
+     */
     UserSituationVO getSituationsByActId(Long actId);
 
     ScheduleDetailVO getInterviewScheduleDetail(Long scheduleId);

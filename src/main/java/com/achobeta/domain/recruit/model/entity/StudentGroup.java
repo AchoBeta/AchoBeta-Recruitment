@@ -11,6 +11,10 @@ import java.util.List;
  * User: 马拉圈
  * Date: 2024-07-06
  * Time: 12:57
+ *
+ * 活动针对的对象，可以是特定的年级列表 grade 和特定的学生 id 列表 uid
+ * grade 和 uid 可以是空集合，可以只针对某些年级或者只针对某些学生展开活动
+ * 都为空集合需要管理员修改，否则没有学生能够看到这个活动
  */
 @Data
 public class StudentGroup {

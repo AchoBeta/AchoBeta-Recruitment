@@ -18,6 +18,7 @@ import com.achobeta.domain.recruit.service.RecruitmentBatchService;
 import com.achobeta.domain.recruit.service.TimePeriodService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +55,6 @@ public class RecruitmentActivityController {
         // 检测
         ValidatorUtils.validate(recruitmentActivityDTO);
         StudentGroup target = recruitmentActivityDTO.getTarget();
-        ValidatorUtils.validate(target);
         Long batchId = recruitmentActivityDTO.getBatchId();
         recruitmentBatchService.checkAndGetRecruitmentBatchIsRun(batchId, Boolean.TRUE);
         // 创建
@@ -80,7 +80,6 @@ public class RecruitmentActivityController {
         // 检测
         ValidatorUtils.validate(recruitmentActivityUpdateDTO);
         StudentGroup target = recruitmentActivityUpdateDTO.getTarget();
-        ValidatorUtils.validate(target);
         Long actId = recruitmentActivityUpdateDTO.getActId();
         recruitmentActivityService.checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE);
         //更新
