@@ -1,7 +1,10 @@
 package com.achobeta.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import org.apache.ibatis.reflection.MetaObject;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -29,5 +32,13 @@ public class MybatisFillConfig implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         this.strictUpdateFill(metaObject, "updateTime", LocalDateTime.class, LocalDateTime.now());
+    }
+
+    //乐观锁
+    @Bean
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
+        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+        return interceptor;
     }
 }

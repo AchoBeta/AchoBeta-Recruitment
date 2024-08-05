@@ -1,7 +1,12 @@
 package com.achobeta.domain.student.model.dto;
 
-import com.baomidou.mybatisplus.annotation.TableField;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created With Intellij IDEA
@@ -11,36 +16,12 @@ import lombok.Data;
  * Time: 22:52
  */
 @Data
-public class StuResumeDTO {
+public class StuResumeDTO implements Serializable {
+    @Valid
+    @NotNull()
+    private StuSimpleResumeDTO stuSimpleResumeDTO;
 
-    private Long batchId;
-
-    private String studentId;
-
-    private String name;
-
-    private Integer gender;
-
-    private Integer grade;
-
-    private String major;
-
-    private String className;
-
-    private String email;
-
-    private String phoneNumber;
-
-    private String reason;
-
-    private String introduce;
-
-    private String experience;
-
-    private String awards;
-
-    private String image;
-
-    private String remark;
+    @Valid
+    private List<StuAttachmentDTO> stuAttachmentDTOList;
 
 }
