@@ -10,5 +10,5 @@ create table `participation_period_link`
     `create_time` datetime not null default current_timestamp comment '创建时间',
     `update_time` datetime not null default current_timestamp on update current_timestamp comment '更新时间',
     -- index
-    index `uni_pp_id`(`participation_id` asc, `period_id` asc) using btree
+    index `idx_pp_id`(`participation_id` asc, `period_id` asc) using btree
 ) comment '“活动参与”-时间段关联表';
