@@ -6,7 +6,6 @@ import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
 import com.achobeta.domain.interview.model.enity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
-import com.achobeta.domain.schedule.model.entity.InterviewSchedule;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

@@ -4,7 +4,6 @@ import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -15,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
  * Time: 23:18
  */
 @Getter
-@Slf4j
 public enum InterviewStatusEnum {
 
     NOT_STARTED(0, "未开始"),
