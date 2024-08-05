@@ -1,6 +1,7 @@
 package com.achobeta.domain.recruit.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.achobeta.domain.recruit.model.convert.RecruitmentActivityConverter;
@@ -37,8 +38,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/recruit/activity")
 public class RecruitmentActivityController {
-
-    private final static Integer STUDENT_TYPE = 1; // 学生
 
     private final QuestionPaperService questionPaperService;
 
@@ -116,7 +115,7 @@ public class RecruitmentActivityController {
                 .build();
         // 当前用户的身份，
         Integer role = BaseContext.getCurrentUser().getRole();
-        if(STUDENT_TYPE.equals(role)) {
+        if(UserTypeEnum.USER.getCode().equals(role)) {
             // 对于普通用户，隐藏一些字段
             recruitmentTemplate.hidden();
         }

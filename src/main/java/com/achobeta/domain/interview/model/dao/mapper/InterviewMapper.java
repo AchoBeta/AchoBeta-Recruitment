@@ -1,7 +1,12 @@
 package com.achobeta.domain.interview.model.dao.mapper;
 
 import com.achobeta.domain.interview.model.enity.Interview;
+import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
+import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author 马拉圈
@@ -10,6 +15,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.achobeta.domain.interview.model.enity.Interview
 */
 public interface InterviewMapper extends BaseMapper<Interview> {
+
+    List<InterviewVO> managerGetInterviewList(@Param("managerId") Long managerId);
+
+    List<InterviewVO> userGetInterviewList(@Param("userId") Long userId);
+
+    InterviewDetailVO getInterviewDetail(@Param("interviewId") Long interviewId);
 
 }
 

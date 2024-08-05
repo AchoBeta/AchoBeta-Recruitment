@@ -77,7 +77,8 @@ public enum GlobalServiceStatusCode {
     INTERVIEW_SCHEDULE_NOT_EXISTS(6001, "面试预约不存在"),
     INTERVIEWER_NOT_EXISTS(6002, "面试官不存在"),
 
-    INTERVIEW_STATUS_EXCEPTION(6101, "面试状态异常"),
+    INTERVIEW_NOT_EXISTS(6101, "本场面试不存在"),
+    INTERVIEW_STATUS_EXCEPTION(6102, "面试状态异常"),
 
 
     /* -------------- */;

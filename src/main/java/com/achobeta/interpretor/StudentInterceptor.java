@@ -1,6 +1,7 @@
 package com.achobeta.interpretor;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.exception.GlobalServiceException;
@@ -26,8 +27,6 @@ import java.util.Objects;
 @Slf4j
 public class StudentInterceptor implements HandlerInterceptor {
 
-    private final static Integer USER_TYPE = 1; // 学生
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 获取登录的信息
@@ -36,7 +35,7 @@ public class StudentInterceptor implements HandlerInterceptor {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_LOGIN);
         }
         // 判断是不是学生
-        if(!USER_TYPE.equals(currentUser.getRole())) {
+        if(!UserTypeEnum.USER.getCode().equals(currentUser.getRole())) {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
         }
         return true;

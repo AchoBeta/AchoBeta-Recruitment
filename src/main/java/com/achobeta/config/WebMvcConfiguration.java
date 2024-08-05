@@ -39,6 +39,8 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
         String[] studentOrManagerIntercept = {
             "/api/v1/recruit/activity/template/**",
+
+            "/api/v1/interview/detail/**",
         };
 
         String[] studentIntercept = {
@@ -50,6 +52,9 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 "/api/v1/recruit/activity/list/user/**",
 
                 "/api/v1/recruit/batch/list/user/**",
+
+                "/api/v1/interview/list/user/**",
+
         };
 
         String[] managerIntercept = {
@@ -76,6 +81,13 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 "/api/v1/shortlink/trans/**",
 
                 "/api/v1/schedule/**",
+
+                "/api/v1/interview/create/**",
+                "/api/v1/interview/update/**",
+                "/api/v1/interview/switch/**",
+                "/api/v1/interview/set/paper/**",
+                "/api/v1/interview/list/manager/**",
+
         };
 
         registry.addInterceptor(userInterpretor)

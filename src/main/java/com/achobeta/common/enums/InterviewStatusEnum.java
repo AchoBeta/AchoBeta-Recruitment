@@ -5,9 +5,7 @@ import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.Objects;
 
 /**
  * Created With Intellij IDEA
@@ -42,5 +40,14 @@ public enum InterviewStatusEnum {
             throw new GlobalServiceException(String.format("面试%s", this.getDescription()),
                     GlobalServiceStatusCode.INTERVIEW_STATUS_EXCEPTION);
         }
+    }
+
+    public static InterviewStatusEnum get(Integer status) {
+        for (InterviewStatusEnum interviewStatusEnum : InterviewStatusEnum.values()) {
+            if(interviewStatusEnum.getStatus().equals(status)) {
+                return interviewStatusEnum;
+            }
+        }
+        throw new GlobalServiceException(GlobalServiceStatusCode.INTERVIEW_STATUS_EXCEPTION);
     }
 }

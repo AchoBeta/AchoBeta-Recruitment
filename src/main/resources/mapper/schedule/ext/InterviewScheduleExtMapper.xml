@@ -15,12 +15,12 @@
 
     <resultMap id="ScheduleMap" type="com.achobeta.domain.schedule.model.vo.ScheduleVO">
         <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="participationId" column="participation_id" jdbcType="BIGINT"/>
         <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
         <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <resultMap id="ScheduleResumeMap" extends="ScheduleMap" type="com.achobeta.domain.schedule.model.vo.ScheduleResumeVO">
-        <result property="participationId" column="participation_id" jdbcType="BIGINT"/>
         <association property="simpleStudentVO" columnPrefix="r_" resultMap="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.SimpleResumeMap" />
     </resultMap>
 
