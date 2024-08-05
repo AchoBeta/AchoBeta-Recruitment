@@ -34,11 +34,9 @@ public class RecruitmentBatchServiceImpl extends ServiceImpl<RecruitmentBatchMap
 
     @Override
     public List<RecruitmentBatch> getRecruitmentBatches(Boolean isRun) {
-        if(Objects.isNull(isRun)) {
-            return this.list();
-        }else {
-            return this.lambdaQuery().eq(RecruitmentBatch::getIsRun, isRun).list();
-        }
+        return this.lambdaQuery()
+                .eq(Objects.nonNull(isRun), RecruitmentBatch::getIsRun, isRun)
+                .list();
     }
 
     @Override

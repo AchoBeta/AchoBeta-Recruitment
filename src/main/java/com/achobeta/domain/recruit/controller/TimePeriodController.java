@@ -33,7 +33,7 @@ public class TimePeriodController {
         // 校验
         ValidatorUtils.validate(timePeriodDTO);
         Long actId = timePeriodDTO.getActId();
-        recruitmentActivityService.checkAndGetRecruitmentActivity(actId);
+        recruitmentActivityService.checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE);
         // 添加
         Long startTime = timePeriodDTO.getStartTime();
         Long endTime = timePeriodDTO.getEndTime();

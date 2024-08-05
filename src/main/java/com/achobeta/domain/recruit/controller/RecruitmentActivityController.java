@@ -1,9 +1,9 @@
 package com.achobeta.domain.recruit.controller;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.domain.question.model.vo.QuestionVO;
+import com.achobeta.domain.recruit.model.convert.RecruitmentActivityConverter;
 import com.achobeta.domain.recruit.model.dto.ActivityPaperDTO;
 import com.achobeta.domain.recruit.model.dto.RecruitmentActivityDTO;
 import com.achobeta.domain.recruit.model.dto.RecruitmentActivityUpdateDTO;
@@ -52,10 +52,10 @@ public class RecruitmentActivityController {
     public SystemJsonResponse createRecruitmentActivity(@RequestBody RecruitmentActivityDTO recruitmentActivityDTO) {
         // 检测
         ValidatorUtils.validate(recruitmentActivityDTO);
-        Long batchId = recruitmentActivityDTO.getBatchId();
-        recruitmentBatchService.checkRecruitmentBatchExists(batchId);
-        // 创建
         StudentGroup target = recruitmentActivityDTO.getTarget();
+        Long batchId = recruitmentActivityDTO.getBatchId();
+        recruitmentBatchService.checkAndGetRecruitmentBatchIsRun(batchId, Boolean.TRUE);
+        // 创建
         String title = recruitmentActivityDTO.getTitle();
         String description = recruitmentActivityDTO.getDescription();
         Date deadline = new Date(recruitmentActivityDTO.getDeadline());
@@ -77,10 +77,10 @@ public class RecruitmentActivityController {
     public SystemJsonResponse updateRecruitmentActivity(@RequestBody RecruitmentActivityUpdateDTO recruitmentActivityUpdateDTO) {
         // 检测
         ValidatorUtils.validate(recruitmentActivityUpdateDTO);
+        StudentGroup target = recruitmentActivityUpdateDTO.getTarget();
         Long actId = recruitmentActivityUpdateDTO.getActId();
         recruitmentActivityService.checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE);
         //更新
-        StudentGroup target = recruitmentActivityUpdateDTO.getTarget();
         String title = recruitmentActivityUpdateDTO.getTitle();
         String description = recruitmentActivityUpdateDTO.getDescription();
         Date deadline = new Date(recruitmentActivityUpdateDTO.getDeadline());
@@ -110,7 +110,7 @@ public class RecruitmentActivityController {
         List<TimePeriodVO> timePeriodVOS = timePeriodService.getTimePeriodsByActId(actId);
         // 构造招新活动的自定义模板
         RecruitmentTemplate recruitmentTemplate = RecruitmentTemplate.builder()
-                .recruitmentActivityVO(BeanUtil.copyProperties(recruitmentActivity, RecruitmentActivityVO.class))
+                .recruitmentActivityVO(RecruitmentActivityConverter.INSTANCE.recruitmentActivityToRecruitmentActivityVO(recruitmentActivity))
                 .questionVOS(questionEntryVOS)
                 .timePeriodVOS(timePeriodVOS)
                 .build();
@@ -127,7 +127,8 @@ public class RecruitmentActivityController {
     public SystemJsonResponse getRecruitmentActivities(@PathVariable("batchId") @NotNull Long batchId,
                                                        @RequestParam(name = "isRun", required = false) Boolean isRun) {
         List<RecruitmentActivity> list = recruitmentActivityService.getRecruitmentActivities(batchId, isRun);
-        List<RecruitmentActivityVO> activityVOS = BeanUtil.copyToList(list, RecruitmentActivityVO.class);
+        List<RecruitmentActivityVO> activityVOS =
+                RecruitmentActivityConverter.INSTANCE.recruitmentActivityListToRecruitmentActivityVOList(list);
         return SystemJsonResponse.SYSTEM_SUCCESS(activityVOS);
     }
 
@@ -139,7 +140,8 @@ public class RecruitmentActivityController {
                 recruitmentActivityService.getRecruitmentActivities(batchId, stuId)
                         .stream()
                         .map(recruitmentActivity -> {
-                            RecruitmentActivityVO recruitmentActivityVO = BeanUtil.copyProperties(recruitmentActivity, RecruitmentActivityVO.class);
+                            RecruitmentActivityVO recruitmentActivityVO =
+                                    RecruitmentActivityConverter.INSTANCE.recruitmentActivityToRecruitmentActivityVO(recruitmentActivity);
                             recruitmentActivityVO.hidden();
                             return recruitmentActivityVO;
                         }).toList();

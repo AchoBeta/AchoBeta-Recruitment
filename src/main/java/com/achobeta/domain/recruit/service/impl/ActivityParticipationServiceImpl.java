@@ -2,9 +2,11 @@ package com.achobeta.domain.recruit.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.recruit.model.convert.ParticipationConvert;
 import com.achobeta.domain.recruit.model.dao.mapper.ActivityParticipationMapper;
 import com.achobeta.domain.recruit.model.dto.QuestionAnswerDTO;
 import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
+import com.achobeta.domain.recruit.model.vo.ParticipationPeriodVO;
 import com.achobeta.domain.recruit.model.vo.ParticipationVO;
 import com.achobeta.domain.recruit.model.vo.QuestionAnswerVO;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
@@ -57,7 +59,8 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
                 .map(activityParticipation -> {
                     Long participationId = activityParticipation.getId();
                     // 转化
-                    ParticipationVO participationUserVO = BeanUtil.copyProperties(activityParticipation, ParticipationVO.class);
+                    ParticipationVO participationUserVO =
+                            ParticipationConvert.INSTANCE.activityParticipationToParticipationVO(activityParticipation);
                     // 获取用户回答的问题
                     List<QuestionAnswerVO> questions = activityParticipationMapper.getQuestions(participationId);
                     participationUserVO.setQuestionAnswerVOS(questions);
@@ -96,6 +99,14 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
     }
 
     @Override
+    public List<ParticipationPeriodVO> getParticipationPeriods(List<Long> participationIds) {
+        if(participationIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return activityParticipationMapper.getParticipationPeriods(participationIds);
+    }
+
+    @Override
     public ParticipationVO createActivityParticipation(Long stuId, Long actId) {
         // 判断活动是否开始
         recruitmentActivityService.checkAndGetRecruitmentActivityIsRun(actId, Boolean.TRUE);
@@ -103,7 +114,8 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
         activityParticipation.setStuId(stuId);
         activityParticipation.setActId(actId);
         this.save(activityParticipation);
-        ParticipationVO participationUserVO = BeanUtil.copyProperties(activityParticipation, ParticipationVO.class);
+        ParticipationVO participationUserVO =
+                ParticipationConvert.INSTANCE.activityParticipationToParticipationVO(activityParticipation);
         participationUserVO.setQuestionAnswerVOS(new ArrayList<>());
         participationUserVO.setTimePeriodVOS(new ArrayList<>());
         return participationUserVO;
@@ -126,6 +138,12 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
         if(!userId.equals(stuId)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
         }
+    }
+
+    @Override
+    public void checkParticipationExists(Long participationId) {
+        getActivityParticipation(participationId).orElseThrow(() ->
+                new GlobalServiceException(GlobalServiceStatusCode.ACTIVITY_PARTICIPATION_NOT_EXISTS));
     }
 }
 

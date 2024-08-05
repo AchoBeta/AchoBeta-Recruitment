@@ -1,4 +1,4 @@
-package com.achobeta.domain.recruit.model.vo;
+package com.achobeta.domain.schedule.model.vo;
 
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import lombok.Data;
@@ -7,11 +7,13 @@ import lombok.Data;
  * Created With Intellij IDEA
  * Description:
  * User: 马拉圈
- * Date: 2024-07-07
- * Time: 13:22
+ * Date: 2024-07-26
+ * Time: 1:38
  */
 @Data
-public class ParticipationDetailVO extends ParticipationVO{
+public class ScheduleResumeVO extends ScheduleVO {
+
+    private Long participationId;
 
     private SimpleStudentVO simpleStudentVO;
 

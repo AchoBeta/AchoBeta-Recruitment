@@ -67,10 +67,15 @@ public enum GlobalServiceStatusCode {
     RECRUITMENT_ACTIVITY_IS_NOT_RUN(5103, "招新活动未开始"),
     PERIOD_NOT_EXISTS(5104, "时间段不存在"),
     USER_CANNOT_PARTICIPATE_IN_ACTIVITY(5105, "用户不能参与此活动"),
+    ACTIVITY_PARTICIPATION_NOT_EXISTS(5106, "用户活动参与票据不存在"),
 
     USER_RESUME_NOT_EXISTS(5201, "用户简历不存在"),
     USER_DID_NOT_PARTICIPATE(5202, "用户并没有参与活动"),
     USER_RESUME_SUBMIT_OVER_COUNT(5203, "用户简历提交次数已达最大"),
+
+    /* 面试错误 6001-7000 */
+    INTERVIEW_SCHEDULE_NOT_EXISTS(6001, "面试预约不存在"),
+    INTERVIEWER_NOT_EXISTS(6002, "面试官不存在"),
 
 
     /* -------------- */;

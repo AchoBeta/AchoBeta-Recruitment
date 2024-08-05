@@ -1,14 +1,10 @@
 package com.achobeta.domain.recruit.controller;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.recruit.model.dto.ActivityParticipationDTO;
-import com.achobeta.domain.recruit.model.vo.ParticipationDetailVO;
 import com.achobeta.domain.recruit.model.vo.ParticipationVO;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
-import com.achobeta.domain.student.model.vo.SimpleStudentVO;
-import com.achobeta.domain.student.service.StuResumeService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
@@ -32,8 +28,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/participate")
 public class ActivityParticipationController {
-
-    private final StuResumeService stuResumeService;
 
     private final RecruitmentActivityService recruitmentActivityService;
 
@@ -75,30 +69,6 @@ public class ActivityParticipationController {
         activityParticipationService.participateInActivity(participationId,
                 activityParticipationDTO.getQuestionAnswerDTOS(), activityParticipationDTO.getPeriodIds());
         return SystemJsonResponse.SYSTEM_SUCCESS();
-    }
-
-    /**
-     * 管理员查看用户完成情况
-     * @param actId
-     * @return
-     */
-    @GetMapping("/situations/{actId}")
-    public SystemJsonResponse getUserParticipationSituationByActId(@PathVariable("actId") @NotNull Long actId) {
-        // 检测
-        Long batchId = recruitmentActivityService.checkAndGetRecruitmentActivity(actId).getBatchId();
-        // 获取参与本次招新活动的所有用户参与情况
-        List<ParticipationDetailVO> participationDetailVOS = activityParticipationService.getStuIdsByActId(actId)
-                .stream()
-                .map(stuId -> {
-                    ParticipationVO participationVO = activityParticipationService.getActivityParticipation(stuId, actId);
-                    ParticipationDetailVO participationDetailVO = BeanUtil.copyProperties(participationVO, ParticipationDetailVO.class);
-                    SimpleStudentVO simpleStuResume = stuResumeService.getSimpleStuResume(batchId, stuId);
-                    participationDetailVO.setSimpleStudentVO(simpleStuResume);
-                    return participationDetailVO;
-                }) // 这里的 stuId 一定是有参与的
-                .sorted(Comparator.comparingInt(x -> x.getTimePeriodVOS().size()))
-                .collect(Collectors.toList());
-        return SystemJsonResponse.SYSTEM_SUCCESS(participationDetailVOS);
     }
 
 }

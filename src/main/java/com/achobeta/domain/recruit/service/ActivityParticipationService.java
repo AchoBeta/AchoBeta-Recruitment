@@ -2,8 +2,10 @@ package com.achobeta.domain.recruit.service;
 
 import com.achobeta.domain.recruit.model.dto.QuestionAnswerDTO;
 import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
+import com.achobeta.domain.recruit.model.vo.ParticipationPeriodVO;
 import com.achobeta.domain.recruit.model.vo.ParticipationVO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -34,6 +36,8 @@ public interface ActivityParticipationService extends IService<ActivityParticipa
      */
     List<Long> getParticipationIdsByPaperId(Long paperId);
 
+    List<ParticipationPeriodVO> getParticipationPeriods(List<Long> participationIds);
+
     // 写入 ------------------------------------------
 
     ParticipationVO createActivityParticipation(Long stuId, Long actId);
@@ -45,5 +49,7 @@ public interface ActivityParticipationService extends IService<ActivityParticipa
     // 检测 ------------------------------------------
 
     void checkActivityParticipationUser(Long stuId, Long participationId);
+
+    void checkParticipationExists(Long participationId);
 
 }

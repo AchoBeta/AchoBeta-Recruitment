@@ -5,6 +5,7 @@ import com.achobeta.domain.question.model.entity.LibraryQuestionLink;
 import com.achobeta.domain.question.service.LibraryQuestionLinkService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class LibraryQuestionLinkServiceImpl extends ServiceImpl<LibraryQuestionL
     implements LibraryQuestionLinkService{
 
     @Override
+    @Transactional
     public void addLibraryQuestionLinkBatch(List<Long> libIds, Long questionId) {
         List<LibraryQuestionLink> libraryQuestionLinks = libIds.stream().map(libId -> {
             LibraryQuestionLink libraryQuestionLink = new LibraryQuestionLink();
