@@ -7,6 +7,7 @@ import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
 import com.achobeta.domain.interview.model.dto.InterviewPaperDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
+import com.achobeta.domain.interview.model.enity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.interview.service.InterviewService;
@@ -73,16 +74,21 @@ public class InterviewController {
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
-    @PostMapping("/set/paper/{interviewId}")
+    @PostMapping("/set/paper")
     public SystemJsonResponse setPaperForInterview(@RequestBody InterviewPaperDTO interviewPaperDTO) {
         // 检查
         ValidatorUtils.validate(interviewPaperDTO);
         Long interviewId = interviewPaperDTO.getInterviewId();
+        Interview interview = interviewService.checkAndGetInterviewExists(interviewId);
+        // 检查面试是否未开始
+        interview.getStatus().check(InterviewStatusEnum.NOT_STARTED);
         Long paperId = interviewPaperDTO.getPaperId();
-        interviewService.checkInterviewStatus(interviewId, InterviewStatusEnum.NOT_STARTED);
-        questionPaperService.checkPaperExists(paperId);
-        // 设置试卷
-        interviewService.setPaperForInterview(interviewId, paperId);
+        if(!Objects.equals(interview.getPaperId(), paperId)) {
+            // 检查试卷是否存在
+            questionPaperService.checkPaperExists(paperId);
+            // 设置试卷
+            interviewService.setPaperForInterview(interviewId, paperId);
+        }
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 

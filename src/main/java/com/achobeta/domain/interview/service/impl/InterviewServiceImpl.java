@@ -42,8 +42,6 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
 
     private final PaperQuestionLinkService paperQuestionLinkService;
 
-    private final QuestionPaperService questionPaperService;
-
     @Override
     public Optional<Interview> getInterview(Long interviewId) {
         return this.lambdaQuery()
@@ -94,11 +92,6 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     @Override
     @Transactional
     public void setPaperForInterview(Long interviewId, Long paperId) {
-        // 获得老试卷
-        Long oldPaperId = getInterviewDetail(interviewId).getPaperId();
-        if(Objects.equals(paperId, oldPaperId)) {
-            return;
-        }
         // todo: 切换试卷需要进行的业务
         // 拷贝一份试卷
         Long newPaperId = paperQuestionLinkService.cloneQuestionPaper(paperId);
@@ -128,7 +121,3 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
                 .check(interviewStatusEnum);
     }
 }
-
-
-
-
