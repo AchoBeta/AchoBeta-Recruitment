@@ -33,7 +33,7 @@
                 and m.id = #{managerId,jdbcType=BIGINT}
             </if>
         </where>
-        order by i.status asc, s.start_time asc, s.end_time asc,i.create_time asc
+        order by i.status asc, s.start_time asc, s.end_time asc, i.create_time asc
     </select>
 
     <select id="userGetInterviewList" parameterType="java.lang.Long" resultMap="InterviewMap">
@@ -46,7 +46,7 @@
              left join interview i on i.schedule_id = s.id and i.is_deleted = 0 and s.is_deleted = 0
         where i.id is not null
           and u.id = #{userId,jdbcType=BIGINT}
-        order by i.status asc, s.start_time asc, s.end_time asc,i.create_time asc
+        order by i.status asc, s.start_time asc, s.end_time asc, i.create_time asc
     </select>
 
     <select id="getInterviewDetail" parameterType="java.lang.Long" resultMap="InterviewDetailMap">

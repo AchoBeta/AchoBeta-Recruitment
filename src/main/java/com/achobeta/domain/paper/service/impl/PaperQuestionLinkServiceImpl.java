@@ -98,7 +98,3 @@ public class PaperQuestionLinkServiceImpl extends ServiceImpl<PaperQuestionLinkM
         return newPaperId;
     }
 }
-
-
-
-
