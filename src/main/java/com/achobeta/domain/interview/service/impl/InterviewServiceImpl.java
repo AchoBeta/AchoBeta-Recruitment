@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -93,23 +94,18 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     @Override
     @Transactional
     public void setPaperForInterview(Long interviewId, Long paperId) {
+        // 获得老试卷
+        Long oldPaperId = getInterviewDetail(interviewId).getPaperId();
+        if(Objects.equals(paperId, oldPaperId)) {
+            return;
+        }
+        // todo: 切换试卷需要进行的业务
         // 拷贝一份试卷
-        QuestionPaperDetailVO paperDetail = paperQuestionLinkService.getPaperDetail(paperId);
-        List<Long> libIds = paperDetail.getTypes()
-                .stream()
-                .map(PaperLibraryVO::getId)
-                .toList();
-        Long newPaperId = questionPaperService.addQuestionPaper(libIds,
-                paperDetail.getTitle(), paperDetail.getDescription());
-        List<Long> questionIds = paperDetail.getQuestions()
-                .stream()
-                .map(QuestionVO::getId)
-                .toList();
-        paperQuestionLinkService.addQuestionsForPaper(paperId, questionIds);
+        Long newPaperId = paperQuestionLinkService.cloneQuestionPaper(paperId);
         // 设置试卷
         this.lambdaUpdate()
                 .eq(Interview::getId, interviewId)
-                .set(Interview::getPaperId, paperId)
+                .set(Interview::getPaperId, newPaperId)
                 .update();
     }
 

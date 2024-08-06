@@ -25,4 +25,6 @@ public interface PaperQuestionLinkService extends IService<PaperQuestionLink> {
 
     QuestionPaperDetailVO getPaperDetail(Long paperId);
 
+    Long cloneQuestionPaper(Long paperId);
+
 }

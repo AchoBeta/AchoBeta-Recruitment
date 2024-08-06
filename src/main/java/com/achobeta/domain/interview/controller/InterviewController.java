@@ -5,6 +5,7 @@ import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.InterviewStatusEnum;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
+import com.achobeta.domain.interview.model.dto.InterviewPaperDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
@@ -73,9 +74,11 @@ public class InterviewController {
     }
 
     @PostMapping("/set/paper/{interviewId}")
-    public SystemJsonResponse setPaperForInterview(@PathVariable("interviewId") @NotNull Long interviewId,
-                                                   @RequestParam("paperId") @NotNull Long paperId) {
+    public SystemJsonResponse setPaperForInterview(@RequestBody InterviewPaperDTO interviewPaperDTO) {
         // 检查
+        ValidatorUtils.validate(interviewPaperDTO);
+        Long interviewId = interviewPaperDTO.getInterviewId();
+        Long paperId = interviewPaperDTO.getPaperId();
         interviewService.checkInterviewStatus(interviewId, InterviewStatusEnum.NOT_STARTED);
         questionPaperService.checkPaperExists(paperId);
         // 设置试卷
