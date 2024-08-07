@@ -1,7 +1,10 @@
 package com.achobeta.domain.schedule.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.interview.model.vo.InterviewVO;
+import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.recruit.model.convert.TimePeriodConverter;
 import com.achobeta.domain.recruit.model.vo.TimePeriodCountVO;
 import com.achobeta.domain.schedule.model.converter.SituationConverter;
@@ -57,6 +60,8 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
     private final ActivityParticipationService activityParticipationService;
 
     private final InterviewerService interviewerService;
+
+    private final InterviewService interviewService;
 
     private final TimePeriodService timePeriodService;
 
@@ -142,7 +147,11 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
 
     @Override
     public ScheduleDetailVO getInterviewScheduleDetail(Long scheduleId) {
-        return interviewScheduleMapper.getInterviewerScheduleDetail(scheduleId);
+        ScheduleDetailVO scheduleDetail = interviewScheduleMapper.getInterviewerScheduleDetail(scheduleId);
+        // 查询引用这个面试预约的面试
+        List<InterviewVO> interviewVOList = interviewService.getInterviewListByScheduleId(scheduleId);
+        scheduleDetail.setInterviewVOList(interviewVOList);
+        return scheduleDetail;
     }
 
     @Override
@@ -186,6 +195,7 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
     @Override
     @Transactional
     public void removeInterviewSchedule(Long scheduleId) {
+        checkScheduleReferenced(scheduleId);
         this.lambdaUpdate()
                 .eq(InterviewSchedule::getId, scheduleId)
                 .remove();
@@ -214,6 +224,7 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
 
     @Override
     public void updateInterviewSchedule(Long scheduleId, Long startTime, Long endTime) {
+        checkScheduleReferenced(scheduleId);
         // 校验时间段
         timePeriodValidate(startTime, endTime);
         // 更新
@@ -228,6 +239,14 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
     public void checkInterviewScheduleExists(Long scheduleId) {
         getInterviewSchedule(scheduleId).orElseThrow(() ->
                 new GlobalServiceException(GlobalServiceStatusCode.INTERVIEW_SCHEDULE_NOT_EXISTS));
+    }
+
+    @Override
+    public void checkScheduleReferenced(Long scheduleId) {
+        List<InterviewVO> interviewVOList = interviewService.getInterviewListByScheduleId(scheduleId);
+        if(!CollectionUtil.isEmpty(interviewVOList)) {
+            throw new GlobalServiceException(GlobalServiceStatusCode.INTERVIEW_SCHEDULE_IS_REFERENCED);
+        }
     }
 }
 

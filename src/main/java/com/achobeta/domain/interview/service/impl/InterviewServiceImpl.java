@@ -45,6 +45,14 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     }
 
     @Override
+    public List<InterviewVO> getInterviewListByScheduleId(Long scheduleId) {
+        List<Interview> interviewList = this.lambdaQuery()
+                .eq(Interview::getScheduleId, scheduleId)
+                .list();
+        return InterviewConverter.INSTANCE.interviewListToInterviewVoList(interviewList);
+    }
+
+    @Override
     public List<InterviewVO> managerGetInterviewList(Long managerId) {
         return interviewMapper.managerGetInterviewList(managerId);
     }

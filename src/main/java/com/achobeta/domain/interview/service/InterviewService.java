@@ -22,6 +22,8 @@ public interface InterviewService extends IService<Interview> {
 
     Optional<Interview> getInterview(Long interviewId);
 
+    List<InterviewVO> getInterviewListByScheduleId(Long scheduleId);
+
     List<InterviewVO> managerGetInterviewList(Long managerId);
 
     List<InterviewVO> userGetInterviewList(Long userId);

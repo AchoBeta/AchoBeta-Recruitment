@@ -25,7 +25,7 @@
     </resultMap>
 
     <resultMap id="ScheduleDetailMap" extends="ScheduleResumeMap" type="com.achobeta.domain.schedule.model.vo.ScheduleDetailVO">
-        <collection property="interviewerVOS" columnPrefix="m_" resultMap="InterviewerMap"/>
+        <collection property="interviewerVOList" columnPrefix="m_" resultMap="InterviewerMap"/>
     </resultMap>
 
     <resultMap id="ParticipationScheduleMap" type="com.achobeta.domain.schedule.model.vo.ParticipationScheduleVO">

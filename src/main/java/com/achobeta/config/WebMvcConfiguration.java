@@ -41,6 +41,8 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
             "/api/v1/recruit/activity/template/**",
 
             "/api/v1/interview/detail/**",
+
+            "/api/v1/evaluate/summary/query/**",
         };
 
         String[] studentIntercept = {
@@ -90,6 +92,9 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
                 "/api/v1/evaluate/score/**",
                 "/api/v1/evaluate/comment/**",
+
+                "/api/v1/evaluate/summary/mark/**",
+                "/api/v1/evaluate/summary/rank/**",
 
         };
 

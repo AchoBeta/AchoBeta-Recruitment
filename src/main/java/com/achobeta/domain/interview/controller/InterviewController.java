@@ -12,6 +12,7 @@ import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
+import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.exception.GlobalServiceException;
@@ -41,12 +42,15 @@ public class InterviewController {
 
     private final QuestionPaperService questionPaperService;
 
+    private final InterviewScheduleService interviewScheduleService;
+
     @PostMapping("/create")
     public SystemJsonResponse createInterview(@RequestBody InterviewCreateDTO interviewCreateDTO) {
         // 检查
         ValidatorUtils.validate(interviewCreateDTO);
         // 获取当前管理员 id
         Long managerId = BaseContext.getCurrentUser().getUserId();
+        interviewScheduleService.checkInterviewScheduleExists(interviewCreateDTO.getScheduleId());
         // 创建
         Long interviewId = interviewService.createInterview(interviewCreateDTO, managerId);
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewId);
