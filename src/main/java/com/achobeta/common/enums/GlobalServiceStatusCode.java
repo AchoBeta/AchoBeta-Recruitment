@@ -56,6 +56,7 @@ public enum GlobalServiceStatusCode {
     QUESTION_PAPER_LIBRARY_NOT_EXISTS(4002, "试卷库不存在"),
     QUESTION_NOT_EXISTS(4003, "题目不存在"),
     QUESTION_PAPER_NOT_EXISTS(4004, "试卷不存在"),
+    QUESTION_NOT_EXISTS_IN_PAPER(4005, "题目没有出现在试卷中"),
 
     /* 招新错误 5001-6000 */
     RECRUITMENT_BATCH_NOT_EXISTS(5001, "招新批次不存在"),

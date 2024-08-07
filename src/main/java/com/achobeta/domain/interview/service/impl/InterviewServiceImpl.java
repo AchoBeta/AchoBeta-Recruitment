@@ -6,15 +6,11 @@ import com.achobeta.domain.interview.model.converter.InterviewConverter;
 import com.achobeta.domain.interview.model.dao.mapper.InterviewMapper;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
-import com.achobeta.domain.interview.model.enity.Interview;
+import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.interview.service.InterviewService;
-import com.achobeta.domain.paper.model.vo.PaperLibraryVO;
-import com.achobeta.domain.paper.model.vo.QuestionPaperDetailVO;
 import com.achobeta.domain.paper.service.PaperQuestionLinkService;
-import com.achobeta.domain.paper.service.QuestionPaperService;
-import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -23,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -62,6 +57,11 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     @Override
     public InterviewDetailVO getInterviewDetail(Long interviewId) {
         return interviewMapper.getInterviewDetail(interviewId);
+    }
+
+    @Override
+    public Long getInterviewPaperId(Long interviewId) {
+        return checkAndGetInterviewExists(interviewId).getPaperId();
     }
 
     @Override

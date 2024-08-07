@@ -3,7 +3,7 @@ package com.achobeta.domain.interview.service;
 import com.achobeta.common.enums.InterviewStatusEnum;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
-import com.achobeta.domain.interview.model.enity.Interview;
+import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -27,6 +27,8 @@ public interface InterviewService extends IService<Interview> {
     List<InterviewVO> userGetInterviewList(Long userId);
 
     InterviewDetailVO getInterviewDetail(Long interviewId);
+
+    Long getInterviewPaperId(Long interviewId);
 
     // 写入 ------------------------------------------
 

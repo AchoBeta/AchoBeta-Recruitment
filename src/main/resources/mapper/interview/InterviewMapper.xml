@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.achobeta.domain.interview.model.dao.mapper.InterviewMapper">
 
-    <resultMap id="BaseResultMap" type="com.achobeta.domain.interview.model.enity.Interview">
+    <resultMap id="BaseResultMap" type="com.achobeta.domain.interview.model.entity.Interview">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="scheduleId" column="schedule_id" jdbcType="BIGINT"/>
             <result property="paperId" column="paper_id" jdbcType="BIGINT"/>

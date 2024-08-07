@@ -88,6 +88,8 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 "/api/v1/interview/set/paper/**",
                 "/api/v1/interview/list/manager/**",
 
+                "/api/v1/iqscore/**",
+
         };
 
         registry.addInterceptor(userInterpretor)

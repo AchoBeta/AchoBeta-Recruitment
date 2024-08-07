@@ -1,6 +1,6 @@
 package com.achobeta.domain.interview.model.dao.mapper;
 
-import com.achobeta.domain.interview.model.enity.Interview;
+import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

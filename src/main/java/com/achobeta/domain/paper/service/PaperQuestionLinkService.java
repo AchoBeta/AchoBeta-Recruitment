@@ -27,4 +27,6 @@ public interface PaperQuestionLinkService extends IService<PaperQuestionLink> {
 
     Long cloneQuestionPaper(Long paperId);
 
+    void checkQuestionExistInPaper(Long paperId, Long questionId);
+
 }

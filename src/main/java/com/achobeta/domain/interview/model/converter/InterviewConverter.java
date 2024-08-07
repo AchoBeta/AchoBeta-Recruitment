@@ -2,7 +2,7 @@ package com.achobeta.domain.interview.model.converter;
 
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
-import com.achobeta.domain.interview.model.enity.Interview;
+import com.achobeta.domain.interview.model.entity.Interview;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

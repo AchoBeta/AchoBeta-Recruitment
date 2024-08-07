@@ -1,4 +1,4 @@
-package com.achobeta.domain.interview.model.enity;
+package com.achobeta.domain.interview.model.entity;
 
 import com.achobeta.common.base.BaseIncrIDEntity;
 import com.achobeta.common.enums.InterviewStatusEnum;

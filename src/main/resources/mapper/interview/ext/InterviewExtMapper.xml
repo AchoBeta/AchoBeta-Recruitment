@@ -13,8 +13,7 @@
     </resultMap>
 
     <resultMap id="InterviewDetailMap" extends="InterviewMap" type="com.achobeta.domain.interview.model.vo.InterviewDetailVO">
-        <result property="paperId" column="paper_id" jdbcType="BIGINT"/>
-        <result property="stuId" column="stu_id" jdbcType="BIGINT"/>
+        <result property="stuId" column="stu_id" jdbcType="VARCHAR"/>
         <result property="description" column="description" jdbcType="VARCHAR"/>
         <result property="address" column="address" jdbcType="VARCHAR"/>
     </resultMap>
@@ -51,7 +50,7 @@
 
     <select id="getInterviewDetail" parameterType="java.lang.Long" resultMap="InterviewDetailMap">
         select
-            i.id, i.paper_id, i.title, i.description, i.status, i.address, p.stu_id,
+            i.id, i.title, i.description, i.status, i.address, p.stu_id,
             s.id s_id, s.participation_id s_participation_id, s.start_time s_start_time, s.end_time s_end_time
         from interview i
              left join interview_schedule s on i.schedule_id = s.id and i.is_deleted = 0 and s.is_deleted = 0

@@ -7,7 +7,7 @@ import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
 import com.achobeta.domain.interview.model.dto.InterviewPaperDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
-import com.achobeta.domain.interview.model.enity.Interview;
+import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.interview.service.InterviewService;

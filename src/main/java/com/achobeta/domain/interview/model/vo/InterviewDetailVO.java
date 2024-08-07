@@ -10,9 +10,7 @@ import lombok.Data;
  * Time: 3:09
  */
 @Data
-public class InterviewDetailVO extends InterviewVO{
-
-    private Long paperId;
+public class InterviewDetailVO extends InterviewVO {
 
     private Long stuId;
 
@@ -21,7 +19,6 @@ public class InterviewDetailVO extends InterviewVO{
     private String address;
 
     public void hidden() {
-        setPaperId(null);
         setStuId(null);
     }
 
