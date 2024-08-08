@@ -17,6 +17,7 @@ import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.recruit.service.RecruitmentBatchService;
 import com.achobeta.domain.recruit.service.TimePeriodService;
 import com.achobeta.domain.users.context.BaseContext;
+import com.achobeta.common.annotation.Intercept;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/recruit/activity")
+@Intercept(permit = {UserTypeEnum.ADMIN})
 public class RecruitmentActivityController {
 
     private final QuestionPaperService questionPaperService;
@@ -101,6 +103,7 @@ public class RecruitmentActivityController {
     }
 
     @GetMapping("/template/{actId}")
+    @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER})
     public SystemJsonResponse getCustomDefine(@PathVariable("actId") @NotNull Long actId) {
         RecruitmentActivity recruitmentActivity = recruitmentActivityService.checkAndGetRecruitmentActivity(actId);
         // 查询试卷
@@ -132,6 +135,7 @@ public class RecruitmentActivityController {
     }
 
     @GetMapping("/list/user/{batchId}")
+    @Intercept(permit = {UserTypeEnum.USER})
     public SystemJsonResponse getRecruitmentActivities(@PathVariable("batchId") @NotNull Long batchId) {
         // 当前用户
         Long stuId = BaseContext.getCurrentUser().getUserId();

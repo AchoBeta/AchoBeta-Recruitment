@@ -1,19 +1,20 @@
 package com.achobeta.domain.student.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.student.model.dto.QueryResumeDTO;
 import com.achobeta.domain.student.model.dto.StuResumeDTO;
 import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.achobeta.domain.student.service.StuResumeService;
 import com.achobeta.domain.users.context.BaseContext;
+import com.achobeta.common.annotation.Intercept;
 import com.achobeta.util.ValidatorUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.Optional;
 
 /**
@@ -38,6 +39,7 @@ public class StuResumeController {
      * @return
      */
     @PostMapping("/submit")
+    @Intercept(permit = {UserTypeEnum.USER})
     public SystemJsonResponse submitResume(@RequestBody StuResumeDTO stuResumeDTO) {
         //校验
         ValidatorUtils.validate(stuResumeDTO.getStuSimpleResumeDTO());

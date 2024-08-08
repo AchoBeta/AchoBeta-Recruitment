@@ -3,6 +3,7 @@ package com.achobeta.domain.recruit.controller;
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.recruit.model.dto.RecruitmentBatchDTO;
 import com.achobeta.domain.recruit.model.dto.RecruitmentBatchUpdateDTO;
 import com.achobeta.domain.recruit.model.entity.RecruitmentBatch;
@@ -10,6 +11,7 @@ import com.achobeta.domain.recruit.model.vo.RecruitmentBatchVO;
 import com.achobeta.domain.recruit.service.RecruitmentBatchService;
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.common.annotation.Intercept;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/recruit/batch")
+@Intercept(permit = {UserTypeEnum.ADMIN})
 public class RecruitmentBatchController {
 
     private final RecruitmentBatchService recruitmentBatchService;
@@ -70,6 +73,7 @@ public class RecruitmentBatchController {
     }
 
     @GetMapping("/list/user")
+    @Intercept(permit = {UserTypeEnum.USER})
     public SystemJsonResponse getRecruitBatches() {
         List<RecruitmentBatch> recruitmentBatches = recruitmentBatchService.getRecruitmentBatches(Boolean.TRUE);
         List<RecruitmentBatchVO> recruitmentBatchVOS = BeanUtil.copyToList(recruitmentBatches, RecruitmentBatchVO.class);

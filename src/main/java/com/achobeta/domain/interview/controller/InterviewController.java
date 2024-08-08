@@ -16,6 +16,7 @@ import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.common.annotation.Intercept;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Intercept(permit = {UserTypeEnum.ADMIN})
 @RequestMapping("/api/v1/interview")
 public class InterviewController {
 
@@ -113,6 +115,7 @@ public class InterviewController {
     }
 
     @GetMapping("/list/user")
+    @Intercept(permit = {UserTypeEnum.USER})
     public SystemJsonResponse userGetOwnInterviewList() {
         // 获取当前用户 id
         Long userId = BaseContext.getCurrentUser().getUserId();
@@ -122,6 +125,7 @@ public class InterviewController {
     }
 
     @GetMapping("/detail/{interviewId}")
+    @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER})
     public SystemJsonResponse getInterviewDetail(@PathVariable("interviewId") @NotNull Long interviewId) {
         // 获取当前用户
         UserHelper currentUser = BaseContext.getCurrentUser();

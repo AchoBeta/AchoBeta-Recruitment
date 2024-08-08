@@ -2,10 +2,12 @@ package com.achobeta.domain.shortlink.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
 import com.achobeta.domain.shortlink.util.HttpUrlValidator;
 import com.achobeta.domain.shortlink.util.ShortLinkUtils;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.common.annotation.Intercept;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/shortlink")
+@Intercept(permit = {UserTypeEnum.ADMIN})
 public class ShortLinkController {
 
     private final ShortLinkService shortLinkService;

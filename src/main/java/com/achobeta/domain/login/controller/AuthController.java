@@ -8,6 +8,7 @@ import com.achobeta.domain.login.model.vo.LoginVO;
 import com.achobeta.domain.login.service.LoginService;
 import com.achobeta.domain.login.service.strategy.LoginStrategy;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.common.annotation.Intercept;
 import com.achobeta.util.ValidatorUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,7 @@ public class AuthController {
      * @return
      */
     @PostMapping("/login")
+    @Intercept(ignore = true)
     public SystemJsonResponse login(@RequestBody LoginDTO loginBody) {
         ValidatorUtils.validate(loginBody);
 
@@ -74,6 +76,7 @@ public class AuthController {
      * @return
      */
     @PostMapping("/register")
+    @Intercept(ignore = true)
     public SystemJsonResponse register(@Validated @RequestBody RegisterDTO user) {
         loginService.register(user);
         return SystemJsonResponse.SYSTEM_SUCCESS();
