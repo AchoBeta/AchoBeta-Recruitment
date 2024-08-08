@@ -101,6 +101,10 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     @Transactional
     public void setPaperForInterview(Long interviewId, Long paperId) {
         // todo: 切换试卷需要进行的业务
+//        // 删除面试相关的打分
+//        Db.lambdaUpdate(InterviewQuestionScore.class)
+//                .eq(InterviewQuestionScore::getInterviewId, interviewId)
+//                .remove();
         // 拷贝一份试卷
         Long newPaperId = paperQuestionLinkService.cloneQuestionPaper(paperId);
         // 设置试卷
