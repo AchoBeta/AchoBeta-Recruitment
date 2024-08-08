@@ -56,6 +56,7 @@ public enum GlobalServiceStatusCode {
     QUESTION_PAPER_LIBRARY_NOT_EXISTS(4002, "试卷库不存在"),
     QUESTION_NOT_EXISTS(4003, "题目不存在"),
     QUESTION_PAPER_NOT_EXISTS(4004, "试卷不存在"),
+    QUESTION_NOT_EXISTS_IN_PAPER(4005, "题目没有出现在试卷中"),
 
     /* 招新错误 5001-6000 */
     RECRUITMENT_BATCH_NOT_EXISTS(5001, "招新批次不存在"),
@@ -76,7 +77,12 @@ public enum GlobalServiceStatusCode {
     /* 面试错误 6001-7000 */
     INTERVIEW_SCHEDULE_NOT_EXISTS(6001, "面试预约不存在"),
     INTERVIEWER_NOT_EXISTS(6002, "面试官不存在"),
+    INTERVIEW_SCHEDULE_IS_REFERENCED(6003, "面试预约已被引用"),
 
+    INTERVIEW_NOT_EXISTS(6101, "本场面试不存在"),
+    INTERVIEW_STATUS_EXCEPTION(6102, "面试状态异常"),
+
+    INTERVIEW_COMMENT_NOT_EXISTS(6201, "面试评论不存在"),
 
     /* -------------- */;
 

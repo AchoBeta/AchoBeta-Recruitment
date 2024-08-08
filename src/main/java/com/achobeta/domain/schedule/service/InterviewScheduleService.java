@@ -51,4 +51,6 @@ public interface InterviewScheduleService extends IService<InterviewSchedule> {
 
     void checkInterviewScheduleExists(Long scheduleId);
 
+    void checkScheduleReferenced(Long scheduleId);
+
 }

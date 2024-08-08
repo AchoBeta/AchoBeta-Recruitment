@@ -1,6 +1,7 @@
 package com.achobeta.domain.schedule.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.schedule.model.dto.ScheduleDTO;
 import com.achobeta.domain.schedule.model.dto.ScheduleUpdateDTO;
 import com.achobeta.domain.schedule.model.vo.ParticipationDetailVO;
@@ -12,6 +13,7 @@ import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.users.context.BaseContext;
+import com.achobeta.common.annotation.Intercept;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/schedule")
+@Intercept(permit = {UserTypeEnum.ADMIN})
 public class InterviewScheduleController {
 
     private final ActivityParticipationService activityParticipationService;

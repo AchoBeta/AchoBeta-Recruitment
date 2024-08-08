@@ -1,11 +1,15 @@
 package com.achobeta.domain.paper.service.impl;
 
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.paper.model.dao.mapper.PaperQuestionLinkMapper;
 import com.achobeta.domain.paper.model.dao.mapper.QuestionPaperLibraryMapper;
 import com.achobeta.domain.paper.model.entity.PaperQuestionLink;
+import com.achobeta.domain.paper.model.vo.PaperLibraryVO;
 import com.achobeta.domain.paper.model.vo.QuestionPaperDetailVO;
 import com.achobeta.domain.paper.service.PaperQuestionLinkService;
+import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.domain.question.model.vo.QuestionVO;
+import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +30,8 @@ public class PaperQuestionLinkServiceImpl extends ServiceImpl<PaperQuestionLinkM
     private final PaperQuestionLinkMapper paperQuestionLinkMapper;
 
     private final QuestionPaperLibraryMapper questionPaperLibraryMapper;
+
+    private final QuestionPaperService questionPaperService;
 
     @Override
     public List<QuestionVO> getQuestionsOnPaper(Long paperId) {
@@ -73,8 +79,30 @@ public class PaperQuestionLinkServiceImpl extends ServiceImpl<PaperQuestionLinkM
         questionPaperDetail.setQuestions(questions);
         return questionPaperDetail;
     }
+
+    @Override
+    @Transactional
+    public Long cloneQuestionPaper(Long paperId) {
+        // 拷贝试卷的定义
+        QuestionPaperDetailVO paperDetail = getPaperDetail(paperId);
+        List<Long> libIds = paperDetail.getTypes()
+                .stream()
+                .map(PaperLibraryVO::getId)
+                .toList();
+        Long newPaperId = questionPaperService.addQuestionPaper(libIds,
+                paperDetail.getTitle(), paperDetail.getDescription());
+        // 拷贝试卷的题目
+        List<Long> questionIds = paperDetail.getQuestions()
+                .stream()
+                .map(QuestionVO::getId)
+                .toList();
+        addQuestionsForPaper(newPaperId, questionIds);
+        return newPaperId;
+    }
+
+    @Override
+    public void checkQuestionExistInPaper(Long paperId, Long questionId) {
+        getPaperQuestionLink(paperId, questionId).orElseThrow(() ->
+                new GlobalServiceException(GlobalServiceStatusCode.QUESTION_NOT_EXISTS_IN_PAPER));
+    }
 }
-
-
-
-

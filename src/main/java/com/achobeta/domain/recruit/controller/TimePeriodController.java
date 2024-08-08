@@ -1,10 +1,12 @@
 package com.achobeta.domain.recruit.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.recruit.model.dto.TimePeriodDTO;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.recruit.service.TimePeriodService;
 import com.achobeta.domain.users.context.BaseContext;
+import com.achobeta.common.annotation.Intercept;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/period")
+@Intercept(permit = {UserTypeEnum.ADMIN})
 public class TimePeriodController {
 
     private final RecruitmentActivityService recruitmentActivityService;
