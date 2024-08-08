@@ -44,6 +44,8 @@ public class UserInterpretor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //可以解决拦截器跨域问题
         if (!(handler instanceof HandlerMethod)) {
+            // 并不处理非目标方法的请求
+            // todo: 例如获取资源的请求，而这些请求需要进行其他的处理！
             return true;
         }
 

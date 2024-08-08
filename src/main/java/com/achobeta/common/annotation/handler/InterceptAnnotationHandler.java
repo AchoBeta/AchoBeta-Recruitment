@@ -49,6 +49,7 @@ public class InterceptAnnotationHandler {
     public static void validate(Intercept intercept, Integer role) {
         UserTypeEnum[] permit = intercept.permit();
         log.info("api intercept permit: {}, current user role: {}", Arrays.toString(permit), role);
+        // permit 中没有 role 就会抛异常
         Arrays.stream(permit)
                 .map(UserTypeEnum::getCode)
                 .distinct()

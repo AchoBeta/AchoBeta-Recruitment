@@ -96,7 +96,7 @@ public class PaperQuestionLinkServiceImpl extends ServiceImpl<PaperQuestionLinkM
                 .stream()
                 .map(QuestionVO::getId)
                 .toList();
-        addQuestionsForPaper(paperId, questionIds);
+        addQuestionsForPaper(newPaperId, questionIds);
         return newPaperId;
     }
 
