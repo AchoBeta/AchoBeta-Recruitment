@@ -224,7 +224,6 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
 
     @Override
     public void updateInterviewSchedule(Long scheduleId, Long startTime, Long endTime) {
-        checkScheduleReferenced(scheduleId);
         // 校验时间段
         timePeriodValidate(startTime, endTime);
         // 更新
