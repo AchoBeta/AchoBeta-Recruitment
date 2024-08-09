@@ -4,7 +4,6 @@ import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.common.annotation.Intercept;
-import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -17,7 +16,6 @@ import java.util.Objects;
  * Date: 2024-08-08
  * Time: 17:32
  */
-@Slf4j
 public class InterceptAnnotationHandler {
 
     public static Intercept getIntercept(Class<?> clazz) {
@@ -31,10 +29,7 @@ public class InterceptAnnotationHandler {
         // 类上的 Intercept 为初步结果
         Intercept intercept = getIntercept(declaringClass);
         // 方法上的 Intercept 为最终结果
-        if(targetMethod.isAnnotationPresent(Intercept.class)) {
-            intercept = targetMethod.getAnnotation(Intercept.class);
-        }
-        return intercept;
+        return targetMethod.isAnnotationPresent(Intercept.class) ? targetMethod.getAnnotation(Intercept.class) : intercept;
     }
 
     public static Boolean isIgnore(Intercept intercept) {
@@ -47,10 +42,8 @@ public class InterceptAnnotationHandler {
     }
 
     public static void validate(Intercept intercept, Integer role) {
-        UserTypeEnum[] permit = intercept.permit();
-        log.info("api intercept permit: {}, current user role: {}", Arrays.toString(permit), role);
         // permit 中没有 role 就会抛异常
-        Arrays.stream(permit)
+        Arrays.stream(intercept.permit())
                 .map(UserTypeEnum::getCode)
                 .distinct()
                 .filter(type -> type.equals(role))
