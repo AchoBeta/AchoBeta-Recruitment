@@ -65,6 +65,8 @@ public class MessageTemplateController {
      **/
     @DeleteMapping ("/del/{templateId}")
     public SystemJsonResponse removeMessageTemplate(@PathVariable("templateId") Long templateId){
+        //校验模板消息是否存在
+        messageTemplateService.checkMessageTemplateIfExist(templateId);
         //删除模板消息
         messageTemplateService.removeMessageTemplate(templateId);
 
@@ -78,6 +80,8 @@ public class MessageTemplateController {
      **/
     @PutMapping("/update")
     public SystemJsonResponse updateMessageTemplate(@RequestBody UpdateMessageTemplateDTO updateMessageTemplateDTO){
+        //校验模板消息是否存在
+        messageTemplateService.checkMessageTemplateIfExist(updateMessageTemplateDTO.getId());
         //更新模板消息
         messageTemplateService.updateMessageTemplate(updateMessageTemplateDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS();
