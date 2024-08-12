@@ -14,9 +14,4 @@ public interface InterviewStateMachineConstants {
 
     String INTERVIEW_STATE_MACHINE_ID = "interviewStateMachineId";
 
-    static Condition<InterviewContext> DEFAULT_CONDITION() {
-        return interviewContext -> Boolean.TRUE;
-    }
-
-
 }

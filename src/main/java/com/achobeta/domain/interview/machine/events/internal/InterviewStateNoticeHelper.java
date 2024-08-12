@@ -41,6 +41,8 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
 
     private final EmailSender emailSender;
 
+    private final Condition<InterviewContext> defaultCondition;
+
     private final InterviewService interviewService;
 
     private final InterviewScheduleService interviewScheduleService;
@@ -57,7 +59,7 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
 
     @Override
     public Condition<InterviewContext> getWhenCondition() {
-        return InterviewStateMachineConstants.DEFAULT_CONDITION();
+        return defaultCondition;
     }
 
     @Override
