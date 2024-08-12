@@ -170,6 +170,14 @@
             <version>1.4.1.Final</version>
         </dependency>
 
+        <!-- 状态机相关引用 -->
+        <dependency>
+            <groupId>com.alibaba.cola</groupId>
+            <artifactId>cola-component-statemachine</artifactId>
+            <version>4.0.1</version>
+            <type>jar</type>
+        </dependency>
+
     </dependencies>
 
     <build>

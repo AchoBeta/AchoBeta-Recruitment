@@ -1,5 +1,6 @@
 package com.achobeta.domain.interview.service;
 
+import com.achobeta.common.enums.InterviewStateEvent;
 import com.achobeta.common.enums.InterviewStatusEnum;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
@@ -39,6 +40,8 @@ public interface InterviewService extends IService<Interview> {
     void updateInterview(InterviewUpdateDTO interviewUpdateDTO);
 
     void switchInterview(Long interviewId, InterviewStatusEnum interviewStatusEnum);
+
+    InterviewStatusEnum executeInterviewStateEvent(Long managerId, InterviewStateEvent event, Interview currentInterview);
 
     void setPaperForInterview(Long interviewId, Long paperId);
 

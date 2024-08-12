@@ -37,9 +37,7 @@
     <select id="getInterviewScheduleList" resultMap="ScheduleResumeMap">
         select
             s.id, s.participation_id, s.start_time, s.end_time,
-            r.id r_id, r.user_id r_user_id, r.student_id r_student_id, r.name r_name,
-            stu.username r_username, r.gender r_gender, r.grade r_grade, r.major r_major,
-            r.class r_class, r.status r_status
+            <include refid="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.Simple_Column_List" />
         from user m
              left join interviewer i on m.id = i.manager_id and m.is_deleted = 0 and i.is_deleted = 0
              left join interview_schedule s on i.schedule_id = s.id and i.is_deleted = 0 and s.is_deleted = 0
@@ -54,11 +52,8 @@
 
     <select id="getSituationsByActId" parameterType="java.lang.Long" resultMap="ParticipationScheduleMap">
         select
-            p.id,
-            r.id r_id, r.user_id r_user_id, r.student_id r_student_id, r.name r_name,
-            stu.username r_username, r.gender r_gender, r.grade r_grade, r.major r_major,
-            r.class r_class, r.status r_status,
-            s.id s_id, s.start_time s_start_time, s.end_time s_end_time
+            p.id, s.id s_id, s.start_time s_start_time, s.end_time s_end_time,
+            <include refid="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.Simple_Column_List" />
         from activity_participation p
              left join user stu on p.stu_id = stu.id and p.is_deleted = 0 and stu.is_deleted = 0
              left join recruitment_activity a on p.act_id = a.id and p.is_deleted = 0 and a.is_deleted = 0
@@ -70,11 +65,8 @@
 
     <select id="getSituationsByParticipationId" parameterType="java.lang.Long" resultMap="ParticipationScheduleMap">
         select
-            p.id,
-            r.id r_id, r.user_id r_user_id, r.student_id r_student_id, r.name r_name,
-            stu.username r_username, r.gender r_gender, r.grade r_grade, r.major r_major,
-            r.class r_class, r.status r_status,
-            s.id s_id, s.start_time s_start_time, s.end_time s_end_time
+            p.id, s.id s_id, s.start_time s_start_time, s.end_time s_end_time,
+            <include refid="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.Simple_Column_List" />
         from activity_participation p
              left join user stu on p.stu_id = stu.id and p.is_deleted = 0 and stu.is_deleted = 0
              left join recruitment_activity a on p.act_id = a.id and p.is_deleted = 0 and a.is_deleted = 0
@@ -87,11 +79,9 @@
     <select id="getInterviewerScheduleDetail" parameterType="java.lang.Long" resultMap="ScheduleDetailMap">
         select
             s.id, s.participation_id, s.start_time, s.end_time,
-            r.id r_id, r.user_id r_user_id, r.student_id r_student_id, r.name r_name,
-            stu.username r_username, r.gender r_gender, r.grade r_grade, r.major r_major,
-            r.class r_class, r.status r_status,
             m.id m_id, m.username m_username, m.nickname m_nickname,m.email m_email,
-            m.phone_number m_phone_number, m.avatar m_acvtar
+            m.phone_number m_phone_number, m.avatar m_acvtar,
+            <include refid="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.Simple_Column_List" />
         from interview_schedule s
              left join activity_participation p on p.id = s.participation_id and p.is_deleted = 0 and s.is_deleted = 0
              left join user stu on p.stu_id = stu.id and p.is_deleted = 0 and stu.is_deleted = 0

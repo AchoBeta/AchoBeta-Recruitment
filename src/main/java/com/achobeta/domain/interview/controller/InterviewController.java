@@ -2,6 +2,7 @@ package com.achobeta.domain.interview.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.common.enums.InterviewStateEvent;
 import com.achobeta.common.enums.InterviewStatusEnum;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
@@ -69,15 +70,18 @@ public class InterviewController {
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
-    @PostMapping("/switch/{interviewId}")
-    public SystemJsonResponse switchInterview(@PathVariable("interviewId") @NotNull Long interviewId,
-                                              @RequestParam("status") @NotNull Integer status) {
+    @PostMapping("/execute/{interviewId}")
+    public SystemJsonResponse executeInterviewStateEvent(@PathVariable("interviewId") @NotNull Long interviewId,
+                                              @RequestParam("event") @NotNull Integer event) {
         // 检查
-        interviewService.checkInterviewExists(interviewId);
-        InterviewStatusEnum interviewStatusEnum = InterviewStatusEnum.get(status);
+        Interview currentInterview = interviewService.checkAndGetInterviewExists(interviewId);
+        // 当前管理员
+        Long managerId = BaseContext.getCurrentUser().getUserId();
+        InterviewStateEvent interviewStateEvent = InterviewStateEvent.get(event);
         // 转变
-        interviewService.switchInterview(interviewId, interviewStatusEnum);
-        return SystemJsonResponse.SYSTEM_SUCCESS();
+        InterviewStatusEnum state =
+                interviewService.executeInterviewStateEvent(managerId, interviewStateEvent, currentInterview);
+        return SystemJsonResponse.SYSTEM_SUCCESS(state);
     }
 
     @PostMapping("/set/paper")

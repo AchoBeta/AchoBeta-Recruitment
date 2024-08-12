@@ -1,5 +1,6 @@
 package com.achobeta.domain.interview.model.converter;
 
+import com.achobeta.domain.interview.machine.InterviewContext;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
 import com.achobeta.domain.interview.model.entity.Interview;
@@ -28,5 +29,9 @@ public interface InterviewConverter {
     Interview interviewUpdateDTOtoInterview(InterviewUpdateDTO interviewUpdateDTO);
 
     List<InterviewVO> interviewListToInterviewVoList(List<Interview> interviewList);
+
+    @Mapping(target = "managerId", source = "managerId")
+    @Mapping(target = "interview", source = "interview")
+    InterviewContext interviewToInterviewContext(Long managerId, Interview interview);
 
 }

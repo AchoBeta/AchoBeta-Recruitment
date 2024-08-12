@@ -16,11 +16,13 @@ public class SimpleStudentVO {
 
     private Long userId;
 
-    private Long studentId;
+    private String studentId;
 
     private String name;
 
     private String username;
+
+    private String email;
 
     private Integer gender;
 

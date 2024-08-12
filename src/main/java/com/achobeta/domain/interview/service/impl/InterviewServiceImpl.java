@@ -1,7 +1,10 @@
 package com.achobeta.domain.interview.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.common.enums.InterviewStateEvent;
 import com.achobeta.common.enums.InterviewStatusEnum;
+import com.achobeta.domain.interview.machine.InterviewContext;
+import com.achobeta.domain.interview.machine.constants.InterviewStateMachineConstants;
 import com.achobeta.domain.interview.model.converter.InterviewConverter;
 import com.achobeta.domain.interview.model.dao.mapper.InterviewMapper;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
@@ -13,6 +16,7 @@ import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.service.PaperQuestionLinkService;
 import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.util.StateMachineUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -95,6 +99,13 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
         interview.setId(interviewId);
         interview.setStatus(interviewStatusEnum);
         this.updateById(interview);
+    }
+
+    @Override
+    public InterviewStatusEnum executeInterviewStateEvent(Long managerId, InterviewStateEvent event, Interview currentInterview) {
+        InterviewContext interviewContext = InterviewConverter.INSTANCE.interviewToInterviewContext(managerId, currentInterview);
+        return StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
+                currentInterview.getStatus(), event, interviewContext);
     }
 
     @Override
