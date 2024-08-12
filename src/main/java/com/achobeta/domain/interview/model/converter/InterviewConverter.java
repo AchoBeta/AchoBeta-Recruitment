@@ -1,6 +1,6 @@
 package com.achobeta.domain.interview.model.converter;
 
-import com.achobeta.domain.interview.machine.InterviewContext;
+import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
 import com.achobeta.domain.interview.model.entity.Interview;

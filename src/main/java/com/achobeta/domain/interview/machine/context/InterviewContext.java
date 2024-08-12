@@ -1,4 +1,4 @@
-package com.achobeta.domain.interview.machine;
+package com.achobeta.domain.interview.machine.context;
 
 import com.achobeta.domain.interview.model.entity.Interview;
 import lombok.Data;

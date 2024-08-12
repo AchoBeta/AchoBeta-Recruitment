@@ -1,6 +1,6 @@
 package com.achobeta.domain.interview.machine.constants;
 
-import com.achobeta.domain.interview.machine.InterviewContext;
+import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.alibaba.cola.statemachine.Condition;
 
 /**

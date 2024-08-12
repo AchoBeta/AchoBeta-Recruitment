@@ -2,7 +2,7 @@ package com.achobeta.domain.interview.machine.events.external;
 
 import com.achobeta.common.enums.InterviewStateEvent;
 import com.achobeta.common.enums.InterviewStatusEnum;
-import com.achobeta.domain.interview.machine.InterviewContext;
+import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
 import lombok.RequiredArgsConstructor;

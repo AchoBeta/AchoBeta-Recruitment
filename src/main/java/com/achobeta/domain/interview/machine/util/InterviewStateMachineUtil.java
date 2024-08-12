@@ -3,7 +3,7 @@ package com.achobeta.domain.interview.machine.util;
 import cn.hutool.core.collection.CollectionUtil;
 import com.achobeta.common.enums.InterviewStateEvent;
 import com.achobeta.common.enums.InterviewStatusEnum;
-import com.achobeta.domain.interview.machine.InterviewContext;
+import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.machine.events.external.InterviewStateExternalTransitionHelper;
 import com.achobeta.domain.interview.machine.events.internal.InterviewStateInternalTransitionHelper;
 import com.alibaba.cola.statemachine.Action;

@@ -3,7 +3,7 @@ package com.achobeta.domain.interview.service.impl;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.InterviewStateEvent;
 import com.achobeta.common.enums.InterviewStatusEnum;
-import com.achobeta.domain.interview.machine.InterviewContext;
+import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.machine.constants.InterviewStateMachineConstants;
 import com.achobeta.domain.interview.model.converter.InterviewConverter;
 import com.achobeta.domain.interview.model.dao.mapper.InterviewMapper;

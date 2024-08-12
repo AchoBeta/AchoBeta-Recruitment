@@ -5,7 +5,7 @@ import com.achobeta.common.enums.InterviewStateEvent;
 import com.achobeta.common.enums.InterviewStatusEnum;
 import com.achobeta.domain.email.model.po.EmailMessage;
 import com.achobeta.domain.email.service.EmailSender;
-import com.achobeta.domain.interview.machine.InterviewContext;
+import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.machine.constants.InterviewStateMachineConstants;
 import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
