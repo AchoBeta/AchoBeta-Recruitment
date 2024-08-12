@@ -22,8 +22,6 @@ public class EmailMessage implements Serializable {
 
     private String content;
 
-    private Date createTime;
-
     private static final long serialVersionUID = 1L;
 
     public void setRecipient(String... recipient) {
