@@ -72,11 +72,12 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
             ParticipationDetailVO detailActivityParticipation = interviewScheduleService.getDetailActivityParticipation(scheduleVO.getParticipationId());
             SimpleStudentVO simpleStudentVO = detailActivityParticipation.getSimpleStudentVO();
             // 封装 email
+            EmailTemplateEnum emailTemplate = EmailTemplateEnum.INTERVIEW_NOTICE;
             EmailMessage emailMessage = new EmailMessage();
             emailMessage.setSender(achobetaEmail);
             emailMessage.setCarbonCopy();
             emailMessage.setCreateTime(new Date());
-            emailMessage.setTitle(EmailTemplateEnum.INTERVIEW_NOTICE.getTitle());
+            emailMessage.setTitle(emailTemplate.getTitle());
             emailMessage.setRecipient(simpleStudentVO.getEmail());
             // 构造模板消息
             InterviewNoticeTemplate interviewNoticeTemplate = InterviewNoticeTemplate.builder()
@@ -89,7 +90,7 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
                     .status(interviewDetail.getStatus())
                     .build();
             // 发送
-            emailSender.sendModelMail(emailMessage, EmailTemplateEnum.INTERVIEW_NOTICE.getTemplate(), interviewNoticeTemplate);
+            emailSender.sendModelMail(emailMessage, emailTemplate.getTemplate(), interviewNoticeTemplate);
         };
     }
 }

@@ -21,6 +21,8 @@ public enum InterviewStateEvent {
 
     INTERVIEW_STARTING_NOTICE(4, "面试通知"),
 
+    INTERVIEW_STARTING_SUMMARY(5, "面试总结"),
+
     ;
 
 

@@ -38,10 +38,10 @@ public class InterviewStateTransitionHelperConfig {
             context.log(from, to, event);
             // 修改面试状态
             interviewService.switchInterview(currentInterview.getId(), to);
-            currentInterview.setStatus(to);
-            // 面试通知
-            StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
-                    to, InterviewStateEvent.INTERVIEW_STARTING_NOTICE, context);
+//            currentInterview.setStatus(to);
+//            // 面试通知
+//            StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
+//                    to, InterviewStateEvent.INTERVIEW_STARTING_NOTICE, context);
         };
     }
 
