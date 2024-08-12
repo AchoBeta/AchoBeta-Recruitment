@@ -11,7 +11,6 @@ import com.alibaba.cola.statemachine.Condition;
 import com.alibaba.cola.statemachine.builder.From;
 import com.alibaba.cola.statemachine.builder.StateMachineBuilder;
 import com.alibaba.cola.statemachine.builder.StateMachineBuilderFactory;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Objects;

@@ -30,8 +30,4 @@ public interface InterviewConverter {
 
     List<InterviewVO> interviewListToInterviewVoList(List<Interview> interviewList);
 
-    @Mapping(target = "managerId", source = "managerId")
-    @Mapping(target = "interview", source = "interview")
-    InterviewContext interviewToInterviewContext(Long managerId, Interview interview);
-
 }

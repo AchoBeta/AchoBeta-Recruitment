@@ -103,7 +103,9 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
 
     @Override
     public InterviewStatusEnum executeInterviewStateEvent(Long managerId, InterviewStateEvent event, Interview currentInterview) {
-        InterviewContext interviewContext = InterviewConverter.INSTANCE.interviewToInterviewContext(managerId, currentInterview);
+        InterviewContext interviewContext = new InterviewContext();
+        interviewContext.setManagerId(managerId);
+        interviewContext.setInterview(currentInterview);
         return StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
                 currentInterview.getStatus(), event, interviewContext);
     }
