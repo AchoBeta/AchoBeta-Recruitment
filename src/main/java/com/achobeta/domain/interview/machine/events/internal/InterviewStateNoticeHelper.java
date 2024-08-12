@@ -34,7 +34,6 @@ import java.util.List;
  */
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class InterviewStateNoticeHelper implements InterviewStateInternalTransitionHelper{
 
     @Value("${spring.mail.username}")
@@ -64,12 +63,9 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
     @Override
     public Action<InterviewStatusEnum, InterviewStateEvent, InterviewContext> getPerformAction() {
         return (from, to, event, context) -> {
-            Long managerId = context.getManagerId();
-            Interview currentInterview = context.getInterview();
-            log.info("state from {} to {} run {} currentInterview {} managerId {}",
-                    from, to, event, currentInterview.getId(), managerId);
+            context.log(from, to, event);
             // 获得数据
-            InterviewDetailVO interviewDetail = interviewService.getInterviewDetail(currentInterview.getId());
+            InterviewDetailVO interviewDetail = interviewService.getInterviewDetail(context.getInterview().getId());
             ScheduleVO scheduleVO = interviewDetail.getScheduleVO();
             ParticipationDetailVO detailActivityParticipation = interviewScheduleService.getDetailActivityParticipation(scheduleVO.getParticipationId());
             SimpleStudentVO simpleStudentVO = detailActivityParticipation.getSimpleStudentVO();

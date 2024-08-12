@@ -23,7 +23,6 @@ import java.util.Objects;
  * Date: 2024-08-12
  * Time: 1:37
  */
-@Slf4j
 public class InterviewStateMachineUtil {
 
     private static void builderAssign(StateMachineBuilder<InterviewStatusEnum, InterviewStateEvent, InterviewContext> builder,

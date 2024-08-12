@@ -7,7 +7,6 @@ import com.achobeta.domain.interview.machine.util.InterviewStateMachineUtil;
 import com.achobeta.util.StateMachineUtil;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
@@ -30,7 +29,6 @@ import java.util.List;
  * StateMachine：状态机
  */
 @Configuration
-@Slf4j
 @RequiredArgsConstructor
 public class InterviewStateMachineConfig {
 
