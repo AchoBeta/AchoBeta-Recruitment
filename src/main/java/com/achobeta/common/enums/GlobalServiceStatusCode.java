@@ -84,6 +84,7 @@ public enum GlobalServiceStatusCode {
     INTERVIEW_STATUS_TRANS_EVENT_EXCEPTION(6102, "面试状态流转事件异常"),
 
     INTERVIEW_COMMENT_NOT_EXISTS(6201, "面试评论不存在"),
+    INTERVIEW_NOT_SUMMARIZED(6202, "面试还未总结"),
 
     /* -------------- */;
 
