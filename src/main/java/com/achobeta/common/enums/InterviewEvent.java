@@ -11,7 +11,7 @@ import lombok.Getter;
  * Time: 0:56
  */
 @Getter
-public enum InterviewStateEvent {
+public enum InterviewEvent {
 
     INTERVIEW_START(1, "面试开始"),
 
@@ -30,15 +30,15 @@ public enum InterviewStateEvent {
 
     private final String description;
 
-    InterviewStateEvent(Integer event, String description) {
+    InterviewEvent(Integer event, String description) {
         this.event = event;
         this.description = description;
     }
 
-    public static InterviewStateEvent get(Integer event) {
-        for (InterviewStateEvent interviewStateEvent : InterviewStateEvent.values()) {
-            if(interviewStateEvent.getEvent().equals(event)) {
-                return interviewStateEvent;
+    public static InterviewEvent get(Integer event) {
+        for (InterviewEvent interviewEvent : InterviewEvent.values()) {
+            if(interviewEvent.getEvent().equals(event)) {
+                return interviewEvent;
             }
         }
         throw new GlobalServiceException(GlobalServiceStatusCode.INTERVIEW_STATUS_TRANS_EVENT_EXCEPTION);

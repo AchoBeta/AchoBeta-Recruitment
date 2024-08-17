@@ -1,8 +1,8 @@
 package com.achobeta.domain.interview.machine.util;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.achobeta.common.enums.InterviewStateEvent;
-import com.achobeta.common.enums.InterviewStatusEnum;
+import com.achobeta.common.enums.InterviewEvent;
+import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.machine.events.external.InterviewStateExternalTransitionHelper;
 import com.achobeta.domain.interview.machine.events.internal.InterviewStateInternalTransitionHelper;
@@ -24,15 +24,15 @@ import java.util.Objects;
  */
 public class InterviewStateMachineUtil {
 
-    private static From<InterviewStatusEnum, InterviewStateEvent, InterviewContext> from(StateMachineBuilder<InterviewStatusEnum, InterviewStateEvent, InterviewContext> builder,
-                                                                                         InterviewStatusEnum[] fromState) {
+    private static From<InterviewStatus, InterviewEvent, InterviewContext> from(StateMachineBuilder<InterviewStatus, InterviewEvent, InterviewContext> builder,
+                                                                                InterviewStatus[] fromState) {
         return Objects.nonNull(fromState) & fromState.length == 1 ?
                 builder.externalTransition().from(fromState[0]) : builder.externalTransitions().fromAmong(fromState);
     }
 
-    private static void builderAssign(StateMachineBuilder<InterviewStatusEnum, InterviewStateEvent, InterviewContext> builder,
+    private static void builderAssign(StateMachineBuilder<InterviewStatus, InterviewEvent, InterviewContext> builder,
                                      InterviewStateExternalTransitionHelper helper) {
-        InterviewStatusEnum[] fromState = helper.getFromState();
+        InterviewStatus[] fromState = helper.getFromState();
         from(builder, fromState)
                 .to(helper.getToState())
                 .on(helper.getOnEvent())
@@ -40,13 +40,13 @@ public class InterviewStateMachineUtil {
                 .perform(helper.getPerformAction());
     }
 
-    private static void builderAssign(StateMachineBuilder<InterviewStatusEnum, InterviewStateEvent, InterviewContext> builder,
+    private static void builderAssign(StateMachineBuilder<InterviewStatus, InterviewEvent, InterviewContext> builder,
                                       InterviewStateInternalTransitionHelper helper) {
-        List<InterviewStatusEnum> withinList = helper.getWithinList();
+        List<InterviewStatus> withinList = helper.getWithinList();
         if(!CollectionUtil.isEmpty(withinList)) {
-            InterviewStateEvent onEvent = helper.getOnEvent();
+            InterviewEvent onEvent = helper.getOnEvent();
             Condition<InterviewContext> whenCondition = helper.getWhenCondition();
-            Action<InterviewStatusEnum, InterviewStateEvent, InterviewContext> performAction = helper.getPerformAction();
+            Action<InterviewStatus, InterviewEvent, InterviewContext> performAction = helper.getPerformAction();
             withinList.forEach(within -> {
                 builder.internalTransition()
                         .within(within)
@@ -60,7 +60,7 @@ public class InterviewStateMachineUtil {
     public static void buildMachine(String machineId,
                                     List<InterviewStateExternalTransitionHelper> externalHelpers,
                                     List<InterviewStateInternalTransitionHelper> internalHelpers) {
-        StateMachineBuilder<InterviewStatusEnum, InterviewStateEvent, InterviewContext>
+        StateMachineBuilder<InterviewStatus, InterviewEvent, InterviewContext>
                 builder = StateMachineBuilderFactory.create();
         // from + event 确定一个流转，状态机以创建的其中一个 from + event 的流转为准
         externalHelpers.forEach(helper -> {

@@ -1,7 +1,7 @@
 package com.achobeta.domain.interview.machine.events.external;
 
-import com.achobeta.common.enums.InterviewStateEvent;
-import com.achobeta.common.enums.InterviewStatusEnum;
+import com.achobeta.common.enums.InterviewEvent;
+import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
@@ -21,21 +21,21 @@ public class InterviewOverHelper implements InterviewStateExternalTransitionHelp
 
     private final Condition<InterviewContext> defaultCondition;
 
-    private final Action<InterviewStatusEnum, InterviewStateEvent, InterviewContext> defaultAction;
+    private final Action<InterviewStatus, InterviewEvent, InterviewContext> defaultAction;
 
     @Override
-    public InterviewStatusEnum[] getFromState() {
-        return new InterviewStatusEnum[]{InterviewStatusEnum.STARTING, InterviewStatusEnum.NOT_STARTED};
+    public InterviewStatus[] getFromState() {
+        return new InterviewStatus[]{InterviewStatus.STARTING, InterviewStatus.NOT_STARTED};
     }
 
     @Override
-    public InterviewStatusEnum getToState() {
-        return InterviewStatusEnum.ENDED;
+    public InterviewStatus getToState() {
+        return InterviewStatus.ENDED;
     }
 
     @Override
-    public InterviewStateEvent getOnEvent() {
-        return InterviewStateEvent.INTERVIEW_OVER;
+    public InterviewEvent getOnEvent() {
+        return InterviewEvent.INTERVIEW_OVER;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class InterviewOverHelper implements InterviewStateExternalTransitionHelp
     }
 
     @Override
-    public Action<InterviewStatusEnum, InterviewStateEvent, InterviewContext> getPerformAction() {
+    public Action<InterviewStatus, InterviewEvent, InterviewContext> getPerformAction() {
         return defaultAction;
     }
 }

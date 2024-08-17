@@ -1,7 +1,7 @@
 package com.achobeta.domain.interview.model.entity;
 
 import com.achobeta.common.base.BaseIncrIDEntity;
-import com.achobeta.common.enums.InterviewStatusEnum;
+import com.achobeta.common.enums.InterviewStatus;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -22,7 +22,7 @@ public class Interview extends BaseIncrIDEntity implements Serializable {
 
     private String description;
 
-    private InterviewStatusEnum status;
+    private InterviewStatus status;
 
     private String address;
 

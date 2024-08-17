@@ -1,6 +1,6 @@
 package com.achobeta.domain.interview.model.vo;
 
-import com.achobeta.common.enums.InterviewStatusEnum;
+import com.achobeta.common.enums.InterviewStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,7 +34,7 @@ public class InterviewNoticeTemplate {
 
     private Date endTime;
 
-    private InterviewStatusEnum status;
+    private InterviewStatus status;
 
     public String getStartTime() {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(startTime);

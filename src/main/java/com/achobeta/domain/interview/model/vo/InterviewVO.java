@@ -1,6 +1,6 @@
 package com.achobeta.domain.interview.model.vo;
 
-import com.achobeta.common.enums.InterviewStatusEnum;
+import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.domain.schedule.model.vo.ScheduleVO;
 import lombok.Data;
 
@@ -18,7 +18,7 @@ public class InterviewVO {
 
     private String title;
 
-    private InterviewStatusEnum status;
+    private InterviewStatus status;
 
     private ScheduleVO scheduleVO;
 

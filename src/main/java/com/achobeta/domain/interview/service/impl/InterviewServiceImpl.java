@@ -1,8 +1,8 @@
 package com.achobeta.domain.interview.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.common.enums.InterviewStateEvent;
-import com.achobeta.common.enums.InterviewStatusEnum;
+import com.achobeta.common.enums.InterviewEvent;
+import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.machine.constants.InterviewStateMachineConstants;
 import com.achobeta.domain.interview.model.converter.InterviewConverter;
@@ -95,20 +95,20 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     }
 
     @Override
-    public void switchInterview(Long interviewId, InterviewStatusEnum interviewStatusEnum) {
+    public void switchInterview(Long interviewId, InterviewStatus interviewStatus) {
         Interview interview = new Interview();
         interview.setId(interviewId);
-        interview.setStatus(interviewStatusEnum);
+        interview.setStatus(interviewStatus);
         this.updateById(interview);
     }
 
     @Override
-    public InterviewStatusEnum executeInterviewStateEvent(Long managerId, InterviewStateEvent event, Interview currentInterview) {
+    public InterviewStatus executeInterviewStateEvent(Long managerId, InterviewEvent event, Interview currentInterview) {
         InterviewContext interviewContext = new InterviewContext();
         interviewContext.setManagerId(managerId);
         interviewContext.setInterview(currentInterview);
         // 触发事件
-        InterviewStatusEnum toState = StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
+        InterviewStatus toState = StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
                 currentInterview.getStatus(), event, interviewContext);
         // 状态改变则进行转换
         if(!Objects.equals(currentInterview.getStatus(), toState)) {
@@ -148,9 +148,9 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     }
 
     @Override
-    public void checkInterviewStatus(Long interviewId, InterviewStatusEnum interviewStatusEnum) {
+    public void checkInterviewStatus(Long interviewId, InterviewStatus interviewStatus) {
         checkAndGetInterviewExists(interviewId)
                 .getStatus()
-                .check(interviewStatusEnum);
+                .check(interviewStatus);
     }
 }

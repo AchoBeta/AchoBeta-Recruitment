@@ -1,8 +1,8 @@
 package com.achobeta.domain.interview.machine.events.internal;
 
 import com.achobeta.common.enums.EmailTemplateEnum;
-import com.achobeta.common.enums.InterviewStateEvent;
-import com.achobeta.common.enums.InterviewStatusEnum;
+import com.achobeta.common.enums.InterviewEvent;
+import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.domain.email.model.po.EmailMessage;
 import com.achobeta.domain.email.service.EmailSender;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
@@ -45,13 +45,13 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
     private final InterviewScheduleService interviewScheduleService;
 
     @Override
-    public List<InterviewStatusEnum> getWithinList() {
-        return List.of(InterviewStatusEnum.values());
+    public List<InterviewStatus> getWithinList() {
+        return List.of(InterviewStatus.values());
     }
 
     @Override
-    public InterviewStateEvent getOnEvent() {
-        return InterviewStateEvent.INTERVIEW_STARTING_NOTICE;
+    public InterviewEvent getOnEvent() {
+        return InterviewEvent.INTERVIEW_STARTING_NOTICE;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
     }
 
     @Override
-    public Action<InterviewStatusEnum, InterviewStateEvent, InterviewContext> getPerformAction() {
+    public Action<InterviewStatus, InterviewEvent, InterviewContext> getPerformAction() {
         return (from, to, event, context) -> {
             context.log(from, to, event);
             // 获得数据

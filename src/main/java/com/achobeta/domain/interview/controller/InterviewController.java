@@ -2,14 +2,17 @@ package com.achobeta.domain.interview.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.common.enums.InterviewStateEvent;
-import com.achobeta.common.enums.InterviewStatusEnum;
+import com.achobeta.common.enums.InterviewEvent;
+import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.interview.model.converter.InterviewConverter;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
 import com.achobeta.domain.interview.model.dto.InterviewPaperDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
 import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
+import com.achobeta.domain.interview.model.vo.InterviewEventVO;
+import com.achobeta.domain.interview.model.vo.InterviewStatusVO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
@@ -64,10 +67,25 @@ public class InterviewController {
         // 检查
         ValidatorUtils.validate(interviewUpdateDTO);
         // 未开始才能修改
-        interviewService.checkInterviewStatus(interviewUpdateDTO.getInterviewId(), InterviewStatusEnum.NOT_STARTED);
+        interviewService.checkInterviewStatus(interviewUpdateDTO.getInterviewId(), InterviewStatus.NOT_STARTED);
         // 更新
         interviewService.updateInterview(interviewUpdateDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
+
+    @GetMapping("/list/status")
+    @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER})
+    public SystemJsonResponse getInterviewStatusList() {
+        List<InterviewStatusVO> interviewStatusVOList =
+                InterviewConverter.INSTANCE.interviewStatusListToInterviewStatusVOList(List.of(InterviewStatus.values()));
+        return SystemJsonResponse.SYSTEM_SUCCESS(interviewStatusVOList);
+    }
+
+    @GetMapping("/list/event")
+    public SystemJsonResponse getInterviewEventList() {
+        List<InterviewEventVO> interviewEventVOList =
+                InterviewConverter.INSTANCE.interviewEventListToInterviewEventVOList(List.of(InterviewEvent.values()));
+        return SystemJsonResponse.SYSTEM_SUCCESS(interviewEventVOList);
     }
 
     @PostMapping("/execute/{interviewId}")
@@ -77,10 +95,10 @@ public class InterviewController {
         Interview currentInterview = interviewService.checkAndGetInterviewExists(interviewId);
         // 当前管理员
         Long managerId = BaseContext.getCurrentUser().getUserId();
-        InterviewStateEvent interviewStateEvent = InterviewStateEvent.get(event);
+        InterviewEvent interviewEvent = InterviewEvent.get(event);
         // 转变
-        InterviewStatusEnum state =
-                interviewService.executeInterviewStateEvent(managerId, interviewStateEvent, currentInterview);
+        InterviewStatus state =
+                interviewService.executeInterviewStateEvent(managerId, interviewEvent, currentInterview);
         return SystemJsonResponse.SYSTEM_SUCCESS(state);
     }
 
@@ -91,7 +109,7 @@ public class InterviewController {
         Long interviewId = interviewPaperDTO.getInterviewId();
         Interview interview = interviewService.checkAndGetInterviewExists(interviewId);
         // 检查面试是否未开始
-        interview.getStatus().check(InterviewStatusEnum.NOT_STARTED);
+        interview.getStatus().check(InterviewStatus.NOT_STARTED);
         Long paperId = interviewPaperDTO.getPaperId();
         if(!Objects.equals(interview.getPaperId(), paperId)) {
             // 检查试卷是否存在

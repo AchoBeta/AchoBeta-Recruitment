@@ -1,7 +1,7 @@
 package com.achobeta.domain.interview.machine.context;
 
-import com.achobeta.common.enums.InterviewStateEvent;
-import com.achobeta.common.enums.InterviewStatusEnum;
+import com.achobeta.common.enums.InterviewEvent;
+import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.domain.interview.model.entity.Interview;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ public class InterviewContext {
 
     private Interview interview;
 
-    public void log(InterviewStatusEnum from, InterviewStatusEnum to, InterviewStateEvent event) {
+    public void log(InterviewStatus from, InterviewStatus to, InterviewEvent event) {
         log.info("interview state from {} to {} run {} currentInterview {} managerId {}",
                 from, to, event, interview.getId(), managerId);
     }

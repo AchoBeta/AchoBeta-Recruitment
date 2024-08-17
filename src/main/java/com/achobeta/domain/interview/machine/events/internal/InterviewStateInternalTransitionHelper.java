@@ -1,7 +1,7 @@
 package com.achobeta.domain.interview.machine.events.internal;
 
-import com.achobeta.common.enums.InterviewStateEvent;
-import com.achobeta.common.enums.InterviewStatusEnum;
+import com.achobeta.common.enums.InterviewEvent;
+import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
@@ -17,11 +17,11 @@ import java.util.List;
  */
 public interface InterviewStateInternalTransitionHelper {
 
-    List<InterviewStatusEnum> getWithinList();
+    List<InterviewStatus> getWithinList();
 
-    InterviewStateEvent getOnEvent();
+    InterviewEvent getOnEvent();
 
     Condition<InterviewContext> getWhenCondition();
 
-    Action<InterviewStatusEnum, InterviewStateEvent, InterviewContext> getPerformAction();
+    Action<InterviewStatus, InterviewEvent, InterviewContext> getPerformAction();
 }

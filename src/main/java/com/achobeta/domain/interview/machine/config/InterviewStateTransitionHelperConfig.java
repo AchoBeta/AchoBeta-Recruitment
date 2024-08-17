@@ -1,7 +1,7 @@
 package com.achobeta.domain.interview.machine.config;
 
-import com.achobeta.common.enums.InterviewStateEvent;
-import com.achobeta.common.enums.InterviewStatusEnum;
+import com.achobeta.common.enums.InterviewEvent;
+import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
@@ -26,7 +26,7 @@ public class InterviewStateTransitionHelperConfig {
     }
 
     @Bean
-    public Action<InterviewStatusEnum, InterviewStateEvent, InterviewContext> defaultAction() {
+    public Action<InterviewStatus, InterviewEvent, InterviewContext> defaultAction() {
         return (from, to, event, context) -> {
             context.log(from, to, event);
 //            currentInterview.setStatus(to);

@@ -14,7 +14,7 @@ import lombok.Getter;
  * Time: 23:18
  */
 @Getter
-public enum InterviewStatusEnum {
+public enum InterviewStatus {
 
     NOT_STARTED(0, "未开始"),
     STARTING(1, "进行中"),
@@ -28,22 +28,22 @@ public enum InterviewStatusEnum {
 
     private final String description;
 
-    InterviewStatusEnum(Integer status, String description) {
+    InterviewStatus(Integer status, String description) {
         this.status = status;
         this.description = description;
     }
 
-    public void check(InterviewStatusEnum interviewStatusEnum) {
-        if(interviewStatusEnum != this) {
+    public void check(InterviewStatus interviewStatus) {
+        if(interviewStatus != this) {
             throw new GlobalServiceException(String.format("面试%s", this.getDescription()),
                     GlobalServiceStatusCode.INTERVIEW_STATUS_EXCEPTION);
         }
     }
 
-    public static InterviewStatusEnum get(Integer status) {
-        for (InterviewStatusEnum interviewStatusEnum : InterviewStatusEnum.values()) {
-            if(interviewStatusEnum.getStatus().equals(status)) {
-                return interviewStatusEnum;
+    public static InterviewStatus get(Integer status) {
+        for (InterviewStatus interviewStatus : InterviewStatus.values()) {
+            if(interviewStatus.getStatus().equals(status)) {
+                return interviewStatus;
             }
         }
         throw new GlobalServiceException(GlobalServiceStatusCode.INTERVIEW_STATUS_EXCEPTION);
