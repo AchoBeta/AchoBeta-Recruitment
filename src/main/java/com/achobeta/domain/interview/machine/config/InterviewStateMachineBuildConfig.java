@@ -3,8 +3,7 @@ package com.achobeta.domain.interview.machine.config;
 import com.achobeta.domain.interview.machine.constants.InterviewStateMachineConstants;
 import com.achobeta.domain.interview.machine.events.external.InterviewStateExternalTransitionHelper;
 import com.achobeta.domain.interview.machine.events.internal.InterviewStateInternalTransitionHelper;
-import com.achobeta.domain.interview.machine.util.InterviewStateMachineUtil;
-import com.achobeta.util.StateMachineUtil;
+import com.achobeta.machine.StateMachineUtil;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -38,8 +37,15 @@ public class InterviewStateMachineBuildConfig {
 
     @PostConstruct
     public void buildInterviewMachine() {
-        InterviewStateMachineUtil.buildMachine(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
-                externalHelpers, internalHelpers);
+        // 这里元素为范型接口的 List 不能直接赋值
+        StateMachineUtil.buildMachine(
+                InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
+                externalHelpers.stream()
+                        .map(StateMachineUtil::covert)
+                        .toList(),
+                internalHelpers.stream()
+                        .map(StateMachineUtil::covert)
+                        .toList());
         StateMachineUtil.showMachine(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID);
     }
 

@@ -1,6 +1,7 @@
 package com.achobeta.domain.student.model.entity;
 
 import com.achobeta.common.base.BaseIncrIDEntity;
+import com.achobeta.common.enums.ResumeStatus;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -47,7 +48,7 @@ public class StuResume extends BaseIncrIDEntity implements Serializable {
 
     private String remark;
 
-    private Integer status;
+    private ResumeStatus status;
 
     private Integer submitCount;
 

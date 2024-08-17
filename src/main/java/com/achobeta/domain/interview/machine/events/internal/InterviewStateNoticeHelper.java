@@ -38,9 +38,9 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
 
     private final EmailSender emailSender;
 
-    private final Condition<InterviewContext> defaultCondition;
+    private final Condition<InterviewContext> defaultInterviewCondition;
 
-    private final Action<InterviewStatus, InterviewEvent, InterviewContext> defaultAction;
+    private final Action<InterviewStatus, InterviewEvent, InterviewContext> defaultInterviewAction;
 
     private final InterviewService interviewService;
 
@@ -58,13 +58,13 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
 
     @Override
     public Condition<InterviewContext> getWhenCondition() {
-        return defaultCondition;
+        return defaultInterviewCondition;
     }
 
     @Override
     public Action<InterviewStatus, InterviewEvent, InterviewContext> getPerformAction() {
         return (from, to, event, context) -> {
-            defaultAction.execute(from, to, event, context);
+            defaultInterviewAction.execute(from, to, event, context);
             // 获得数据
             InterviewDetailVO interviewDetail = interviewService.getInterviewDetail(context.getInterview().getId());
             ScheduleVO scheduleVO = interviewDetail.getScheduleVO();

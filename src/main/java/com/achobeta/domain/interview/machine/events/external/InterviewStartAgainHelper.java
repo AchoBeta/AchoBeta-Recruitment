@@ -19,9 +19,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class InterviewStartAgainHelper implements InterviewStateExternalTransitionHelper {
 
-    private final Condition<InterviewContext> defaultCondition;
+    private final Condition<InterviewContext> defaultInterviewCondition;
 
-    private final Action<InterviewStatus, InterviewEvent, InterviewContext> defaultAction;
+    private final Action<InterviewStatus, InterviewEvent, InterviewContext> defaultInterviewAction;
 
     @Override
     public InterviewStatus[] getFromState() {
@@ -40,11 +40,11 @@ public class InterviewStartAgainHelper implements InterviewStateExternalTransiti
 
     @Override
     public Condition<InterviewContext> getWhenCondition() {
-        return defaultCondition;
+        return defaultInterviewCondition;
     }
 
     @Override
     public Action<InterviewStatus, InterviewEvent, InterviewContext> getPerformAction() {
-        return defaultAction;
+        return defaultInterviewAction;
     }
 }

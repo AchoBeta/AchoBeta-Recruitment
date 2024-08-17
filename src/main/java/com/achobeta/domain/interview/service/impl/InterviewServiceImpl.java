@@ -16,7 +16,7 @@ import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.service.PaperQuestionLinkService;
 import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.util.StateMachineUtil;
+import com.achobeta.machine.StateMachineUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

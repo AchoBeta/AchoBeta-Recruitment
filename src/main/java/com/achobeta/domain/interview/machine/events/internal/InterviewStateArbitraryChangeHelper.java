@@ -22,7 +22,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class InterviewStateArbitraryChangeHelper implements InterviewStateInternalTransitionHelper{
 
-    private final Action<InterviewStatus, InterviewEvent, InterviewContext> defaultAction;
+    private final Action<InterviewStatus, InterviewEvent, InterviewContext> defaultInterviewAction;
 
     @Override
     public List<InterviewStatus> getWithinList() {
@@ -42,7 +42,7 @@ public class InterviewStateArbitraryChangeHelper implements InterviewStateIntern
     @Override
     public Action<InterviewStatus, InterviewEvent, InterviewContext> getPerformAction() {
         return (from, to, event, context) -> {
-            defaultAction.execute(from, context.getToState(), event, context);
+            defaultInterviewAction.execute(from, context.getToState(), event, context);
         };
     }
 }

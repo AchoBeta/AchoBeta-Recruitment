@@ -32,7 +32,7 @@ CREATE TABLE `stu_attachment`
     `version`     int                                              NOT NULL DEFAULT 0 COMMENT '乐观锁',
     `is_deleted`  tinyint                                          NOT NULL DEFAULT 0 COMMENT '伪删除标记',
     PRIMARY KEY (`id`) USING BTREE,
-    UNIQUE INDEX `uni_stu_id` (`stu_id` ASC) USING BTREE
+    INDEX `idx_resume_id` (`resume_id` ASC) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
   CHARACTER SET = utf8

@@ -73,6 +73,7 @@ public enum GlobalServiceStatusCode {
     USER_RESUME_NOT_EXISTS(5201, "用户简历不存在"),
     USER_DID_NOT_PARTICIPATE(5202, "用户并没有参与活动"),
     USER_RESUME_SUBMIT_OVER_COUNT(5203, "用户简历提交次数已达最大"),
+    USER_RESUME_STATUS_EXCEPTION(5204, "用户简历状态异常"),
 
     /* 面试错误 6001-7000 */
     INTERVIEW_SCHEDULE_NOT_EXISTS(6001, "面试预约不存在"),

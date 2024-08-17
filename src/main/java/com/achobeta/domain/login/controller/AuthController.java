@@ -78,6 +78,7 @@ public class AuthController {
     @PostMapping("/register")
     @Intercept(ignore = true)
     public SystemJsonResponse register(@Validated @RequestBody RegisterDTO user) {
+        user.setEmail(null);
         loginService.register(user);
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
