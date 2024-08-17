@@ -30,7 +30,7 @@ import java.util.List;
  */
 @Configuration
 @RequiredArgsConstructor
-public class InterviewStateMachineConfig {
+public class InterviewStateMachineBuildConfig {
 
     private final List<InterviewStateExternalTransitionHelper> externalHelpers;
 

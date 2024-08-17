@@ -24,16 +24,17 @@ import java.util.Objects;
  */
 public class InterviewStateMachineUtil {
 
+    private static From<InterviewStatusEnum, InterviewStateEvent, InterviewContext> from(StateMachineBuilder<InterviewStatusEnum, InterviewStateEvent, InterviewContext> builder,
+                                                                                         InterviewStatusEnum[] fromState) {
+        return Objects.nonNull(fromState) & fromState.length == 1 ?
+                builder.externalTransition().from(fromState[0]) : builder.externalTransitions().fromAmong(fromState);
+    }
+
     private static void builderAssign(StateMachineBuilder<InterviewStatusEnum, InterviewStateEvent, InterviewContext> builder,
                                      InterviewStateExternalTransitionHelper helper) {
         InterviewStatusEnum[] fromState = helper.getFromState();
-        From<InterviewStatusEnum, InterviewStateEvent, InterviewContext> from = null;
-        if(Objects.nonNull(fromState) & fromState.length == 1) {
-            from = builder.externalTransition().from(fromState[0]);
-        } else {
-            from = builder.externalTransitions().fromAmong(fromState);
-        }
-        from.to(helper.getToState())
+        from(builder, fromState)
+                .to(helper.getToState())
                 .on(helper.getOnEvent())
                 .when(helper.getWhenCondition())
                 .perform(helper.getPerformAction());
@@ -42,10 +43,10 @@ public class InterviewStateMachineUtil {
     private static void builderAssign(StateMachineBuilder<InterviewStatusEnum, InterviewStateEvent, InterviewContext> builder,
                                       InterviewStateInternalTransitionHelper helper) {
         List<InterviewStatusEnum> withinList = helper.getWithinList();
-        InterviewStateEvent onEvent = helper.getOnEvent();
-        Condition<InterviewContext> whenCondition = helper.getWhenCondition();
-        Action<InterviewStatusEnum, InterviewStateEvent, InterviewContext> performAction = helper.getPerformAction();
         if(!CollectionUtil.isEmpty(withinList)) {
+            InterviewStateEvent onEvent = helper.getOnEvent();
+            Condition<InterviewContext> whenCondition = helper.getWhenCondition();
+            Action<InterviewStatusEnum, InterviewStateEvent, InterviewContext> performAction = helper.getPerformAction();
             withinList.forEach(within -> {
                 builder.internalTransition()
                         .within(within)

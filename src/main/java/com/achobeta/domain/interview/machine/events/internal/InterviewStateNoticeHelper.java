@@ -6,8 +6,6 @@ import com.achobeta.common.enums.InterviewStatusEnum;
 import com.achobeta.domain.email.model.po.EmailMessage;
 import com.achobeta.domain.email.service.EmailSender;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
-import com.achobeta.domain.interview.machine.constants.InterviewStateMachineConstants;
-import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.model.vo.InterviewNoticeTemplate;
 import com.achobeta.domain.interview.service.InterviewService;
@@ -18,7 +16,6 @@ import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
