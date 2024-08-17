@@ -108,15 +108,16 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
         InterviewContext interviewContext = new InterviewContext();
         InterviewStatus fromState = currentInterview.getStatus();
         interviewContext.setManagerId(managerId);
-        interviewContext.setToState(interviewStatus);
         interviewContext.setInterview(currentInterview);
         // 执行状态机
+        if(InterviewEvent.INTERVIEW_ARBITRARY_CHANGE.equals(event)) {
+            interviewContext.setToState(interviewStatus);
+        }
         StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
                 fromState, event, interviewContext);
-        // 触发事件
         InterviewStatus toState = interviewContext.getToState();
         // 状态改变则进行转换
-        if(!Objects.equals(fromState, toState)) {
+        if(Objects.nonNull(toState) && !Objects.equals(fromState, toState)) {
             switchInterview(currentInterview.getId(), toState);
         }
         // 返回最终状态

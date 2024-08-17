@@ -44,6 +44,38 @@ public enum ResumeStatus {
     @JsonValue
     private final Integer code;
 
+    public ResumeStatus next() {
+        return switch (this) {
+            case DRAFT -> PENDING_SELECTION;
+            case PENDING_SELECTION -> SCHEDULE_INITIAL_INTERVIEW;
+            case SCHEDULE_INITIAL_INTERVIEW -> PENDING_INITIAL_INTERVIEW;
+            case PENDING_INITIAL_INTERVIEW -> SCHEDULE_SECOND_INTERVIEW;
+            case SCHEDULE_SECOND_INTERVIEW -> PENDING_SECOND_INTERVIEW;
+            case PENDING_SECOND_INTERVIEW -> SCHEDULE_FINAL_INTERVIEW;
+            case SCHEDULE_FINAL_INTERVIEW -> PENDING_FINAL_INTERVIEW;
+            default -> throw new GlobalServiceException(GlobalServiceStatusCode.USER_RESUME_STATUS_EXCEPTION);
+        };
+    }
+
+    public ResumeStatus approve() {
+        return switch (this) {
+            case PENDING_INITIAL_INTERVIEW -> INITIAL_INTERVIEW_PASSED;
+            case PENDING_SECOND_INTERVIEW -> SECOND_INTERVIEW_PASSED;
+            case PENDING_FINAL_INTERVIEW -> FINAL_INTERVIEW_PASSED;
+            default -> throw new GlobalServiceException(GlobalServiceStatusCode.USER_RESUME_STATUS_EXCEPTION);
+        };
+    }
+
+    public ResumeStatus eliminate() {
+        return switch (this) {
+            case PENDING_SELECTION -> REJECTED;
+            case PENDING_INITIAL_INTERVIEW -> INITIAL_INTERVIEW_FAILED;
+            case PENDING_SECOND_INTERVIEW -> SECOND_INTERVIEW_FAILED;
+            case PENDING_FINAL_INTERVIEW -> FINAL_INTERVIEW_FAILED;
+            default -> throw new GlobalServiceException(GlobalServiceStatusCode.USER_RESUME_STATUS_EXCEPTION);
+        };
+    }
+
     public static ResumeStatus get(Integer code) {
         for (ResumeStatus resumeStatus : ResumeStatus.values()) {
             if(resumeStatus.getCode().equals(code)) {
