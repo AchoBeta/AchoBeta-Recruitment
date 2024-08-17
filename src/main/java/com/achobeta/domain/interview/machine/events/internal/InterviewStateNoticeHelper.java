@@ -40,6 +40,8 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
 
     private final Condition<InterviewContext> defaultCondition;
 
+    private final Action<InterviewStatus, InterviewEvent, InterviewContext> defaultAction;
+
     private final InterviewService interviewService;
 
     private final InterviewScheduleService interviewScheduleService;
@@ -62,7 +64,7 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
     @Override
     public Action<InterviewStatus, InterviewEvent, InterviewContext> getPerformAction() {
         return (from, to, event, context) -> {
-            context.log(from, to, event);
+            defaultAction.execute(from, to, event, context);
             // 获得数据
             InterviewDetailVO interviewDetail = interviewService.getInterviewDetail(context.getInterview().getId());
             ScheduleVO scheduleVO = interviewDetail.getScheduleVO();
@@ -84,7 +86,7 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
                     .address(interviewDetail.getAddress())
                     .startTime(scheduleVO.getStartTime())
                     .endTime(scheduleVO.getEndTime())
-                    .status(interviewDetail.getStatus())
+                    .status(context.getToState()) // 以状态机轮转的最终状态为准
                     .build();
             // 发送
             emailSender.sendModelMail(emailMessage, emailTemplate.getTemplate(), interviewNoticeTemplate);

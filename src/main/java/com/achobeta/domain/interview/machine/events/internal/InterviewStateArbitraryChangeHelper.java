@@ -3,7 +3,6 @@ package com.achobeta.domain.interview.machine.events.internal;
 import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
-import com.achobeta.domain.interview.service.InterviewService;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +23,6 @@ import java.util.Objects;
 public class InterviewStateArbitraryChangeHelper implements InterviewStateInternalTransitionHelper{
 
     private final Action<InterviewStatus, InterviewEvent, InterviewContext> defaultAction;
-
-    private final InterviewService interviewService;
 
     @Override
     public List<InterviewStatus> getWithinList() {

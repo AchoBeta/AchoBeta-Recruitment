@@ -2,7 +2,9 @@ package com.achobeta.domain.interview.machine.config;
 
 import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
+import com.achobeta.domain.interview.machine.constants.InterviewStateMachineConstants;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
+import com.achobeta.util.StateMachineUtil;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +32,12 @@ public class InterviewStateTransitionHelperConfig {
         return (from, to, event, context) -> {
             context.log(from, to, event);
             context.setToState(to);
-//            currentInterview.setStatus(to);
-//            // 面试通知
-//            StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
-//                    to, InterviewStateEvent.INTERVIEW_STARTING_NOTICE, context);
+            context.getInterview().setStatus(to);
+            // 面试通知
+            if(!InterviewEvent.INTERVIEW_STARTING_NOTICE.equals(event)) {
+                StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
+                        to, InterviewEvent.INTERVIEW_STARTING_NOTICE, context);
+            }
         };
     }
 
