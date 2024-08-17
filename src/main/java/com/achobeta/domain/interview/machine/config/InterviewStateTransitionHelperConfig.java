@@ -33,11 +33,11 @@ public class InterviewStateTransitionHelperConfig {
             context.log(from, to, event);
             context.setToState(to);
             context.getInterview().setStatus(to);
-            // 面试通知
-            if(!InterviewEvent.INTERVIEW_STARTING_NOTICE.equals(event)) {
-                StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
-                        to, InterviewEvent.INTERVIEW_STARTING_NOTICE, context);
-            }
+//            // 面试通知
+//            if(!InterviewEvent.INTERVIEW_STARTING_NOTICE.equals(event)) {
+//                StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
+//                        to, InterviewEvent.INTERVIEW_STARTING_NOTICE, context);
+//            }
         };
     }
 

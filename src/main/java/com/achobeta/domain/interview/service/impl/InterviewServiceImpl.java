@@ -103,6 +103,7 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     }
 
     @Override
+    @Transactional
     public InterviewStatus executeInterviewStateEvent(Long managerId, InterviewEvent event, Interview currentInterview, InterviewStatus interviewStatus) {
         InterviewContext interviewContext = new InterviewContext();
         InterviewStatus fromState = currentInterview.getStatus();
