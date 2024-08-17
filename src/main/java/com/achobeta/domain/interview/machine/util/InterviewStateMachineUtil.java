@@ -62,9 +62,11 @@ public class InterviewStateMachineUtil {
                                     List<InterviewStateInternalTransitionHelper> internalHelpers) {
         StateMachineBuilder<InterviewStatusEnum, InterviewStateEvent, InterviewContext>
                 builder = StateMachineBuilderFactory.create();
+        // from + event 确定一个流转，状态机以创建的其中一个 from + event 的流转为准
         externalHelpers.forEach(helper -> {
             builderAssign(builder, helper);
         });
+        // 内部流转无非就是 from == to 的流转罢了，内部流转和外部流转只是状态机的概念，在 fire 状态机的时候用 from + event 确定轮转是哪一个
         internalHelpers.forEach(helper -> {
             builderAssign(builder, helper);
         });

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -106,8 +107,15 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
         InterviewContext interviewContext = new InterviewContext();
         interviewContext.setManagerId(managerId);
         interviewContext.setInterview(currentInterview);
-        return StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
+        // 触发事件
+        InterviewStatusEnum toState = StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
                 currentInterview.getStatus(), event, interviewContext);
+        // 状态改变则进行转换
+        if(!Objects.equals(currentInterview.getStatus(), toState)) {
+            switchInterview(currentInterview.getId(), toState);
+        }
+        // 返回最终状态
+        return toState;
     }
 
     @Override

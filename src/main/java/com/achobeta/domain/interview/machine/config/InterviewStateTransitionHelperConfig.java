@@ -3,8 +3,6 @@ package com.achobeta.domain.interview.machine.config;
 import com.achobeta.common.enums.InterviewStateEvent;
 import com.achobeta.common.enums.InterviewStatusEnum;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
-import com.achobeta.domain.interview.model.entity.Interview;
-import com.achobeta.domain.interview.service.InterviewService;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +20,6 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class InterviewStateTransitionHelperConfig {
 
-    private final InterviewService interviewService;
-
     @Bean
     public Condition<InterviewContext> defaultCondition() {
         return interviewContext -> Boolean.TRUE;
@@ -32,10 +28,7 @@ public class InterviewStateTransitionHelperConfig {
     @Bean
     public Action<InterviewStatusEnum, InterviewStateEvent, InterviewContext> defaultAction() {
         return (from, to, event, context) -> {
-            Interview currentInterview = context.getInterview();
             context.log(from, to, event);
-            // 修改面试状态
-            interviewService.switchInterview(currentInterview.getId(), to);
 //            currentInterview.setStatus(to);
 //            // 面试通知
 //            StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
