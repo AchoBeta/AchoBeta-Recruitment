@@ -19,6 +19,8 @@ public class InterviewContext {
 
     private Long managerId;
 
+    private InterviewStatus toState;
+
     private Interview interview;
 
     public void log(InterviewStatus from, InterviewStatus to, InterviewEvent event) {

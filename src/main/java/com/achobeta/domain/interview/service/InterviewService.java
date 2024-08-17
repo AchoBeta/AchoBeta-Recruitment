@@ -41,7 +41,7 @@ public interface InterviewService extends IService<Interview> {
 
     void switchInterview(Long interviewId, InterviewStatus interviewStatus);
 
-    InterviewStatus executeInterviewStateEvent(Long managerId, InterviewEvent event, Interview currentInterview);
+    InterviewStatus executeInterviewStateEvent(Long managerId, InterviewEvent event, Interview currentInterview, InterviewStatus interviewStatus);
 
     void setPaperForInterview(Long interviewId, Long paperId);
 

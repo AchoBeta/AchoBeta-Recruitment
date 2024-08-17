@@ -103,15 +103,19 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     }
 
     @Override
-    public InterviewStatus executeInterviewStateEvent(Long managerId, InterviewEvent event, Interview currentInterview) {
+    public InterviewStatus executeInterviewStateEvent(Long managerId, InterviewEvent event, Interview currentInterview, InterviewStatus interviewStatus) {
         InterviewContext interviewContext = new InterviewContext();
+        InterviewStatus fromState = currentInterview.getStatus();
         interviewContext.setManagerId(managerId);
+        interviewContext.setToState(interviewStatus);
         interviewContext.setInterview(currentInterview);
+        // 执行状态机
+        StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
+                fromState, event, interviewContext);
         // 触发事件
-        InterviewStatus toState = StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
-                currentInterview.getStatus(), event, interviewContext);
+        InterviewStatus toState = interviewContext.getToState();
         // 状态改变则进行转换
-        if(!Objects.equals(currentInterview.getStatus(), toState)) {
+        if(!Objects.equals(fromState, toState)) {
             switchInterview(currentInterview.getId(), toState);
         }
         // 返回最终状态

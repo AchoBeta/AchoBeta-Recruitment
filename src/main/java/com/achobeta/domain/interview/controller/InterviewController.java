@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Created With Intellij IDEA
@@ -90,15 +91,17 @@ public class InterviewController {
 
     @PostMapping("/execute/{interviewId}")
     public SystemJsonResponse executeInterviewStateEvent(@PathVariable("interviewId") @NotNull Long interviewId,
-                                              @RequestParam("event") @NotNull Integer event) {
+                                                         @RequestParam("event") @NotNull Integer event,
+                                                         @RequestParam(name = "status", required = false) Integer status) {
         // 检查
         Interview currentInterview = interviewService.checkAndGetInterviewExists(interviewId);
         // 当前管理员
         Long managerId = BaseContext.getCurrentUser().getUserId();
         InterviewEvent interviewEvent = InterviewEvent.get(event);
+        InterviewStatus interviewStatus = Optional.ofNullable(status).map(InterviewStatus::get).orElse(null);
         // 转变
         InterviewStatus state =
-                interviewService.executeInterviewStateEvent(managerId, interviewEvent, currentInterview);
+                interviewService.executeInterviewStateEvent(managerId, interviewEvent, currentInterview, interviewStatus);
         return SystemJsonResponse.SYSTEM_SUCCESS(state);
     }
 
