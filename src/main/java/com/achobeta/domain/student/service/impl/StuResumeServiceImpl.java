@@ -124,11 +124,10 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         if (Objects.nonNull(resumeOfUserDTO)) {
             //根据batchId和userId查询
             stuResume = lambdaQuery()
-                    .eq( StuResume::getId, queryResumeDTO.getResumeId())
                     .eq( StuResume::getUserId, resumeOfUserDTO.getUserId())
                     .eq( StuResume::getBatchId, resumeOfUserDTO.getBatchId())
                     .oneOpt().orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.USER_RESUME_NOT_EXISTS));
-
+            queryResumeDTO.setResumeId(stuResume.getId()); // 确保简历附件列表能够被查到
         } else {
             //参数校验
             Optional.ofNullable(queryResumeDTO.getResumeId()).orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.PARAM_IS_BLANK));
@@ -162,6 +161,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
 
     @Transactional
     public void saveStuAttachment(List<StuAttachmentDTO> stuAttachmentDTOList, Long resumeId) {
+        System.out.println(stuAttachmentDTOList);
         //删除原有简历附件
         stuAttachmentService.lambdaUpdate().eq(StuAttachment::getResumeId, resumeId).remove();
         //构造附件保存信息列表

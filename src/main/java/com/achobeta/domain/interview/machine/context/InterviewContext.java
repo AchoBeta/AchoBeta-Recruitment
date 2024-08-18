@@ -21,6 +21,8 @@ public class InterviewContext {
 
     private InterviewStatus toState;
 
+    private InterviewStatus finalState;
+
     private Interview interview;
 
     public void log(InterviewStatus from, InterviewStatus to, InterviewEvent event) {

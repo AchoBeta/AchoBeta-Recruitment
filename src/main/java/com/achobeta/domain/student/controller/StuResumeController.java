@@ -3,6 +3,7 @@ package com.achobeta.domain.student.controller;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.student.model.dto.QueryResumeDTO;
+import com.achobeta.domain.student.model.dto.QueryResumeOfUserDTO;
 import com.achobeta.domain.student.model.dto.StuResumeDTO;
 import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.model.vo.StuResumeVO;
@@ -10,6 +11,7 @@ import com.achobeta.domain.student.service.StuResumeService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -62,6 +64,7 @@ public class StuResumeController {
      * @return stuResumeVO
      */
     @PostMapping("/query")
+    @Intercept(permit = {UserTypeEnum.ADMIN})
     public SystemJsonResponse queryResumeInfo(@RequestBody QueryResumeDTO queryResumeDTO) {
         //校验
         Optional.ofNullable(queryResumeDTO.getQueryResumeOfUserDTO())
@@ -71,5 +74,18 @@ public class StuResumeController {
         return SystemJsonResponse.SYSTEM_SUCCESS(stuResumeVO);
     }
 
+    // todo: 资源上传的接口，最好限制上传的文件格式以及文件大小，并且检查真实的文件内容与文件后缀是否符合（可以用责任链审核）
 
+    @GetMapping("/query/{batchId}")
+    @Intercept(permit = {UserTypeEnum.USER})
+    public SystemJsonResponse queryResumeInfo(@PathVariable("batchId") @NotNull Long batchId) {
+        QueryResumeDTO queryResumeDTO = new QueryResumeDTO();
+        QueryResumeOfUserDTO queryResumeOfUserDTO = new QueryResumeOfUserDTO();
+        queryResumeOfUserDTO.setBatchId(batchId);
+        queryResumeOfUserDTO.setUserId(BaseContext.getCurrentUser().getUserId());
+        queryResumeDTO.setQueryResumeOfUserDTO(queryResumeOfUserDTO);
+        //获取简历信息
+        StuResumeVO stuResumeVO= stuResumeService.getResumeInfo(queryResumeDTO);
+        return SystemJsonResponse.SYSTEM_SUCCESS(stuResumeVO);
+    }
 }
