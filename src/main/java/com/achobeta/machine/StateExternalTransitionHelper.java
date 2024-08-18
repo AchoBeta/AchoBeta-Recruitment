@@ -1,7 +1,10 @@
 package com.achobeta.machine;
 
+import com.achobeta.exception.GlobalServiceException;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
+
+import java.util.List;
 
 /**
  * Created With Intellij IDEA
@@ -12,9 +15,9 @@ import com.alibaba.cola.statemachine.Condition;
  */
 public interface StateExternalTransitionHelper<S, E, C> {
 
-    S[] getFromState();
+    List<S> getFromState();
 
-    S getToState();
+    S getToState(S from) throws GlobalServiceException;
 
     E getOnEvent();
 

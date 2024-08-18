@@ -97,11 +97,10 @@ public class InterviewController {
         Interview currentInterview = interviewService.checkAndGetInterviewExists(interviewId);
         // 当前管理员
         Long managerId = BaseContext.getCurrentUser().getUserId();
-        InterviewEvent interviewEvent = InterviewEvent.get(event);
         InterviewStatus interviewStatus = Optional.ofNullable(status).map(InterviewStatus::get).orElse(null);
         // 转变
         InterviewStatus state =
-                interviewService.executeInterviewStateEvent(managerId, interviewEvent, currentInterview, interviewStatus);
+                interviewService.executeInterviewStateEvent(managerId, InterviewEvent.get(event), currentInterview, interviewStatus);
         return SystemJsonResponse.SYSTEM_SUCCESS(state);
     }
 

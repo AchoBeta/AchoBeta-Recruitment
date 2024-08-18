@@ -43,6 +43,6 @@ public enum InterviewEvent {
                 return interviewEvent;
             }
         }
-        throw new GlobalServiceException(GlobalServiceStatusCode.INTERVIEW_STATUS_TRANS_EVENT_EXCEPTION);
+        throw new GlobalServiceException(GlobalServiceStatusCode.INTERVIEW_STATUS_TRANS_EVENT_ERROR);
     }
 }

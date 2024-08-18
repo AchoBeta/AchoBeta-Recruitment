@@ -8,6 +8,8 @@ import com.alibaba.cola.statemachine.Condition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -24,12 +26,15 @@ public class InterviewOverHelper implements InterviewStateExternalTransitionHelp
     private final Action<InterviewStatus, InterviewEvent, InterviewContext> defaultInterviewAction;
 
     @Override
-    public InterviewStatus[] getFromState() {
-        return new InterviewStatus[]{InterviewStatus.STARTING, InterviewStatus.NOT_STARTED};
+    public List<InterviewStatus> getFromState() {
+        return List.of(
+                InterviewStatus.STARTING,
+                InterviewStatus.NOT_STARTED
+        );
     }
 
     @Override
-    public InterviewStatus getToState() {
+    public InterviewStatus getToState(InterviewStatus from) {
         return InterviewStatus.ENDED;
     }
 

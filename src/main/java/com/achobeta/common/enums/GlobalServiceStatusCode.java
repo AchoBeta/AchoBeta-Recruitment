@@ -74,6 +74,8 @@ public enum GlobalServiceStatusCode {
     USER_DID_NOT_PARTICIPATE(5202, "用户并没有参与活动"),
     USER_RESUME_SUBMIT_OVER_COUNT(5203, "用户简历提交次数已达最大"),
     USER_RESUME_STATUS_EXCEPTION(5204, "用户简历状态异常"),
+    USER_RESUME_STATUS_TRANS_EVENT_ERROR(5205, "用户简历状态流转失败"),
+    USER_RESUME_PROMOTED(5206, "用户简历已晋升为管理员"),
 
     /* 面试错误 6001-7000 */
     INTERVIEW_SCHEDULE_NOT_EXISTS(6001, "面试预约不存在"),
@@ -82,7 +84,7 @@ public enum GlobalServiceStatusCode {
 
     INTERVIEW_NOT_EXISTS(6101, "本场面试不存在"),
     INTERVIEW_STATUS_EXCEPTION(6102, "面试状态异常"),
-    INTERVIEW_STATUS_TRANS_EVENT_EXCEPTION(6102, "面试状态流转事件异常"),
+    INTERVIEW_STATUS_TRANS_EVENT_ERROR(6102, "面试状态流转失败"),
 
     INTERVIEW_COMMENT_NOT_EXISTS(6201, "面试评论不存在"),
     INTERVIEW_NOT_SUMMARIZED(6202, "面试还未总结"),
