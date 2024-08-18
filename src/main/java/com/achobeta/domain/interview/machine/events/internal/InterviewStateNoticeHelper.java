@@ -6,6 +6,7 @@ import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.domain.email.model.po.EmailMessage;
 import com.achobeta.domain.email.service.EmailSender;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
+import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.model.vo.InterviewNoticeTemplate;
 import com.achobeta.domain.interview.service.InterviewService;
@@ -66,7 +67,8 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
         return (from, to, event, context) -> {
             defaultInterviewAction.execute(from, to, event, context);
             // 获得数据
-            InterviewDetailVO interviewDetail = interviewService.getInterviewDetail(context.getInterview().getId());
+            Interview currentInterview = context.getInterview();
+            InterviewDetailVO interviewDetail = interviewService.getInterviewDetail(currentInterview.getId());
             ScheduleVO scheduleVO = interviewDetail.getScheduleVO();
             ParticipationDetailVO detailActivityParticipation = interviewScheduleService.getDetailActivityParticipation(scheduleVO.getParticipationId());
             SimpleStudentVO simpleStudentVO = detailActivityParticipation.getSimpleStudentVO();
@@ -86,7 +88,7 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
                     .address(interviewDetail.getAddress())
                     .startTime(scheduleVO.getStartTime())
                     .endTime(scheduleVO.getEndTime())
-                    .status(context.getToState()) // 以状态机轮转的最终状态为准
+                    .status(currentInterview.getStatus()) // 以状态机轮转的最终状态为准
                     .build();
             // 发送
             emailSender.sendModelMail(emailMessage, emailTemplate.getTemplate(), interviewNoticeTemplate);
