@@ -114,10 +114,8 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
         // 执行状态机
         StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
                 fromState, event, interviewContext);
-        InterviewStatus finalState = interviewContext.getFinalState();
+        InterviewStatus finalState = interviewContext.getInterview().getStatus();
         // 状态改变则进行转换
-        Optional.ofNullable(finalState).orElseThrow(() ->
-                new GlobalServiceException(GlobalServiceStatusCode.INTERVIEW_STATUS_TRANS_EVENT_ERROR));
         if(!Objects.equals(fromState, finalState)) {
             switchInterview(currentInterview.getId(), finalState);
         }

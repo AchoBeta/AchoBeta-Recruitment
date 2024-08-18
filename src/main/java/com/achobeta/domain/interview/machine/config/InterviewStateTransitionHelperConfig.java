@@ -29,7 +29,6 @@ public class InterviewStateTransitionHelperConfig {
     public Action<InterviewStatus, InterviewEvent, InterviewContext> defaultInterviewAction() {
         return (from, to, event, context) -> {
             context.log(from, to, event);
-            context.setFinalState(to);
             context.getInterview().setStatus(to);
 //            // 面试通知
 //            if(!InterviewEvent.INTERVIEW_STARTING_NOTICE.equals(event)) {
