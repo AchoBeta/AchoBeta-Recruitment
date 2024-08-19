@@ -17,7 +17,7 @@ public enum EmailTemplateEnum {
 
     INTERVIEW_SUMMARY("面试总结", "interview-summary-model.html"),
 
-    MEMBER_NOTICE("晋升通知", "promotion-notice-model.html"),
+    MEMBER_NOTICE("转正通知", "confirmation-notice-model.html"),
 
     ;
 

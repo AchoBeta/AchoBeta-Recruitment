@@ -75,7 +75,7 @@ public enum GlobalServiceStatusCode {
     USER_RESUME_SUBMIT_OVER_COUNT(5203, "用户简历提交次数已达最大"),
     USER_RESUME_STATUS_EXCEPTION(5204, "用户简历状态异常"),
     USER_RESUME_STATUS_TRANS_EVENT_ERROR(5205, "用户简历状态流转失败"),
-    USER_RESUME_PROMOTED(5206, "用户简历已晋升为管理员"),
+    USER_RESUME_CONFIRMED(5206, "用户简历已转正"),
 
     /* 面试错误 6001-7000 */
     INTERVIEW_SCHEDULE_NOT_EXISTS(6001, "面试预约不存在"),
