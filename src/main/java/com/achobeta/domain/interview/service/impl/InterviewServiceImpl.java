@@ -3,8 +3,8 @@ package com.achobeta.domain.interview.service.impl;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
-import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.machine.constants.InterviewStateMachineConstants;
+import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.model.converter.InterviewConverter;
 import com.achobeta.domain.interview.model.dao.mapper.InterviewMapper;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
@@ -104,18 +104,18 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
 
     @Override
     @Transactional
-    public InterviewStatus executeInterviewStateEvent(Long managerId, InterviewEvent event,
-                                                      Interview currentInterview, InterviewStatus toState) {
-        InterviewContext interviewContext = new InterviewContext();
+    public InterviewStatus executeInterviewStateEvent(InterviewEvent interviewEvent, InterviewContext interviewContext) {
+        Interview currentInterview = interviewContext.getInterview();
+        // 获取当前状态
         InterviewStatus fromState = currentInterview.getStatus();
-        interviewContext.setManagerId(managerId);
-        interviewContext.setToState(toState);
-        interviewContext.setInterview(currentInterview);
         // 执行状态机
-        StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
-                fromState, event, interviewContext);
-        InterviewStatus finalState = interviewContext.getInterview().getStatus();
-        // 状态改变则进行转换
+        InterviewStatus finalState = StateMachineUtil.fireEvent(
+                InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
+                fromState,
+                interviewEvent,
+                interviewContext
+        );
+        // 状态发生改变则进行更新
         if(!Objects.equals(fromState, finalState)) {
             switchInterview(currentInterview.getId(), finalState);
         }

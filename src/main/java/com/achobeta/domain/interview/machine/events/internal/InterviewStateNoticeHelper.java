@@ -88,7 +88,7 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
                     .address(interviewDetail.getAddress())
                     .startTime(scheduleVO.getStartTime())
                     .endTime(scheduleVO.getEndTime())
-                    .status(currentInterview.getStatus()) // 以状态机轮转的最终状态为准
+                    .status(to) // 以状态机轮转的最终状态为准
                     .build();
             // 发送
             emailSender.sendModelMail(emailMessage, emailTemplate.getTemplate(), interviewNoticeTemplate);

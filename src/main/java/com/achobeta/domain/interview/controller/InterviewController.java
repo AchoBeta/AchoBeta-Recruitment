@@ -5,8 +5,10 @@ import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.model.converter.InterviewConverter;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
+import com.achobeta.domain.interview.model.dto.InterviewExecuteDTO;
 import com.achobeta.domain.interview.model.dto.InterviewPaperDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
 import com.achobeta.domain.interview.model.entity.Interview;
@@ -29,7 +31,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Created With Intellij IDEA
@@ -92,15 +93,20 @@ public class InterviewController {
     @PostMapping("/execute/{interviewId}")
     public SystemJsonResponse executeInterviewStateEvent(@PathVariable("interviewId") @NotNull Long interviewId,
                                                          @RequestParam("event") @NotNull Integer event,
-                                                         @RequestParam(name = "status", required = false) Integer status) {
+                                                         @RequestBody(required = false) InterviewExecuteDTO interviewExecuteDTO) {
         // 检查
         Interview currentInterview = interviewService.checkAndGetInterviewExists(interviewId);
+        InterviewEvent interviewEvent = InterviewEvent.get(event);
         // 当前管理员
         Long managerId = BaseContext.getCurrentUser().getUserId();
-        InterviewStatus interviewStatus = Optional.ofNullable(status).map(InterviewStatus::get).orElse(null);
+        // 构造上下文
+        InterviewContext interviewContext = InterviewContext.builder()
+                .managerId(managerId)
+                .interview(currentInterview)
+                .executeDTO(interviewExecuteDTO)
+                .build();
         // 转变
-        InterviewStatus state =
-                interviewService.executeInterviewStateEvent(managerId, InterviewEvent.get(event), currentInterview, interviewStatus);
+        InterviewStatus state = interviewService.executeInterviewStateEvent(interviewEvent, interviewContext);
         return SystemJsonResponse.SYSTEM_SUCCESS(state);
     }
 

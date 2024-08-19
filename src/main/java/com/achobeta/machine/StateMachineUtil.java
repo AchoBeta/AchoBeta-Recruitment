@@ -5,13 +5,11 @@ import com.achobeta.exception.GlobalServiceException;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
 import com.alibaba.cola.statemachine.StateMachineFactory;
-import com.alibaba.cola.statemachine.builder.From;
 import com.alibaba.cola.statemachine.builder.StateMachineBuilder;
 import com.alibaba.cola.statemachine.builder.StateMachineBuilderFactory;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created With Intellij IDEA
@@ -22,14 +20,6 @@ import java.util.Objects;
  */
 @Slf4j
 public class StateMachineUtil {
-
-    public static <S, E, C> StateExternalTransitionHelper<S, E, C> covert(StateExternalTransitionHelper<S, E, C> helper) {
-        return helper;
-    }
-
-    public static <S, E, C> StateInternalTransitionHelper<S, E, C> covert(StateInternalTransitionHelper<S, E, C> helper) {
-        return helper;
-    }
 
     private static <S, E, C> void builderAssign(StateMachineBuilder<S, E, C> builder,
                                                 StateExternalTransitionHelper<S, E, C> helper) {
@@ -73,15 +63,18 @@ public class StateMachineUtil {
     }
 
     public static <S, E, C> void buildMachine(String machineId,
-                                              List<StateExternalTransitionHelper<S, E, C>> externalHelpers,
-                                              List<StateInternalTransitionHelper<S, E, C>> internalHelpers) {
+                                              List<? extends StateExternalTransitionHelper<S, E, C>> externalHelpers,
+                                              List<? extends StateInternalTransitionHelper<S, E, C>> internalHelpers) {
+        // 创建一个 builder
         StateMachineBuilder<S, E, C> builder = StateMachineBuilderFactory.create();
+        // 添加轮转
         externalHelpers.forEach(helper -> {
             builderAssign(builder, helper);
         });
         internalHelpers.forEach(helper -> {
             builderAssign(builder, helper);
         });
+        // 创建状态机
         builder.build(machineId);
     }
 

@@ -40,12 +40,9 @@ public class InterviewStateMachineBuildConfig {
         // 这里元素为范型接口的 List 不能直接赋值
         StateMachineUtil.buildMachine(
                 InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
-                externalHelpers.stream()
-                        .map(StateMachineUtil::covert)
-                        .toList(),
-                internalHelpers.stream()
-                        .map(StateMachineUtil::covert)
-                        .toList());
+                externalHelpers,
+                internalHelpers
+        );
         StateMachineUtil.showMachine(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID);
     }
 

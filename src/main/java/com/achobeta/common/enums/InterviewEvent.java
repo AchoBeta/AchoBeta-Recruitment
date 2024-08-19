@@ -23,8 +23,6 @@ public enum InterviewEvent {
 
     INTERVIEW_STARTING_SUMMARY(5, "面试总结"),
 
-    INTERVIEW_ARBITRARY_CHANGE(6, "面试状态任意变换"),
-
     ;
 
 
