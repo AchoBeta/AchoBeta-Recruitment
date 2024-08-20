@@ -38,6 +38,11 @@ public enum ResumeStatus {
         this.code = code;
     }
 
+    @Override
+    public String toString() {
+        return message;
+    }
+
     private final String message;
 
     @EnumValue

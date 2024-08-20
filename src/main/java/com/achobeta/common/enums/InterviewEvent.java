@@ -35,6 +35,11 @@ public enum InterviewEvent {
         this.description = description;
     }
 
+    @Override
+    public String toString() {
+        return description;
+    }
+
     public static InterviewEvent get(Integer event) {
         for (InterviewEvent interviewEvent : InterviewEvent.values()) {
             if(interviewEvent.getEvent().equals(event)) {

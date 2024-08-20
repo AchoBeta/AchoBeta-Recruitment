@@ -33,6 +33,11 @@ public enum InterviewStatus {
         this.description = description;
     }
 
+    @Override
+    public String toString() {
+        return description;
+    }
+
     public void check(InterviewStatus interviewStatus) {
         if(interviewStatus != this) {
             throw new GlobalServiceException(String.format("面试%s", this.getDescription()),

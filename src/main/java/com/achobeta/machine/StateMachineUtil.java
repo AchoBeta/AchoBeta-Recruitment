@@ -4,10 +4,12 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.achobeta.exception.GlobalServiceException;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
+import com.alibaba.cola.statemachine.StateMachine;
 import com.alibaba.cola.statemachine.StateMachineFactory;
 import com.alibaba.cola.statemachine.builder.StateMachineBuilder;
 import com.alibaba.cola.statemachine.builder.StateMachineBuilderFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.List;
 
@@ -17,6 +19,17 @@ import java.util.List;
  * User: 马拉圈
  * Date: 2024-08-12
  * Time: 4:01
+ */
+/**
+ * Alibaba Cola 状态机关键词
+ * State：状态
+ * Event：事件，状态由事件触发，引起变化
+ * Transition：流转，表示从一个状态到另一个状态
+ * External Transition：外部流转，两个不同状态之间的流转
+ * Internal Transition：内部流转，同一个状态之间的流转
+ * Condition：条件，表示是否允许到达某个状态
+ * Action：动作，到达某个状态之后，可以做什么
+ * StateMachine：状态机
  */
 @Slf4j
 public class StateMachineUtil {
@@ -78,11 +91,25 @@ public class StateMachineUtil {
         builder.build(machineId);
     }
 
+    public static <S, E, C> StateMachine<S, E, C> getMachine(String machineId) {
+        return StateMachineFactory.get(machineId);
+    }
+
     public static void showMachine(String machineId) {
-        StateMachineFactory.get(machineId).showStateMachine();
+        getMachine(machineId).showStateMachine();
+    }
+
+    public static String generatePlantUML(String machineId) {
+        return getMachine(machineId).generatePlantUML();
+    }
+
+    public static <S, E, C> void printMachine(String machineId) {
+        StateMachine<S, E, C> stateMachine = getMachine(machineId);
+        stateMachine.showStateMachine();
+        System.out.println(stateMachine.generatePlantUML());
     }
 
     public static <S, E, C> S fireEvent(String machineId, S state, E event, C context) {
-        return (S) StateMachineFactory.get(machineId).fireEvent(state, event, context);
+        return (S) getMachine(machineId).fireEvent(state, event, context);
     }
 }
