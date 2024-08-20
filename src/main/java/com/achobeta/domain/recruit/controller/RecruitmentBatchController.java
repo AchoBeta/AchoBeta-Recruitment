@@ -96,5 +96,11 @@ public class RecruitmentBatchController {
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
+    @GetMapping("/detail/{batchId}")
+    public SystemJsonResponse shiftRecruitmentBatch(@PathVariable("batchId") @NotNull Long batchId) {
+        RecruitmentBatch recruitmentBatch = recruitmentBatchService.checkAndGetRecruitmentBatch(batchId);
+        RecruitmentBatchVO recruitmentBatchVO = BeanUtil.copyProperties(recruitmentBatch, RecruitmentBatchVO.class);
+        return SystemJsonResponse.SYSTEM_SUCCESS(recruitmentBatchVO);
+    }
 
 }
