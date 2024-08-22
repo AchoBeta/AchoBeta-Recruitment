@@ -16,7 +16,7 @@ public class StuSimpleResumeVO implements Serializable {
 
     private Long batchId;
 
-    private Long studentId;
+    private String studentId;
 
     private String name;
 

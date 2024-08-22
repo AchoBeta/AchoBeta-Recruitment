@@ -41,11 +41,8 @@ public class RecruitmentBatchController {
     public SystemJsonResponse createRecruitmentBatch(@RequestBody RecruitmentBatchDTO recruitmentBatchDTO) {
         // 检测
         ValidatorUtils.validate(recruitmentBatchDTO);
-        Integer batch = recruitmentBatchDTO.getBatch();
-        if(batch.compareTo(0) <= 0) {
-            throw new GlobalServiceException("ab版本非法", GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
-        }
         // 调用服务创建一次招新活动
+        Integer batch = recruitmentBatchDTO.getBatch();
         String title = recruitmentBatchDTO.getTitle();
         Date deadline = new Date(recruitmentBatchDTO.getDeadline());
         Long batchId = recruitmentBatchService.createRecruitmentBatch(batch, title, deadline);

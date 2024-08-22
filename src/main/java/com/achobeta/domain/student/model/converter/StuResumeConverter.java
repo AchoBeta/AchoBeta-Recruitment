@@ -3,10 +3,12 @@ package com.achobeta.domain.student.model.converter;
 
 
 
+import com.achobeta.common.enums.Gender;
 import com.achobeta.domain.student.model.dto.StuAttachmentDTO;
 import com.achobeta.domain.student.model.dto.StuSimpleResumeDTO;
 import com.achobeta.domain.student.model.entity.StuAttachment;
 import com.achobeta.domain.student.model.entity.StuResume;
+import com.achobeta.domain.student.model.vo.GenderVO;
 import com.achobeta.domain.student.model.vo.StuAttachmentVO;
 import com.achobeta.domain.student.model.vo.StuSimpleResumeVO;
 import org.mapstruct.Mapper;
@@ -30,4 +32,6 @@ public interface StuResumeConverter {
     StuResume updatePoWithStuSimpleResumeDTO(StuSimpleResumeDTO stuSimpleResumeDTO,@MappingTarget StuResume stuResume);
 
     StuAttachment stuAttachmentDTOToPo(StuAttachmentDTO stuAttachmentDTO);
+
+    List<GenderVO> genderListToGenderVOList(List<Gender> genderList);
 }

@@ -1,11 +1,14 @@
 package com.achobeta.domain.student.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.common.enums.Gender;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.student.model.converter.StuResumeConverter;
 import com.achobeta.domain.student.model.dto.QueryResumeDTO;
 import com.achobeta.domain.student.model.dto.QueryResumeOfUserDTO;
 import com.achobeta.domain.student.model.dto.StuResumeDTO;
 import com.achobeta.domain.student.model.entity.StuResume;
+import com.achobeta.domain.student.model.vo.GenderVO;
 import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.achobeta.domain.student.service.StuResumeService;
 import com.achobeta.domain.users.context.BaseContext;
@@ -17,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -87,5 +91,13 @@ public class StuResumeController {
         //获取简历信息
         StuResumeVO stuResumeVO= stuResumeService.getResumeInfo(queryResumeDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS(stuResumeVO);
+    }
+
+    @GetMapping("/list/gender")
+    @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER})
+    public SystemJsonResponse getGenderList() {
+        List<GenderVO> genderVOList =
+                StuResumeConverter.STU_RESUME_CONVERTER.genderListToGenderVOList(List.of(Gender.values()));
+        return SystemJsonResponse.SYSTEM_SUCCESS(genderVOList);
     }
 }
