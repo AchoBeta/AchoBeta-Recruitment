@@ -1,6 +1,5 @@
 package com.achobeta.domain.student.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.ResumeStatus;
 import com.achobeta.domain.student.model.converter.StuResumeConverter;
@@ -8,7 +7,6 @@ import com.achobeta.domain.student.model.dao.mapper.StuResumeMapper;
 import com.achobeta.domain.student.model.dto.*;
 import com.achobeta.domain.student.model.entity.StuAttachment;
 import com.achobeta.domain.student.model.entity.StuResume;
-import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import com.achobeta.domain.student.model.vo.StuAttachmentVO;
 import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.achobeta.domain.student.model.vo.StuSimpleResumeVO;
@@ -161,7 +159,6 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
 
     @Transactional
     public void saveStuAttachment(List<StuAttachmentDTO> stuAttachmentDTOList, Long resumeId) {
-        System.out.println(stuAttachmentDTOList);
         //删除原有简历附件
         stuAttachmentService.lambdaUpdate().eq(StuAttachment::getResumeId, resumeId).remove();
         //构造附件保存信息列表
