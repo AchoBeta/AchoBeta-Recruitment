@@ -27,8 +27,7 @@ public class StuSimpleResumeDTO implements Serializable {
     @NotBlank(message = "名字不能为空")
     private String name;
 
-    @NotNull(message = "性别值不能为空")
-    @Min(value = 0, message = "性别值非法")
+    @IntRange(min = 0, max = 1, message = "性别值非法")
     private Integer gender;
 
     @IntRange(min = 1000, max = 9999, message = "年级应为四位数")

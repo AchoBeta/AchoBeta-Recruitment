@@ -1,14 +1,11 @@
 package com.achobeta.domain.student.controller;
 
 import com.achobeta.common.SystemJsonResponse;
-import com.achobeta.common.enums.Gender;
 import com.achobeta.common.enums.UserTypeEnum;
-import com.achobeta.domain.student.model.converter.StuResumeConverter;
 import com.achobeta.domain.student.model.dto.QueryResumeDTO;
 import com.achobeta.domain.student.model.dto.QueryResumeOfUserDTO;
 import com.achobeta.domain.student.model.dto.StuResumeDTO;
 import com.achobeta.domain.student.model.entity.StuResume;
-import com.achobeta.domain.student.model.vo.GenderVO;
 import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.achobeta.domain.student.service.StuResumeService;
 import com.achobeta.domain.users.context.BaseContext;
@@ -93,11 +90,4 @@ public class StuResumeController {
         return SystemJsonResponse.SYSTEM_SUCCESS(stuResumeVO);
     }
 
-    @GetMapping("/list/gender")
-    @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER})
-    public SystemJsonResponse getGenderList() {
-        List<GenderVO> genderVOList =
-                StuResumeConverter.STU_RESUME_CONVERTER.genderListToGenderVOList(List.of(Gender.values()));
-        return SystemJsonResponse.SYSTEM_SUCCESS(genderVOList);
-    }
 }
