@@ -1,6 +1,5 @@
 package com.achobeta.util;
 
-import cn.hutool.core.util.ArrayUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 
@@ -73,7 +72,6 @@ public class ImageUtil {
 
     public static Boolean isImage(byte[] bytes) {
         return Optional.ofNullable(bytes)
-                .filter(ArrayUtil::isNotEmpty)
                 .map(ImageUtil::getImage)
                 .map(ImageUtil::isImage)
                 .orElse(Boolean.FALSE);
