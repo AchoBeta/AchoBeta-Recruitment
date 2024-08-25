@@ -7,6 +7,7 @@ import com.achobeta.domain.interview.machine.constants.InterviewStateMachineCons
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.model.converter.InterviewConverter;
 import com.achobeta.domain.interview.model.dao.mapper.InterviewMapper;
+import com.achobeta.domain.interview.model.dto.InterviewConditionDTO;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
 import com.achobeta.domain.interview.model.entity.Interview;
@@ -58,13 +59,13 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     }
 
     @Override
-    public List<InterviewVO> managerGetInterviewList(Long managerId) {
-        return interviewMapper.managerGetInterviewList(managerId);
+    public List<InterviewVO> managerGetInterviewList(Long managerId, InterviewConditionDTO condition) {
+        return interviewMapper.managerGetInterviewList(managerId, condition);
     }
 
     @Override
-    public List<InterviewVO> userGetInterviewList(Long userId) {
-        return interviewMapper.userGetInterviewList(userId);
+    public List<InterviewVO> userGetInterviewList(Long userId, InterviewConditionDTO condition) {
+        return interviewMapper.userGetInterviewList(userId, condition);
     }
 
     @Override

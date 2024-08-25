@@ -3,6 +3,7 @@ package com.achobeta.domain.interview.service;
 import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
+import com.achobeta.domain.interview.model.dto.InterviewConditionDTO;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
 import com.achobeta.domain.interview.model.entity.Interview;
@@ -26,9 +27,9 @@ public interface InterviewService extends IService<Interview> {
 
     List<InterviewVO> getInterviewListByScheduleId(Long scheduleId);
 
-    List<InterviewVO> managerGetInterviewList(Long managerId);
+    List<InterviewVO> managerGetInterviewList(Long managerId, InterviewConditionDTO condition);
 
-    List<InterviewVO> userGetInterviewList(Long userId);
+    List<InterviewVO> userGetInterviewList(Long userId, InterviewConditionDTO condition);
 
     InterviewDetailVO getInterviewDetail(Long interviewId);
 

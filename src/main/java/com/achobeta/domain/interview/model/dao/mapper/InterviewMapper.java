@@ -1,5 +1,6 @@
 package com.achobeta.domain.interview.model.dao.mapper;
 
+import com.achobeta.domain.interview.model.dto.InterviewConditionDTO;
 import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.model.vo.InterviewNoticeTemplate;
@@ -17,13 +18,11 @@ import java.util.List;
 */
 public interface InterviewMapper extends BaseMapper<Interview> {
 
-    List<InterviewVO> managerGetInterviewList(@Param("managerId") Long managerId);
+    List<InterviewVO> managerGetInterviewList(@Param("managerId") Long managerId, @Param("condition") InterviewConditionDTO interviewConditionDTO);
 
-    List<InterviewVO> userGetInterviewList(@Param("userId") Long userId);
+    List<InterviewVO> userGetInterviewList(@Param("userId") Long userId, @Param("condition") InterviewConditionDTO interviewConditionDTO);
 
     InterviewDetailVO getInterviewDetail(@Param("interviewId") Long interviewId);
-
-    InterviewNoticeTemplate getNoticeTemplate(@Param("interviewId")Long interviewId);
 
 }
 

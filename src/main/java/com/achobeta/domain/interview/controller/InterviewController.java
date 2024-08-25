@@ -7,10 +7,7 @@ import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.model.converter.InterviewConverter;
-import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
-import com.achobeta.domain.interview.model.dto.InterviewExecuteDTO;
-import com.achobeta.domain.interview.model.dto.InterviewPaperDTO;
-import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
+import com.achobeta.domain.interview.model.dto.*;
 import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.model.vo.InterviewEventVO;
@@ -129,28 +126,28 @@ public class InterviewController {
     }
 
     @GetMapping("/list/manager/all")
-    public SystemJsonResponse managerGetAllInterviewList() {
+    public SystemJsonResponse managerGetAllInterviewList(@RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 查询
-        List<InterviewVO> interviewVOList = interviewService.managerGetInterviewList(null);
+        List<InterviewVO> interviewVOList = interviewService.managerGetInterviewList(null, InterviewConditionDTO.getCondition(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewVOList);
     }
 
     @GetMapping("/list/manager/own")
-    public SystemJsonResponse managerGetOwnInterviewList() {
+    public SystemJsonResponse managerGetOwnInterviewList(@RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 获取当前管理员 id
         Long managerId = BaseContext.getCurrentUser().getUserId();
         // 查询
-        List<InterviewVO> interviewVOList = interviewService.managerGetInterviewList(managerId);
+        List<InterviewVO> interviewVOList = interviewService.managerGetInterviewList(managerId, InterviewConditionDTO.getCondition(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewVOList);
     }
 
     @GetMapping("/list/user")
     @Intercept(permit = {UserTypeEnum.USER})
-    public SystemJsonResponse userGetOwnInterviewList() {
+    public SystemJsonResponse userGetOwnInterviewList(@RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 获取当前用户 id
         Long userId = BaseContext.getCurrentUser().getUserId();
         // 查询
-        List<InterviewVO> interviewVOList = interviewService.userGetInterviewList(userId);
+        List<InterviewVO> interviewVOList = interviewService.userGetInterviewList(userId, InterviewConditionDTO.getCondition(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewVOList);
     }
 
