@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.achobeta.domain.evaluate.model.dao.mapper.InterviewSummaryMapper">
+
+    <resultMap id="BaseResultMap" type="com.achobeta.domain.evaluate.model.entity.InterviewSummary">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="interviewId" column="interview_id" jdbcType="BIGINT"/>
+            <result property="basis" column="basis" jdbcType="TINYINT"/>
+            <result property="coding" column="coding" jdbcType="TINYINT"/>
+            <result property="thinking" column="thinking" jdbcType="TINYINT"/>
+            <result property="express" column="express" jdbcType="TINYINT"/>
+            <result property="evaluate" column="evaluate" jdbcType="VARCHAR"/>
+            <result property="suggest" column="suggest" jdbcType="VARCHAR"/>
+            <result property="playback" column="playback" jdbcType="VARCHAR"/>
+            <result property="version" column="version" jdbcType="INTEGER"/>
+            <result property="deleted" column="is_deleted" jdbcType="BIT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,interview_id,basis,
+        coding,thinking,express,
+        evaluate,suggest,playback,
+        version,is_deleted,create_time,
+        update_time
+    </sql>
+</mapper>
