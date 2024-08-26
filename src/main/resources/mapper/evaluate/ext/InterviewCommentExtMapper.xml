@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.achobeta.domain.evaluate.model.dao.mapper.InterviewCommentMapper">
+
+    <resultMap id="CommentatorMap" type="com.achobeta.domain.evaluate.model.vo.InterviewCommentatorVO">
+        <id property="managerId" column="id" jdbcType="BIGINT"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="phoneNumber" column="phone_number" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <resultMap id="InterviewCommentMap" type="com.achobeta.domain.evaluate.model.vo.InterviewCommentVO">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <association property="commentator" columnPrefix="m_" resultMap="CommentatorMap"/>
+    </resultMap>
+
+    <select id="getCommentListByInterviewId" parameterType="java.lang.Long" resultMap="InterviewCommentMap">
+        select
+            c.id, c.content, c.create_time, c.update_time,
+            m.id m_id, m.username m_username, m.nickname m_nickname,m.email m_email,
+            m.phone_number m_phone_number, m.avatar m_acvtar
+        from interview i
+             left join interview_comment c on c.interview_id = i.id and c.is_deleted = 0 and i.is_deleted = 0
+             left join user m on m.id = c.manager_id and m.is_deleted = 0 and c.is_deleted = 0
+        where i.id = #{interviewId,jdbcType=BIGINT} and c.id is not null
+        order by c.create_time
+    </select>
+
+</mapper>
