@@ -2,11 +2,13 @@ package com.achobeta.interpretor;
 
 
 import cn.hutool.core.util.StrUtil;
+import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.users.context.BaseContext;
 
 
+import com.achobeta.common.annotation.handler.InterceptAnnotationHandler;
 import com.achobeta.jwt.propertities.JwtProperties;
 import com.achobeta.jwt.util.JwtUtil;
 import com.achobeta.domain.users.model.po.UserHelper;
@@ -16,12 +18,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.crypto.SecretKey;
+import java.lang.reflect.Method;
 
 /**
  * @author cattleYuan
@@ -42,8 +44,20 @@ public class UserInterpretor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //可以解决拦截器跨域问题
         if (!(handler instanceof HandlerMethod)) {
+            // 并不处理非目标方法的请求
+            // todo: 例如获取资源的请求，而这些请求需要进行其他的处理！
             return true;
         }
+
+        // 获取目标方法
+        Method targetMethod = ((HandlerMethod) handler).getMethod();
+        // 获取 intercept 注解实例
+        Intercept intercept = InterceptAnnotationHandler.getIntercept(targetMethod);
+        // 判断是否忽略
+        if(InterceptAnnotationHandler.isIgnore(intercept)) {
+            return true;
+        }
+
         String token = request.getHeader(jwtProperties.getTokenName());
         //从请求头中获取token
         if (StrUtil.isEmpty(token)) {
@@ -53,6 +67,11 @@ public class UserInterpretor implements HandlerInterceptor {
         SecretKey secretKey = JwtUtil.generalKey(jwtProperties.getSecretKey());
 
         Claims claims = JwtUtil.parseJWT(secretKey, token);
+
+        // permit 中没有 role 就会抛异常
+        Integer role = Integer.parseInt(claims.get(UserTypeEnum.USER.getName()).toString());
+        InterceptAnnotationHandler.validate(intercept, role);
+
         //通过线程局部变量设置当前线程用户信息
         setGlobaleUserInfoByClaims(claims, token);
         //判断token是否即将过期

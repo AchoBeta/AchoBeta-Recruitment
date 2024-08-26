@@ -13,6 +13,12 @@ public enum EmailTemplateEnum {
 
     CAPTCHA("邮箱验证码：验证用户身份", "identifying-code-model.html"),
 
+    INTERVIEW_NOTICE("面试通知", "interview-notice-model.html"),
+
+    INTERVIEW_SUMMARY("面试总结", "interview-summary-model.html"),
+
+    MEMBER_NOTICE("转正通知", "confirmation-notice-model.html"),
+
     ;
 
     /**

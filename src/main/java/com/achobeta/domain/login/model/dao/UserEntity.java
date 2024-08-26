@@ -38,6 +38,10 @@ public class UserEntity extends BaseIncrIDEntity {
     /**
      * 用户类型
      */
-    private int userType;
+    private Integer userType;
+    /**
+     * 用户头像
+     */
+    private Long avatar;
 
 }

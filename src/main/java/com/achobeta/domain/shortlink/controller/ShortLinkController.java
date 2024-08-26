@@ -2,10 +2,12 @@ package com.achobeta.domain.shortlink.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
 import com.achobeta.domain.shortlink.util.HttpUrlValidator;
 import com.achobeta.domain.shortlink.util.ShortLinkUtils;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.common.annotation.Intercept;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Intercept(permit = {UserTypeEnum.ADMIN})
 @RequestMapping("/api/v1/shortlink")
 public class ShortLinkController {
 
@@ -28,6 +31,7 @@ public class ShortLinkController {
      * @return 重定向到原链接
      */
     @GetMapping("/{code}")
+    @Intercept(ignore = true)
     public RedirectView getShortLink(@PathVariable("code") String code) {
         String originUrl = shortLinkService.getOriginUrl(code);
         log.info("短链code:{} -> 原链接:{}", code, originUrl);

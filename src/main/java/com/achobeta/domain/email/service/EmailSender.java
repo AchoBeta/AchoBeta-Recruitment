@@ -35,6 +35,7 @@ public class EmailSender {
         simpleMailMessage.setFrom(emailMessage.getSender());
         simpleMailMessage.setTo(emailMessage.getRecipient());
         simpleMailMessage.setCc(emailMessage.getCarbonCopy());
+        simpleMailMessage.setSentDate(emailMessage.getCreateTime());
         simpleMailMessage.setSubject(emailMessage.getTitle());
         simpleMailMessage.setText(emailMessage.getContent());
         return simpleMailMessage;
@@ -46,6 +47,7 @@ public class EmailSender {
             mimeMessageHelper.setFrom(emailMessage.getSender());
             mimeMessageHelper.setCc(emailMessage.getCarbonCopy());
             mimeMessageHelper.setSubject(emailMessage.getTitle());
+            mimeMessageHelper.setSentDate(emailMessage.getCreateTime());
             mimeMessageHelper.setTo(emailMessage.getRecipient());
             return mimeMessageHelper;
         } catch (MessagingException e) {
