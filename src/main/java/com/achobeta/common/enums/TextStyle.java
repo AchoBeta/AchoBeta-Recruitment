@@ -10,6 +10,10 @@ import lombok.Getter;
  * Time: 15:02
  */
 @Getter
+/**
+ * 用于插入邮件的 html 元素的 style 属性：
+ * th:style="${style}"
+ */
 public enum TextStyle {
 
     RED("color: red"),
