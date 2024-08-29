@@ -22,6 +22,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class InterviewExperienceTemplateInner {
 
+    private final static Integer PASS = 6;
+
     private String title;
 
     private Integer score;
@@ -33,7 +35,9 @@ public class InterviewExperienceTemplateInner {
     private TextStyle style;
 
     public String getScore() {
-        return Integer.valueOf(-1).equals(this.score) ? "超纲" : String.valueOf(this.score);
+        return Optional.ofNullable(this.score)
+                .map(i -> i.compareTo(0) < 0 ? "超纲" : String.valueOf(this.score))
+                .orElse(null);
     }
 
     private static TextStyle getStyle(Integer score) {
@@ -41,7 +45,7 @@ public class InterviewExperienceTemplateInner {
                 .map(i -> {
                     if (i.compareTo(0) < 0) {
                         return TextStyle.GREY;
-                    } else if (i.compareTo(6) < 0) {
+                    } else if (i.compareTo(PASS) < 0) {
                         return TextStyle.RED;
                     } else {
                         return TextStyle.GREEN;
