@@ -1,9 +1,7 @@
 package com.achobeta.domain.email.service;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollectionUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.domain.email.model.po.EmailHtml;
 import com.achobeta.domain.email.model.po.EmailMessage;
 import com.achobeta.exception.GlobalServiceException;
 import jakarta.mail.MessagingException;
@@ -20,7 +18,6 @@ import org.thymeleaf.context.Context;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -32,8 +29,6 @@ public class EmailSender {
     private final JavaMailSender javaMailSender;
 
     private final TemplateEngine templateEngine;
-
-    private final EmailHtmlBuilder emailHtmlBuilder;
 
     public SimpleMailMessage emailToSimpleMailMessage(@NonNull EmailMessage emailMessage) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();

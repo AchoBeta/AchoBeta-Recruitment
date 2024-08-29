@@ -1,6 +1,5 @@
 package com.achobeta.domain.evaluate.service.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.achobeta.domain.evaluate.model.converter.InterviewScoreConverter;
 import com.achobeta.domain.evaluate.model.dao.mapper.InterviewQuestionScoreMapper;
 import com.achobeta.domain.evaluate.model.entity.InterviewQuestionScore;
@@ -18,7 +17,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
