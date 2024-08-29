@@ -1,6 +1,5 @@
 package com.achobeta.domain.email.model.po;
 
-import com.achobeta.common.enums.EmailTemplateEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EmailHtml {
 
-    private EmailTemplateEnum template;
+    private String template;
 
     private Object context;
 

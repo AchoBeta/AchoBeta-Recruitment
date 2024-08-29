@@ -1,7 +1,6 @@
 package com.achobeta.domain.email.service;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.achobeta.common.enums.EmailTemplateEnum;
 import com.achobeta.domain.email.model.po.EmailHtml;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,15 +18,15 @@ import java.util.List;
  */
 @Component
 @RequiredArgsConstructor
-public class EmailHtmlBuilder {
+public class EmailHtmlEngine {
 
     private final TemplateEngine templateEngine;
 
-    public HtmlBuilder builder() {
-        return new HtmlBuilder();
+    public EmailHtmlBuilder builder() {
+        return new EmailHtmlBuilder();
     }
 
-    public class HtmlBuilder {
+    public class EmailHtmlBuilder {
 
         private final StringBuilder htmlBuilder = new StringBuilder();
 
@@ -37,24 +36,24 @@ public class EmailHtmlBuilder {
             return context;
         }
 
-        private <T> String getHtml(EmailTemplateEnum emailTemplateEnum, T data) {
-            return templateEngine.process(emailTemplateEnum.getTemplate(), getContext(data));
+        private <T> String getHtml(String template, T data) {
+            return templateEngine.process(template, getContext(data));
         }
 
-        public HtmlBuilder append(String html) {
+        public EmailHtmlBuilder append(String html) {
             htmlBuilder.append(html);
             return this;
         }
 
-        public <T> HtmlBuilder append(EmailTemplateEnum emailTemplateEnum, T data) {
-            return append(getHtml(emailTemplateEnum, data));
+        public <T> EmailHtmlBuilder append(String template, T data) {
+            return append(getHtml(template, data));
         }
 
-        public HtmlBuilder append(EmailHtml emailHtml) {
+        public EmailHtmlBuilder append(EmailHtml emailHtml) {
             return append(emailHtml.getTemplate(), emailHtml.getContext());
         }
 
-        public HtmlBuilder append(List<EmailHtml> emailHtmlList) {
+        public EmailHtmlBuilder append(List<EmailHtml> emailHtmlList) {
             emailHtmlList.forEach(this::append);
             return this;
         }

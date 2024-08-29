@@ -5,7 +5,7 @@ import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.domain.email.model.po.EmailHtml;
 import com.achobeta.domain.email.model.po.EmailMessage;
-import com.achobeta.domain.email.service.EmailHtmlBuilder;
+import com.achobeta.domain.email.service.EmailHtmlEngine;
 import com.achobeta.domain.email.service.EmailSender;
 import com.achobeta.domain.evaluate.model.vo.InterviewExperienceTemplateClose;
 import com.achobeta.domain.evaluate.model.vo.InterviewExperienceTemplateInner;
@@ -43,7 +43,7 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
 
     private final EmailSender emailSender;
 
-    private final EmailHtmlBuilder emailHtmlBuilder;
+    private final EmailHtmlEngine emailHtmlEngine;
 
     private final Condition<InterviewContext> defaultInterviewCondition;
 
@@ -85,11 +85,21 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                     .getDetailActivityParticipation(interviewDetailScheduleVO.getParticipationId())
                     .getSimpleStudentVO();
 
+            // 构造邮件消息
+            EmailMessage emailMessage = new EmailMessage();
+            emailMessage.setSender(achobetaEmail);
+            emailMessage.setCarbonCopy();
+            emailMessage.setCreateTime(new Date());
+            emailMessage.setTitle(EmailTemplateEnum.INTERVIEW_EXPERIENCE_OPEN.getTitle());
+            emailMessage.setRecipient(simpleStudentVO.getEmail());
+
+            String openTemplate = EmailTemplateEnum.INTERVIEW_EXPERIENCE_OPEN.getTemplate();
             InterviewExperienceTemplateOpen templateOpen = InterviewExperienceTemplateOpen.builder()
                     .studentId(simpleStudentVO.getStudentId())
                     .title(interviewDetail.getTitle())
                     .build();
 
+            String innerTemplate = EmailTemplateEnum.INTERVIEW_EXPERIENCE_INNER.getTemplate();
             List<EmailHtml> emailHtmlList =  interviewQuestionScoreService.getInterviewPaperDetail(interviewId)
                     .getQuestions()
                     .stream()
@@ -101,30 +111,24 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                                 .standard(question.getStandard())
                                 .build();
                     }).map(inner -> {
-                        return new EmailHtml(EmailTemplateEnum.INTERVIEW_EXPERIENCE_INNER, inner);
+                        return new EmailHtml(innerTemplate, inner);
                     }).toList();
 
+            String closeTemplate = EmailTemplateEnum.INTERVIEW_EXPERIENCE_CLOSE.getTemplate();
             InterviewExperienceTemplateClose templateClose = InterviewExperienceTemplateClose.builder()
                     .startTime(interviewDetailScheduleVO.getStartTime())
                     .endTime(interviewDetailScheduleVO.getEndTime())
                     .build();
 
             // 构造 html
-            String html = emailHtmlBuilder.builder()
-                    .append(EmailTemplateEnum.INTERVIEW_EXPERIENCE_OPEN, templateOpen)
+            String html = emailHtmlEngine.builder()
+                    .append(openTemplate, templateOpen)
                     .append(emailHtmlList)
-                    .append(EmailTemplateEnum.INTERVIEW_EXPERIENCE_CLOSE, templateClose)
+                    .append(closeTemplate, templateClose)
                     .build();
 
-            EmailMessage emailMessage = new EmailMessage();
-            emailMessage.setSender(achobetaEmail);
-            emailMessage.setCarbonCopy();
-            emailMessage.setCreateTime(new Date());
-            emailMessage.setTitle(EmailTemplateEnum.INTERVIEW_EXPERIENCE_OPEN.getTitle());
-            emailMessage.setRecipient(simpleStudentVO.getEmail());
-
+            // 发送邮件
             emailSender.sendModelMail(emailMessage, html);
-
         };
     }
 }
