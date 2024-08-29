@@ -106,17 +106,6 @@ public class EmailSender {
         sendModelMail(emailMessage, content);
     }
 
-    public void sendComplexModelMail(@NonNull EmailMessage emailMessage, List<EmailHtml> emailHtmlList) {
-        if(CollectionUtil.isEmpty(emailHtmlList)) {
-            return;
-        }
-        // 构造模板消息
-        String content = emailHtmlBuilder.builder()
-                .append(emailHtmlList)
-                .build();
-        sendModelMail(emailMessage, content);
-    }
-
     public void sendModelMailWithFile(@NonNull EmailMessage emailMessage, String template, Object modelMessage, File... files) {
         // 封装对象
         try {
