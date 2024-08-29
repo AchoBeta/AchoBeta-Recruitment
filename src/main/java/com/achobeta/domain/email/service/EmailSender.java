@@ -3,8 +3,6 @@ package com.achobeta.domain.email.service;
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.email.model.po.EmailMessage;
-import com.achobeta.domain.email.model.vo.EmailCenterTemplate;
-import com.achobeta.domain.email.util.EmailTemplateUtil;
 import com.achobeta.exception.GlobalServiceException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -94,32 +92,6 @@ public class EmailSender {
             context.setVariables(BeanUtil.beanToMap(modelMessage));
             //合并模板与数据
             String content = templateEngine.process(template, context);
-            mimeMessageHelper.setText(content, true);
-            javaMailSender.send(mimeMessage);
-        } catch (MessagingException e) {
-            throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.EMAIL_SEND_FAIL);
-        }
-    }
-
-    public void sendModelMail(@NonNull EmailMessage emailMessage,
-                              String templateOpen, Object modelMessageOpen,
-                              List<EmailCenterTemplate> emailCenterTemplateList,
-                              String templateClose, Object modelMessageClose) {
-        // 封装对象
-        try {
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper mimeMessageHelper = emailIntoMimeMessageByHelper(mimeMessage, emailMessage);
-            // 构造模板消息
-            Context contextOpen = new Context();
-            contextOpen.setVariables(BeanUtil.beanToMap(modelMessageOpen));
-            Context contextClose = new Context();
-            contextOpen.setVariables(BeanUtil.beanToMap(modelMessageClose));
-            //合并模板与数据
-            String content = EmailTemplateUtil.getHtmlBuilder()
-                    .append(templateEngine.process(templateOpen, contextOpen))
-                    .group(emailCenterTemplateList)
-                    .append(templateEngine.process(templateClose, contextClose))
-                    .builder();
             mimeMessageHelper.setText(content, true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
