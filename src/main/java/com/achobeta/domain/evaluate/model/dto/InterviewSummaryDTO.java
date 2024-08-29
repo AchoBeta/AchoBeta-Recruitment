@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import static com.achobeta.domain.evaluate.constants.InterviewEvaluateConstants.*;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -18,16 +20,16 @@ public class InterviewSummaryDTO {
     @NotNull(message = "面试 id 不能为空")
     private Long interviewId;
 
-    @IntRange(min = 0, max = 5, message = "基础理论知识掌握数值范围为 0-5")
+    @IntRange(min = MIN_ABILITY_VALUE, max = MAX_ABILITY_VALUE, message = "基础" + ABILITY_VALUE_MESSAGE)
     private Integer basis;
 
-    @IntRange(min = 0, max = 5, message = "代码能力数值范围为 0-5")
+    @IntRange(min = MIN_ABILITY_VALUE, max = MAX_ABILITY_VALUE, message = "代码" + ABILITY_VALUE_MESSAGE)
     private Integer coding;
 
-    @IntRange(min = 0, max = 5, message = "思维能力数值范围为 0-5")
+    @IntRange(min = MIN_ABILITY_VALUE, max = MAX_ABILITY_VALUE, message = "思维" + ABILITY_VALUE_MESSAGE)
     private Integer thinking;
 
-    @IntRange(min = 0, max = 5, message = "表达能力数值范围为 0-5")
+    @IntRange(min = MIN_ABILITY_VALUE, max = MAX_ABILITY_VALUE, message = "表达" + ABILITY_VALUE_MESSAGE)
     private Integer express;
 
     @NotBlank(message = "总评不能为空")

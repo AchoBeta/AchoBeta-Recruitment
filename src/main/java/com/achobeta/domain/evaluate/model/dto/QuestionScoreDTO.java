@@ -1,8 +1,11 @@
 package com.achobeta.domain.evaluate.model.dto;
 
 import com.achobeta.common.annotation.IntRange;
+import com.achobeta.domain.evaluate.constants.InterviewEvaluateConstants;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+
+import static com.achobeta.domain.evaluate.constants.InterviewEvaluateConstants.*;
 
 /**
  * Created With Intellij IDEA
@@ -14,13 +17,15 @@ import lombok.Data;
 @Data
 public class QuestionScoreDTO {
 
+    public final static int I = 0;
+
     @NotNull(message = "面试 id 不能为空")
     private Long interviewId;
 
     @NotNull(message = "问题 id 不能为空")
     private Long questionId;
 
-    @IntRange(min = -1, max = 10, message = "题目得分数值范围为 -1-10，其中 -1 代表超纲")
+    @IntRange(min = SUPERCLASS_QUESTION_SCORE, max = MAX_QUESTION_SCORE, message = QUESTION_SCORE_MESSAGE)
     private Integer score;
 
 }

@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.achobeta.domain.evaluate.constants.InterviewEvaluateConstants.*;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -22,8 +24,6 @@ import java.util.Optional;
 @AllArgsConstructor
 public class InterviewExperienceTemplateInner {
 
-    private final static Integer PASS = 6;
-
     private String title;
 
     private Integer score;
@@ -36,20 +36,29 @@ public class InterviewExperienceTemplateInner {
 
     public String getScore() {
         return Optional.ofNullable(this.score)
-                .map(i -> i.compareTo(0) < 0 ? "超纲" : String.valueOf(this.score))
+                .map(i -> i.compareTo(SUPERCLASS_QUESTION_SCORE) <= 0 ? SUPERCLASS_MESSAGE : String.valueOf(this.score))
                 .orElse(null);
     }
 
     private static TextStyle getStyle(Integer score) {
         return Optional.ofNullable(score)
                 .map(i -> {
-                    if (i.compareTo(0) < 0) {
+                    if (i.compareTo(MIN_QUESTION_SCORE) < 0) {
                         return TextStyle.GREY;
-                    } else if (i.compareTo(PASS) < 0) {
+                    } else if (i.compareTo(PASS_QUESTION_SCORE) < 0) {
                         return TextStyle.RED;
                     } else {
                         return TextStyle.GREEN;
                     }
+                }).orElse(null);
+    }
+
+    public String getStyle() {
+        return Optional.ofNullable(this.style)
+                .map(TextStyle::getStyle)
+                .or(() -> {
+                    return Optional.ofNullable(getStyle(this.score))
+                            .map(TextStyle::getStyle);
                 }).orElse(null);
     }
 
@@ -65,12 +74,4 @@ public class InterviewExperienceTemplateInner {
 
     }
 
-    public String getStyle() {
-        return Optional.ofNullable(this.style)
-                .map(TextStyle::getStyle)
-                .or(() -> {
-                    return Optional.ofNullable(getStyle(this.score))
-                            .map(TextStyle::getStyle);
-                }).orElse(null);
-    }
 }

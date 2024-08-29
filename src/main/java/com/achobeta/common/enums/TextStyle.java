@@ -22,7 +22,7 @@ public enum TextStyle {
 
     ;
 
-    private String style;
+    private final String style;
 
     TextStyle(String style) {
         this.style = style;
