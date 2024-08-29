@@ -54,7 +54,7 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
 
     @Override
     public InterviewEvent getOnEvent() {
-        return InterviewEvent.INTERVIEW_STARTING_NOTICE;
+        return InterviewEvent.INTERVIEW_NOTICE;
     }
 
     @Override

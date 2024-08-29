@@ -1,6 +1,5 @@
 package com.achobeta.domain.evaluate.model.vo;
 
-import com.achobeta.domain.question.model.vo.QuestionVO;
 import lombok.Data;
 
 /**

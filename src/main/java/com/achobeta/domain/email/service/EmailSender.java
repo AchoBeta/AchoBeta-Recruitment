@@ -1,10 +1,10 @@
 package com.achobeta.domain.email.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.email.model.po.EmailHtml;
 import com.achobeta.domain.email.model.po.EmailMessage;
-import com.achobeta.domain.email.model.vo.EmailCenterTemplate;
-import com.achobeta.domain.email.util.EmailTemplateUtil;
 import com.achobeta.exception.GlobalServiceException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -32,6 +32,8 @@ public class EmailSender {
     private final JavaMailSender javaMailSender;
 
     private final TemplateEngine templateEngine;
+
+    private final EmailHtmlBuilder emailHtmlBuilder;
 
     public SimpleMailMessage emailToSimpleMailMessage(@NonNull EmailMessage emailMessage) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -83,47 +85,36 @@ public class EmailSender {
         }
     }
 
-    public void sendModelMail(@NonNull EmailMessage emailMessage, String template, Object modelMessage) {
-        // 封装对象
+    public void sendModelMail(@NonNull EmailMessage emailMessage, String html) {
         try {
+            // 封装对象
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = emailIntoMimeMessageByHelper(mimeMessage, emailMessage);
-            // 构造模板消息
-            Context context = new Context();
-            context.setVariables(BeanUtil.beanToMap(modelMessage));
-            //合并模板与数据
-            String content = templateEngine.process(template, context);
-            mimeMessageHelper.setText(content, true);
+            mimeMessageHelper.setText(html, true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.EMAIL_SEND_FAIL);
         }
     }
 
-    public void sendModelMail(@NonNull EmailMessage emailMessage,
-                              String templateOpen, Object modelMessageOpen,
-                              List<EmailCenterTemplate> emailCenterTemplateList,
-                              String templateClose, Object modelMessageClose) {
-        // 封装对象
-        try {
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper mimeMessageHelper = emailIntoMimeMessageByHelper(mimeMessage, emailMessage);
-            // 构造模板消息
-            Context contextOpen = new Context();
-            contextOpen.setVariables(BeanUtil.beanToMap(modelMessageOpen));
-            Context contextClose = new Context();
-            contextOpen.setVariables(BeanUtil.beanToMap(modelMessageClose));
-            //合并模板与数据
-            String content = EmailTemplateUtil.getHtmlBuilder()
-                    .append(templateEngine.process(templateOpen, contextOpen))
-                    .group(emailCenterTemplateList)
-                    .append(templateEngine.process(templateClose, contextClose))
-                    .builder();
-            mimeMessageHelper.setText(content, true);
-            javaMailSender.send(mimeMessage);
-        } catch (MessagingException e) {
-            throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.EMAIL_SEND_FAIL);
+    public void sendModelMail(@NonNull EmailMessage emailMessage, String template, Object modelMessage) {
+        // 构造模板消息
+        Context context = new Context();
+        context.setVariables(BeanUtil.beanToMap(modelMessage));
+        //合并模板与数据
+        String content = templateEngine.process(template, context);
+        sendModelMail(emailMessage, content);
+    }
+
+    public void sendComplexModelMail(@NonNull EmailMessage emailMessage, List<EmailHtml> emailHtmlList) {
+        if(CollectionUtil.isEmpty(emailHtmlList)) {
+            return;
         }
+        // 构造模板消息
+        String content = emailHtmlBuilder.builder()
+                .append(emailHtmlList)
+                .build();
+        sendModelMail(emailMessage, content);
     }
 
     public void sendModelMailWithFile(@NonNull EmailMessage emailMessage, String template, Object modelMessage, File... files) {

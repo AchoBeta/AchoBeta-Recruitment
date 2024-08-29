@@ -58,7 +58,7 @@ public class InterviewSummaryHelper implements InterviewStateInternalTransitionH
 
     @Override
     public InterviewEvent getOnEvent() {
-        return InterviewEvent.INTERVIEW_STARTING_SUMMARY;
+        return InterviewEvent.INTERVIEW_SUMMARY;
     }
 
     @Override
