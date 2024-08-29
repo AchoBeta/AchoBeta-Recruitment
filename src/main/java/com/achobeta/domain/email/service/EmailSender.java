@@ -124,7 +124,7 @@ public class EmailSender {
         }
     }
 
-    public <T, R> void customizedSendEmail(@NonNull EmailMessage emailMessage, String template, Function<String, R> function, File... files) {
+    public void customizedSendEmail(@NonNull EmailMessage emailMessage, String template, Function<String, ?> function, File... files) {
         String sender = emailMessage.getSender();
         String[] carbonCopy = emailMessage.getCarbonCopy();
         String title = emailMessage.getTitle();
@@ -148,8 +148,7 @@ public class EmailSender {
                         }
                         // 构造模板消息
                         Context context = new Context();
-                        Object modelMessage = function.apply(to);
-                        context.setVariables(BeanUtil.beanToMap(modelMessage));
+                        context.setVariables(BeanUtil.beanToMap(function.apply(to)));
                         //合并模板与数据
                         String content = templateEngine.process(template, context);
                         // 通过mimeMessageHelper设置到mimeMessage里
