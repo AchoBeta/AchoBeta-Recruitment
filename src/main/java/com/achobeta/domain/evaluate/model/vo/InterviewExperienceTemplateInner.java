@@ -1,9 +1,13 @@
 package com.achobeta.domain.evaluate.model.vo;
 
+import com.achobeta.common.enums.TextStyle;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Created With Intellij IDEA
@@ -22,11 +26,47 @@ public class InterviewExperienceTemplateInner {
 
     private Integer score;
 
+    private Double average;
+
     private String standard;
 
-    private Double average;
+    private TextStyle style;
 
     public String getScore() {
         return Integer.valueOf(-1).equals(this.score) ? "超纲" : String.valueOf(this.score);
+    }
+
+    private static TextStyle getStyle(Integer score) {
+        return Optional.ofNullable(score)
+                .map(i -> {
+                    if (i.compareTo(0) < 0) {
+                        return TextStyle.GREY;
+                    } else if (i.compareTo(6) < 0) {
+                        return TextStyle.RED;
+                    } else {
+                        return TextStyle.GREEN;
+                    }
+                }).orElse(null);
+    }
+
+    public static class InterviewExperienceTemplateInnerBuilder {
+
+        public InterviewExperienceTemplateInnerBuilder score(Integer score) {
+            this.score = score;
+            if(Objects.isNull(this.style)) {
+                this.style = getStyle(score);
+            }
+            return this;
+        }
+
+    }
+
+    public String getStyle() {
+        return Optional.ofNullable(this.style)
+                .map(TextStyle::getStyle)
+                .or(() -> {
+                    return Optional.ofNullable(getStyle(this.score))
+                            .map(TextStyle::getStyle);
+                }).orElse(null);
     }
 }

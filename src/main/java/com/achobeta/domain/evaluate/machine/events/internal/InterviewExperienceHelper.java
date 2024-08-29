@@ -97,8 +97,8 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                         return InterviewExperienceTemplateInner.builder()
                                 .title(question.getTitle())
                                 .score(question.getScore())
-                                .standard(question.getStandard())
                                 .average(question.getAverage())
+                                .standard(question.getStandard())
                                 .build();
                     }).map(inner -> {
                         EmailHtml emailHtml = new EmailHtml();
