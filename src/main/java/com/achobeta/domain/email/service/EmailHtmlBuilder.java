@@ -37,13 +37,17 @@ public class EmailHtmlBuilder {
             return context;
         }
 
+        private <T> String getHtml(EmailTemplateEnum emailTemplateEnum, T data) {
+            return templateEngine.process(emailTemplateEnum.getTemplate(), getContext(data));
+        }
+
         public HtmlBuilder append(String html) {
             htmlBuilder.append(html);
             return this;
         }
 
         public <T> HtmlBuilder append(EmailTemplateEnum emailTemplateEnum, T data) {
-            return append(templateEngine.process(emailTemplateEnum.getTemplate(), getContext(data)));
+            return append(getHtml(emailTemplateEnum, data));
         }
 
         public HtmlBuilder append(EmailHtml emailHtml) {
