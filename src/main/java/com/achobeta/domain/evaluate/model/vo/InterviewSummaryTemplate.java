@@ -49,7 +49,7 @@ public class InterviewSummaryTemplate {
         int num = Optional.ofNullable(credit)
                 .filter(i -> i.compareTo(MIN_ABILITY_VALUE) >= 0 && i.compareTo(MAX_ABILITY_VALUE) <= 0)
                 .orElse(0);
-        // num 个命中，MAX_ABILITY_VALUE - num 个未命中
+        // num 个命中，max - num 个未命中
         return HIT_EMOJI.repeat(num) + NOT_HIT_EMOJI.repeat(MAX_ABILITY_VALUE - num);
     }
 

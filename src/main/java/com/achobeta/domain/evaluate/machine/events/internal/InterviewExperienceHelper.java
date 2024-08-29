@@ -90,7 +90,7 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                     .title(interviewDetail.getTitle())
                     .build();
 
-            List<EmailHtml> emailHtmlList = interviewQuestionScoreService.getInterviewPaperDetail(interviewId)
+            List<EmailHtml> emailHtmlList =  interviewQuestionScoreService.getInterviewPaperDetail(interviewId)
                     .getQuestions()
                     .stream()
                     .map(question -> {
@@ -101,10 +101,7 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                                 .standard(question.getStandard())
                                 .build();
                     }).map(inner -> {
-                        EmailHtml emailHtml = new EmailHtml();
-                        emailHtml.setTemplate(EmailTemplateEnum.INTERVIEW_EXPERIENCE_INNER);
-                        emailHtml.setContext(inner);
-                        return emailHtml;
+                        return new EmailHtml(EmailTemplateEnum.INTERVIEW_EXPERIENCE_INNER, inner);
                     }).toList();
 
             InterviewExperienceTemplateClose templateClose = InterviewExperienceTemplateClose.builder()

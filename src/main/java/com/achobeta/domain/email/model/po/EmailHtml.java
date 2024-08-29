@@ -1,7 +1,9 @@
 package com.achobeta.domain.email.model.po;
 
 import com.achobeta.common.enums.EmailTemplateEnum;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Created With Intellij IDEA
@@ -11,6 +13,8 @@ import lombok.Data;
  * Time: 11:31
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class EmailHtml {
 
     private EmailTemplateEnum template;
