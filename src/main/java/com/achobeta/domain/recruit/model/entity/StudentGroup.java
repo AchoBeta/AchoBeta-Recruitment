@@ -1,5 +1,6 @@
 package com.achobeta.domain.recruit.model.entity;
 
+import com.achobeta.common.annotation.IntRange;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -19,7 +20,7 @@ import java.util.List;
 @Data
 public class StudentGroup {
 
-    @NotNull(message = "面向的年级列表可以为空集合但不能为 null")
+    @IntRange(min = 1000, max = 9999, message = "年级列表应均为四位数")
     List<Integer> grade; // 特定年级
 
     @NotNull(message = "面向的学生 id 列表可以为空集合但不能为 null")

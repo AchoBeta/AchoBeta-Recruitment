@@ -4,7 +4,7 @@ import com.achobeta.common.annotation.IntRange;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-import java.util.function.Consumer;
+import java.util.Collection;
 
 /**
  * Created With Intellij IDEA
@@ -13,7 +13,7 @@ import java.util.function.Consumer;
  * Date: 2024-08-07
  * Time: 17:34
  */
-public class IntRangeValidator implements ConstraintValidator<IntRange, Integer> {
+public class IntRangeValidator implements ConstraintValidator<IntRange, Object> {
 
     private int min;
 
@@ -25,8 +25,28 @@ public class IntRangeValidator implements ConstraintValidator<IntRange, Integer>
         this.max = intRange.max();
     }
 
+    private int compare(Number number1, Number number2) {
+        return Double.compare(number1.doubleValue(), number2.doubleValue());
+    }
+
+    private boolean isValid(Object value) {
+        if (value instanceof Number number) {
+            return compare(number, min) >= 0 && compare(number, max) <= 0;
+        }
+        return Boolean.FALSE;
+    }
+
     @Override
-    public boolean isValid(Integer value, ConstraintValidatorContext context) {
-        return value >= min && value <= max;
+    public boolean isValid(Object value, ConstraintValidatorContext context) {
+        if (isValid(value)) {
+            return Boolean.TRUE;
+        } else if (value instanceof Collection<?> collection) {
+            return collection.stream()
+                    .filter(v -> !isValid(v))
+                    .toList()
+                    .isEmpty();
+        } else {
+            return Boolean.FALSE;
+        }
     }
 }

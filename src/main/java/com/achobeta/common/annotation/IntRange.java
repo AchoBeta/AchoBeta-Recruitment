@@ -18,7 +18,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = {IntRangeValidator.class})
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-@NotNull(message = "数值不能为空")
+@NotNull(message = "数值或集合不能为 null")
 public @interface IntRange {
 
     String message() default "数值不在有效范围内"; // 默认消息
