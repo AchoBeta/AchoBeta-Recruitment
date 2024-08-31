@@ -1,10 +1,13 @@
 package com.achobeta.common.annotation.handler;
 
 import com.achobeta.common.annotation.IntRange;
+import com.achobeta.common.annotation.Intercept;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created With Intellij IDEA
@@ -32,14 +35,6 @@ public class IntRangeValidator implements ConstraintValidator<IntRange, Object> 
     private boolean isValid(Object value) {
         if (value instanceof Number number) {
             return compare(number, min) >= 0 && compare(number, max) <= 0;
-        }
-        return Boolean.FALSE;
-    }
-
-    @Override
-    public boolean isValid(Object value, ConstraintValidatorContext context) {
-        if (isValid(value)) {
-            return Boolean.TRUE;
         } else if (value instanceof Collection<?> collection) {
             return collection.stream()
                     .filter(v -> !isValid(v))
@@ -48,5 +43,10 @@ public class IntRangeValidator implements ConstraintValidator<IntRange, Object> 
         } else {
             return Boolean.FALSE;
         }
+    }
+
+    @Override
+    public boolean isValid(Object value, ConstraintValidatorContext context) {
+        return isValid(value);
     }
 }
