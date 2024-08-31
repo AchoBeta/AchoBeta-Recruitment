@@ -5,9 +5,11 @@ import com.achobeta.common.annotation.Intercept;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created With Intellij IDEA
@@ -33,13 +35,20 @@ public class IntRangeValidator implements ConstraintValidator<IntRange, Object> 
     }
 
     private boolean isValid(Object value) {
-        if (value instanceof Number number) {
+        if(Objects.isNull(value)) {
+            return Boolean.FALSE;
+        } else if (value instanceof Number number) {
             return compare(number, min) >= 0 && compare(number, max) <= 0;
         } else if (value instanceof Collection<?> collection) {
-            return collection.stream()
-                    .filter(v -> !isValid(v))
-                    .toList()
-                    .isEmpty();
+            return collection.stream().allMatch(this::isValid);
+        } else if (value.getClass().isArray()) {
+            int length = Array.getLength(value);
+            for (int i = 0; i < length; i++) {
+                if(!isValid(Array.get(value, i))) {
+                    return Boolean.FALSE;
+                }
+            }
+            return Boolean.TRUE;
         } else {
             return Boolean.FALSE;
         }
