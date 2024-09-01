@@ -50,7 +50,7 @@ public class InterviewSummaryHelper implements InterviewStateInternalTransitionH
     private final InterviewScheduleService interviewScheduleService;
 
     @Override
-    public List<InterviewStatus> getWithinList() {
+    public List<InterviewStatus> getWithin() {
         return List.of(
                 InterviewStatus.ENDED
         );

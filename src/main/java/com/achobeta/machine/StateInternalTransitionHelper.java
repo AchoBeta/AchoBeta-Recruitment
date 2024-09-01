@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface StateInternalTransitionHelper<S, E, C> {
 
-    List<S> getWithinList();
+    List<S> getWithin();
 
     E getOnEvent();
 

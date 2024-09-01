@@ -56,7 +56,7 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
     private final InterviewScheduleService interviewScheduleService;
 
     @Override
-    public List<InterviewStatus> getWithinList() {
+    public List<InterviewStatus> getWithin() {
         return List.of(
                 InterviewStatus.ENDED
         );
