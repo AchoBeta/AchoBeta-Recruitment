@@ -30,16 +30,16 @@ public class InterceptHelper {
         return targetMethod.isAnnotationPresent(Intercept.class) ? targetMethod.getAnnotation(Intercept.class) : intercept;
     }
 
-    public static Boolean isIgnore(Intercept intercept) {
+    public static boolean isIgnore(Intercept intercept) {
         // 没有 Intercept 注解或者注解 ignore 为 true 则无需拦截
         return Objects.isNull(intercept) || intercept.ignore();
     }
 
-    public static Boolean isIgnore(Method targetMethod) {
+    public static boolean isIgnore(Method targetMethod) {
         return isIgnore(getIntercept(targetMethod));
     }
 
-    public static Boolean isValid(Intercept intercept, UserTypeEnum role) {
+    public static boolean isValid(Intercept intercept, UserTypeEnum role) {
         // permit 中没有 role 就会抛异常
         return Arrays.stream(intercept.permit())
                 .distinct()
@@ -47,7 +47,7 @@ public class InterceptHelper {
                 .anyMatch(type -> type.equals(role));
     }
 
-    public static Boolean isValid(Method targetMethod, UserTypeEnum role) {
+    public static boolean isValid(Method targetMethod, UserTypeEnum role) {
         return isValid(getIntercept(targetMethod), role);
     }
 

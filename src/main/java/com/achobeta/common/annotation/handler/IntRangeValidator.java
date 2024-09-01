@@ -1,14 +1,11 @@
 package com.achobeta.common.annotation.handler;
 
 import com.achobeta.common.annotation.IntRange;
-import com.achobeta.common.annotation.Intercept;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 /**

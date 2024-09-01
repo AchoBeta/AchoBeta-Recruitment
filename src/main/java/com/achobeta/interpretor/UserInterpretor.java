@@ -70,7 +70,7 @@ public class UserInterpretor implements HandlerInterceptor {
 
         // permit 中没有 role 就会抛异常
         UserTypeEnum role = UserTypeEnum.get(Integer.parseInt(claims.get(UserInterpretor.USER_ROLE_NAME).toString()));
-        if(Boolean.FALSE.equals(InterceptHelper.isValid(intercept, role))) {
+        if(!InterceptHelper.isValid(intercept, role)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
         }
 
