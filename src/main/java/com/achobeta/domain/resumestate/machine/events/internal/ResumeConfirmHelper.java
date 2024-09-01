@@ -47,7 +47,7 @@ ResumeConfirmHelper implements ResumeStateInternalTransitionHelper{
     private final Action<ResumeStatus, ResumeEvent, ResumeContext> defaultResumeAction;
 
     @Override
-    public List<ResumeStatus> getWithinList() {
+    public List<ResumeStatus> getWithin() {
         return List.of(
                 ResumeStatus.INITIAL_INTERVIEW_PASSED,
                 ResumeStatus.SECOND_INTERVIEW_PASSED,

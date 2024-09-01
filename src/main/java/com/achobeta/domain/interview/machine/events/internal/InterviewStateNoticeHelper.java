@@ -48,7 +48,7 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
     private final InterviewScheduleService interviewScheduleService;
 
     @Override
-    public List<InterviewStatus> getWithinList() {
+    public List<InterviewStatus> getWithin() {
         return List.of(InterviewStatus.values());
     }
 

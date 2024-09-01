@@ -9,7 +9,6 @@ import com.alibaba.cola.statemachine.StateMachineFactory;
 import com.alibaba.cola.statemachine.builder.StateMachineBuilder;
 import com.alibaba.cola.statemachine.builder.StateMachineBuilderFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.List;
 
@@ -60,7 +59,7 @@ public class StateMachineUtil {
 
     private static <S, E, C> void builderAssign(StateMachineBuilder<S, E, C> builder,
                                                 StateInternalTransitionHelper<S, E, C> helper) {
-        List<S> withinList = helper.getWithinList();
+        List<S> withinList = helper.getWithin();
         if(!CollectionUtil.isEmpty(withinList)) {
             E onEvent = helper.getOnEvent();
             Condition<C> whenCondition = helper.getWhenCondition();
