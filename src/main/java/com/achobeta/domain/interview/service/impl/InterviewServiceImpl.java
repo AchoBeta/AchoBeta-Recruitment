@@ -3,6 +3,7 @@ package com.achobeta.domain.interview.service.impl;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
+import com.achobeta.domain.evaluate.model.entity.InterviewQuestionScore;
 import com.achobeta.domain.interview.machine.constants.InterviewStateMachineConstants;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.model.converter.InterviewConverter;
@@ -19,6 +20,7 @@ import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.machine.StateMachineUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -127,11 +129,10 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     @Override
     @Transactional
     public void setPaperForInterview(Long interviewId, Long paperId) {
-        // todo: 切换试卷需要进行的业务
-//        // 删除面试相关的打分
-//        Db.lambdaUpdate(InterviewQuestionScore.class)
-//                .eq(InterviewQuestionScore::getInterviewId, interviewId)
-//                .remove();
+        // 删除面试相关的打分
+        Db.lambdaUpdate(InterviewQuestionScore.class)
+                .eq(InterviewQuestionScore::getInterviewId, interviewId)
+                .remove();
         // 拷贝一份试卷
         Long newPaperId = paperQuestionLinkService.cloneQuestionPaper(paperId);
         // 设置试卷
