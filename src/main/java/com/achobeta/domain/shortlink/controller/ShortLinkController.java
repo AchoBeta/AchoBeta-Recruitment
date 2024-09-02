@@ -5,7 +5,6 @@ import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
 import com.achobeta.domain.shortlink.util.HttpUrlValidator;
-import com.achobeta.domain.shortlink.util.ShortLinkUtils;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.common.annotation.Intercept;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,11 +48,10 @@ public class ShortLinkController {
     public SystemJsonResponse transferAndSaveShortLink(HttpServletRequest request, @RequestParam("url") String url) {
         //验证url
         if (!HttpUrlValidator.isHttpUrl(url) || !HttpUrlValidator.isUrlAccessible(url)) {
-            throw new GlobalServiceException(String.format("url:'%s' 无效", url),
-                    GlobalServiceStatusCode.PARAM_NOT_VALID);
+            throw new GlobalServiceException(String.format("url:'%s' 无效", url), GlobalServiceStatusCode.PARAM_NOT_VALID);
         }
         // 拼接出基础的url
-        String baseUrl = ShortLinkUtils.getBaseUrl(request.getHeader("host"));
+        String baseUrl = String.format("%s://%s/api/v1/shortlink/", request.getScheme(), request.getHeader("host"));
         // 转化
         String shortLinkURL = shortLinkService.transShortLinkURL(baseUrl, url);
         log.info("原链接:{} -> 短链接:{}", url, shortLinkURL);

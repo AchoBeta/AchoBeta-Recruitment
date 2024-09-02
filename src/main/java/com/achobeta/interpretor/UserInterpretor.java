@@ -75,7 +75,7 @@ public class UserInterpretor implements HandlerInterceptor {
         }
 
         //通过线程局部变量设置当前线程用户信息
-        setGlobaleUserInfoByClaims(claims, token);
+        setGlobalUserInfoByClaims(claims, token);
         //判断token是否即将过期
         if (JwtUtil.judgeApproachExpiration(token, secretKey)) {
             refreshToken(response, secretKey, claims);
@@ -91,7 +91,7 @@ public class UserInterpretor implements HandlerInterceptor {
         log.info("无感刷新token:{}", refreshToken);
     }
 
-    private void setGlobaleUserInfoByClaims(Claims claims, String token) {
+    private void setGlobalUserInfoByClaims(Claims claims, String token) {
         Long userId = Long.valueOf(claims.get(UserInterpretor.USER_ID).toString());
         Integer role = Integer.parseInt(claims.get(UserInterpretor.USER_ROLE_NAME).toString());
         UserHelper userHelper = UserHelper.builder()
