@@ -1,6 +1,5 @@
 package com.achobeta.common.annotation.handler;
 
-import com.achobeta.common.annotation.IntRange;
 import com.achobeta.common.annotation.IsImage;
 import com.achobeta.util.ImageUtil;
 import jakarta.validation.ConstraintValidator;

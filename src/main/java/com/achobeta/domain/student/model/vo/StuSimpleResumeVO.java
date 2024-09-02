@@ -1,5 +1,6 @@
 package com.achobeta.domain.student.model.vo;
 
+import com.achobeta.common.enums.ResumeStatus;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -43,4 +44,6 @@ public class StuSimpleResumeVO implements Serializable {
     private String awards;
 
     private String remark;
+
+    private ResumeStatus status;
 }

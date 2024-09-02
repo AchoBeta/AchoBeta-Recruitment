@@ -182,8 +182,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     public StuResume checkResumeSubmitCount(StuSimpleResumeDTO resumeDTO, Long userId) {
 
         StuResume stuResume = getStuResume(resumeDTO.getBatchId(), Long.valueOf(userId)).orElse(new StuResume());
-
-        if (stuResume.getId() != null && stuResume.getSubmitCount() > MAX_SUBMIT_COUNT) {
+        if (stuResume.getId() != null && MAX_SUBMIT_COUNT.compareTo(stuResume.getSubmitCount()) <= 0) {
             String message = "提交失败，简历最大提交次数为" + MAX_SUBMIT_COUNT;
             throw new GlobalServiceException(message, GlobalServiceStatusCode.USER_RESUME_SUBMIT_OVER_COUNT);
         }

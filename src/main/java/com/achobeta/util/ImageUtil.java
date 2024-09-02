@@ -54,7 +54,7 @@ public class ImageUtil {
         }
     }
 
-    public static Boolean isImage(Image image) {
+    public static boolean isImage(Image image) {
         return Optional.ofNullable(image)
                 .filter(img -> img.getWidth(null) > 0)
                 .filter(img -> img.getHeight(null) > 0)
@@ -62,7 +62,7 @@ public class ImageUtil {
                 .orElse(Boolean.FALSE);
     }
 
-    public static Boolean isImage(String url) {
+    public static boolean isImage(String url) {
         return Optional.ofNullable(url)
                 .filter(StringUtils::hasText)
                 .map(ImageUtil::getImage)
@@ -70,14 +70,14 @@ public class ImageUtil {
                 .orElse(Boolean.FALSE);
     }
 
-    public static Boolean isImage(byte[] bytes) {
+    public static boolean isImage(byte[] bytes) {
         return Optional.ofNullable(bytes)
                 .map(ImageUtil::getImage)
                 .map(ImageUtil::isImage)
                 .orElse(Boolean.FALSE);
     }
 
-    public static Boolean isImage(InputStream inputStream) {
+    public static boolean isImage(InputStream inputStream) {
         return Optional.ofNullable(inputStream)
                 .map(ImageUtil::getImage)
                 .map(ImageUtil::isImage)

@@ -1,20 +1,18 @@
 package com.achobeta.common.annotation;
 
-import com.achobeta.common.annotation.handler.IntRangeValidator;
 import com.achobeta.common.annotation.handler.IsImageValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 import java.lang.annotation.*;
 
 /**
  * Created With Intellij IDEA
- * Description:
  * User: 马拉圈
  * Date: 2024-08-23
  * Time: 2:04
+ * Description: 此注解用于检测资源是否可访问，并且是图片类型的资源
  */
 @Documented
 @Constraint(validatedBy = {IsImageValidator.class})

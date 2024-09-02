@@ -125,14 +125,14 @@ public class InterviewController {
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
-    @GetMapping("/list/manager/all")
+    @PostMapping("/list/manager/all")
     public SystemJsonResponse managerGetAllInterviewList(@RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 查询
         List<InterviewVO> interviewVOList = interviewService.managerGetInterviewList(null, InterviewConditionDTO.getCondition(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewVOList);
     }
 
-    @GetMapping("/list/manager/own")
+    @PostMapping("/list/manager/own")
     public SystemJsonResponse managerGetOwnInterviewList(@RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 获取当前管理员 id
         Long managerId = BaseContext.getCurrentUser().getUserId();
@@ -141,7 +141,7 @@ public class InterviewController {
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewVOList);
     }
 
-    @GetMapping("/list/user")
+    @PostMapping("/list/user")
     @Intercept(permit = {UserTypeEnum.USER})
     public SystemJsonResponse userGetOwnInterviewList(@RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 获取当前用户 id

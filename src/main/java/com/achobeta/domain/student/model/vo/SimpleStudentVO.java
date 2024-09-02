@@ -1,5 +1,6 @@
 package com.achobeta.domain.student.model.vo;
 
+import com.achobeta.common.enums.ResumeStatus;
 import lombok.Data;
 
 /**
@@ -32,5 +33,5 @@ public class SimpleStudentVO {
 
     private String className;
 
-    private Integer status;
+    private ResumeStatus status;
 }
