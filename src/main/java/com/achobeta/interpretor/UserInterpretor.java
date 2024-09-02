@@ -8,7 +8,7 @@ import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.users.context.BaseContext;
 
 
-import com.achobeta.common.annotation.handler.InterceptAnnotationHandler;
+import com.achobeta.common.annotation.handler.InterceptHelper;
 import com.achobeta.jwt.propertities.JwtProperties;
 import com.achobeta.jwt.util.JwtUtil;
 import com.achobeta.domain.users.model.po.UserHelper;
@@ -38,7 +38,7 @@ public class UserInterpretor implements HandlerInterceptor {
     private final JwtProperties jwtProperties;
 
     public static final String USER_ID = "user_id";
-    public static final String UserRoleName = "user";
+    public static final String USER_ROLE_NAME = "user";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -52,9 +52,9 @@ public class UserInterpretor implements HandlerInterceptor {
         // 获取目标方法
         Method targetMethod = ((HandlerMethod) handler).getMethod();
         // 获取 intercept 注解实例
-        Intercept intercept = InterceptAnnotationHandler.getIntercept(targetMethod);
+        Intercept intercept = InterceptHelper.getIntercept(targetMethod);
         // 判断是否忽略
-        if(InterceptAnnotationHandler.isIgnore(intercept)) {
+        if(InterceptHelper.isIgnore(intercept)) {
             return true;
         }
 
@@ -69,11 +69,13 @@ public class UserInterpretor implements HandlerInterceptor {
         Claims claims = JwtUtil.parseJWT(secretKey, token);
 
         // permit 中没有 role 就会抛异常
-        Integer role = Integer.parseInt(claims.get(UserTypeEnum.USER.getName()).toString());
-        InterceptAnnotationHandler.validate(intercept, role);
+        UserTypeEnum role = UserTypeEnum.get(Integer.parseInt(claims.get(UserInterpretor.USER_ROLE_NAME).toString()));
+        if(!InterceptHelper.isValid(intercept, role)) {
+            throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
+        }
 
         //通过线程局部变量设置当前线程用户信息
-        setGlobaleUserInfoByClaims(claims, token);
+        setGlobalUserInfoByClaims(claims, token);
         //判断token是否即将过期
         if (JwtUtil.judgeApproachExpiration(token, secretKey)) {
             refreshToken(response, secretKey, claims);
@@ -89,9 +91,9 @@ public class UserInterpretor implements HandlerInterceptor {
         log.info("无感刷新token:{}", refreshToken);
     }
 
-    private void setGlobaleUserInfoByClaims(Claims claims, String token) {
+    private void setGlobalUserInfoByClaims(Claims claims, String token) {
         Long userId = Long.valueOf(claims.get(UserInterpretor.USER_ID).toString());
-        Integer role = Integer.parseInt(claims.get(UserTypeEnum.USER.getName()).toString());
+        Integer role = Integer.parseInt(claims.get(UserInterpretor.USER_ROLE_NAME).toString());
         UserHelper userHelper = UserHelper.builder()
                 .userId(userId)
                 .token(token)

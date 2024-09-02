@@ -54,9 +54,4 @@ public class ShortLinkUtils {
         return subCodeByString(hash);
     }
 
-    public static String getBaseUrl(String host) {
-        return String.format("http://%s/api/v1/shortlink/", host);
-    }
-
-
 }

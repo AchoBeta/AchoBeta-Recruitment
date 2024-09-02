@@ -8,6 +8,7 @@ import com.achobeta.domain.recruit.model.convert.RecruitmentActivityConverter;
 import com.achobeta.domain.recruit.model.dto.ActivityPaperDTO;
 import com.achobeta.domain.recruit.model.dto.RecruitmentActivityDTO;
 import com.achobeta.domain.recruit.model.dto.RecruitmentActivityUpdateDTO;
+import com.achobeta.domain.recruit.model.dto.TimePeriodDTO;
 import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
 import com.achobeta.domain.recruit.model.entity.StudentGroup;
 import com.achobeta.domain.recruit.model.vo.RecruitmentActivityVO;
@@ -100,6 +101,29 @@ public class RecruitmentActivityController {
         questionPaperService.checkPaperExists(paperId);
         // 设置
         recruitmentActivityService.setPaperForActivity(actId, paperId);
+        return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
+
+    @PostMapping("/period/add")
+    public SystemJsonResponse addTimePeriod(@RequestBody TimePeriodDTO timePeriodDTO) {
+        // 校验
+        ValidatorUtils.validate(timePeriodDTO);
+        Long actId = timePeriodDTO.getActId();
+        recruitmentActivityService.checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE);
+        // 添加
+        Long startTime = timePeriodDTO.getStartTime();
+        Long endTime = timePeriodDTO.getEndTime();
+        timePeriodService.setPeriodForActivity(actId, startTime, endTime);
+        return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
+
+    @GetMapping("/period/remove/{periodId}")
+    public SystemJsonResponse removeTimePeriod(@PathVariable("periodId") @NotNull Long periodId) {
+        // 校验
+        Long actId = timePeriodService.getActIdByPeriodId(periodId);
+        recruitmentActivityService.checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE);
+        // 删除
+        timePeriodService.removeTimePeriod(periodId);
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 

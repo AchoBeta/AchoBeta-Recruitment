@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.achobeta.domain.resumestate.model.dao.mapper.MemberMapper">
+
+    <resultMap id="UserVOMap" type="com.achobeta.domain.users.model.vo.UserVO">
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="phoneNumber" column="phone_number" jdbcType="VARCHAR"/>
+        <result property="userType" column="user_type" jdbcType="INTEGER"/>
+        <result property="avatar" column="avatar" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <resultMap id="SimpleMemberMap" type="com.achobeta.domain.resumestate.model.vo.SimpleMemberVO">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <id property="managerId" column="manager_id" jdbcType="BIGINT"/>
+        <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
+        <association property="userVO" columnPrefix="u_" resultMap="UserVOMap"/>
+        <association property="simpleStudentVO" columnPrefix="r_" resultMap="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.SimpleResumeMap"/>
+    </resultMap>
+
+    <select id="queryMemberList" parameterType="java.lang.Long" resultMap="SimpleMemberMap">
+        select
+            m.id, m.manager_id, m.parent_id,
+            stu.username u_username, stu.nickname u_nickname,
+            stu.email u_email, stu.phone_number u_phone_number,
+            stu.user_type u_user_type, stu.avatar u_avatar,
+            <include refid="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.Simple_Column_List" />
+        from user stu
+             left join member m on stu.id = m.manager_id and stu.is_deleted = 0 and m.is_deleted = 0
+             left join stu_resume r on r.id = m.resume_id and r.is_deleted = 0 and m.is_deleted = 0
+        <where>
+            stu.user_type = 2
+            <if test="batchId != null">
+                and r.batch_id = #{batchId,jdbcType=BIGINT}
+            </if>
+        </where>
+        order by m.create_time asc
+    </select>
+
+
+</mapper>
