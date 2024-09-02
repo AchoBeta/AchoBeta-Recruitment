@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.achobeta.domain.evaluate.model.dao.mapper.InterviewSummaryMapper">
+
+    <resultMap id="InterviewRankMap" type="com.achobeta.domain.evaluate.model.vo.InterviewRankVO">
+        <result property="summaryId" column="summary_id" jdbcType="BIGINT"/>
+        <result property="average" column="average" jdbcType="TINYINT"/>
+        <result property="interviewId" column="interview_id" jdbcType="BIGINT"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="TINYINT"/>
+        <association property="simpleStudentVO" columnPrefix="r_"
+                     resultMap="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.SimpleResumeMap"/>
+    </resultMap>
+
+    <select id="getInterviewRankList" resultMap="InterviewRankMap">
+        select
+            s.id summary_id, (s.basis + s.coding + s.thinking + s.express) / 4 average,
+            i.id interview_id, i.title title, i.status status,
+            <include refid="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.Simple_Column_List" />
+        from recruitment_batch b
+             left join recruitment_activity a on b.id = a.batch_id and b.is_deleted = 0 and a.is_deleted = 0
+             left join activity_participation p on p.act_id = a.id and p.is_deleted = 0 and a.is_deleted = 0
+             left join interview_schedule sc on sc.participation_id = p.id and sc.is_deleted = 0 and p.is_deleted = 0
+             left join interview i on i.schedule_id = sc.id and i.is_deleted = 0 and sc.is_deleted = 0
+             left join user stu on stu.id = p.stu_id and stu.is_deleted = 0 and p.is_deleted = 0
+             left join stu_resume r on r.batch_id = b.id and stu.id = r.user_id and r.is_deleted = 0 and b.is_deleted = 0 and stu.is_deleted = 0
+             left join interview_summary s on s.interview_id = i.id and s.is_deleted = 0 and i.is_deleted = 0
+        <where>
+            i.id is not null
+            <if test="condition.batchId != null">
+                and b.id = #{condition.batchId,jdbcType=BIGINT}
+            </if>
+            <if test="condition.actId != null">
+                and a.id = #{condition.actId,jdbcType=BIGINT}
+            </if>
+        </where>
+        order by average desc, i.create_time asc
+    </select>
+
+</mapper>

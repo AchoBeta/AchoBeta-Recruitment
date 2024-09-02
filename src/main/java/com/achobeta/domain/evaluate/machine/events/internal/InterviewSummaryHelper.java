@@ -1,17 +1,17 @@
-package com.achobeta.domain.interview.machine.events.internal;
+package com.achobeta.domain.evaluate.machine.events.internal;
 
 import com.achobeta.common.enums.EmailTemplateEnum;
 import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.domain.email.model.po.EmailMessage;
 import com.achobeta.domain.email.service.EmailSender;
+import com.achobeta.domain.evaluate.model.vo.InterviewSummaryTemplate;
+import com.achobeta.domain.evaluate.model.vo.InterviewSummaryVO;
+import com.achobeta.domain.evaluate.service.InterviewSummaryService;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
-import com.achobeta.domain.interview.model.entity.Interview;
+import com.achobeta.domain.interview.machine.events.internal.InterviewStateInternalTransitionHelper;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
-import com.achobeta.domain.interview.model.vo.InterviewNoticeTemplate;
 import com.achobeta.domain.interview.service.InterviewService;
-import com.achobeta.domain.schedule.model.vo.ParticipationDetailVO;
-import com.achobeta.domain.schedule.model.vo.ScheduleVO;
 import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import com.alibaba.cola.statemachine.Action;
@@ -28,11 +28,11 @@ import java.util.List;
  * Description:
  * User: 马拉圈
  * Date: 2024-08-12
- * Time: 13:41
+ * Time: 19:44
  */
 @Component
 @RequiredArgsConstructor
-public class InterviewStateNoticeHelper implements InterviewStateInternalTransitionHelper{
+public class InterviewSummaryHelper implements InterviewStateInternalTransitionHelper {
 
     @Value("${spring.mail.username}")
     private String achobetaEmail;
@@ -43,18 +43,22 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
 
     private final Action<InterviewStatus, InterviewEvent, InterviewContext> defaultInterviewAction;
 
+    private final InterviewSummaryService interviewSummaryService;
+
     private final InterviewService interviewService;
 
     private final InterviewScheduleService interviewScheduleService;
 
     @Override
     public List<InterviewStatus> getWithin() {
-        return List.of(InterviewStatus.values());
+        return List.of(
+                InterviewStatus.ENDED
+        );
     }
 
     @Override
     public InterviewEvent getOnEvent() {
-        return InterviewEvent.INTERVIEW_NOTICE;
+        return InterviewEvent.INTERVIEW_SUMMARY;
     }
 
     @Override
@@ -67,13 +71,14 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
         return (from, to, event, context) -> {
             defaultInterviewAction.execute(from, to, event, context);
             // 获得数据
-            Interview currentInterview = context.getInterview();
-            InterviewDetailVO interviewDetail = interviewService.getInterviewDetail(currentInterview.getId());
-            ScheduleVO scheduleVO = interviewDetail.getScheduleVO();
-            ParticipationDetailVO detailActivityParticipation = interviewScheduleService.getDetailActivityParticipation(scheduleVO.getParticipationId());
-            SimpleStudentVO simpleStudentVO = detailActivityParticipation.getSimpleStudentVO();
+            Long interviewId = context.getInterview().getId();
+            InterviewSummaryVO interviewSummaryVO = interviewSummaryService.queryInterviewSummaryByInterviewId(interviewId);
+            InterviewDetailVO interviewDetail = interviewService.getInterviewDetail(interviewId);
+            SimpleStudentVO simpleStudentVO = interviewScheduleService
+                    .getDetailActivityParticipation(interviewDetail.getScheduleVO().getParticipationId())
+                    .getSimpleStudentVO();
             // 封装 email
-            EmailTemplateEnum emailTemplate = EmailTemplateEnum.INTERVIEW_NOTICE;
+            EmailTemplateEnum emailTemplate = EmailTemplateEnum.INTERVIEW_SUMMARY;
             EmailMessage emailMessage = new EmailMessage();
             emailMessage.setSender(achobetaEmail);
             emailMessage.setCarbonCopy();
@@ -81,17 +86,19 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
             emailMessage.setTitle(emailTemplate.getTitle());
             emailMessage.setRecipient(simpleStudentVO.getEmail());
             // 构造模板消息
-            InterviewNoticeTemplate interviewNoticeTemplate = InterviewNoticeTemplate.builder()
+            InterviewSummaryTemplate interviewSummaryTemplate = InterviewSummaryTemplate.builder()
                     .studentId(simpleStudentVO.getStudentId())
                     .title(interviewDetail.getTitle())
-                    .description(interviewDetail.getDescription())
-                    .address(interviewDetail.getAddress())
-                    .startTime(scheduleVO.getStartTime())
-                    .endTime(scheduleVO.getEndTime())
-                    .status(to) // 以状态机轮转的最终状态为准
+                    .basis(interviewSummaryVO.getBasis())
+                    .coding(interviewSummaryVO.getCoding())
+                    .thinking(interviewSummaryVO.getThinking())
+                    .express(interviewSummaryVO.getExpress())
+                    .evaluate(interviewSummaryVO.getEvaluate())
+                    .suggest(interviewSummaryVO.getSuggest())
+                    .playback(interviewSummaryVO.getPlayback())
                     .build();
             // 发送
-            emailSender.sendModelMail(emailMessage, emailTemplate.getTemplate(), interviewNoticeTemplate);
+            emailSender.sendModelMail(emailMessage, emailTemplate.getTemplate(), interviewSummaryTemplate);
         };
     }
 }
