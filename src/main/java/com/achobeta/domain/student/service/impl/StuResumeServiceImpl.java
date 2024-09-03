@@ -1,14 +1,12 @@
 package com.achobeta.domain.student.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.common.enums.ResumeStatusEnum;
+import com.achobeta.common.enums.ResumeStatus;
 import com.achobeta.domain.student.model.converter.StuResumeConverter;
 import com.achobeta.domain.student.model.dao.mapper.StuResumeMapper;
 import com.achobeta.domain.student.model.dto.*;
 import com.achobeta.domain.student.model.entity.StuAttachment;
 import com.achobeta.domain.student.model.entity.StuResume;
-import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import com.achobeta.domain.student.model.vo.StuAttachmentVO;
 import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.achobeta.domain.student.model.vo.StuSimpleResumeVO;
@@ -50,11 +48,10 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     }
 
     @Override
-    public SimpleStudentVO getSimpleStuResume(Long batchId, Long stuId) {
-        return getStuResume(batchId, stuId)
-                .map(stuResume -> BeanUtil.copyProperties(stuResume, SimpleStudentVO.class))
-                .orElseThrow(() ->
-                        new GlobalServiceException(GlobalServiceStatusCode.USER_RESUME_NOT_EXISTS));
+    public Optional<StuResume> getStuResume(Long resumeId) {
+        return this.lambdaQuery()
+                .eq(StuResume::getId, resumeId)
+                .oneOpt();
     }
 
     @Override
@@ -66,6 +63,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     }
 
     @Override
+    @Transactional
     public void submitResume(StuResumeDTO stuResumeDTO, StuResume stuResume) {
 
         Long userId = BaseContext.getCurrentUser().getUserId();
@@ -75,7 +73,9 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         List<StuAttachmentDTO> stuAttachmentDTOList = stuResumeDTO.getStuAttachmentDTOList();
 
         //简历状态更新为待筛选
-        stuResume.setStatus(ResumeStatusEnum.TO_BE_SCREENED.getResumeStatusCode());
+        if(Objects.isNull(stuResume.getStatus()) || ResumeStatus.DRAFT.equals(stuResume.getStatus())) {
+            stuResume.setStatus(ResumeStatus.PENDING_SELECTION);
+        }
         //是否存在已有简历信息
         Optional.ofNullable(stuResume.getId()).
                 ifPresentOrElse(id->updateResumeInfo(stuResume, resumeDTO),()->saveResumeInfo(stuResume, resumeDTO, userId));
@@ -91,6 +91,12 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         //封装返回结果
         return buildStuResumeVO(queryResumeDTO, stuResume);
 
+    }
+
+    @Override
+    public StuResume checkAndGetResume(Long resumeId) {
+        return getStuResume(resumeId).orElseThrow(() ->
+                new GlobalServiceException(GlobalServiceStatusCode.USER_RESUME_NOT_EXISTS));
     }
 
     private StuResumeVO buildStuResumeVO(QueryResumeDTO queryResumeDTO, StuResume stuResume) {
@@ -116,11 +122,10 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         if (Objects.nonNull(resumeOfUserDTO)) {
             //根据batchId和userId查询
             stuResume = lambdaQuery()
-                    .eq( StuResume::getId, queryResumeDTO.getResumeId())
                     .eq( StuResume::getUserId, resumeOfUserDTO.getUserId())
                     .eq( StuResume::getBatchId, resumeOfUserDTO.getBatchId())
                     .oneOpt().orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.USER_RESUME_NOT_EXISTS));
-
+            queryResumeDTO.setResumeId(stuResume.getId()); // 确保简历附件列表能够被查到
         } else {
             //参数校验
             Optional.ofNullable(queryResumeDTO.getResumeId()).orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.PARAM_IS_BLANK));
@@ -159,7 +164,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         //构造附件保存信息列表
         List<StuAttachment> stuAttachmentList = new ArrayList<>();
 
-        if (!CollectionUtils.isEmpty(stuAttachmentList)) {
+        if (!CollectionUtils.isEmpty(stuAttachmentDTOList)) {
             //类型转换
             stuAttachmentList = stuAttachmentDTOList.stream().map(attach -> {
                 StuAttachment stuAttachment = stuResumeConverter.stuAttachmentDTOToPo(attach);
@@ -177,8 +182,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     public StuResume checkResumeSubmitCount(StuSimpleResumeDTO resumeDTO, Long userId) {
 
         StuResume stuResume = getStuResume(resumeDTO.getBatchId(), Long.valueOf(userId)).orElse(new StuResume());
-
-        if (stuResume.getId() != null && stuResume.getSubmitCount() > MAX_SUBMIT_COUNT) {
+        if (stuResume.getId() != null && MAX_SUBMIT_COUNT.compareTo(stuResume.getSubmitCount()) <= 0) {
             String message = "提交失败，简历最大提交次数为" + MAX_SUBMIT_COUNT;
             throw new GlobalServiceException(message, GlobalServiceStatusCode.USER_RESUME_SUBMIT_OVER_COUNT);
         }

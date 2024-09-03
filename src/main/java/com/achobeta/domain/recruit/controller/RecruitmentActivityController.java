@@ -1,12 +1,14 @@
 package com.achobeta.domain.recruit.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.achobeta.domain.recruit.model.convert.RecruitmentActivityConverter;
 import com.achobeta.domain.recruit.model.dto.ActivityPaperDTO;
 import com.achobeta.domain.recruit.model.dto.RecruitmentActivityDTO;
 import com.achobeta.domain.recruit.model.dto.RecruitmentActivityUpdateDTO;
+import com.achobeta.domain.recruit.model.dto.TimePeriodDTO;
 import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
 import com.achobeta.domain.recruit.model.entity.StudentGroup;
 import com.achobeta.domain.recruit.model.vo.RecruitmentActivityVO;
@@ -16,6 +18,8 @@ import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.recruit.service.RecruitmentBatchService;
 import com.achobeta.domain.recruit.service.TimePeriodService;
 import com.achobeta.domain.users.context.BaseContext;
+import com.achobeta.common.annotation.Intercept;
+import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -36,9 +40,8 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/recruit/activity")
+@Intercept(permit = {UserTypeEnum.ADMIN})
 public class RecruitmentActivityController {
-
-    private final static Integer STUDENT_TYPE = 1; // 学生
 
     private final QuestionPaperService questionPaperService;
 
@@ -101,7 +104,31 @@ public class RecruitmentActivityController {
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
+    @PostMapping("/period/add")
+    public SystemJsonResponse addTimePeriod(@RequestBody TimePeriodDTO timePeriodDTO) {
+        // 校验
+        ValidatorUtils.validate(timePeriodDTO);
+        Long actId = timePeriodDTO.getActId();
+        recruitmentActivityService.checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE);
+        // 添加
+        Long startTime = timePeriodDTO.getStartTime();
+        Long endTime = timePeriodDTO.getEndTime();
+        timePeriodService.setPeriodForActivity(actId, startTime, endTime);
+        return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
+
+    @GetMapping("/period/remove/{periodId}")
+    public SystemJsonResponse removeTimePeriod(@PathVariable("periodId") @NotNull Long periodId) {
+        // 校验
+        Long actId = timePeriodService.getActIdByPeriodId(periodId);
+        recruitmentActivityService.checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE);
+        // 删除
+        timePeriodService.removeTimePeriod(periodId);
+        return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
+
     @GetMapping("/template/{actId}")
+    @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER})
     public SystemJsonResponse getCustomDefine(@PathVariable("actId") @NotNull Long actId) {
         RecruitmentActivity recruitmentActivity = recruitmentActivityService.checkAndGetRecruitmentActivity(actId);
         // 查询试卷
@@ -115,9 +142,10 @@ public class RecruitmentActivityController {
                 .timePeriodVOS(timePeriodVOS)
                 .build();
         // 当前用户的身份，
-        Integer role = BaseContext.getCurrentUser().getRole();
-        if(STUDENT_TYPE.equals(role)) {
-            // 对于普通用户，隐藏一些字段
+        UserHelper currentUser = BaseContext.getCurrentUser();
+        if(UserTypeEnum.USER.getCode().equals(currentUser.getRole())) {
+            // 对于普通用户，检查是否可以参与活动，并隐藏一些字段
+            recruitmentActivityService.checkCanUserParticipateInActivity(currentUser.getUserId(), actId);
             recruitmentTemplate.hidden();
         }
         return SystemJsonResponse.SYSTEM_SUCCESS(recruitmentTemplate);
@@ -133,6 +161,7 @@ public class RecruitmentActivityController {
     }
 
     @GetMapping("/list/user/{batchId}")
+    @Intercept(permit = {UserTypeEnum.USER})
     public SystemJsonResponse getRecruitmentActivities(@PathVariable("batchId") @NotNull Long batchId) {
         // 当前用户
         Long stuId = BaseContext.getCurrentUser().getUserId();

@@ -6,7 +6,7 @@
 
     <select id="getStuResumeByBatchId" parameterType="java.lang.Long" resultMap="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.SimpleResumeMap">
         select
-            s.id, s.user_id, s.student_id, s.name, u.username, s.gender, s.grade, s.major, s.class, s.status
+            s.id, s.user_id, s.student_id, s.name, u.username, s.email, s.gender, s.grade, s.major, s.class, s.status
         from recruitment_batch rb
              left join stu_resume s on s.batch_id = rb.id and s.is_deleted = 0 and rb.is_deleted = 0
              left join user u on s.user_id = u.id and s.is_deleted = 0 and u.is_deleted = 0

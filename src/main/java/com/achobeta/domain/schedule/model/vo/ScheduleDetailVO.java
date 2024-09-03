@@ -1,5 +1,6 @@
 package com.achobeta.domain.schedule.model.vo;
 
+import com.achobeta.domain.interview.model.vo.InterviewVO;
 import lombok.Data;
 
 import java.util.List;
@@ -14,6 +15,8 @@ import java.util.List;
 @Data
 public class ScheduleDetailVO extends ScheduleResumeVO {
 
-    private List<InterviewerVO> interviewerVOS;
+    private List<InterviewerVO> interviewerVOList;
+
+    private List<InterviewVO> interviewVOList;
 
 }

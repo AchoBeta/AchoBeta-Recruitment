@@ -22,7 +22,7 @@ public class EmailMessage implements Serializable {
 
     private String content;
 
-    private Date createTime;
+    private Date createTime; // 大部分邮箱都不支持根据时间发送邮件，其实可以通过任务调度平台或者消息队列等实现定时发送功能，也更受我们控制
 
     private static final long serialVersionUID = 1L;
 

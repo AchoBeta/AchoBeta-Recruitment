@@ -10,11 +10,18 @@
         <result property="studentId" column="student_id" jdbcType="VARCHAR"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
         <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
         <result property="gender" column="gender" jdbcType="TINYINT"/>
         <result property="grade" column="grade" jdbcType="INTEGER"/>
         <result property="major" column="major" jdbcType="VARCHAR"/>
         <result property="className" column="class" jdbcType="VARCHAR"/>
         <result property="status" column="status" jdbcType="INTEGER"/>
     </resultMap>
+
+    <sql id="Simple_Column_List">
+        r.id r_id, r.user_id r_user_id, r.student_id r_student_id, r.name r_name,
+        stu.username r_username, r.email r_email, r.gender r_gender, r.grade r_grade, r.major r_major,
+        r.class r_class, r.status r_status
+    </sql>
 
 </mapper>

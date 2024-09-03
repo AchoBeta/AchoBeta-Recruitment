@@ -1,8 +1,6 @@
 package com.achobeta.domain.student.model.converter;
 
 
-
-
 import com.achobeta.domain.student.model.dto.StuAttachmentDTO;
 import com.achobeta.domain.student.model.dto.StuSimpleResumeDTO;
 import com.achobeta.domain.student.model.entity.StuAttachment;
@@ -10,7 +8,6 @@ import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.model.vo.StuAttachmentVO;
 import com.achobeta.domain.student.model.vo.StuSimpleResumeVO;
 import org.mapstruct.Mapper;
-
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
@@ -30,4 +27,5 @@ public interface StuResumeConverter {
     StuResume updatePoWithStuSimpleResumeDTO(StuSimpleResumeDTO stuSimpleResumeDTO,@MappingTarget StuResume stuResume);
 
     StuAttachment stuAttachmentDTOToPo(StuAttachmentDTO stuAttachmentDTO);
+
 }

@@ -13,8 +13,6 @@ import lombok.Data;
 @Data
 public class ScheduleResumeVO extends ScheduleVO {
 
-    private Long participationId;
-
     private SimpleStudentVO simpleStudentVO;
 
 }

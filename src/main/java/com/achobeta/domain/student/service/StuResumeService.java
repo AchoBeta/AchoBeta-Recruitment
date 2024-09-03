@@ -20,7 +20,7 @@ public interface StuResumeService extends IService<StuResume> {
 
     Optional<StuResume> getStuResume(Long batchId, Long stuId);
 
-    SimpleStudentVO getSimpleStuResume(Long batchId, Long stuId);
+    Optional<StuResume> getStuResume(Long resumeId);
 
     Integer getGradeByBatchIdAndStuId(Long batchId, Long stuId);
 
@@ -28,6 +28,8 @@ public interface StuResumeService extends IService<StuResume> {
     void submitResume(StuResumeDTO stuResumeDTO,StuResume stuResume);
 
     StuResumeVO getResumeInfo(QueryResumeDTO queryResumeDTO);
+
+    StuResume checkAndGetResume(Long resumeId);
 
     StuResume checkResumeSubmitCount(StuSimpleResumeDTO stuSimpleResumeDTO,Long userId);
 }
