@@ -2,6 +2,7 @@ package com.achobeta.domain.message.model.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -14,6 +15,7 @@ public class UpdateMessageTemplateDTO implements Serializable {
     /**
      * 模板消息id
      */
+    @NotNull(message = "模板消息不能为空")
     Long id;
 
     /**

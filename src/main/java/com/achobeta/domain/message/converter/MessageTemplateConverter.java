@@ -20,7 +20,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")//交给spring管理
 public interface MessageTemplateConverter {
-    MessageTemplateConverter STU_RESUME_CONVERTER=Mappers.getMapper(MessageTemplateConverter.class);
+    MessageTemplateConverter MESSAGE_TEMPLATE_CONVERTER=Mappers.getMapper(MessageTemplateConverter.class);
 
     List<MessageTemplateVO> messageTemplatesToVOList(List<MessageTemplate> messageTemplateList);
 

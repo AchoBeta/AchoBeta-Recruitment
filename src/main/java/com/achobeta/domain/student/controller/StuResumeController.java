@@ -44,6 +44,7 @@ public class StuResumeController {
     @PostMapping("/submit")
     @Intercept(permit = {UserTypeEnum.USER})
     public SystemJsonResponse submitResume(@RequestBody StuResumeDTO stuResumeDTO) {
+
         //校验
         ValidatorUtils.validate(stuResumeDTO.getStuSimpleResumeDTO());
         Optional.ofNullable(stuResumeDTO.getStuAttachmentDTOList())

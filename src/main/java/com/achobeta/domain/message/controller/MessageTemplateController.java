@@ -35,7 +35,6 @@ public class MessageTemplateController {
     @GetMapping("/query")
     public SystemJsonResponse queryMessageTemplateList(){
 
-
         //查找模板消息列表
         List<MessageTemplateVO> messageTemplateVOList= messageTemplateService.queryMessageTemplateList();
 
@@ -69,7 +68,6 @@ public class MessageTemplateController {
         messageTemplateService.checkMessageTemplateIfExist(templateId);
         //删除模板消息
         messageTemplateService.removeMessageTemplate(templateId);
-
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
@@ -80,6 +78,8 @@ public class MessageTemplateController {
      **/
     @PutMapping("/update")
     public SystemJsonResponse updateMessageTemplate(@RequestBody UpdateMessageTemplateDTO updateMessageTemplateDTO){
+        //校验
+        ValidatorUtils.validate(updateMessageTemplateDTO);
         //校验模板消息是否存在
         messageTemplateService.checkMessageTemplateIfExist(updateMessageTemplateDTO.getId());
         //更新模板消息
