@@ -2,7 +2,6 @@ package com.achobeta.domain.html.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.domain.html.model.po.HtmlResource;
-import com.achobeta.domain.html.util.MarkdownUtil;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
