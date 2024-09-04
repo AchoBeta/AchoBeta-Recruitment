@@ -15,8 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -26,8 +24,6 @@ import java.util.function.Function;
 public class EmailSender {
 
     private final JavaMailSender javaMailSender;
-
-    private final EmailHtmlEngine emailHtmlEngine;
 
     private SimpleMailMessage emailToSimpleMailMessage(@NonNull EmailMessage emailMessage) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -48,13 +44,6 @@ public class EmailSender {
         mimeMessageHelper.setSentDate(emailMessage.getCreateTime());
         mimeMessageHelper.setTo(emailMessage.getRecipient());
         return mimeMessageHelper;
-    }
-
-    private String buildEmailHtml(String template, Object data) {
-        // 构造 html
-        return emailHtmlEngine.builder()
-                .append(template, data)
-                .build();
     }
 
     public void sendSimpleMailMessage(@NonNull EmailMessage emailMessage) {
@@ -94,16 +83,12 @@ public class EmailSender {
         }
     }
 
-    public void sendModelMail(@NonNull EmailMessage emailMessage, String template, Object modelMessage) {
-        sendModelMail(emailMessage, buildEmailHtml(template, modelMessage));
-    }
-
-    public void sendModelMailWithFile(@NonNull EmailMessage emailMessage, String template, Object modelMessage, File... files) {
+    public void sendModelMailWithFile(@NonNull EmailMessage emailMessage, String html, File... files) {
         // 封装对象
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = emailIntoMimeMessageByHelper(mimeMessage, emailMessage);
-            mimeMessageHelper.setText(buildEmailHtml(template, modelMessage), Boolean.TRUE);
+            mimeMessageHelper.setText(html, Boolean.TRUE);
             // 添加附件
             for (File file : files) {
                 if (Objects.nonNull(file)) {
@@ -116,7 +101,12 @@ public class EmailSender {
         }
     }
 
-    public void customizedSendEmail(@NonNull EmailMessage emailMessage, String template, Function<String, ?> function, File... files) {
+    /**
+     * 不建议使用，因为通过 email 可能不足以获得我们需要的 html
+     * 建议循环调用 sendModelMailWithFile，因为这个方法本身就是循环发送，不是一次性发送
+     */
+    @Deprecated
+    public void customizedSendEmail(@NonNull EmailMessage emailMessage, Function<String, String> getHtml, File... files) {
         String sender = emailMessage.getSender();
         String[] carbonCopy = emailMessage.getCarbonCopy();
         String title = emailMessage.getTitle();
@@ -139,7 +129,7 @@ public class EmailSender {
                             }
                         }
                         // 通过mimeMessageHelper设置到mimeMessage里
-                        mimeMessageHelper.setText(buildEmailHtml(template, function.apply(to)), Boolean.TRUE);
+                        mimeMessageHelper.setText(getHtml.apply(to), Boolean.TRUE);
                         //发送
                         javaMailSender.send(mimeMessage);
                     } catch (MessagingException e) {

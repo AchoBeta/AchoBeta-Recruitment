@@ -46,6 +46,10 @@ public class EmailHtmlEngine {
 
         private final StringBuffer stringBuffer = new StringBuffer();
 
+        public String build() {
+            return EmailHtmlBuilder.this.stringBuffer.toString();
+        }
+
         public EmailHtmlBuilder clear() {
             EmailHtmlBuilder.this.stringBuffer.setLength(0);
             return EmailHtmlBuilder.this;
@@ -61,9 +65,7 @@ public class EmailHtmlEngine {
         }
 
         public EmailHtmlBuilder replace(String uniqueSymbol, String html) {
-            String newHtml = EmailHtmlBuilder.this.build().replace(uniqueSymbol, html);
-            EmailHtmlBuilder.this.clear();
-            return EmailHtmlBuilder.this.append(newHtml);
+            return EmailHtmlBuilder.this.clear().append(EmailHtmlBuilder.this.build().replace(uniqueSymbol, html));
         }
 
         public EmailHtmlBuilder replaceMarkdown(String uniqueSymbol, String markdown) {
@@ -81,10 +83,6 @@ public class EmailHtmlEngine {
         public EmailHtmlBuilder append(List<EmailHtml> emailHtmlList) {
             emailHtmlList.forEach(EmailHtmlBuilder.this::append);
             return EmailHtmlBuilder.this;
-        }
-
-        public String build() {
-            return EmailHtmlBuilder.this.stringBuffer.toString();
         }
 
     }
