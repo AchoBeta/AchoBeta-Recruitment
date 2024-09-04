@@ -1,4 +1,4 @@
-package com.achobeta.domain.email.model.po;
+package com.achobeta.domain.html.model.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmailHtml {
+public class HtmlResource {
 
     private String template;
 

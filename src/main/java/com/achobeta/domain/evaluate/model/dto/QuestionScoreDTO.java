@@ -1,7 +1,6 @@
 package com.achobeta.domain.evaluate.model.dto;
 
 import com.achobeta.common.annotation.IntRange;
-import com.achobeta.domain.evaluate.constants.InterviewEvaluateConstants;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -16,8 +15,6 @@ import static com.achobeta.domain.evaluate.constants.InterviewEvaluateConstants.
  */
 @Data
 public class QuestionScoreDTO {
-
-    public final static int I = 0;
 
     @NotNull(message = "面试 id 不能为空")
     private Long interviewId;

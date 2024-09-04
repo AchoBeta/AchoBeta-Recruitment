@@ -4,6 +4,7 @@ import com.achobeta.common.enums.EmailTemplateEnum;
 import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.domain.email.model.po.EmailMessage;
+import com.achobeta.domain.html.service.HtmlEngine;
 import com.achobeta.domain.email.service.EmailSender;
 import com.achobeta.domain.evaluate.model.vo.InterviewSummaryTemplate;
 import com.achobeta.domain.evaluate.model.vo.InterviewSummaryVO;
@@ -38,6 +39,8 @@ public class InterviewSummaryHelper implements InterviewStateInternalTransitionH
     private String achobetaEmail;
 
     private final EmailSender emailSender;
+
+    private final HtmlEngine htmlEngine;
 
     private final Condition<InterviewContext> defaultInterviewCondition;
 
@@ -97,8 +100,11 @@ public class InterviewSummaryHelper implements InterviewStateInternalTransitionH
                     .suggest(interviewSummaryVO.getSuggest())
                     .playback(interviewSummaryVO.getPlayback())
                     .build();
+            String html = htmlEngine.builder()
+                    .append(emailTemplate.getTemplate())
+                    .build();
             // 发送
-            emailSender.sendModelMail(emailMessage, emailTemplate.getTemplate(), interviewSummaryTemplate);
+            emailSender.sendModelMail(emailMessage, html);
         };
     }
 }
