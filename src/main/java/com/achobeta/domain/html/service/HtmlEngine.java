@@ -81,7 +81,8 @@ public class HtmlEngine {
         }
 
         public HtmlBuilder replace(String uniqueSymbol, String html) {
-            return HtmlBuilder.this.clear().append(HtmlBuilder.this.build().replace(uniqueSymbol, html));
+            String replacement = HtmlBuilder.this.build().replace(uniqueSymbol, html);
+            return HtmlBuilder.this.clear().append(replacement);
         }
 
         public HtmlBuilder replaceMarkdown(String uniqueSymbol, String markdown) {
