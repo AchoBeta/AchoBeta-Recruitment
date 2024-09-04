@@ -3,9 +3,9 @@ package com.achobeta.domain.evaluate.machine.events.internal;
 import com.achobeta.common.enums.EmailTemplateEnum;
 import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
-import com.achobeta.domain.email.model.po.EmailHtml;
+import com.achobeta.domain.html.model.po.HtmlResource;
 import com.achobeta.domain.email.model.po.EmailMessage;
-import com.achobeta.domain.email.service.EmailHtmlEngine;
+import com.achobeta.domain.html.service.HtmlEngine;
 import com.achobeta.domain.email.service.EmailSender;
 import com.achobeta.domain.evaluate.model.vo.InterviewExperienceTemplateClose;
 import com.achobeta.domain.evaluate.model.vo.InterviewExperienceTemplateInner;
@@ -43,7 +43,7 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
 
     private final EmailSender emailSender;
 
-    private final EmailHtmlEngine emailHtmlEngine;
+    private final HtmlEngine htmlEngine;
 
     private final Condition<InterviewContext> defaultInterviewCondition;
 
@@ -100,7 +100,7 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                     .build();
 
             String innerTemplate = EmailTemplateEnum.INTERVIEW_EXPERIENCE_INNER.getTemplate();
-            List<EmailHtml> emailHtmlList =  interviewQuestionScoreService.getInterviewPaperDetail(interviewId)
+            List<HtmlResource> htmlResourceList =  interviewQuestionScoreService.getInterviewPaperDetail(interviewId)
                     .getQuestions()
                     .stream()
                     .map(question -> {
@@ -111,7 +111,7 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                                 .standard(question.getStandard())
                                 .build();
                     }).map(inner -> {
-                        return new EmailHtml(innerTemplate, inner);
+                        return new HtmlResource(innerTemplate, inner);
                     }).toList();
 
             String closeTemplate = EmailTemplateEnum.INTERVIEW_EXPERIENCE_CLOSE.getTemplate();
@@ -121,9 +121,9 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                     .build();
 
             // 构造 html
-            String html = emailHtmlEngine.builder()
+            String html = htmlEngine.builder()
                     .append(openTemplate, templateOpen)
-                    .append(emailHtmlList)
+                    .append(htmlResourceList)
                     .append(closeTemplate, templateClose)
                     .build();
 

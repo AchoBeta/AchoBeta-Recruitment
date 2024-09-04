@@ -4,7 +4,7 @@ import com.achobeta.common.enums.EmailTemplateEnum;
 import com.achobeta.common.enums.ResumeEvent;
 import com.achobeta.common.enums.ResumeStatus;
 import com.achobeta.domain.email.model.po.EmailMessage;
-import com.achobeta.domain.email.service.EmailHtmlEngine;
+import com.achobeta.domain.html.service.HtmlEngine;
 import com.achobeta.domain.email.service.EmailSender;
 import com.achobeta.domain.resumestate.machine.context.ResumeContext;
 import com.achobeta.domain.resumestate.model.dto.MemberDTO;
@@ -43,7 +43,7 @@ ResumeConfirmHelper implements ResumeStateInternalTransitionHelper{
 
     private final EmailSender emailSender;
 
-    private final EmailHtmlEngine emailHtmlEngine;
+    private final HtmlEngine htmlEngine;
 
     private final MemberService memberService;
 
@@ -104,7 +104,7 @@ ResumeConfirmHelper implements ResumeStateInternalTransitionHelper{
                     .username(memberDTO.getUsername())
                     .password(memberDTO.getPassword())
                     .build();
-            String html = emailHtmlEngine.builder()
+            String html = htmlEngine.builder()
                     .append(emailTemplate.getTemplate(), confirmationNoticeTemplate)
                     .build();
             // 发送

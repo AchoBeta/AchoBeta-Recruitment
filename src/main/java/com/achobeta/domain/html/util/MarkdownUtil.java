@@ -1,4 +1,4 @@
-package com.achobeta.util;
+package com.achobeta.domain.html.util;
 
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
@@ -20,7 +20,7 @@ public class MarkdownUtil {
 
     private final static HtmlRenderer HTML_RENDERER = HtmlRenderer.builder(OPTIONS).build();
 
-    public static String markdownToHtml(String markdown) {
+    public static String getHtml(String markdown) {
         // 解析 Markdown 文本为节点
         Node document = PARSER.parse(markdown);
         // 将 Markdown 节点渲染为 HTML

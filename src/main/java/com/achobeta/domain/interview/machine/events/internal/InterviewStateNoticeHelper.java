@@ -4,7 +4,7 @@ import com.achobeta.common.enums.EmailTemplateEnum;
 import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.domain.email.model.po.EmailMessage;
-import com.achobeta.domain.email.service.EmailHtmlEngine;
+import com.achobeta.domain.html.service.HtmlEngine;
 import com.achobeta.domain.email.service.EmailSender;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.model.entity.Interview;
@@ -40,7 +40,7 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
 
     private final EmailSender emailSender;
 
-    private final EmailHtmlEngine emailHtmlEngine;
+    private final HtmlEngine htmlEngine;
 
     private final Condition<InterviewContext> defaultInterviewCondition;
 
@@ -93,7 +93,7 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
                     .endTime(scheduleVO.getEndTime())
                     .status(to) // 以状态机轮转的最终状态为准
                     .build();
-            String html = emailHtmlEngine.builder()
+            String html = htmlEngine.builder()
                     .append(emailTemplate.getTemplate(), interviewNoticeTemplate)
                     .build();
             // 发送

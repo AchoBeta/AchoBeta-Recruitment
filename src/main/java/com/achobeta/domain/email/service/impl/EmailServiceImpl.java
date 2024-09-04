@@ -1,6 +1,6 @@
 package com.achobeta.domain.email.service.impl;
 
-import com.achobeta.domain.email.service.EmailHtmlEngine;
+import com.achobeta.domain.html.service.HtmlEngine;
 import com.achobeta.domain.email.service.EmailSender;
 import com.achobeta.domain.email.model.po.EmailMessage;
 import com.achobeta.domain.email.model.vo.VerificationCodeTemplate;
@@ -45,7 +45,7 @@ public class EmailServiceImpl implements EmailService {
 
     private final RedisCache redisCache;
     private final EmailSender emailSender;
-    private final EmailHtmlEngine emailHtmlEngine;
+    private final HtmlEngine htmlEngine;
 
     @Override
     public void sendIdentifyingCode(String email, String code) {
@@ -109,7 +109,7 @@ public class EmailServiceImpl implements EmailService {
                 .code(code)
                 .timeout(timeout)
                 .build();
-        String html = emailHtmlEngine.builder()
+        String html = htmlEngine.builder()
                 .append(CAPTCHA.getTemplate(), verificationCodeTemplate)
                 .build();
         // 发送模板消息
