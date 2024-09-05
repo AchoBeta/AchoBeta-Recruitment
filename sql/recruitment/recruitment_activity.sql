@@ -5,7 +5,7 @@ create table `recruitment_activity`
     `batch_id` bigint not null comment '招新批次 id',
     `paper_id` bigint default null comment '试卷 id',
     `title` varchar(100) not null default '' comment '活动标题',
-    `target` json not null comment '面向的人群 {"grade": [23, 24], "uid": [1, 2, 3]}',
+    `target` json not null comment '面向的人群',
     `description` text not null comment '活动说明',
     `deadline` datetime not null comment '截止时间',
     `is_run` bit not null default b'0' comment '是否启动',
