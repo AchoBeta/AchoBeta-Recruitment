@@ -10,7 +10,7 @@ import com.achobeta.domain.recruit.model.dto.RecruitmentActivityDTO;
 import com.achobeta.domain.recruit.model.dto.RecruitmentActivityUpdateDTO;
 import com.achobeta.domain.recruit.model.dto.TimePeriodDTO;
 import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
-import com.achobeta.domain.recruit.model.entity.StudentGroup;
+import com.achobeta.domain.recruit.model.json.StudentGroup;
 import com.achobeta.domain.recruit.model.vo.RecruitmentActivityVO;
 import com.achobeta.domain.recruit.model.vo.RecruitmentTemplate;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;

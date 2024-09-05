@@ -1,6 +1,6 @@
 package com.achobeta.domain.recruit.model.dto;
 
-import com.achobeta.domain.recruit.model.entity.StudentGroup;
+import com.achobeta.domain.recruit.model.json.StudentGroup;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

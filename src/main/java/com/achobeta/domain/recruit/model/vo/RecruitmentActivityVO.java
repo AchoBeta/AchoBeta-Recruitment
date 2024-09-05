@@ -1,6 +1,6 @@
 package com.achobeta.domain.recruit.model.vo;
 
-import com.achobeta.domain.recruit.model.entity.StudentGroup;
+import com.achobeta.domain.recruit.model.json.StudentGroup;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
