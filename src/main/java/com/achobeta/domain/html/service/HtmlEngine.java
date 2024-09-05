@@ -1,7 +1,9 @@
 package com.achobeta.domain.html.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.achobeta.domain.html.model.po.HtmlReplaceResource;
 import com.achobeta.domain.html.model.po.HtmlResource;
+import com.achobeta.domain.html.model.po.MarkdownReplaceResource;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
@@ -60,19 +62,19 @@ public class HtmlEngine {
 
     public class HtmlBuilder {
 
-        private final StringBuffer stringBuffer = new StringBuffer();
+        private final StringBuffer htmlBuffer = new StringBuffer();
 
         public String build() {
-            return HtmlBuilder.this.stringBuffer.toString();
+            return HtmlBuilder.this.htmlBuffer.toString();
         }
 
         public HtmlBuilder clear() {
-            HtmlBuilder.this.stringBuffer.setLength(0);
+            HtmlBuilder.this.htmlBuffer.setLength(0);
             return HtmlBuilder.this;
         }
 
         public HtmlBuilder append(String html) {
-            HtmlBuilder.this.stringBuffer.append(html);
+            HtmlBuilder.this.htmlBuffer.append(html);
             return HtmlBuilder.this;
         }
 
@@ -80,14 +82,23 @@ public class HtmlEngine {
             return HtmlBuilder.this.append(HtmlEngine.this.markdownToHtml(markdown));
         }
 
-        public HtmlBuilder replace(String uniqueSymbol, String html) {
-            String replacement = HtmlBuilder.this.build().replace(uniqueSymbol, html);
+        public HtmlBuilder replace(String target, String html) {
+            String replacement = HtmlBuilder.this.build().replace(target, html);
             return HtmlBuilder.this.clear().append(replacement);
         }
 
+        public HtmlBuilder replace(HtmlReplaceResource resource) {
+            return HtmlBuilder.this.replace(resource.getTarget(), resource.getHtml());
+        }
+
+        public HtmlBuilder replace(List<HtmlReplaceResource> resourceList) {
+            resourceList.forEach(HtmlBuilder.this::replace);
+            return HtmlBuilder.this;
+        }
+
         /**
-         * 通过替换唯一标识符，向原 html 插入一段 markdown 文本转换的 html
-         * @param uniqueSymbol 唯一标识符
+         * 通过替换标识符，向原 html 插入一段 markdown 文本转换的 html
+         * @param target 待替换的标识符
          * @param markdown 待插入的 markdown 文本
          * @return HtmlBuilder.this
          * 推荐用法：
@@ -96,20 +107,29 @@ public class HtmlEngine {
          * 2. content 先设置为 uniqueSymbol，然后调用 append，传入 template 和 data 合成初步的 html
          * 3. 紧接着调用 replaceMarkdown，传入 uniqueSymbol 和原 markdown 文本，文本转换为 html 并替换 uniqueSymbol 的位置
          */
-        public HtmlBuilder replaceMarkdown(String uniqueSymbol, String markdown) {
-            return HtmlBuilder.this.replace(uniqueSymbol, HtmlEngine.this.markdownToHtml(markdown));
+        public HtmlBuilder replaceMarkdown(String target, String markdown) {
+            return HtmlBuilder.this.replace(target, HtmlEngine.this.markdownToHtml(markdown));
+        }
+
+        public HtmlBuilder replaceMarkdown(MarkdownReplaceResource resource) {
+            return HtmlBuilder.this.replaceMarkdown(resource.getTarget(), resource.getMarkdown());
+        }
+
+        public HtmlBuilder replaceMarkdown(List<MarkdownReplaceResource> resourceList) {
+            resourceList.forEach(HtmlBuilder.this::replaceMarkdown);
+            return HtmlBuilder.this;
         }
 
         public <T> HtmlBuilder append(String template, T data) {
             return HtmlBuilder.this.append(HtmlEngine.this.getHtml(template, data));
         }
 
-        public HtmlBuilder append(HtmlResource htmlResource) {
-            return HtmlBuilder.this.append(htmlResource.getTemplate(), htmlResource.getContext());
+        public HtmlBuilder append(HtmlResource resource) {
+            return HtmlBuilder.this.append(resource.getTemplate(), resource.getContext());
         }
 
-        public HtmlBuilder append(List<HtmlResource> htmlResourceList) {
-            htmlResourceList.forEach(HtmlBuilder.this::append);
+        public HtmlBuilder append(List<HtmlResource> resourceList) {
+            resourceList.forEach(HtmlBuilder.this::append);
             return HtmlBuilder.this;
         }
 
