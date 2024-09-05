@@ -1,6 +1,8 @@
 package com.achobeta.domain.message.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.common.annotation.Intercept;
+import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.message.model.dto.AddMessageTemplateDTO;
 import com.achobeta.domain.message.model.dto.UpdateMessageTemplateDTO;
 import com.achobeta.domain.message.model.vo.MessageTemplateVO;
@@ -33,6 +35,7 @@ public class MessageTemplateController {
      **/
     //查询模板消息列表
     @GetMapping("/query")
+    @Intercept(permit = {UserTypeEnum.ADMIN})
     public SystemJsonResponse queryMessageTemplateList(){
 
         //查找模板消息列表
@@ -47,6 +50,7 @@ public class MessageTemplateController {
      * @date: 2024/7/10 18:04
      **/
     @PostMapping("/add")
+    @Intercept(permit = {UserTypeEnum.ADMIN})
     public SystemJsonResponse addMessageTemplate(@RequestBody AddMessageTemplateDTO addMessageTemplateDTO){
         //校验
         ValidatorUtils.validate(addMessageTemplateDTO);
@@ -63,6 +67,7 @@ public class MessageTemplateController {
      * @date: 2024/7/10 18:04
      **/
     @DeleteMapping ("/del/{templateId}")
+    @Intercept(permit = {UserTypeEnum.ADMIN})
     public SystemJsonResponse removeMessageTemplate(@PathVariable("templateId") Long templateId){
         //校验模板消息是否存在
         messageTemplateService.checkMessageTemplateIfExist(templateId);
@@ -77,6 +82,7 @@ public class MessageTemplateController {
      * @date: 2024/7/10 18:04
      **/
     @PutMapping("/update")
+    @Intercept(permit = {UserTypeEnum.ADMIN})
     public SystemJsonResponse updateMessageTemplate(@RequestBody UpdateMessageTemplateDTO updateMessageTemplateDTO){
         //校验
         ValidatorUtils.validate(updateMessageTemplateDTO);

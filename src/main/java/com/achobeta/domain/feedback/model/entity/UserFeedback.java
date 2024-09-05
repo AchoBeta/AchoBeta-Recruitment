@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.Data;
 
@@ -36,7 +37,7 @@ public class UserFeedback extends BaseIncrIDEntity implements Serializable {
     /**
      * 反馈标题
      */
-    private String title;
+    private String tittle;
 
     /**
      * 反馈内容
@@ -46,7 +47,13 @@ public class UserFeedback extends BaseIncrIDEntity implements Serializable {
     /**
      * 附件链接
      */
-    private String attchment;
+    private String attachment;
+
+    /**
+     * 反馈时间
+     */
+    private LocalDateTime feedbackTime;
+
 
     /**
      * 是否处理标记

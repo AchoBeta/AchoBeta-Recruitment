@@ -21,6 +21,7 @@ public class QueryStuListDTO extends BasePageQueryEntity implements Serializable
     Integer batchId;
     /*年级*/
     Integer grade;
+
     /*简历状态*/
     Integer status;
     /*学生名称*/

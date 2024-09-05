@@ -2,7 +2,9 @@ package com.achobeta.domain.message.controller;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.base.BasePageResultEntity;
+import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.message.model.dto.MessageSendDTO;
 import com.achobeta.domain.message.model.dto.QueryStuListDTO;
 import com.achobeta.domain.message.model.dto.StuOfMessageVO;
@@ -35,6 +37,7 @@ public class MessageController {
     private final MessageService messageService;
 
     @PostMapping("/stu/query")
+    @Intercept(permit = {UserTypeEnum.ADMIN})
     public SystemJsonResponse queryStuList(@RequestBody QueryStuListDTO queryStuDTO){
 
         //校验
@@ -47,6 +50,7 @@ public class MessageController {
 
 
     @GetMapping("/info/query")
+    @Intercept(permit = {UserTypeEnum.ADMIN,UserTypeEnum.USER})
     public SystemJsonResponse queryMessageListofUser(){
 
         List<MessageContentVO> messageContentVOList=messageService.getMessageListofUser();

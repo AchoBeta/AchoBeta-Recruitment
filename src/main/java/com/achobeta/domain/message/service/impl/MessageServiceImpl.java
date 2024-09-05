@@ -19,9 +19,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.achobeta.domain.message.model.entity.Message;
 import com.achobeta.domain.message.service.MessageService;
 import com.achobeta.domain.message.model.dao.mapper.MessageMapper;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -60,11 +58,15 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
     public void sendMessage(MessageContentDTO messageContentBody, CopyOnWriteArraySet<MessageReceiveServer> webSocketSet) {
 
         MessageContentVO messageContentVO = messageConverter.messageContentDTOToVO(messageContentBody);
+
         webSocketSet.stream()
-                .filter(server -> !messageContentBody.getUserIdList().contains(server.getUserId()))
+                .filter(server -> !messageContentBody.getStuInfoSendList().stream().map(data -> data.getUserId()).toList().contains(server.getUserId()))
                 .forEach(messageReceiveServer -> {
+                    /*姓名替换*/
+                    /*messageContentVO.getContent().replace("$", )*/
                     //消息内容
                     String messageText = JSON.toJSONString(messageContentVO);
+
                     //消息发送
                     try {
                         messageReceiveServer.getSession().getBasicRemote().sendText(messageText);
@@ -76,30 +78,43 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
     }
 
     @Override
-    public void storeMessage(MessageContentDTO messageContent) {
+    public Long storeMessage(MessageContentDTO messageContent) {
         //获取当前管理员id
         long managerId = BaseContext.getCurrentUser().getUserId();
         //保存消息到数据库
-        Message message=messageConverter.messsageContentDTOToPo(messageContent);
-        this.save(message);
+        Message message = messageConverter.messsageContentDTOToPo(messageContent);
+        message.setManagerId(managerId);
 
+        messageContent.getStuInfoSendList().stream().forEach(stu->{
+            message.setUserId(stu.getUserId());
+            this.save(message);
+        });
+        return message.getId();
         //保存消息到缓存
-        messageContent.getUserIdList()
+      /*  MessageContentVO messageContentVO = messageConverter.messageContentDTOToVO(messageContent);
+        messageContent.getStuInfoSendList()
                 .stream()
-                .forEach(receiverId ->
-                        redisCache.setCacheObject(MESSAGE_CACHE_NAME + receiverId + managerId, message));
+                .forEach(receiverId -> {
+                            redisCache.setCacheList(MESSAGE_CACHE_NAME + receiverId, List.of(messageContentVO));
+                            redisCache.setCacheList(MESSAGE_CACHE_NAME + managerId, List.of(messageContentVO));
+                        }
+                );*/
 
     }
 
     @Override
     public List<MessageContentVO> getMessageListofUser() {
-        long userId = BaseContext.getCurrentUser().getUserId();
-        Optional<List<MessageContentVO>> messageOptional = redisCache.getCacheList(MESSAGE_CACHE_NAME + userId + "*", MessageContentVO.class);
+        Long userId = BaseContext.getCurrentUser().getUserId();
+        //缓存消息列表
+        /*Optional<List<MessageContentVO>> messageOptional = redisCache.getCacheList(MESSAGE_CACHE_NAME + userId, MessageContentVO.class);
 
-        if(!messageOptional.isEmpty())
-            return messageOptional.get();
+        if (!messageOptional.isEmpty())
+            return messageOptional.get();*/
+        //查询并封装返回结果
+        List<Message> messageList = lambdaQuery().eq(Message::getUserId, userId).list();
+        List<MessageContentVO> messageContentVOList = messageConverter.messageContentPoToVOList(messageList);
 
-        return Collections.emptyList();
+        return messageContentVOList;
     }
 
 

@@ -91,7 +91,9 @@ public enum GlobalServiceStatusCode {
     INTERVIEW_COMMENT_NOT_EXISTS(6201, "面试评论不存在"),
     INTERVIEW_NOT_SUMMARIZED(6202, "面试还未总结"),
     /*消息错误 7001-8000*/
-    MESSAGE_TEMPLATE_NOT_EXIST(7001,"消息模板不存在");
+    MESSAGE_TEMPLATE_NOT_EXIST(7001,"消息模板不存在"),
+    MESSAGE_NOT_EXIST(7002,"反馈消息不存在"),
+    MESSAGE_HANDLER_NOT_EXIST(7003,"反馈处理员不存在");
 
     /* -------------- */;
 

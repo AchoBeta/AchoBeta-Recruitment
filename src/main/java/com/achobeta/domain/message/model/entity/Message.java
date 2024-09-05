@@ -25,6 +25,11 @@ public class Message extends BaseIncrIDEntity implements Serializable {
     private Long managerId;
 
     /**
+     * 接收消息的用户id
+     */
+    private Long userId;
+
+    /**
      * 消息标题
      */
     private String tittle;

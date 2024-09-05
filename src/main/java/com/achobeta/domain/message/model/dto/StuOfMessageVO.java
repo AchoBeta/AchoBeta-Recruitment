@@ -1,5 +1,6 @@
 package com.achobeta.domain.message.model.dto;
 
+import com.achobeta.common.enums.ResumeStatus;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,6 @@ public class StuOfMessageVO implements Serializable {
 
     private Integer grade;
 
-    private Integer status;
+    private ResumeStatus status;
 
 }

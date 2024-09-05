@@ -1,19 +1,23 @@
 package com.achobeta.domain.feedback.model.vo;
 
-import com.achobeta.domain.feedback.model.entity.StuBaseInfo;
 import com.achobeta.domain.message.model.vo.MessageContentVO;
 import com.baomidou.mybatisplus.annotation.TableField;
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * @author cattleYuan
- * @date 2024/7/10
+ * @Description: 类
+ * @date 2024/9/4
  */
-@Data
-public class UserFeedbackVO implements Serializable {
+@Getter
+@Setter
+public class UserPersonalFeedBackVO implements Serializable {
 
     /**
      * 反馈id
@@ -23,14 +27,11 @@ public class UserFeedbackVO implements Serializable {
      * 处理结果的消息id
      */
     private Long messageId;
+
     /**
-     * 用户id
+     * 招新批次
      */
-    private Long userId;
-    /**
-     * 反馈学生基本信息
-     */
-    private StuBaseInfo stuBaseInfo;
+    private Integer batchId;
     /**
      * 反馈标题
      */
@@ -56,4 +57,5 @@ public class UserFeedbackVO implements Serializable {
      */
     @TableField("is_handle")
     private Boolean isHandle;
+
 }

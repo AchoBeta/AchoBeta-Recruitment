@@ -42,6 +42,14 @@ public class MessageReceiveServer {
 
     @OnMessage
     public void onMessage(MessageSendDTO messageSendDTO){
+        //构造消息发送链路
+        MessageSendHandlerChain sendHandlerChain = buildMessageSendHandlerChain(messageSendDTO);
+        //消息发送,启动!
+        sendHandlerChain.handleChain(messageSendDTO,webSocketSet);
+
+    }
+
+    private static MessageSendHandlerChain buildMessageSendHandlerChain(MessageSendDTO messageSendDTO) {
         //获取消息处理链路
         String chainName = messageSendDTO.getMessageContent().getSendType() + MessageSendHandlerChain.CHAIN_BASE_NAME;
         judgeBeanIfExist(chainName);
@@ -53,9 +61,7 @@ public class MessageReceiveServer {
             judgeBeanIfExist(handlerBeanName);
             sendHandlerChain.addHandler((MessageSendHandler)SpringUtil.getBean(handlerBeanName));
         });
-        //启动!
-        sendHandlerChain.handleChain(messageSendDTO,webSocketSet);
-
+        return sendHandlerChain;
     }
 
     private static void judgeBeanIfExist(String chainName) {

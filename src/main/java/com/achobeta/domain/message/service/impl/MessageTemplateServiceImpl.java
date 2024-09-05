@@ -40,18 +40,12 @@ public class MessageTemplateServiceImpl extends ServiceImpl<MessageTemplateMappe
         //构建消息模板
         MessageTemplate messageTemplate = messageTemplateConverter.addMessageTemplateDTOToPo(addMessageTemplateDTO);
         //保存模板
-        boolean isSuccess = save(messageTemplate);
-        if (!isSuccess) {
-            throw new GlobalServiceException("添加失败",GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL);
-        }
+        save(messageTemplate);
     }
 
     @Override
     public void removeMessageTemplate(Long templateId) {
-        boolean isSuccess = removeById(templateId);
-        if(!isSuccess){
-            throw new GlobalServiceException("删除失败",GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL);
-        }
+        removeById(templateId);
     }
 
     @Override
@@ -60,10 +54,8 @@ public class MessageTemplateServiceImpl extends ServiceImpl<MessageTemplateMappe
         //构建消息模板
         MessageTemplate messageTemplate=messageTemplateConverter.updateMessageTemplateDTOToPo(updateMessageTemplateDTO);
         //更新消息模板
-        boolean isSuccess = updateById(messageTemplate);
-        if(!isSuccess){
-            throw new GlobalServiceException("修改失败",GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL);
-        }
+        updateById(messageTemplate);
+
 
     }
 

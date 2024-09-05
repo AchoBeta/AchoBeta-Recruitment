@@ -19,4 +19,6 @@ public interface MessageConverter {
 
 
     Message messsageContentDTOToPo(MessageContentDTO messageContent);
+
+    List<MessageContentVO> messageContentPoToVOList(List<Message> messageList);
 }

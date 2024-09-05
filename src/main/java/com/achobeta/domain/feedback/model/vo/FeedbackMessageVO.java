@@ -1,4 +1,4 @@
-package com.achobeta.domain.message.model.vo;
+package com.achobeta.domain.feedback.model.vo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,21 +12,17 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-public class MessageContentVO {
+public class FeedbackMessageVO {
+
     /**
-     * 处理结果的消息id
-     */
-    private Long messageId;
-    /**
-     * 发送消息的管理员id
+     * 处理反馈的管理员id
      */
     private Long managerId;
 
     /**
-     * 接收消息的用户id
+     * 处理反馈的管理员姓名
      */
-    private Long userId;
-
+    private String managerName;
     /**
      * 消息标题
      */
@@ -38,7 +34,7 @@ public class MessageContentVO {
     private String content;
 
     /**
-     * 发送时间
+     * 反馈处理时间
      */
     private LocalDateTime sendTime;
 

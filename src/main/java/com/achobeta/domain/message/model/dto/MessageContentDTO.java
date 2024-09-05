@@ -2,7 +2,6 @@ package com.achobeta.domain.message.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +21,7 @@ public class MessageContentDTO implements Serializable {
      * 消息发送用户对象列表
      */
     @NotEmpty(message = "消息发送用户对象列表不能为空")
-    List<Long> userIdList;
+    List<StuBaseInfoDTO> stuInfoSendList;
 
     /**
      * 消息标题
