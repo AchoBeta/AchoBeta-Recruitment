@@ -5,6 +5,7 @@ import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.domain.html.model.po.HtmlResource;
 import com.achobeta.domain.email.model.po.EmailMessage;
+import com.achobeta.domain.html.model.po.MarkdownReplaceResource;
 import com.achobeta.domain.html.service.HtmlEngine;
 import com.achobeta.domain.email.service.EmailSender;
 import com.achobeta.domain.evaluate.model.vo.InterviewExperienceTemplateClose;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -100,15 +102,19 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                     .build();
 
             String innerTemplate = EmailTemplateEnum.INTERVIEW_EXPERIENCE_INNER.getTemplate();
+            List<MarkdownReplaceResource> replaceResourceList = new ArrayList<>();
             List<HtmlResource> htmlResourceList =  interviewQuestionScoreService.getInterviewPaperDetail(interviewId)
                     .getQuestions()
                     .stream()
                     .map(question -> {
+                        String target = htmlEngine.getUniqueSymbol();
+                        String standard = question.getStandard();
+                        replaceResourceList.add(new MarkdownReplaceResource(target, standard));
                         return InterviewExperienceTemplateInner.builder()
                                 .title(question.getTitle())
                                 .score(question.getScore())
                                 .average(question.getAverage())
-                                .standard(question.getStandard())
+                                .standard(target)
                                 .build();
                     }).map(inner -> {
                         return new HtmlResource(innerTemplate, inner);
@@ -125,6 +131,7 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                     .append(openTemplate, templateOpen)
                     .append(htmlResourceList)
                     .append(closeTemplate, templateClose)
+                    .replaceMarkdown(replaceResourceList)
                     .build();
 
             // 发送邮件
