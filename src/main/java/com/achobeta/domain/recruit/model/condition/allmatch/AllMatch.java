@@ -22,9 +22,8 @@ public class AllMatch implements Condition {
 
     @Override
     public Predicate<StuResume> predicate() {
-        Predicate<StuResume> predicate = stuResume -> Boolean.TRUE;
         // 取以上属性条件的交集
-        return predicate.and(skipAndIfNull(status));
+        return skipAndIfNull(status);
     }
 
 }

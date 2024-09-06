@@ -27,8 +27,7 @@ public class StudentGroup implements Condition {
 
     @Override
     public Predicate<StuResume> predicate() {
-        Predicate<StuResume> predicate = stuResume -> Boolean.TRUE;
-        return predicate.and(skipAndIfNull(anyMatch))
+        return skipAndIfNull(anyMatch)
                 .and(skipAndIfNull(allMatch));
     }
 

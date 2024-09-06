@@ -26,9 +26,8 @@ public class AnyMatch implements Condition {
 
     @Override
     public Predicate<StuResume> predicate() {
-        Predicate<StuResume> predicate = stuResume -> Boolean.FALSE;
         // 取以上属性条件的并集
-        return predicate.or(skipOrIfNull(grade))
+        return skipOrIfNull(grade)
                 .or(skipOrIfNull(userId));
     }
 
