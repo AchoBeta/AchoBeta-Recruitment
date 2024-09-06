@@ -101,7 +101,7 @@ public class InterviewSummaryHelper implements InterviewStateInternalTransitionH
                     .playback(interviewSummaryVO.getPlayback())
                     .build();
             String html = htmlEngine.builder()
-                    .append(emailTemplate.getTemplate())
+                    .append(emailTemplate.getTemplate(), interviewSummaryTemplate)
                     .build();
             // 发送
             emailSender.sendModelMail(emailMessage, html);
