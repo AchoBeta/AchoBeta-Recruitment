@@ -3,7 +3,6 @@ package com.achobeta.redis.component;
 
 
 import lombok.RequiredArgsConstructor;
-import org.assertj.core.util.Preconditions;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 

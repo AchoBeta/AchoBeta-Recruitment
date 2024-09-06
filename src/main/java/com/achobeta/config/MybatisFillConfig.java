@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * <span>

@@ -1,13 +1,13 @@
 package com.achobeta.domain.evaluate.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.evaluate.model.dto.QuestionScoreDTO;
 import com.achobeta.domain.evaluate.model.vo.InterviewPaperDetailVO;
 import com.achobeta.domain.evaluate.service.InterviewQuestionScoreService;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.service.PaperQuestionLinkService;
-import com.achobeta.common.annotation.Intercept;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;

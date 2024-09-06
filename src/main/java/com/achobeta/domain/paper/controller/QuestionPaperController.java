@@ -1,13 +1,13 @@
 package com.achobeta.domain.paper.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.paper.handler.chain.RemovePaperHandlerChain;
 import com.achobeta.domain.paper.model.dto.QuestionPaperDTO;
 import com.achobeta.domain.paper.model.vo.QuestionPaperVO;
 import com.achobeta.domain.paper.service.QuestionPaperLibraryService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
-import com.achobeta.common.annotation.Intercept;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;

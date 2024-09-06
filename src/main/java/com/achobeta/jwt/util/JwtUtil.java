@@ -2,7 +2,6 @@ package com.achobeta.jwt.util;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.jwt.propertities.JwtProperties;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

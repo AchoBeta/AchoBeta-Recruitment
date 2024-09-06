@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.Optional;
 
-import static com.achobeta.domain.evaluate.constants.InterviewEvaluateConstants.*;
+import static com.achobeta.domain.evaluate.constants.InterviewEvaluateConstants.MAX_ABILITY_VALUE;
+import static com.achobeta.domain.evaluate.constants.InterviewEvaluateConstants.MIN_ABILITY_VALUE;
 
 /**
  * Created With Intellij IDEA

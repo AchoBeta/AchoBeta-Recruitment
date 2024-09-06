@@ -2,9 +2,6 @@ package com.achobeta.domain.recruit.model.dao.mapper;
 
 import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 /**
 * @author 马拉圈

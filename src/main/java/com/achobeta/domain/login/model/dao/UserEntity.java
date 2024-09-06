@@ -1,7 +1,6 @@
 package com.achobeta.domain.login.model.dao;
 
 import com.achobeta.common.base.BaseIncrIDEntity;
-import com.achobeta.common.enums.UserTypeEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;

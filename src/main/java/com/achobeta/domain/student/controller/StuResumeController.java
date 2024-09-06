@@ -1,6 +1,7 @@
 package com.achobeta.domain.student.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.student.model.dto.QueryResumeDTO;
 import com.achobeta.domain.student.model.dto.QueryResumeOfUserDTO;
@@ -9,7 +10,6 @@ import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.achobeta.domain.student.service.StuResumeService;
 import com.achobeta.domain.users.context.BaseContext;
-import com.achobeta.common.annotation.Intercept;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 /**

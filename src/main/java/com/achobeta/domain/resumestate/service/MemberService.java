@@ -5,7 +5,6 @@ import com.achobeta.domain.resumestate.model.entity.Member;
 import com.achobeta.domain.resumestate.model.vo.MemberVO;
 import com.achobeta.domain.resumestate.model.vo.SimpleMemberVO;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Optional;

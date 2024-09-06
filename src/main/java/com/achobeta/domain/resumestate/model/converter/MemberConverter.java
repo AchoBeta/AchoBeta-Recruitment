@@ -5,7 +5,6 @@ import com.achobeta.domain.resumestate.model.dto.MemberDTO;
 import com.achobeta.domain.resumestate.model.entity.Member;
 import com.achobeta.domain.resumestate.model.vo.MemberVO;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 /**

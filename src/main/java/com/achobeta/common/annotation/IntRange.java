@@ -3,7 +3,6 @@ package com.achobeta.common.annotation;
 import com.achobeta.common.annotation.handler.IntRangeValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import jakarta.validation.constraints.NotNull;
 
 import java.lang.annotation.*;
 

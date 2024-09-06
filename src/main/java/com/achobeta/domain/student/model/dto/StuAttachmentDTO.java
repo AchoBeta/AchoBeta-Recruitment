@@ -3,7 +3,6 @@ package com.achobeta.domain.student.model.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**

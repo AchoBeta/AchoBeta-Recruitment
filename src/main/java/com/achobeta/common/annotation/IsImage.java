@@ -3,7 +3,6 @@ package com.achobeta.common.annotation;
 import com.achobeta.common.annotation.handler.IsImageValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import jakarta.validation.constraints.NotBlank;
 
 import java.lang.annotation.*;
 

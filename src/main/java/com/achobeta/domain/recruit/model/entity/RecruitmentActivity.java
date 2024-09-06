@@ -5,11 +5,10 @@ import com.achobeta.domain.recruit.model.condition.StudentGroup;
 import com.achobeta.handler.MyBatisJacksonTypeHandler;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
-
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import lombok.Data;
 
 /**
  * @TableName recruitment_activity
