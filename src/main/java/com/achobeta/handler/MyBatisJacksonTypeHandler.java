@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @MappedTypes({Object.class})
 @MappedJdbcTypes({JdbcType.VARCHAR})
@@ -32,10 +33,10 @@ public class MyBatisJacksonTypeHandler extends AbstractJsonTypeHandler<Object> {
 
     public MyBatisJacksonTypeHandler(Class<?> type) {
         if (log.isTraceEnabled()) {
-            log.trace("MyBatisJacksonTypeHandler(" + type + ")");
+            log.trace("MyBatisJacksonTypeHandler({})", type);
         }
-
-        Assert.notNull(type, "Type argument cannot be null");
+        Optional.ofNullable(type).orElseThrow(() ->
+                new GlobalServiceException("Type argument cannot be null"));
         this.type = type;
     }
 

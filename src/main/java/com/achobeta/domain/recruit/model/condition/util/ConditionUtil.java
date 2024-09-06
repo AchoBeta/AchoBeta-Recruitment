@@ -28,22 +28,18 @@ public class ConditionUtil {
     }
 
     public static <C extends Condition> Predicate<StuResume> anyMatch(Class<C> clazz, C object) {
-        return ObjectUtil.reduceObject(
+        return predicate(
                 clazz,
-                Condition.class,
                 object,
-                Condition::predicate,
                 stuResume -> Boolean.FALSE,
                 Predicate::or
         );
     }
 
     public static <C extends Condition> Predicate<StuResume> allMatch(Class<C> clazz, C object) {
-        return ObjectUtil.reduceObject(
+        return predicate(
                 clazz,
-                Condition.class,
                 object,
-                Condition::predicate,
                 stuResume -> Boolean.TRUE,
                 Predicate::and
         );
