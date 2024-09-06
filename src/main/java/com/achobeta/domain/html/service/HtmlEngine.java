@@ -39,7 +39,9 @@ public class HtmlEngine {
     static {
         OPTIONS = new MutableDataSet()
                 .setFrom(ParserEmulationProfile.MARKDOWN)
-                .set(Parser.EXTENSIONS, List.of(TocExtension.create(), TablesExtension.create()));
+                // 支持 [TOC]目录 以及 表格
+                .set(Parser.EXTENSIONS, List.of(TocExtension.create(), TablesExtension.create()))
+        ;
         PARSER = Parser.builder(OPTIONS).build();
         HTML_RENDERER = HtmlRenderer.builder(OPTIONS).build();
     }
