@@ -21,7 +21,7 @@ public class UserIdCondition extends ArrayList<Long> implements Condition {
         return stuResume -> {
             return this.stream()
                     .filter(Objects::nonNull)
-                    .anyMatch(uid -> uid.equals(stuResume.getUserId()));
+                    .anyMatch(userId -> userId.equals(stuResume.getUserId()));
         };
     }
 }

@@ -21,7 +21,7 @@ public class GradeCondition extends ArrayList<Integer> implements Condition {
         return stuResume -> {
             return this.stream()
                     .filter(Objects::nonNull)
-                    .anyMatch(status -> status.equals(stuResume.getGrade()));
+                    .anyMatch(grade -> grade.equals(stuResume.getGrade()));
         };
     }
 }
