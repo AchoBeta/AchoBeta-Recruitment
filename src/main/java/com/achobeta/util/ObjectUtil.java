@@ -2,7 +2,9 @@ package com.achobeta.util;
 
 import com.achobeta.exception.GlobalServiceException;
 
-import java.util.Arrays;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
@@ -18,18 +20,20 @@ import java.util.stream.Stream;
  */
 public class ObjectUtil {
 
-    // 滤出 C类（不包括父类） 的 F / F子类 的属性
+    // 滤出 C 类不包括父类的「F/F子类的属性」
     public static <C, F> Stream<F> stream(Class<C> clazz, Class<? extends F> type, C object) {
-        return Arrays.stream(clazz.getDeclaredFields())
-                .filter(field -> type.isAssignableFrom(field.getType()))
-                .map(field -> {
-                    try {
-                        field.setAccessible(Boolean.TRUE);
-                        return (F) field.get(object);
-                    } catch (IllegalAccessException e) {
-                        throw new GlobalServiceException(e.getMessage());
-                    }
-                });
+        List<F> fieldList = new ArrayList<>();
+        try {
+            for (Field field : clazz.getDeclaredFields()) {
+                if (type.isAssignableFrom(field.getType())) {
+                    field.setAccessible(Boolean.TRUE);
+                    fieldList.add((F) field.get(object));
+                }
+            }
+        } catch (IllegalAccessException e) {
+            throw new GlobalServiceException(e.getMessage());
+        }
+        return fieldList.stream();
     }
 
     public static <C, F, P> P reduceObject(Class<C> clazz, Class<? extends F> type,
