@@ -18,7 +18,6 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = {IsImageValidator.class})
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-@NotBlank(message = "image url 不能为空")
 public @interface IsImage {
 
     String message() default "image url 非法"; // 默认消息

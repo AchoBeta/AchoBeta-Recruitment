@@ -22,6 +22,7 @@ public class QuestionScoreDTO {
     @NotNull(message = "问题 id 不能为空")
     private Long questionId;
 
+    @NotNull(message = "分数不能为空")
     @IntRange(min = SUPERCLASS_QUESTION_SCORE, max = MAX_QUESTION_SCORE, message = QUESTION_SCORE_MESSAGE)
     private Integer score;
 

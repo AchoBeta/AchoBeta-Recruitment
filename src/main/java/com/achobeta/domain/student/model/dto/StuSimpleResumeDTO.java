@@ -27,9 +27,11 @@ public class StuSimpleResumeDTO implements Serializable {
     @NotBlank(message = "名字不能为空")
     private String name;
 
+    @NotNull(message = "性别不能为空")
     @IntRange(min = 0, max = 1, message = "性别值非法")
     private Integer gender;
 
+    @NotNull(message = "年级不能为空")
     @IntRange(min = 1000, max = 9999, message = "年级应为四位数")
     private Integer grade;
 
@@ -56,6 +58,7 @@ public class StuSimpleResumeDTO implements Serializable {
     @NotBlank(message = "个人经历不能为空")
     private String experience;
 
+    @NotNull(message = "证件照不能为空")
     @IsImage(message = "证件照非法")
     private String image;
 

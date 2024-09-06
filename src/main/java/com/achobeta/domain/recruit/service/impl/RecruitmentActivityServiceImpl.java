@@ -9,7 +9,7 @@ import com.achobeta.domain.recruit.model.dao.mapper.RecruitmentActivityMapper;
 import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
 import com.achobeta.domain.recruit.model.entity.ParticipationQuestionLink;
 import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
-import com.achobeta.domain.recruit.model.json.StudentGroup;
+import com.achobeta.domain.recruit.model.condition.StudentGroup;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.service.StuResumeService;
@@ -21,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 /**
 * @author 马拉圈

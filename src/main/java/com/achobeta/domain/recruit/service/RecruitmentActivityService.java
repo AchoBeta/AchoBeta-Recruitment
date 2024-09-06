@@ -2,7 +2,7 @@ package com.achobeta.domain.recruit.service;
 
 import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
-import com.achobeta.domain.recruit.model.json.StudentGroup;
+import com.achobeta.domain.recruit.model.condition.StudentGroup;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
