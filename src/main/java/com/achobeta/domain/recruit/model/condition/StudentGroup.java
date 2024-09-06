@@ -2,6 +2,7 @@ package com.achobeta.domain.recruit.model.condition;
 
 import com.achobeta.domain.recruit.model.condition.allmatch.AllMatch;
 import com.achobeta.domain.recruit.model.condition.anymatch.AnyMatch;
+import com.achobeta.domain.recruit.model.condition.util.ConditionUtil;
 import com.achobeta.domain.student.model.entity.StuResume;
 import jakarta.validation.Valid;
 import lombok.Data;
@@ -27,8 +28,7 @@ public class StudentGroup implements Condition {
 
     @Override
     public Predicate<StuResume> predicate() {
-        return skipAndIfNull(anyMatch)
-                .and(skipAndIfNull(allMatch));
+        return ConditionUtil.allMatch(StudentGroup.class, this);
     }
 
 }

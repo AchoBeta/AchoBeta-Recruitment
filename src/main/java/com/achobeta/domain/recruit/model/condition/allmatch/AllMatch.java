@@ -1,7 +1,7 @@
 package com.achobeta.domain.recruit.model.condition.allmatch;
 
-import com.achobeta.common.annotation.Intercept;
 import com.achobeta.domain.recruit.model.condition.Condition;
+import com.achobeta.domain.recruit.model.condition.util.ConditionUtil;
 import com.achobeta.domain.student.model.entity.StuResume;
 import lombok.Data;
 
@@ -23,7 +23,7 @@ public class AllMatch implements Condition {
     @Override
     public Predicate<StuResume> predicate() {
         // 取以上属性条件的交集
-        return skipAndIfNull(status);
+        return ConditionUtil.allMatch(AllMatch.class, this);
     }
 
 }

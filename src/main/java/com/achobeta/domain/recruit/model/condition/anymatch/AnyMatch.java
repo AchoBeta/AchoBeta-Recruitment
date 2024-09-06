@@ -2,8 +2,8 @@ package com.achobeta.domain.recruit.model.condition.anymatch;
 
 import com.achobeta.common.annotation.IntRange;
 import com.achobeta.domain.recruit.model.condition.Condition;
+import com.achobeta.domain.recruit.model.condition.util.ConditionUtil;
 import com.achobeta.domain.student.model.entity.StuResume;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.function.Predicate;
@@ -27,8 +27,7 @@ public class AnyMatch implements Condition {
     @Override
     public Predicate<StuResume> predicate() {
         // 取以上属性条件的并集
-        return skipOrIfNull(grade)
-                .or(skipOrIfNull(userId));
+        return ConditionUtil.anyMatch(AnyMatch.class, this);
     }
 
 }
