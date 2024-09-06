@@ -4,8 +4,11 @@ import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.domain.html.model.po.HtmlReplaceResource;
 import com.achobeta.domain.html.model.po.HtmlResource;
 import com.achobeta.domain.html.model.po.MarkdownReplaceResource;
+import com.vladsch.flexmark.ext.tables.TablesExtension;
+import com.vladsch.flexmark.ext.toc.TocExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.parser.ParserEmulationProfile;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,11 +31,19 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class HtmlEngine {
 
-    private final static MutableDataSet OPTIONS = new MutableDataSet();
+    private final static MutableDataSet OPTIONS;
 
-    private final static Parser PARSER = Parser.builder(OPTIONS).build();
+    private final static Parser PARSER;
 
-    private final static HtmlRenderer HTML_RENDERER = HtmlRenderer.builder(OPTIONS).build();
+    private final static HtmlRenderer HTML_RENDERER;
+
+    static {
+        OPTIONS = new MutableDataSet()
+                .setFrom(ParserEmulationProfile.MARKDOWN)
+                .set(Parser.EXTENSIONS, List.of(TocExtension.create(), TablesExtension.create()));
+        PARSER = Parser.builder(OPTIONS).build();
+        HTML_RENDERER = HtmlRenderer.builder(OPTIONS).build();
+    }
 
     private final TemplateEngine templateEngine;
 
