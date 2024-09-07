@@ -1,4 +1,4 @@
-package com.achobeta.domain.templateengine.service;
+package com.achobeta.domain.template.engine;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;

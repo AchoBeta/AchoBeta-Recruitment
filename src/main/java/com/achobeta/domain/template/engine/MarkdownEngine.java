@@ -1,7 +1,7 @@
-package com.achobeta.domain.templateengine.service;
+package com.achobeta.domain.template.engine;
 
-import com.achobeta.domain.templateengine.model.po.MarkdownResource;
-import com.achobeta.domain.templateengine.util.TemplateUtil;
+import com.achobeta.domain.template.model.po.MarkdownResource;
+import com.achobeta.domain.template.util.TemplateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;

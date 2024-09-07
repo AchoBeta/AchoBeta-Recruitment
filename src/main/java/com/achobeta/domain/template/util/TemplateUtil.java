@@ -1,4 +1,4 @@
-package com.achobeta.domain.templateengine.util;
+package com.achobeta.domain.template.util;
 
 import cn.hutool.core.bean.BeanUtil;
 import org.thymeleaf.context.Context;

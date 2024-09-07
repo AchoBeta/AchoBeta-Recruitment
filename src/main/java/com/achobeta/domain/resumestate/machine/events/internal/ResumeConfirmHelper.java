@@ -5,7 +5,7 @@ import com.achobeta.common.enums.ResumeEvent;
 import com.achobeta.common.enums.ResumeStatus;
 import com.achobeta.domain.email.model.po.EmailMessage;
 import com.achobeta.domain.email.service.EmailSender;
-import com.achobeta.domain.templateengine.service.HtmlEngine;
+import com.achobeta.domain.template.engine.HtmlEngine;
 import com.achobeta.domain.resumestate.machine.context.ResumeContext;
 import com.achobeta.domain.resumestate.model.dto.MemberDTO;
 import com.achobeta.domain.resumestate.model.dto.ResumeExecuteDTO;
