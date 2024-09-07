@@ -9,9 +9,9 @@ import com.achobeta.domain.evaluate.model.vo.InterviewExperienceTemplateClose;
 import com.achobeta.domain.evaluate.model.vo.InterviewExperienceTemplateInner;
 import com.achobeta.domain.evaluate.model.vo.InterviewExperienceTemplateOpen;
 import com.achobeta.domain.evaluate.service.InterviewQuestionScoreService;
-import com.achobeta.domain.html.model.po.HtmlResource;
-import com.achobeta.domain.html.model.po.MarkdownReplaceResource;
-import com.achobeta.domain.html.service.HtmlEngine;
+import com.achobeta.domain.templateengine.model.po.HtmlResource;
+import com.achobeta.domain.templateengine.model.po.MarkdownReplaceResource;
+import com.achobeta.domain.templateengine.service.HtmlEngine;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.machine.events.internal.InterviewStateInternalTransitionHelper;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
@@ -19,6 +19,7 @@ import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.schedule.model.vo.ScheduleVO;
 import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
+import com.achobeta.domain.templateengine.util.TemplateUtil;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
 import lombok.RequiredArgsConstructor;
@@ -107,7 +108,7 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                     .getQuestions()
                     .stream()
                     .map(question -> {
-                        String target = htmlEngine.getUniqueSymbol();
+                        String target = TemplateUtil.getUniqueSymbol();
                         String standard = question.getStandard();
                         replaceResourceList.add(new MarkdownReplaceResource(target, standard));
                         return InterviewExperienceTemplateInner.builder()

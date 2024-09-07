@@ -1,4 +1,4 @@
-package com.achobeta.domain.html.model.po;
+package com.achobeta.domain.templateengine.model.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,16 +8,16 @@ import lombok.NoArgsConstructor;
  * Created With Intellij IDEA
  * Description:
  * User: 马拉圈
- * Date: 2024-08-29
- * Time: 11:31
+ * Date: 2024-09-05
+ * Time: 9:00
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HtmlResource {
+public class HtmlReplaceResource {
 
-    private String template;
+    private String target;
 
-    private Object context;
+    private String html;
 
 }
