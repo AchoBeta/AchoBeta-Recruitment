@@ -78,7 +78,7 @@ public class HtmlEngine {
 
         // 追加一段 html
         public HtmlBuilder append(String html) {
-            this.htmlBuffer.append(html);
+            htmlBuffer.append(html);
             return this;
         }
 
@@ -153,7 +153,7 @@ public class HtmlEngine {
          * 3. 紧接着调用 replaceMarkdown，传入 uniqueSymbol 和原 markdown 文本，文本转换为 html 并替换 uniqueSymbol 的位置
          */
         public HtmlBuilder replaceMarkdown(String target, String markdown) {
-            String html = markdownEngine.builder().append(markdown).buildHtml();
+            String html = markdownToHtml(markdown);
             return replace(target, html);
         }
 
