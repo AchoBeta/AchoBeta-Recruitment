@@ -18,8 +18,8 @@ import java.util.stream.Stream;
  */
 public class ObjectUtil {
 
-    public static <C, F> F readField(Field field, Class<C> clazz, Class<? extends F> type, C object) {
-        if (!type.isAssignableFrom(field.getType())) {
+    public static <C, F> F readField(Class<C> clazz, Class<? extends F> fieldClazz, C object, Field field) {
+        if (!fieldClazz.isAssignableFrom(field.getType())) {
             return null;
         }
         try {
@@ -31,23 +31,23 @@ public class ObjectUtil {
     }
 
     // 滤出 C 类不包括父类的「F/F子类的属性」
-    public static <C, F> Stream<F> stream(Class<C> clazz, Class<? extends F> type, C object) {
+    public static <C, F> Stream<F> stream(Class<C> clazz, Class<? extends F> fieldClazz, C object) {
         return Arrays.stream(clazz.getDeclaredFields())
-                .map(field -> readField(field, clazz, type, object));
+                .map(field -> readField(clazz, fieldClazz, object, field));
     }
 
-    public static <C, F, P> P reduceObject(Class<C> clazz, Class<? extends F> type,
+    public static <C, F, P> P reduceObject(Class<C> clazz, Class<? extends F> fieldClazz,
                                            C object, Function<F, P> mapper,
                                            P identity, BinaryOperator<P> accumulator) {
-        return stream(clazz, type, object)
+        return stream(clazz, fieldClazz, object)
                 .filter(Objects::nonNull)
                 .map(mapper)
                 .reduce(identity, accumulator);
     }
 
-    public static <C, F> void forEachObject(Class<C> clazz, Class<? extends F> type,
+    public static <C, F> void forEachObject(Class<C> clazz, Class<? extends F> fieldClazz,
                                             C object, Consumer<F> consumer) {
-        stream(clazz, type, object)
+        stream(clazz, fieldClazz, object)
                 .filter(Objects::nonNull)
                 .forEach(consumer);
     }
