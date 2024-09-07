@@ -3,7 +3,15 @@ package com.achobeta.domain.templateengine.service;
 import com.achobeta.domain.templateengine.model.po.HtmlReplaceResource;
 import com.achobeta.domain.templateengine.model.po.HtmlResource;
 import com.achobeta.domain.templateengine.model.po.MarkdownReplaceResource;
+import com.achobeta.domain.templateengine.model.po.MarkdownResource;
 import com.achobeta.domain.templateengine.util.TemplateUtil;
+import com.vladsch.flexmark.ext.tables.TablesExtension;
+import com.vladsch.flexmark.ext.toc.TocExtension;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.parser.ParserEmulationProfile;
+import com.vladsch.flexmark.util.ast.Node;
+import com.vladsch.flexmark.util.data.MutableDataSet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
@@ -28,61 +36,108 @@ public class HtmlEngine {
 
     private final MarkdownEngine markdownEngine;
 
-    public HtmlEngine.HtmlBuilder builder() {
-        return new HtmlEngine.HtmlBuilder();
+    public HtmlBuilder builder() {
+        return new HtmlBuilder();
     }
 
     public class HtmlBuilder {
 
+        private final static MutableDataSet OPTIONS;
+
+        private final static Parser PARSER;
+
+        private final static HtmlRenderer HTML_RENDERER;
+
+        static {
+            OPTIONS = new MutableDataSet()
+                    .setFrom(ParserEmulationProfile.MARKDOWN)
+                    // 支持 [TOC]目录 以及 表格
+                    .set(Parser.EXTENSIONS, List.of(TocExtension.create(), TablesExtension.create()))
+            ;
+            PARSER = Parser.builder(OPTIONS).build();
+            HTML_RENDERER = HtmlRenderer.builder(OPTIONS).build();
+        }
+
+        private String markdownToHtml(String markdown) {
+            // 解析 Markdown 文本为节点
+            Node document = PARSER.parse(markdown);
+            // 将 Markdown 节点渲染为 HTML
+            return HTML_RENDERER.render(document);
+        }
+
         private final StringBuffer htmlBuffer = new StringBuffer();
 
         public String build() {
-            return HtmlBuilder.this.htmlBuffer.toString();
+            return htmlBuffer.toString();
         }
 
         public HtmlBuilder clear() {
-            HtmlBuilder.this.htmlBuffer.setLength(0);
-            return HtmlBuilder.this;
+            htmlBuffer.setLength(0);
+            return this;
         }
 
         // 追加一段 html
         public HtmlBuilder append(String html) {
-            HtmlBuilder.this.htmlBuffer.append(html);
-            return HtmlBuilder.this;
+            this.htmlBuffer.append(html);
+            return this;
         }
 
         // 合并 html 并追加
         public <T> HtmlBuilder append(String template, T data) {
-            String html = HtmlEngine.this.templateEngine.process(template, TemplateUtil.getContext(data));
-            return HtmlBuilder.this.append(html);
+            String html = templateEngine.process(template, TemplateUtil.getContext(data));
+            return append(html);
         }
 
         // 合并 html 并追加
         public HtmlBuilder append(HtmlResource resource) {
-            return HtmlBuilder.this.append(resource.getTemplate(), resource.getContext());
+            return append(resource.getTemplate(), resource.getContext());
         }
 
         // 合并 html 并依次追加
         public HtmlBuilder append(List<HtmlResource> resourceList) {
-            resourceList.forEach(HtmlBuilder.this::append);
-            return HtmlBuilder.this;
+            resourceList.forEach(this::append);
+            return this;
+        }
+
+        // md -> html 追加
+        public HtmlBuilder appendMarkdown(String markdown) {
+            String html = markdownToHtml(markdown);
+            return append(html);
+        }
+
+        // 合并 md 后转化为 html 追加
+        public <T> HtmlBuilder appendMarkdown(String template, T data) {
+            String markdown = markdownEngine.builder().append(template, data).build();
+            return appendMarkdown(markdown);
+        }
+
+        // 合并 md 后转化为 html 追加
+        public HtmlBuilder appendMarkdown(MarkdownResource resource) {
+            String markdown = markdownEngine.builder().append(resource).build();
+            return appendMarkdown(markdown);
+        }
+
+        // 合并 html 并依次追加
+        public HtmlBuilder appendMarkdown(List<MarkdownResource> resourceList) {
+            String markdown = markdownEngine.builder().append(resourceList).build();
+            return appendMarkdown(markdown);
         }
 
         // html 替换 target
         public HtmlBuilder replace(String target, String html) {
-            String replacement = HtmlBuilder.this.build().replace(target, html);
-            return HtmlBuilder.this.clear().append(replacement);
+            String replacement = build().replace(target, html);
+            return clear().append(replacement);
         }
 
         // html 替换 target
         public HtmlBuilder replace(HtmlReplaceResource resource) {
-            return HtmlBuilder.this.replace(resource.getTarget(), resource.getHtml());
+            return replace(resource.getTarget(), resource.getHtml());
         }
 
         // html 集合依次替换对应的 target
         public HtmlBuilder replace(List<HtmlReplaceResource> resourceList) {
-            resourceList.forEach(HtmlBuilder.this::replace);
-            return HtmlBuilder.this;
+            resourceList.forEach(this::replace);
+            return this;
         }
 
         /**
@@ -98,19 +153,19 @@ public class HtmlEngine {
          * 3. 紧接着调用 replaceMarkdown，传入 uniqueSymbol 和原 markdown 文本，文本转换为 html 并替换 uniqueSymbol 的位置
          */
         public HtmlBuilder replaceMarkdown(String target, String markdown) {
-            String html = HtmlEngine.this.markdownEngine.builder().append(markdown).buildHtml();
-            return HtmlBuilder.this.replace(target, html);
+            String html = markdownEngine.builder().append(markdown).buildHtml();
+            return replace(target, html);
         }
 
         // md -> html 替换 target
         public HtmlBuilder replaceMarkdown(MarkdownReplaceResource resource) {
-            return HtmlBuilder.this.replaceMarkdown(resource.getTarget(), resource.getMarkdown());
+            return replaceMarkdown(resource.getTarget(), resource.getMarkdown());
         }
 
         // md 依次转化为 html 替换对应的 target
         public HtmlBuilder replaceMarkdown(List<MarkdownReplaceResource> resourceList) {
-            resourceList.forEach(HtmlBuilder.this::replaceMarkdown);
-            return HtmlBuilder.this;
+            resourceList.forEach(this::replaceMarkdown);
+            return this;
         }
 
     }
