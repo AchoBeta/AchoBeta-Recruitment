@@ -5,7 +5,7 @@ import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
 import com.achobeta.domain.email.model.po.EmailMessage;
 import com.achobeta.domain.email.service.EmailSender;
-import com.achobeta.domain.template.engine.HtmlEngine;
+import com.achobeta.template.engine.HtmlEngine;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;

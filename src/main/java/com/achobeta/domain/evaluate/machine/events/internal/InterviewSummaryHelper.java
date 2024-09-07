@@ -8,7 +8,7 @@ import com.achobeta.domain.email.service.EmailSender;
 import com.achobeta.domain.evaluate.model.vo.InterviewSummaryTemplate;
 import com.achobeta.domain.evaluate.model.vo.InterviewSummaryVO;
 import com.achobeta.domain.evaluate.service.InterviewSummaryService;
-import com.achobeta.domain.template.engine.HtmlEngine;
+import com.achobeta.template.engine.HtmlEngine;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.machine.events.internal.InterviewStateInternalTransitionHelper;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;

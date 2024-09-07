@@ -1,4 +1,4 @@
-package com.achobeta.domain.template.model.po;
+package com.achobeta.template.model.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,10 +1,10 @@
-package com.achobeta.domain.template.engine;
+package com.achobeta.template.engine;
 
-import com.achobeta.domain.template.model.po.HtmlReplaceResource;
-import com.achobeta.domain.template.model.po.HtmlResource;
-import com.achobeta.domain.template.model.po.MarkdownReplaceResource;
-import com.achobeta.domain.template.model.po.MarkdownResource;
-import com.achobeta.domain.template.util.TemplateUtil;
+import com.achobeta.template.model.po.HtmlReplaceResource;
+import com.achobeta.template.model.po.HtmlResource;
+import com.achobeta.template.model.po.MarkdownReplaceResource;
+import com.achobeta.template.model.po.MarkdownResource;
+import com.achobeta.template.util.TemplateUtil;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.toc.TocExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
