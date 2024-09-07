@@ -23,7 +23,7 @@ public class AllMatch implements Condition {
     @Override
     public Predicate<StuResume> predicate() {
         // 取以上属性条件的交集
-        return ConditionUtil.allMatch(AllMatch.class, this);
+        return ConditionUtil.allMatch(this);
     }
 
 }

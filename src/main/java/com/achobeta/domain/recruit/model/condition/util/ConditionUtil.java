@@ -16,29 +16,26 @@ import java.util.function.Predicate;
  */
 public class ConditionUtil {
 
-    public static <C extends Condition> Predicate<StuResume> predicate(Class<C> clazz, C object, Predicate<StuResume> identity, BinaryOperator<Predicate<StuResume>> accumulator) {
-        return ObjectUtil.reduceObject(
-                clazz,
-                Condition.class,
+    public static <C extends Condition> Predicate<StuResume> predicate(C object, Predicate<StuResume> identity, BinaryOperator<Predicate<StuResume>> accumulator) {
+        return ObjectUtil.reduce(
                 object,
+                Condition.class,
                 Condition::predicate,
                 identity,
                 accumulator
         );
     }
 
-    public static <C extends Condition> Predicate<StuResume> anyMatch(Class<C> clazz, C object) {
+    public static <C extends Condition> Predicate<StuResume> anyMatch(C object) {
         return predicate(
-                clazz,
                 object,
                 stuResume -> Boolean.FALSE,
                 Predicate::or
         );
     }
 
-    public static <C extends Condition> Predicate<StuResume> allMatch(Class<C> clazz, C object) {
+    public static <C extends Condition> Predicate<StuResume> allMatch(C object) {
         return predicate(
-                clazz,
                 object,
                 stuResume -> Boolean.TRUE,
                 Predicate::and

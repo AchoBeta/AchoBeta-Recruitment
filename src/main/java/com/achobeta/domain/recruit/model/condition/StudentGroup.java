@@ -28,7 +28,7 @@ public class StudentGroup implements Condition {
 
     @Override
     public Predicate<StuResume> predicate() {
-        return ConditionUtil.allMatch(StudentGroup.class, this);
+        return ConditionUtil.allMatch(this);
     }
 
 }

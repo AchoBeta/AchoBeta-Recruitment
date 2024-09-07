@@ -27,7 +27,7 @@ public class AnyMatch implements Condition {
     @Override
     public Predicate<StuResume> predicate() {
         // 取以上属性条件的并集
-        return ConditionUtil.anyMatch(AnyMatch.class, this);
+        return ConditionUtil.anyMatch(this);
     }
 
 }

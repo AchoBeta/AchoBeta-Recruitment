@@ -4,6 +4,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -18,36 +19,48 @@ import java.util.stream.Stream;
  */
 public class ObjectUtil {
 
-    public static <C, F> F readField(Class<C> clazz, Class<? extends F> fieldClazz, C object, Field field) {
-        if (!fieldClazz.isAssignableFrom(field.getType())) {
-            return null;
-        }
+    public static <C, F> F readByProperty(C object, Field field, Class<F> fieldClazz) {
         try {
-            PropertyDescriptor propertyDescriptor = new PropertyDescriptor(field.getName(), clazz);
-            return (F) propertyDescriptor.getReadMethod().invoke(object);
+            return fieldClazz.cast(field.get(object));
         } catch (Exception e) {
             return null;
         }
     }
 
-    // 滤出 C 类不包括父类的「F/F子类的属性」
-    public static <C, F> Stream<F> stream(Class<C> clazz, Class<? extends F> fieldClazz, C object) {
-        return Arrays.stream(clazz.getDeclaredFields())
-                .map(field -> readField(clazz, fieldClazz, object, field));
+    public static <C, F> F readByMethod(C object, Field field, Class<F> fieldClazz) {
+        try {
+            PropertyDescriptor propertyDescriptor = new PropertyDescriptor(field.getName(), object.getClass());
+            return fieldClazz.cast(propertyDescriptor.getReadMethod().invoke(object));
+        } catch (Exception e) {
+            return null;
+        }
     }
 
-    public static <C, F, P> P reduceObject(Class<C> clazz, Class<? extends F> fieldClazz,
-                                           C object, Function<F, P> mapper,
-                                           P identity, BinaryOperator<P> accumulator) {
-        return stream(clazz, fieldClazz, object)
+    public static <C, F> F read(C object, Field field, Class<F> fieldClazz) {
+        if (fieldClazz.isAssignableFrom(field.getType())) {
+            return Optional.ofNullable(readByProperty(object, field, fieldClazz))
+                    .orElse(readByMethod(object, field, fieldClazz));
+        } else {
+            return null;
+        }
+    }
+
+    // 滤出 C 类内部不包括父类的字段列表中，「F/F子类的属性」若
+    public static <C, F> Stream<F> stream(C object, Class<F> fieldClazz) {
+        return Arrays.stream(object.getClass().getDeclaredFields())
+                .map(field -> read(object, field, fieldClazz));
+    }
+
+    public static <C, F, P> P reduce(C object, Class<F> fieldClazz, Function<F, P> mapper,
+                                     P identity, BinaryOperator<P> accumulator) {
+        return stream(object, fieldClazz)
                 .filter(Objects::nonNull)
                 .map(mapper)
                 .reduce(identity, accumulator);
     }
 
-    public static <C, F> void forEachObject(Class<C> clazz, Class<? extends F> fieldClazz,
-                                            C object, Consumer<F> consumer) {
-        stream(clazz, fieldClazz, object)
+    public static <C, F> void forEach(C object, Class<F> fieldClazz, Consumer<F> consumer) {
+        stream(object, fieldClazz)
                 .filter(Objects::nonNull)
                 .forEach(consumer);
     }
