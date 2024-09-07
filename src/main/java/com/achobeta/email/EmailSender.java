@@ -1,7 +1,7 @@
-package com.achobeta.domain.email.service;
+package com.achobeta.email;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.domain.email.model.po.EmailMessage;
+import com.achobeta.email.model.po.EmailMessage;
 import com.achobeta.exception.GlobalServiceException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
