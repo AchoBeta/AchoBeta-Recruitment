@@ -1,4 +1,4 @@
-package com.achobeta.domain.resumestate.model.vo;
+package com.achobeta.domain.users.model.vo;
 
 import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.achobeta.domain.users.model.vo.UserVO;

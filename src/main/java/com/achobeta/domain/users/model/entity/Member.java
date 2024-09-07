@@ -1,4 +1,4 @@
-package com.achobeta.domain.resumestate.model.entity;
+package com.achobeta.domain.users.model.entity;
 
 import com.achobeta.common.base.BaseIncrIDEntity;
 import com.baomidou.mybatisplus.annotation.TableName;

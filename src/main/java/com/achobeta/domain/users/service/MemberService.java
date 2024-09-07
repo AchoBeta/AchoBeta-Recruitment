@@ -1,9 +1,9 @@
-package com.achobeta.domain.resumestate.service;
+package com.achobeta.domain.users.service;
 
-import com.achobeta.domain.resumestate.model.dto.MemberDTO;
-import com.achobeta.domain.resumestate.model.entity.Member;
-import com.achobeta.domain.resumestate.model.vo.MemberVO;
-import com.achobeta.domain.resumestate.model.vo.SimpleMemberVO;
+import com.achobeta.domain.users.model.dto.MemberDTO;
+import com.achobeta.domain.users.model.entity.Member;
+import com.achobeta.domain.users.model.vo.MemberVO;
+import com.achobeta.domain.users.model.vo.SimpleMemberVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

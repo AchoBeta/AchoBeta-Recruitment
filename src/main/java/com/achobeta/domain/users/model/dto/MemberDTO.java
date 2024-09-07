@@ -1,4 +1,4 @@
-package com.achobeta.domain.resumestate.model.dto;
+package com.achobeta.domain.users.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

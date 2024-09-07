@@ -1,16 +1,16 @@
-package com.achobeta.domain.resumestate.service.impl;
+package com.achobeta.domain.users.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.login.model.dao.UserEntity;
 import com.achobeta.domain.login.model.dto.RegisterDTO;
 import com.achobeta.domain.login.service.LoginService;
-import com.achobeta.domain.resumestate.model.converter.MemberConverter;
-import com.achobeta.domain.resumestate.model.dao.mapper.MemberMapper;
-import com.achobeta.domain.resumestate.model.dto.MemberDTO;
-import com.achobeta.domain.resumestate.model.entity.Member;
-import com.achobeta.domain.resumestate.model.vo.MemberVO;
-import com.achobeta.domain.resumestate.model.vo.SimpleMemberVO;
-import com.achobeta.domain.resumestate.service.MemberService;
+import com.achobeta.domain.users.model.converter.MemberConverter;
+import com.achobeta.domain.users.model.dao.mapper.MemberMapper;
+import com.achobeta.domain.users.model.dto.MemberDTO;
+import com.achobeta.domain.users.model.entity.Member;
+import com.achobeta.domain.users.model.vo.MemberVO;
+import com.achobeta.domain.users.model.vo.SimpleMemberVO;
+import com.achobeta.domain.users.service.MemberService;
 import com.achobeta.domain.student.model.dto.QueryResumeDTO;
 import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.achobeta.domain.student.service.StuResumeService;

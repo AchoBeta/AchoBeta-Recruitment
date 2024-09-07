@@ -1,9 +1,9 @@
-package com.achobeta.domain.resumestate.model.converter;
+package com.achobeta.domain.users.model.converter;
 
 import com.achobeta.domain.login.model.dto.RegisterDTO;
-import com.achobeta.domain.resumestate.model.dto.MemberDTO;
-import com.achobeta.domain.resumestate.model.entity.Member;
-import com.achobeta.domain.resumestate.model.vo.MemberVO;
+import com.achobeta.domain.users.model.dto.MemberDTO;
+import com.achobeta.domain.users.model.entity.Member;
+import com.achobeta.domain.users.model.vo.MemberVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

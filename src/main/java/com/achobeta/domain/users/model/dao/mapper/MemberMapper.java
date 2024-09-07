@@ -1,7 +1,7 @@
-package com.achobeta.domain.resumestate.model.dao.mapper;
+package com.achobeta.domain.users.model.dao.mapper;
 
-import com.achobeta.domain.resumestate.model.entity.Member;
-import com.achobeta.domain.resumestate.model.vo.SimpleMemberVO;
+import com.achobeta.domain.users.model.entity.Member;
+import com.achobeta.domain.users.model.vo.SimpleMemberVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 

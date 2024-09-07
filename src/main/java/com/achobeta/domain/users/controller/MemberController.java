@@ -1,11 +1,11 @@
-package com.achobeta.domain.resumestate.controller;
+package com.achobeta.domain.users.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
-import com.achobeta.domain.resumestate.model.vo.MemberVO;
-import com.achobeta.domain.resumestate.model.vo.SimpleMemberVO;
-import com.achobeta.domain.resumestate.service.MemberService;
+import com.achobeta.domain.users.model.vo.MemberVO;
+import com.achobeta.domain.users.model.vo.SimpleMemberVO;
+import com.achobeta.domain.users.service.MemberService;
 import com.achobeta.domain.users.context.BaseContext;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
