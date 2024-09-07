@@ -46,6 +46,10 @@ public class HtmlEngine {
         HTML_RENDERER = HtmlRenderer.builder(OPTIONS).build();
     }
 
+    /**
+     * 此类支持 html 以及 xml 的合成，注入的属性会被认为是纯字符串，防止了 xss
+     * 以及文本的部分字符串影响整体结构
+     */
     private final TemplateEngine templateEngine;
 
     public <T> Context getContext(T data) {
