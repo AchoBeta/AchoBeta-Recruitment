@@ -1,6 +1,5 @@
 package com.achobeta.template.engine;
 
-import com.achobeta.template.model.po.HtmlReplaceResource;
 import com.achobeta.template.model.po.MarkdownReplaceResource;
 import com.achobeta.template.model.po.MarkdownResource;
 import com.achobeta.template.util.TemplateUtil;

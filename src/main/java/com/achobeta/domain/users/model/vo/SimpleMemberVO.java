@@ -1,7 +1,6 @@
 package com.achobeta.domain.users.model.vo;
 
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
-import com.achobeta.domain.users.model.vo.UserVO;
 import lombok.Data;
 
 /**

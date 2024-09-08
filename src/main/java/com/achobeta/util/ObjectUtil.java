@@ -45,7 +45,7 @@ public class ObjectUtil {
         }
     }
 
-    // 滤出 C 类内部不包括父类的字段列表中，「F/F子类的属性」若
+    // 滤出 C 类内部不包括父类的字段列表中，「可通过字段或者 Getter 访问的 F/F子类的属性」，其他均为 null
     public static <C, F> Stream<F> stream(C object, Class<F> fieldClazz) {
         return Arrays.stream(object.getClass().getDeclaredFields())
                 .map(field -> read(object, field, fieldClazz));
