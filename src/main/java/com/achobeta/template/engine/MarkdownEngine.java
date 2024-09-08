@@ -22,7 +22,6 @@ public class MarkdownEngine {
 
     /**
      * 忽略模板类型，本类此属性用于识别 .md 文件
-     * 注入的属性会被认为是纯字符串，防止 xss 与文本的部分字符串影响整体结构
      */
     private final TemplateEngine unsafeTemplateEngine;
 
