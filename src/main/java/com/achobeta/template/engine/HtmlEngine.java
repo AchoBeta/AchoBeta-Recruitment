@@ -31,6 +31,7 @@ public class HtmlEngine {
 
     /**
      * 注入的属性会被认为是纯字符串，防止 xss 与文本的部分字符串影响整体结构
+     * 前提提供的模板里面，是通过标签注入的方式
      */
     private final TemplateEngine templateEngine;
 
