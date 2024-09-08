@@ -1,5 +1,7 @@
 package com.achobeta.template.engine;
 
+import com.achobeta.template.model.po.HtmlReplaceResource;
+import com.achobeta.template.model.po.MarkdownReplaceResource;
 import com.achobeta.template.model.po.MarkdownResource;
 import com.achobeta.template.util.TemplateUtil;
 import lombok.RequiredArgsConstructor;
@@ -60,7 +62,24 @@ public class MarkdownEngine {
             resourceList.forEach(this::append);
             return this;
         }
-        
+
+        // markdown 替换 target
+        public MarkdownBuilder replace(String target, String markdown) {
+            String replacement = build().replace(target, markdown);
+            return clear().append(replacement);
+        }
+
+        // markdown 替换 target
+        public MarkdownBuilder replace(MarkdownReplaceResource resource) {
+            return replace(resource.getTarget(), resource.getMarkdown());
+        }
+
+        // markdown 集合依次替换对应的 target
+        public MarkdownBuilder replace(List<MarkdownReplaceResource> resourceList) {
+            resourceList.forEach(this::replace);
+            return this;
+        }
+
     }
 
 }

@@ -17,6 +17,8 @@ public enum EmailTemplateEnum {
 
     INTERVIEW_SUMMARY("面试总结", "interview-summary-model.html"),
 
+    INTERVIEW_SUMMARY_MARKDOWN("面试总结", "interview-summary-model.md"),
+
     MEMBER_NOTICE("转正通知", "confirmation-notice-model.html"),
 
     INTERVIEW_EXPERIENCE_OPEN("面试经历", "interview-experience-open.html"),
