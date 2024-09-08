@@ -4,13 +4,13 @@
 
 ### **Preamble**
 
-Dear student **[(${studentId})]**, thank you for taking the time to participate in our recruitment process. This is a summary of your interview.
+Dear student <strong th:text="${studentId}"></strong>, thank you for taking the time to participate in our recruitment process. This is a summary of your interview.
 
-**Regardless of the outcome, we hope you find the experience valuable!**
+Regardless of the outcome, we hope you find the experience valuable!
 
 ### **Interview Title**
 
-[(${title})]
+<span th:text="${title}"></span>
 
 ### **Foundational Ability (0 - 5)**
 
@@ -30,15 +30,16 @@ Dear student **[(${studentId})]**, thank you for taking the time to participate 
 
 ### **Interview Overall Review**
 
-[(${evaluate})]
+[//]: # (使用注入标签的方式进行语法屏蔽)
+<span th:text="${evaluate}"></span>
 
 ### **Suggestions**
 
-[(${suggest})]
+<span th:text="${suggest}"></span>
 
 ### **Playback**
 
-[(${playback})]
+<span th:text="${playback}"></span>
 
 ### **Remarks**
 

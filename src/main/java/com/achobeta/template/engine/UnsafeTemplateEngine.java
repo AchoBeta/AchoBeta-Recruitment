@@ -12,7 +12,7 @@ import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
  * User: 马拉圈
  * Date: 2024-09-07
  * Time: 16:20
- * Description: 此类不限制是不是 HTML、TEXT、XML、JAVASCRIPT、CSS、RAW 类型的模板，其他形式的文件均认为是 TEXT，并遵循规则插入
+ * Description: 此类不限制是不是 HTML、TEXT、XML、JAVASCRIPT、CSS、RAW 类型的模板，均遵循规则插入
  */
 @Component
 @RequiredArgsConstructor

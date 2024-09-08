@@ -81,7 +81,7 @@ public class InterviewSummaryHelper implements InterviewStateInternalTransitionH
                     .getDetailActivityParticipation(interviewDetail.getScheduleVO().getParticipationId())
                     .getSimpleStudentVO();
             // 封装 email
-            EmailTemplateEnum emailTemplate = EmailTemplateEnum.INTERVIEW_SUMMARY;
+            EmailTemplateEnum emailTemplate = EmailTemplateEnum.INTERVIEW_SUMMARY_MARKDOWN;
             EmailMessage emailMessage = new EmailMessage();
             emailMessage.setSender(achobetaEmail);
             emailMessage.setCarbonCopy();
@@ -101,7 +101,7 @@ public class InterviewSummaryHelper implements InterviewStateInternalTransitionH
                     .playback(interviewSummaryVO.getPlayback())
                     .build();
             String html = htmlEngine.builder()
-                    .append(emailTemplate.getTemplate(), interviewSummaryTemplate)
+                    .appendMarkdown(emailTemplate.getTemplate(), interviewSummaryTemplate)
                     .build();
             // 发送
             emailSender.sendModelMail(emailMessage, html);
