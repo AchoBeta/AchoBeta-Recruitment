@@ -26,8 +26,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -103,23 +103,21 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                     .build();
 
             String innerTemplate = EmailTemplateEnum.INTERVIEW_EXPERIENCE_INNER.getTemplate();
-            List<MarkdownReplaceResource> replaceResourceList = new ArrayList<>();
-            List<HtmlResource> htmlResourceList =  interviewQuestionScoreService.getInterviewPaperDetail(interviewId)
+            List<HtmlResource> htmlResourceList = new LinkedList<>();
+            List<MarkdownReplaceResource> replaceResourceList = new LinkedList<>();
+            interviewQuestionScoreService.getInterviewPaperDetail(interviewId)
                     .getQuestions()
-                    .stream()
-                    .map(question -> {
+                    .forEach(question -> {
                         String target = TemplateUtil.getUniqueSymbol();
-                        String standard = question.getStandard();
-                        replaceResourceList.add(new MarkdownReplaceResource(target, standard));
-                        return InterviewExperienceTemplateInner.builder()
+                        InterviewExperienceTemplateInner inner =  InterviewExperienceTemplateInner.builder()
                                 .title(question.getTitle())
                                 .score(question.getScore())
                                 .average(question.getAverage())
                                 .standard(target)
                                 .build();
-                    }).map(inner -> {
-                        return new HtmlResource(innerTemplate, inner);
-                    }).toList();
+                        htmlResourceList.add(new HtmlResource(innerTemplate, inner));
+                        replaceResourceList.add(new MarkdownReplaceResource(target, question.getStandard()));
+                    });
 
             String closeTemplate = EmailTemplateEnum.INTERVIEW_EXPERIENCE_CLOSE.getTemplate();
             InterviewExperienceTemplateClose templateClose = InterviewExperienceTemplateClose.builder()
