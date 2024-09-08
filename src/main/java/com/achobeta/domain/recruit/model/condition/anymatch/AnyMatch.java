@@ -1,8 +1,7 @@
 package com.achobeta.domain.recruit.model.condition.anymatch;
 
 import com.achobeta.common.annotation.IntRange;
-import com.achobeta.domain.recruit.model.condition.Condition;
-import com.achobeta.domain.recruit.model.condition.util.ConditionUtil;
+import com.achobeta.domain.recruit.model.condition.StudentCondition;
 import com.achobeta.domain.student.model.entity.StuResume;
 import lombok.Data;
 
@@ -16,7 +15,7 @@ import java.util.function.Predicate;
  * Time: 22:14
  */
 @Data
-public class AnyMatch implements Condition {
+public class AnyMatch implements StudentCondition {
 
     @IntRange(min = 1000, max = 9999, message = "年级应均为四位数")
     private GradeCondition grade; // 允许的特定年级
@@ -27,7 +26,7 @@ public class AnyMatch implements Condition {
     @Override
     public Predicate<StuResume> predicate() {
         // 取以上属性条件的并集
-        return ConditionUtil.anyMatch(this);
+        return anyMatch();
     }
 
 }

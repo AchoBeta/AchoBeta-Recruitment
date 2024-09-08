@@ -1,6 +1,6 @@
 package com.achobeta.domain.recruit.model.condition.anymatch;
 
-import com.achobeta.domain.recruit.model.condition.Condition;
+import com.achobeta.domain.recruit.model.condition.StudentCondition;
 import com.achobeta.domain.student.model.entity.StuResume;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.function.Predicate;
  * Date: 2024-09-06
  * Time: 10:17
  */
-public class GradeCondition extends ArrayList<Integer> implements Condition {
+public class GradeCondition extends ArrayList<Integer> implements StudentCondition {
 
     @Override
     public Predicate<StuResume> predicate() {

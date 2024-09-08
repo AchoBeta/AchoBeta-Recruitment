@@ -1,5 +1,7 @@
 package com.achobeta.util;
 
+import org.apache.poi.ss.formula.functions.T;
+
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -59,12 +61,13 @@ public class ObjectUtil {
 
     // 滤出 C 类内部不包括父类的字段列表中，「可通过字段或者 Getter 访问的 F/F子类的属性」，其他均为 null
     public static <C, F> Stream<F> stream(C object, Class<F> fieldClazz) {
+        // object.getClass() 会获取实例的实现类的类型
         return Arrays.stream(object.getClass().getDeclaredFields())
                 .map(field -> read(object, field, fieldClazz));
     }
 
-    public static <C, F, P> P reduce(C object, Class<F> fieldClazz, Function<F, P> mapper,
-                                     P identity, BinaryOperator<P> accumulator) {
+    public static <C, F, T> T reduce(C object, Class<F> fieldClazz, Function<F, T> mapper,
+                                     T identity, BinaryOperator<T> accumulator) {
         return stream(object, fieldClazz)
                 .filter(Objects::nonNull)
                 .map(mapper)

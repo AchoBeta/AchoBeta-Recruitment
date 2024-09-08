@@ -5,7 +5,6 @@ import com.achobeta.template.model.po.MarkdownResource;
 import com.achobeta.template.util.TemplateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.TemplateEngine;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class MarkdownEngine {
     /**
      * 忽略模板类型，本类此属性用于识别 .md 文件
      */
-    private final TemplateEngine unsafeTemplateEngine;
+    private final UnsafeTemplateEngine unsafeTemplateEngine;
 
     public MarkdownBuilder builder() {
         return new MarkdownBuilder();
