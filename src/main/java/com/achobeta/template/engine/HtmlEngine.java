@@ -1,9 +1,7 @@
 package com.achobeta.template.engine;
 
-import com.achobeta.template.model.po.HtmlReplaceResource;
-import com.achobeta.template.model.po.HtmlResource;
-import com.achobeta.template.model.po.MarkdownReplaceResource;
-import com.achobeta.template.model.po.MarkdownResource;
+import com.achobeta.template.model.po.ReplaceResource;
+import com.achobeta.template.model.po.Resource;
 import com.achobeta.template.util.TemplateUtil;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.toc.TocExtension;
@@ -83,6 +81,10 @@ public class HtmlEngine {
             return this;
         }
 
+        public HtmlBuilder reset(String html) {
+            return clear().append(html);
+        }
+
         // 合并 html 并追加
         public <T> HtmlBuilder append(String template, T data) {
             String html = templateEngine.process(template, TemplateUtil.getContext(data));
@@ -90,12 +92,12 @@ public class HtmlEngine {
         }
 
         // 合并 html 并追加
-        public HtmlBuilder append(HtmlResource resource) {
+        public HtmlBuilder append(Resource resource) {
             return append(resource.getTemplate(), resource.getContext());
         }
 
         // 合并 html 并依次追加
-        public HtmlBuilder append(List<HtmlResource> resourceList) {
+        public HtmlBuilder append(List<Resource> resourceList) {
             resourceList.forEach(this::append);
             return this;
         }
@@ -113,32 +115,32 @@ public class HtmlEngine {
         }
 
         // 合并 md 后转化为 html 追加
-        public HtmlBuilder appendMarkdown(MarkdownResource resource) {
+        public HtmlBuilder appendMarkdown(Resource resource) {
             String markdown = markdownEngine.builder().append(resource).build();
             return appendMarkdown(markdown);
         }
 
         // 合并 html 并依次追加
-        public HtmlBuilder appendMarkdown(List<MarkdownResource> resourceList) {
+        public HtmlBuilder appendMarkdown(List<Resource> resourceList) {
             String markdown = markdownEngine.builder().append(resourceList).build();
             return appendMarkdown(markdown);
         }
 
         // html 替换 target
         public HtmlBuilder replace(String target, String html) {
-            String replacement = build().replace(target, html);
-            return clear().append(replacement);
+            String finalHtml = build().replace(target, html);
+            return reset(finalHtml);
         }
 
         // html 替换 target
-        public HtmlBuilder replace(HtmlReplaceResource resource) {
-            return replace(resource.getTarget(), resource.getHtml());
+        public HtmlBuilder replace(ReplaceResource resource) {
+            return replace(resource.getTarget(), resource.getReplacement());
         }
 
-        // html 集合依次替换对应的 target
-        public HtmlBuilder replace(List<HtmlReplaceResource> resourceList) {
-            resourceList.forEach(this::replace);
-            return this;
+        // html 集合替换元素对应的 target
+        public HtmlBuilder replace(List<ReplaceResource> resourceList) {
+            String finalHtml = TemplateUtil.replaceSafely(build(), resourceList, html -> html);
+            return reset(finalHtml);
         }
 
         /**
@@ -159,14 +161,14 @@ public class HtmlEngine {
         }
 
         // md -> html 替换 target
-        public HtmlBuilder replaceMarkdown(MarkdownReplaceResource resource) {
-            return replaceMarkdown(resource.getTarget(), resource.getMarkdown());
+        public HtmlBuilder replaceMarkdown(ReplaceResource resource) {
+            return replaceMarkdown(resource.getTarget(), resource.getReplacement());
         }
 
-        // md 依次转化为 html 替换对应的 target
-        public HtmlBuilder replaceMarkdown(List<MarkdownReplaceResource> resourceList) {
-            resourceList.forEach(this::replaceMarkdown);
-            return this;
+        // md 转化为 html 替换对应的 target
+        public HtmlBuilder replaceMarkdown(List<ReplaceResource> resourceList) {
+            String finalHtml = TemplateUtil.replaceSafely(build(), resourceList, this::markdownToHtml);
+            return reset(finalHtml);
         }
 
     }

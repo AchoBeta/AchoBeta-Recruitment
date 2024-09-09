@@ -17,8 +17,8 @@ import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import com.achobeta.email.EmailSender;
 import com.achobeta.email.model.po.EmailMessage;
 import com.achobeta.template.engine.HtmlEngine;
-import com.achobeta.template.model.po.HtmlResource;
-import com.achobeta.template.model.po.MarkdownReplaceResource;
+import com.achobeta.template.model.po.ReplaceResource;
+import com.achobeta.template.model.po.Resource;
 import com.achobeta.template.util.TemplateUtil;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
@@ -103,8 +103,8 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                     .build();
 
             String innerTemplate = EmailTemplateEnum.INTERVIEW_EXPERIENCE_INNER.getTemplate();
-            List<HtmlResource> htmlResourceList = new LinkedList<>();
-            List<MarkdownReplaceResource> replaceResourceList = new LinkedList<>();
+            List<Resource> htmlResourceList = new LinkedList<>();
+            List<ReplaceResource> replaceResourceList = new LinkedList<>();
             interviewQuestionScoreService.getInterviewPaperDetail(interviewId)
                     .getQuestions()
                     .forEach(question -> {
@@ -115,8 +115,8 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                                 .average(question.getAverage())
                                 .standard(target)
                                 .build();
-                        htmlResourceList.add(new HtmlResource(innerTemplate, inner));
-                        replaceResourceList.add(new MarkdownReplaceResource(target, question.getStandard()));
+                        htmlResourceList.add(new Resource(innerTemplate, inner));
+                        replaceResourceList.add(new ReplaceResource(target, question.getStandard()));
                     });
 
             String closeTemplate = EmailTemplateEnum.INTERVIEW_EXPERIENCE_CLOSE.getTemplate();

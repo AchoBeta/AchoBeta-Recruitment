@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
  * Created With Intellij IDEA
  * Description:
  * User: 马拉圈
- * Date: 2024-08-29
- * Time: 11:31
+ * Date: 2024-09-09
+ * Time: 11:26
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HtmlResource {
+public class Resource {
 
     private String template;
 
