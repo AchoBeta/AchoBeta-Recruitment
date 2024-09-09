@@ -48,23 +48,22 @@ public class TemplateUtil {
     public static String replaceSafely(String text, List<ReplaceResource> resourceList, Function<String, String> textConverter) {
         // 将每个 target 替换为临时唯一的标识，并保存映射关系
         Map<String, String> tempTargetMap = new HashMap<>();
-        for (ReplaceResource resource : resourceList) {
+        StringReplacer textReplacer = new StringReplacer(text);
+        resourceList.stream().peek(resource -> {
             String originTarget = resource.getTarget();
             if (tempTargetMap.containsKey(originTarget)) {
                 // 说明 text 中 originTarget 已经全被替换了，直接忽略
-                continue;
+                return;
             }
             String tmpSymbol = getUniqueSymbol();
-            text = text.replace(originTarget, tmpSymbol);
+            textReplacer.replace(originTarget, tmpSymbol);
             tempTargetMap.put(originTarget, tmpSymbol);
-        }
-        // 替换临时标识为我们预期的文本
-        for (ReplaceResource resource : resourceList) {
+        }).forEach(resource -> {
             String target = tempTargetMap.get(resource.getTarget());
             String replacement = textConverter.apply(resource.getReplacement());
-            text = text.replace(target, replacement);
-        }
-        return text;
+            textReplacer.replace(target, replacement);
+        });
+        return textReplacer.toString();
     }
 
 }

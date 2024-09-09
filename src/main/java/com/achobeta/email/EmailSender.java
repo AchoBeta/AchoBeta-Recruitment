@@ -5,7 +5,6 @@ import com.achobeta.email.model.po.EmailMessage;
 import com.achobeta.exception.GlobalServiceException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
@@ -25,7 +24,7 @@ public class EmailSender {
 
     private final JavaMailSender javaMailSender;
 
-    private SimpleMailMessage emailToSimpleMailMessage(@NonNull EmailMessage emailMessage) {
+    private SimpleMailMessage emailToSimpleMailMessage(EmailMessage emailMessage) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom(emailMessage.getSender());
         simpleMailMessage.setTo(emailMessage.getRecipient());
@@ -36,7 +35,7 @@ public class EmailSender {
         return simpleMailMessage;
     }
 
-    private MimeMessageHelper emailIntoMimeMessageByHelper(MimeMessage mimeMessage, @NonNull EmailMessage emailMessage) throws MessagingException {
+    private MimeMessageHelper emailIntoMimeMessageByHelper(MimeMessage mimeMessage, EmailMessage emailMessage) throws MessagingException {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, Boolean.TRUE);
         mimeMessageHelper.setFrom(emailMessage.getSender());
         mimeMessageHelper.setCc(emailMessage.getCarbonCopy());
@@ -46,14 +45,14 @@ public class EmailSender {
         return mimeMessageHelper;
     }
 
-    public void sendSimpleMailMessage(@NonNull EmailMessage emailMessage) {
+    public void sendSimpleMailMessage(EmailMessage emailMessage) {
         // 封装simpleMailMessage对象
         SimpleMailMessage simpleMailMessage = emailToSimpleMailMessage(emailMessage);
         // 发送
         javaMailSender.send(simpleMailMessage);
     }
 
-    public void sendMailWithFile(@NonNull EmailMessage emailMessage, File... files) {
+    public void sendMailWithFile(EmailMessage emailMessage, File... files) {
         // 封装对象
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -71,7 +70,7 @@ public class EmailSender {
         }
     }
 
-    public void sendModelMail(@NonNull EmailMessage emailMessage, String html) {
+    public void sendModelMail(EmailMessage emailMessage, String html) {
         try {
             // 封装对象
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -83,7 +82,7 @@ public class EmailSender {
         }
     }
 
-    public void sendModelMailWithFile(@NonNull EmailMessage emailMessage, String html, File... files) {
+    public void sendModelMailWithFile(EmailMessage emailMessage, String html, File... files) {
         // 封装对象
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -106,7 +105,7 @@ public class EmailSender {
      * 建议循环调用 sendModelMailWithFile，因为这个方法本身就是循环发送，不是一次性发送
      */
     @Deprecated
-    public void customizedSendEmail(@NonNull EmailMessage emailMessage, Function<String, String> getHtml, File... files) {
+    public void customizedSendEmail(EmailMessage emailMessage, Function<String, String> getHtml, File... files) {
         String sender = emailMessage.getSender();
         String[] carbonCopy = emailMessage.getCarbonCopy();
         String title = emailMessage.getTitle();

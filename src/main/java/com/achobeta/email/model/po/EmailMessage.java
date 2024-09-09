@@ -1,8 +1,6 @@
 package com.achobeta.email.model.po;
 
 import lombok.Data;
-import lombok.NonNull;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -34,11 +32,11 @@ public class EmailMessage implements Serializable {
         this.carbonCopy = cc;
     }
 
-    public void setRecipient(@NonNull String recipient) {
+    public void setRecipient(String recipient) {
         this.recipient = new String[]{recipient};
     }
 
-    public void setCarbonCopy(@NonNull String cc) {
+    public void setCarbonCopy(String cc) {
         this.carbonCopy = new String[]{cc};
     }
 
