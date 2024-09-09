@@ -1,7 +1,6 @@
 package com.achobeta.domain.recruit.model.condition;
 
-import com.achobeta.domain.recruit.model.condition.allmatch.AllMatch;
-import com.achobeta.domain.recruit.model.condition.anymatch.AnyMatch;
+import com.achobeta.domain.recruit.model.condition.function.StudentCondition;
 import com.achobeta.domain.student.model.entity.StuResume;
 import jakarta.validation.Valid;
 import lombok.Data;
@@ -20,10 +19,10 @@ import java.util.function.Predicate;
 public class StudentGroup implements StudentCondition {
 
     @Valid
-    private AnyMatch anyMatch; // null 代表不限制此条件，若非 null，则学生必须满足 anyMatch 内至少一个条件
+    private StudentAnyMatch anyMatch; // null 代表不限制此条件，若非 null，则学生必须满足 anyMatch 内至少一个条件
 
     @Valid
-    private AllMatch allMatch; // null 代表不限制此条件，若非 null，则学生必须满足 allMatch 内的所有条件
+    private StudentAllMatch allMatch; // null 代表不限制此条件，若非 null，则学生必须满足 allMatch 内的所有条件
 
     @Override
     public Predicate<StuResume> predicate() {

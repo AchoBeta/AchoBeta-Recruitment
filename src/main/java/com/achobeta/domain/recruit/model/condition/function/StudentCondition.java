@@ -1,4 +1,4 @@
-package com.achobeta.domain.recruit.model.condition;
+package com.achobeta.domain.recruit.model.condition.function;
 
 import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.util.ObjectUtil;

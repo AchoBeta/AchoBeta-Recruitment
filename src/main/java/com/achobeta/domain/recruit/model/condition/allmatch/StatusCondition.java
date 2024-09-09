@@ -1,6 +1,6 @@
 package com.achobeta.domain.recruit.model.condition.allmatch;
 
-import com.achobeta.domain.recruit.model.condition.StudentCondition;
+import com.achobeta.domain.recruit.model.condition.function.StudentCondition;
 import com.achobeta.domain.student.model.entity.StuResume;
 
 import java.util.ArrayList;
