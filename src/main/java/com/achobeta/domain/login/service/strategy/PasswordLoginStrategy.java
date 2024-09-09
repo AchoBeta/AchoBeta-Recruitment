@@ -50,10 +50,15 @@ public class PasswordLoginStrategy implements LoginStrategy {
         UserEntity user = findUserByUsername(username);
 
         // 检查是否能登录
+        // BCrypt.checkpw(str1, str2)，若 str1 与 str2，都是null 或者 都是"" 或者 一null一""，这个方法返回值都是 false，所以如果用户没有密码，用密码登录是行不通的
         loginService.checkLogin(LoginTypeEnum.PASSWORD, user.getUsername(),
                 () -> !BCrypt.checkpw(password, user.getPassword()));
 
         return loginService.login(buildLoginUser(user));
+    }
+
+    public static void main(String[] args) {
+        System.out.println(BCrypt.checkpw(null, null));
     }
 
     /**
