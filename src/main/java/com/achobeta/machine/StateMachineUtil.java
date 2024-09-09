@@ -1,6 +1,5 @@
 package com.achobeta.machine;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.achobeta.exception.GlobalServiceException;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
@@ -9,6 +8,7 @@ import com.alibaba.cola.statemachine.StateMachineFactory;
 import com.alibaba.cola.statemachine.builder.StateMachineBuilder;
 import com.alibaba.cola.statemachine.builder.StateMachineBuilderFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class StateMachineUtil {
     private static <S, E, C> void builderAssign(StateMachineBuilder<S, E, C> builder,
                                                 StateExternalTransitionHelper<S, E, C> helper) {
         List<S> fromStateList = helper.getFromState();
-        if(!CollectionUtil.isEmpty(fromStateList)) {
+        if(!CollectionUtils.isEmpty(fromStateList)) {
             E onEvent = helper.getOnEvent();
             Condition<C> whenCondition = helper.getWhenCondition();
             Action<S, E, C> performAction = helper.getPerformAction();
@@ -60,7 +60,7 @@ public class StateMachineUtil {
     private static <S, E, C> void builderAssign(StateMachineBuilder<S, E, C> builder,
                                                 StateInternalTransitionHelper<S, E, C> helper) {
         List<S> withinList = helper.getWithin();
-        if(!CollectionUtil.isEmpty(withinList)) {
+        if(!CollectionUtils.isEmpty(withinList)) {
             E onEvent = helper.getOnEvent();
             Condition<C> whenCondition = helper.getWhenCondition();
             Action<S, E, C> performAction = helper.getPerformAction();

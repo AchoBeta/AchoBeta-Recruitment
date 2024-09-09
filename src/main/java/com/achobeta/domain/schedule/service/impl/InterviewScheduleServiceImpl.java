@@ -1,6 +1,5 @@
 package com.achobeta.domain.schedule.service.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.interview.service.InterviewService;
@@ -25,6 +24,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -242,7 +242,7 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
     @Override
     public void checkScheduleReferenced(Long scheduleId) {
         List<InterviewVO> interviewVOList = interviewService.getInterviewListByScheduleId(scheduleId);
-        if(!CollectionUtil.isEmpty(interviewVOList)) {
+        if(!CollectionUtils.isEmpty(interviewVOList)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.INTERVIEW_SCHEDULE_IS_REFERENCED);
         }
     }

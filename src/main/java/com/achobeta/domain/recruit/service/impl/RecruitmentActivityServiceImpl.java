@@ -1,6 +1,5 @@
 package com.achobeta.domain.recruit.service.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.paper.service.PaperQuestionLinkService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
@@ -19,6 +18,7 @@ import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -138,7 +138,7 @@ public class RecruitmentActivityServiceImpl extends ServiceImpl<RecruitmentActiv
         if(!paperId.equals(oldPaperId)) {
             // 获取此活动已有的，“活动参与”列表，删除原本的所有回答（哪怕两份卷子有相同的问题，也照样删除）
             List<Long> participationIds = getParticipationIdsByActId(actId);
-            if (!CollectionUtil.isEmpty(participationIds)) {
+            if (!CollectionUtils.isEmpty(participationIds)) {
                 Db.lambdaUpdate(ParticipationQuestionLink.class)
                         .in(ParticipationQuestionLink::getParticipationId, participationIds)
                         .remove();
