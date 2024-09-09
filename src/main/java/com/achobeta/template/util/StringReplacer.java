@@ -1,7 +1,5 @@
 package com.achobeta.template.util;
 
-import java.io.Serializable;
-
 /**
  * Created With Intellij IDEA
  * Description:
