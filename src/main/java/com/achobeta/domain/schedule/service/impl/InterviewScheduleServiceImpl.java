@@ -109,9 +109,7 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
                         (oldData, newData) -> newData
                 ));
         // 查询时间段选择情况
-        List<Long> participationIds = userParticipationVOMap.keySet()
-                .stream()
-                .toList();
+        List<Long> participationIds = new ArrayList<>(userParticipationVOMap.keySet());
         activityParticipationService.getParticipationPeriods(participationIds).stream()
                 .filter(participationPeriodVO -> userParticipationVOMap.containsKey(participationPeriodVO.getId()))
                 .forEach(participationPeriodVO -> {

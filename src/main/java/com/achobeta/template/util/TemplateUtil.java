@@ -4,10 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.template.model.po.ReplaceResource;
 import org.thymeleaf.context.Context;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -30,12 +27,13 @@ public class TemplateUtil {
     }
 
     public static String replace(String text, List<ReplaceResource> resourceList, Function<String, String> textConverter) {
-        for (ReplaceResource resource : resourceList) {
+        StringReplacer textReplacer = new StringReplacer(text);
+        resourceList.forEach(resource -> {
             String target = resource.getTarget();
             String replacement = textConverter.apply(resource.getReplacement());
-            text = text.replace(target, replacement);
-        }
-        return text;
+            textReplacer.replace(target, replacement);
+        });
+        return textReplacer.toString();
     }
 
     /**
@@ -46,19 +44,20 @@ public class TemplateUtil {
      * @return 替换后的文本
      */
     public static String replaceSafely(String text, List<ReplaceResource> resourceList, Function<String, String> textConverter) {
-        // 将每个 target 替换为临时唯一的标识，并保存映射关系
         Map<String, String> tempTargetMap = new HashMap<>();
         StringReplacer textReplacer = new StringReplacer(text);
         resourceList.stream().peek(resource -> {
+            // 将每个 target 替换为临时的唯一标识，并保存映射关系
             String originTarget = resource.getTarget();
             if (tempTargetMap.containsKey(originTarget)) {
-                // 说明 text 中 originTarget 已经全被替换了，直接忽略
+                // 若映射表种存在，说明 text 中 originTarget 已经全被替换了，直接忽略
                 return;
             }
             String tmpSymbol = getUniqueSymbol();
             textReplacer.replace(originTarget, tmpSymbol);
             tempTargetMap.put(originTarget, tmpSymbol);
         }).forEach(resource -> {
+            // 通过映射表获取临时的唯一标识，获取欲替换的文本，进行替换
             String target = tempTargetMap.get(resource.getTarget());
             String replacement = textConverter.apply(resource.getReplacement());
             textReplacer.replace(target, replacement);
