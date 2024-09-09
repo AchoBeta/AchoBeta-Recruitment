@@ -21,7 +21,7 @@ public class TemplateUtil {
     }
 
     public static String getUniqueSymbol() {
-        return UUID.randomUUID().toString().replace("-", "");
+        return UUID.randomUUID().toString();
     }
 
 }
