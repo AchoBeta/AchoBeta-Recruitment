@@ -1,15 +1,11 @@
 package com.achobeta.util;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Optional;
 
 /**

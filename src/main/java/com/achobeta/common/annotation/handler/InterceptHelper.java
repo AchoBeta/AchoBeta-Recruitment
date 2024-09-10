@@ -1,7 +1,7 @@
 package com.achobeta.common.annotation.handler;
 
-import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.common.annotation.Intercept;
+import com.achobeta.common.enums.UserTypeEnum;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;

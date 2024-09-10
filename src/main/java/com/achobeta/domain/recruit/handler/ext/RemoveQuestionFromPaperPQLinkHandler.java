@@ -1,12 +1,12 @@
 package com.achobeta.domain.recruit.handler.ext;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.achobeta.domain.paper.handler.RemoveQuestionFromPaperHandler;
 import com.achobeta.domain.recruit.model.entity.ParticipationQuestionLink;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.ParticipationQuestionLinkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class RemoveQuestionFromPaperPQLinkHandler extends RemoveQuestionFromPape
     @Override
     public void handle(Long paperId, List<Long> questionIds) {
         List<Long> participationIds = activityParticipationService.getParticipationIdsByPaperId(paperId);
-        if(CollectionUtil.isEmpty(participationIds)) {
+        if(CollectionUtils.isEmpty(participationIds)) {
             return;
         }
         // 删除对应的行

@@ -32,7 +32,7 @@ public class ResumeStateMachineBuildConfig {
                 externalHelpers,
                 internalHelpers
         );
-        StateMachineUtil.printMachine(ResumeStateMachineConstants.RESUME_STATE_MACHINE_ID);
+        StateMachineUtil.showMachine(ResumeStateMachineConstants.RESUME_STATE_MACHINE_ID);
     }
 
 }

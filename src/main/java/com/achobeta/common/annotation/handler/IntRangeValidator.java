@@ -33,7 +33,7 @@ public class IntRangeValidator implements ConstraintValidator<IntRange, Object> 
 
     private boolean isValid(Object value) {
         if(Objects.isNull(value)) {
-            return Boolean.FALSE;
+            return Boolean.TRUE;
         } else if (value instanceof Number number) {
             return compare(number, min) >= 0 && compare(number, max) <= 0;
         } else if (value instanceof Collection<?> collection) {

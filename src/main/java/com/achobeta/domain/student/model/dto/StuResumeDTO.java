@@ -1,6 +1,5 @@
 package com.achobeta.domain.student.model.dto;
 
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 import javax.validation.Valid;

@@ -1,6 +1,9 @@
 package com.achobeta.domain.resumestate.model.vo;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Created With Intellij IDEA

@@ -2,13 +2,13 @@ package com.achobeta.domain.login.controller;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.common.annotation.Intercept;
 import com.achobeta.domain.login.model.dto.LoginDTO;
 import com.achobeta.domain.login.model.dto.RegisterDTO;
 import com.achobeta.domain.login.model.vo.LoginVO;
 import com.achobeta.domain.login.service.LoginService;
 import com.achobeta.domain.login.service.strategy.LoginStrategy;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.common.annotation.Intercept;
 import com.achobeta.util.ValidatorUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

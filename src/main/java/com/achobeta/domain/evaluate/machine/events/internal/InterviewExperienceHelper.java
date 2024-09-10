@@ -3,11 +3,6 @@ package com.achobeta.domain.evaluate.machine.events.internal;
 import com.achobeta.common.enums.EmailTemplateEnum;
 import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
-import com.achobeta.domain.html.model.po.HtmlResource;
-import com.achobeta.domain.email.model.po.EmailMessage;
-import com.achobeta.domain.html.model.po.MarkdownReplaceResource;
-import com.achobeta.domain.html.service.HtmlEngine;
-import com.achobeta.domain.email.service.EmailSender;
 import com.achobeta.domain.evaluate.model.vo.InterviewExperienceTemplateClose;
 import com.achobeta.domain.evaluate.model.vo.InterviewExperienceTemplateInner;
 import com.achobeta.domain.evaluate.model.vo.InterviewExperienceTemplateOpen;
@@ -19,14 +14,20 @@ import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.schedule.model.vo.ScheduleVO;
 import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
+import com.achobeta.email.EmailSender;
+import com.achobeta.email.model.po.EmailMessage;
+import com.achobeta.template.engine.HtmlEngine;
+import com.achobeta.template.model.po.ReplaceResource;
+import com.achobeta.template.model.po.Resource;
+import com.achobeta.template.util.TemplateUtil;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -102,23 +103,21 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                     .build();
 
             String innerTemplate = EmailTemplateEnum.INTERVIEW_EXPERIENCE_INNER.getTemplate();
-            List<MarkdownReplaceResource> replaceResourceList = new ArrayList<>();
-            List<HtmlResource> htmlResourceList =  interviewQuestionScoreService.getInterviewPaperDetail(interviewId)
+            List<Resource> htmlResourceList = new LinkedList<>();
+            List<ReplaceResource> replaceResourceList = new LinkedList<>();
+            interviewQuestionScoreService.getInterviewPaperDetail(interviewId)
                     .getQuestions()
-                    .stream()
-                    .map(question -> {
-                        String target = htmlEngine.getUniqueSymbol();
-                        String standard = question.getStandard();
-                        replaceResourceList.add(new MarkdownReplaceResource(target, standard));
-                        return InterviewExperienceTemplateInner.builder()
+                    .forEach(question -> {
+                        String target = TemplateUtil.getUniqueSymbol();
+                        InterviewExperienceTemplateInner inner =  InterviewExperienceTemplateInner.builder()
                                 .title(question.getTitle())
                                 .score(question.getScore())
                                 .average(question.getAverage())
                                 .standard(target)
                                 .build();
-                    }).map(inner -> {
-                        return new HtmlResource(innerTemplate, inner);
-                    }).toList();
+                        htmlResourceList.add(new Resource(innerTemplate, inner));
+                        replaceResourceList.add(new ReplaceResource(target, question.getStandard()));
+                    });
 
             String closeTemplate = EmailTemplateEnum.INTERVIEW_EXPERIENCE_CLOSE.getTemplate();
             InterviewExperienceTemplateClose templateClose = InterviewExperienceTemplateClose.builder()

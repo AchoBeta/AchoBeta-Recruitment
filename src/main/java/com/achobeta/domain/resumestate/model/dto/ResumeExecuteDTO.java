@@ -1,5 +1,6 @@
 package com.achobeta.domain.resumestate.model.dto;
 
+import com.achobeta.domain.users.model.dto.MemberDTO;
 import lombok.Data;
 
 /**

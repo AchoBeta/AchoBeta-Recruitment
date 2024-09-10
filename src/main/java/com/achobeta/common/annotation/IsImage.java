@@ -3,7 +3,6 @@ package com.achobeta.common.annotation;
 import com.achobeta.common.annotation.handler.IsImageValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import jakarta.validation.constraints.NotBlank;
 
 import java.lang.annotation.*;
 
@@ -18,7 +17,6 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = {IsImageValidator.class})
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-@NotBlank(message = "image url 不能为空")
 public @interface IsImage {
 
     String message() default "image url 非法"; // 默认消息

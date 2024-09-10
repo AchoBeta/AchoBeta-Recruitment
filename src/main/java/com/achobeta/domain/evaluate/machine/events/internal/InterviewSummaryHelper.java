@@ -3,9 +3,6 @@ package com.achobeta.domain.evaluate.machine.events.internal;
 import com.achobeta.common.enums.EmailTemplateEnum;
 import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
-import com.achobeta.domain.email.model.po.EmailMessage;
-import com.achobeta.domain.html.service.HtmlEngine;
-import com.achobeta.domain.email.service.EmailSender;
 import com.achobeta.domain.evaluate.model.vo.InterviewSummaryTemplate;
 import com.achobeta.domain.evaluate.model.vo.InterviewSummaryVO;
 import com.achobeta.domain.evaluate.service.InterviewSummaryService;
@@ -15,6 +12,9 @@ import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
+import com.achobeta.email.EmailSender;
+import com.achobeta.email.model.po.EmailMessage;
+import com.achobeta.template.engine.HtmlEngine;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
 import lombok.RequiredArgsConstructor;
@@ -101,7 +101,7 @@ public class InterviewSummaryHelper implements InterviewStateInternalTransitionH
                     .playback(interviewSummaryVO.getPlayback())
                     .build();
             String html = htmlEngine.builder()
-                    .append(emailTemplate.getTemplate())
+                    .append(emailTemplate.getTemplate(), interviewSummaryTemplate)
                     .build();
             // 发送
             emailSender.sendModelMail(emailMessage, html);

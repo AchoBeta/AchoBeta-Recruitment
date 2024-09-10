@@ -4,7 +4,6 @@ import com.achobeta.domain.student.model.dto.QueryResumeDTO;
 import com.achobeta.domain.student.model.dto.StuResumeDTO;
 import com.achobeta.domain.student.model.dto.StuSimpleResumeDTO;
 import com.achobeta.domain.student.model.entity.StuResume;
-import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +21,7 @@ public interface StuResumeService extends IService<StuResume> {
 
     Optional<StuResume> getStuResume(Long resumeId);
 
-    Integer getGradeByBatchIdAndStuId(Long batchId, Long stuId);
+    StuResume checkAndGetStuResumeByBatchIdAndStuId(Long batchId, Long stuId);
 
     @Transactional
     void submitResume(StuResumeDTO stuResumeDTO,StuResume stuResume);

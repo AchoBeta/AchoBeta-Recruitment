@@ -1,6 +1,5 @@
 package com.achobeta.domain.evaluate.handler.ext;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.achobeta.domain.evaluate.model.entity.InterviewQuestionScore;
 import com.achobeta.domain.evaluate.service.InterviewQuestionScoreService;
 import com.achobeta.domain.interview.model.entity.Interview;
@@ -8,6 +7,7 @@ import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.handler.RemovePaperHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class RemovePaperIQScoreHandler extends RemovePaperHandler {
                 .stream()
                 .map(Interview::getId)
                 .toList();
-        if(CollectionUtil.isEmpty(interviewIds)) {
+        if(CollectionUtils.isEmpty(interviewIds)) {
             return;
         }
         // 将面试试卷设置为空

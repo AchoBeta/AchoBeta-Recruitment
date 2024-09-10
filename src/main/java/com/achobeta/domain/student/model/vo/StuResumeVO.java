@@ -1,10 +1,7 @@
 package com.achobeta.domain.student.model.vo;
 
-import com.achobeta.domain.student.model.dto.StuAttachmentDTO;
-import com.achobeta.domain.student.model.dto.StuSimpleResumeDTO;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 

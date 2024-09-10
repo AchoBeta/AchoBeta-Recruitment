@@ -55,11 +55,11 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     }
 
     @Override
-    public Integer getGradeByBatchIdAndStuId(Long batchId, Long stuId) {
+    public StuResume checkAndGetStuResumeByBatchIdAndStuId(Long batchId, Long stuId) {
         return getStuResume(batchId, stuId)
                 .orElseThrow(() ->
-                        new GlobalServiceException(GlobalServiceStatusCode.USER_RESUME_NOT_EXISTS))
-                .getGrade();
+                        new GlobalServiceException(GlobalServiceStatusCode.USER_RESUME_NOT_EXISTS)
+                );
     }
 
     @Override

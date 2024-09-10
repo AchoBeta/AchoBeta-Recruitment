@@ -32,7 +32,7 @@ public class InterviewStateMachineBuildConfig {
                 externalHelpers,
                 internalHelpers
         );
-        StateMachineUtil.printMachine(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID);
+        StateMachineUtil.showMachine(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID);
     }
 
 }

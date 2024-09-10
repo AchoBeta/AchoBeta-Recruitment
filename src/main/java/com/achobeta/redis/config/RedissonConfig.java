@@ -26,7 +26,7 @@ public class RedissonConfig {
 
     private Integer database;
 
-    @Bean()
+    @Bean
     public RedissonClient redisson() {
         Config config = new Config();
         // 配置 Redisson 连接信息

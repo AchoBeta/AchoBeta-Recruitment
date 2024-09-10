@@ -2,16 +2,12 @@ package com.achobeta.domain.feedback.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.feedback.service.UserFeedbackService;
-import com.achobeta.domain.student.model.dto.QueryResumeDTO;
-import com.achobeta.domain.student.model.dto.StuResumeDTO;
-import com.achobeta.domain.student.model.vo.StuResumeVO;
-import com.achobeta.domain.student.service.StuResumeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author: cattleyuan
