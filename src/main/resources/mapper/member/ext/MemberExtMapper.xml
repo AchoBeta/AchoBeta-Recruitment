@@ -37,7 +37,6 @@
                 and r.batch_id = #{batchId,jdbcType=BIGINT}
             </if>
         </where>
-        order by m.create_time asc
     </select>
 
 

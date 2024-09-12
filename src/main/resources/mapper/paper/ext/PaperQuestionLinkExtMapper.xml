@@ -12,7 +12,6 @@
              left join paper_question_link pq on p.id  = pq.paper_id and p.is_deleted = 0 and pq.is_deleted = 0
              left join question q on q.id = pq.question_id and q.is_deleted = 0 and pq.is_deleted = 0
         where p.id = #{paperId,jdbcType=BIGINT} and q.id is not null
-        order by q.create_time asc
     </select>
 
 
