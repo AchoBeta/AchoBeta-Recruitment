@@ -20,6 +20,7 @@ import java.util.function.Function;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection"})
 public class EmailSender {
 
     private final JavaMailSender javaMailSender;
