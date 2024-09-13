@@ -1,7 +1,6 @@
 package com.achobeta.domain.recruit.model.vo;
 
 import com.achobeta.domain.recruit.model.condition.StudentGroup;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -29,10 +28,10 @@ public class RecruitmentActivityVO {
 
     private Boolean isRun;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+//    @JsonFormat(pattern = DATE_TIME_PATTERN, timezone = TIMEZONE)
     private Date deadline;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+//    @JsonFormat(pattern = DATE_TIME_PATTERN, timezone = TIMEZONE)
     private LocalDateTime createTime;
 
     public void hidden() {
