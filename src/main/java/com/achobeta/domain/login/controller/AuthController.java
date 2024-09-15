@@ -9,7 +9,6 @@ import com.achobeta.domain.login.model.vo.LoginVO;
 import com.achobeta.domain.login.service.LoginService;
 import com.achobeta.domain.login.service.strategy.LoginStrategy;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
