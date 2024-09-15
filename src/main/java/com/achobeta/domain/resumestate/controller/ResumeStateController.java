@@ -83,12 +83,20 @@ public class ResumeStateController {
     }
 
 
-    @GetMapping("/list/process/{batchId}")
+    @GetMapping("/process/user/{batchId}")
     @Intercept(permit = {UserTypeEnum.USER})
     public SystemJsonResponse getProcesses(@PathVariable("batchId") @NotNull Long batchId) {
         long userId = BaseContext.getCurrentUser().getUserId();
         StuResume currentResume = stuResumeService.checkAndGetStuResumeByBatchIdAndStuId(batchId, userId);
         List<ResumeStatusProcess> processes = resumeStatusProcessService.getProcessByResumeId(currentResume.getId());
+        List<ResumeStatusProcessVO> resumeStatusProcessVOList = ResumeStateConverter.INSTANCE.processesToProcessVOList(processes);
+        return SystemJsonResponse.SYSTEM_SUCCESS(resumeStatusProcessVOList);
+    }
+
+    @GetMapping("/process/manager/{resumeId}")
+    public SystemJsonResponse getProcessesByResumeId(@PathVariable("resumeId") @NotNull Long resumeId) {
+        stuResumeService.checkAndGetResume(resumeId);
+        List<ResumeStatusProcess> processes = resumeStatusProcessService.getProcessByResumeId(resumeId);
         List<ResumeStatusProcessVO> resumeStatusProcessVOList = ResumeStateConverter.INSTANCE.processesToProcessVOList(processes);
         return SystemJsonResponse.SYSTEM_SUCCESS(resumeStatusProcessVOList);
     }

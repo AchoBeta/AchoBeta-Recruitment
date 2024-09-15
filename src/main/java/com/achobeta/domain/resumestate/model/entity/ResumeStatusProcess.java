@@ -13,7 +13,7 @@ import java.io.Serializable;
  * 招新简历状态过程表
  * @TableName resume_status_process.sql
  */
-@TableName(value ="resume_status_process.sql")
+@TableName(value ="resume_status_process")
 @Data
 public class ResumeStatusProcess extends BaseIncrIDEntity implements Serializable {
 
