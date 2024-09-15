@@ -107,8 +107,9 @@ ResumeConfirmHelper implements ResumeStateInternalTransitionHelper{
             String html = htmlEngine.builder()
                     .append(emailTemplate.getTemplate(), confirmationNoticeTemplate)
                     .build();
-            // 发送
-            emailSender.sendModelMail(emailMessage, html);
+            emailMessage.setContent(html);
+            // 发送模板消息
+            emailSender.send(emailMessage);
         };
     }
 }

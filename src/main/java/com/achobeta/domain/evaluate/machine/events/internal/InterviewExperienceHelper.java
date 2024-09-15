@@ -133,8 +133,9 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                     .replaceMarkdown(replaceResourceList)
                     .build();
 
-            // 发送邮件
-            emailSender.sendModelMail(emailMessage, html);
+            emailMessage.setContent(html);
+            // 发送模板消息
+            emailSender.send(emailMessage);
         };
     }
 }
