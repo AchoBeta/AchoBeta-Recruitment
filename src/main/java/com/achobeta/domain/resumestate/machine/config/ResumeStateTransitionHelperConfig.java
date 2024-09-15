@@ -30,6 +30,7 @@ public class ResumeStateTransitionHelperConfig {
         return (from, to, event, context) -> {
             context.log(from, to, event);
             context.getResume().setStatus(to);
+            context.setHit(Boolean.TRUE);
         };
     }
 }
