@@ -1,7 +1,5 @@
 package com.achobeta.domain.paper.model.converter;
 
-import com.achobeta.domain.paper.model.entity.QuestionPaper;
-import com.achobeta.domain.paper.model.vo.QuestionPaperVO;
 import com.achobeta.domain.question.model.entity.Question;
 import com.achobeta.domain.question.model.vo.QuestionVO;
 import org.mapstruct.Mapper;

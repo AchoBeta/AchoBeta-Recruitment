@@ -1,6 +1,5 @@
 package com.achobeta.domain.recruit.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.recruit.model.converter.TimePeriodConverter;
 import com.achobeta.domain.recruit.model.dao.mapper.TimePeriodMapper;

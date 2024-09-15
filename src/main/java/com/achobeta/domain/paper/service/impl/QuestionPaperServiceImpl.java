@@ -1,6 +1,5 @@
 package com.achobeta.domain.paper.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.paper.model.converter.QuestionPaperConverter;
 import com.achobeta.domain.paper.model.dao.mapper.QuestionPaperMapper;

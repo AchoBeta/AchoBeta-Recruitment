@@ -1,6 +1,5 @@
 package com.achobeta.domain.question.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.paper.model.converter.QuestionConverter;
 import com.achobeta.domain.question.model.dao.mapper.QuestionLibraryMapper;
