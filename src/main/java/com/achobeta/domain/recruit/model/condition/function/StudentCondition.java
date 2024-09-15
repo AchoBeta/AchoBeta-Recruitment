@@ -17,7 +17,7 @@ public interface StudentCondition {
 
     Predicate<StuResume> predicate();
 
-    static <C extends StudentCondition> Predicate<StuResume> predicate(C object, Predicate<StuResume> identity, BinaryOperator<Predicate<StuResume>> accumulator) {
+    static <C> Predicate<StuResume> predicate(C object, Predicate<StuResume> identity, BinaryOperator<Predicate<StuResume>> accumulator) {
         return ObjectUtil.reduce(
                 object,
                 StudentCondition.class,
