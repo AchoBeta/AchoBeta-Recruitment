@@ -14,10 +14,12 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class EmailAsynchronousThreadPool {
 
+    private final static String THREAD_NAME = "emailAsynchronousThread";
+
     private final static ThreadPoolExecutor EMAIL_ASYNCHRONOUS_THREAD_POOL;
 
     static {
-        EMAIL_ASYNCHRONOUS_THREAD_POOL = ThreadPoolUtil.getIoTargetThreadPool("emailAsynchronousThread");
+        EMAIL_ASYNCHRONOUS_THREAD_POOL = ThreadPoolUtil.getIoTargetThreadPool(THREAD_NAME);
     }
 
     static void submit(Runnable... tasks) {
