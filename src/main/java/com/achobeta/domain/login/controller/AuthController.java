@@ -10,6 +10,7 @@ import com.achobeta.domain.login.service.LoginService;
 import com.achobeta.domain.login.service.strategy.LoginStrategy;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ListableBeanFactory;
@@ -26,6 +27,7 @@ import static com.achobeta.domain.login.service.strategy.LoginStrategy.BASE_NAME
  * @date 2024/1/22 19:24
  */
 @Slf4j
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
@@ -49,9 +51,7 @@ public class AuthController {
      */
     @PostMapping("/login")
     @Intercept(ignore = true)
-    public SystemJsonResponse login(@RequestBody LoginDTO loginBody) {
-        ValidatorUtils.validate(loginBody);
-
+    public SystemJsonResponse login(@Valid @RequestBody LoginDTO loginBody) {
         String beanName = loginBody.getLoginType() + BASE_NAME;
         ListableBeanFactory beanFactory = SpringUtil.getBeanFactory();
         if (!beanFactory.containsBean(beanName)) {
@@ -77,7 +77,7 @@ public class AuthController {
      */
     @PostMapping("/register")
     @Intercept(ignore = true)
-    public SystemJsonResponse register(@Validated @RequestBody RegisterDTO user) {
+    public SystemJsonResponse register(@Valid @RequestBody RegisterDTO user) {
         user.setEmail(null);
         loginService.register(user);
         return SystemJsonResponse.SYSTEM_SUCCESS();

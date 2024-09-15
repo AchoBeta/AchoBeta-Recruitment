@@ -10,11 +10,13 @@ import com.achobeta.exception.GlobalServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 
 @RestController
+@Validated
 @RequiredArgsConstructor
 @Slf4j
 @Intercept(permit = {UserTypeEnum.ADMIN})
