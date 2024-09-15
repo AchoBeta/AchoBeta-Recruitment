@@ -1,4 +1,4 @@
-package com.achobeta.email.thread;
+package com.achobeta.email.aspect;
 
 import com.achobeta.util.ThreadPoolUtil;
 

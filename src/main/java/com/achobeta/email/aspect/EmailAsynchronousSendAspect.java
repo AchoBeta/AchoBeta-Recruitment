@@ -1,4 +1,4 @@
-package com.achobeta.email.thread;
+package com.achobeta.email.aspect;
 
 import com.achobeta.exception.GlobalServiceException;
 import lombok.extern.slf4j.Slf4j;
