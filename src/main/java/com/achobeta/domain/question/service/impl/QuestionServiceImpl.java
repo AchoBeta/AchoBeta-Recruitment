@@ -2,6 +2,7 @@ package com.achobeta.domain.question.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.paper.model.converter.QuestionConverter;
 import com.achobeta.domain.question.model.dao.mapper.QuestionLibraryMapper;
 import com.achobeta.domain.question.model.dao.mapper.QuestionMapper;
 import com.achobeta.domain.question.model.entity.LibraryQuestionLink;
@@ -39,7 +40,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
 
     @Override
     public List<QuestionVO> getQuestions() {
-        return BeanUtil.copyToList(this.list(), QuestionVO.class);
+        return QuestionConverter.INSTANCE.questionListToQuestionVOList(this.list());
     }
 
     @Override

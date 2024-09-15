@@ -1,7 +1,7 @@
 package com.achobeta.domain.recruit.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.domain.recruit.model.convert.ParticipationConvert;
+import com.achobeta.domain.recruit.model.converter.ParticipationConverter;
 import com.achobeta.domain.recruit.model.dao.mapper.ActivityParticipationMapper;
 import com.achobeta.domain.recruit.model.dto.QuestionAnswerDTO;
 import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
@@ -59,7 +59,7 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
                     Long participationId = activityParticipation.getId();
                     // 转化
                     ParticipationVO participationUserVO =
-                            ParticipationConvert.INSTANCE.activityParticipationToParticipationVO(activityParticipation);
+                            ParticipationConverter.INSTANCE.activityParticipationToParticipationVO(activityParticipation);
                     // 获取用户回答的问题
                     List<QuestionAnswerVO> questions = activityParticipationMapper.getQuestions(participationId);
                     participationUserVO.setQuestionAnswerVOS(questions);
@@ -114,7 +114,7 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
         activityParticipation.setActId(actId);
         this.save(activityParticipation);
         ParticipationVO participationUserVO =
-                ParticipationConvert.INSTANCE.activityParticipationToParticipationVO(activityParticipation);
+                ParticipationConverter.INSTANCE.activityParticipationToParticipationVO(activityParticipation);
         participationUserVO.setQuestionAnswerVOS(new ArrayList<>());
         participationUserVO.setTimePeriodVOS(new ArrayList<>());
         return participationUserVO;

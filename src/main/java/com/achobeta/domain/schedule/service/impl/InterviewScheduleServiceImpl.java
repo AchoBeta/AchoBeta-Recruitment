@@ -3,7 +3,7 @@ package com.achobeta.domain.schedule.service.impl;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.interview.service.InterviewService;
-import com.achobeta.domain.recruit.model.convert.TimePeriodConverter;
+import com.achobeta.domain.recruit.model.converter.TimePeriodConverter;
 import com.achobeta.domain.recruit.model.dao.mapper.ActivityParticipationMapper;
 import com.achobeta.domain.recruit.model.vo.QuestionAnswerVO;
 import com.achobeta.domain.recruit.model.vo.TimePeriodCountVO;

@@ -2,6 +2,7 @@ package com.achobeta.domain.recruit.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.recruit.model.converter.TimePeriodConverter;
 import com.achobeta.domain.recruit.model.dao.mapper.TimePeriodMapper;
 import com.achobeta.domain.recruit.model.entity.TimePeriod;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
@@ -41,7 +42,7 @@ public class TimePeriodServiceImpl extends ServiceImpl<TimePeriodMapper, TimePer
     @Override
     public List<TimePeriodVO> getTimePeriodsByActId(Long actId) {
         List<TimePeriod> timePeriods = this.lambdaQuery().eq(TimePeriod::getActId, actId).list();
-        return BeanUtil.copyToList(timePeriods, TimePeriodVO.class);
+        return TimePeriodConverter.INSTANCE.timePeriodListToTimePeriodVOList(timePeriods);
     }
 
     @Override

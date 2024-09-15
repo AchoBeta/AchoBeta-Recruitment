@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.paper.model.converter.LibraryConverter;
 import com.achobeta.domain.paper.model.dto.PaperLibraryDTO;
 import com.achobeta.domain.paper.model.entity.QuestionPaperLibrary;
 import com.achobeta.domain.paper.model.vo.PaperLibraryVO;
@@ -52,7 +53,7 @@ public class PaperLibraryController {
     @GetMapping("/list")
     public SystemJsonResponse getPaperLibraries() {
         List<QuestionPaperLibrary> paperLibraries = questionPaperLibraryService.getPaperLibraries();
-        return SystemJsonResponse.SYSTEM_SUCCESS(BeanUtil.copyToList(paperLibraries, PaperLibraryVO.class));
+        return SystemJsonResponse.SYSTEM_SUCCESS(LibraryConverter.INSTANCE.paperLibraryListToPaperLibraryVOList(paperLibraries));
     }
 
 }

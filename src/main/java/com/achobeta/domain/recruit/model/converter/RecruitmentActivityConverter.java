@@ -1,4 +1,4 @@
-package com.achobeta.domain.recruit.model.convert;
+package com.achobeta.domain.recruit.model.converter;
 
 import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
 import com.achobeta.domain.recruit.model.vo.RecruitmentActivityVO;

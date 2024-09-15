@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.recruit.model.converter.RecruitmentBatchConverter;
 import com.achobeta.domain.recruit.model.dto.RecruitmentBatchDTO;
 import com.achobeta.domain.recruit.model.dto.RecruitmentBatchUpdateDTO;
 import com.achobeta.domain.recruit.model.entity.RecruitmentBatch;
@@ -63,7 +64,7 @@ public class RecruitmentBatchController {
     @GetMapping("/list/manager")
     public SystemJsonResponse getRecruitBatches(@RequestParam(name = "isRun", required = false) Boolean isRun) {
         List<RecruitmentBatch> recruitmentBatches = recruitmentBatchService.getRecruitmentBatches(isRun);
-        List<RecruitmentBatchVO> recruitmentBatchVOS = BeanUtil.copyToList(recruitmentBatches, RecruitmentBatchVO.class);
+        List<RecruitmentBatchVO> recruitmentBatchVOS = RecruitmentBatchConverter.INSTANCE.recruitmentBatchListToRecruitmentBatchVOList(recruitmentBatches);
         return SystemJsonResponse.SYSTEM_SUCCESS(recruitmentBatchVOS);
     }
 
@@ -71,7 +72,7 @@ public class RecruitmentBatchController {
     @Intercept(permit = {UserTypeEnum.USER})
     public SystemJsonResponse getRecruitBatches() {
         List<RecruitmentBatch> recruitmentBatches = recruitmentBatchService.getRecruitmentBatches(Boolean.TRUE);
-        List<RecruitmentBatchVO> recruitmentBatchVOS = BeanUtil.copyToList(recruitmentBatches, RecruitmentBatchVO.class);
+        List<RecruitmentBatchVO> recruitmentBatchVOS = RecruitmentBatchConverter.INSTANCE.recruitmentBatchListToRecruitmentBatchVOList(recruitmentBatches);
         return SystemJsonResponse.SYSTEM_SUCCESS(recruitmentBatchVOS);
     }
 
@@ -94,7 +95,7 @@ public class RecruitmentBatchController {
     @GetMapping("/detail/{batchId}")
     public SystemJsonResponse shiftRecruitmentBatch(@PathVariable("batchId") @NotNull Long batchId) {
         RecruitmentBatch recruitmentBatch = recruitmentBatchService.checkAndGetRecruitmentBatch(batchId);
-        RecruitmentBatchVO recruitmentBatchVO = BeanUtil.copyProperties(recruitmentBatch, RecruitmentBatchVO.class);
+        RecruitmentBatchVO recruitmentBatchVO = RecruitmentBatchConverter.INSTANCE.recruitmentBatchToRecruitmentBatchVO(recruitmentBatch);
         return SystemJsonResponse.SYSTEM_SUCCESS(recruitmentBatchVO);
     }
 
