@@ -21,8 +21,8 @@
             <foreach collection="questionIds" item="questionId" separator="," open="in (" close=")" >
                 #{questionId,jdbcType=BIGINT}
             </foreach>
-        group by s.question_id
-        order by s.question_id
+        group by q.id
+        order by q.id
     </select>
 
 </mapper>

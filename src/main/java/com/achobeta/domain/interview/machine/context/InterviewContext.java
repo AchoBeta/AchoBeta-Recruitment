@@ -26,6 +26,8 @@ public class InterviewContext {
 
     private Interview interview;
 
+    private Boolean hit;
+
     private InterviewExecuteDTO executeDTO;
 
     public void log(InterviewStatus from, InterviewStatus to, InterviewEvent event) {

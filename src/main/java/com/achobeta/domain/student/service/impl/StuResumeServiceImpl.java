@@ -1,7 +1,9 @@
 package com.achobeta.domain.student.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.common.enums.ResumeEvent;
 import com.achobeta.common.enums.ResumeStatus;
+import com.achobeta.domain.resumestate.service.ResumeStatusProcessService;
 import com.achobeta.domain.student.model.converter.StuResumeConverter;
 import com.achobeta.domain.student.model.dao.mapper.StuResumeMapper;
 import com.achobeta.domain.student.model.dto.*;
@@ -36,6 +38,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         implements StuResumeService {
     private final StuAttachmentService stuAttachmentService;
     private final StuResumeConverter stuResumeConverter;
+    private final ResumeStatusProcessService resumeStatusProcessService;
     //简历最大提交数
     private final Integer MAX_SUBMIT_COUNT = 3;
 
@@ -148,13 +151,20 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         updateById(stuResume);
     }
 
-    private void saveResumeInfo(StuResume stuResume, StuSimpleResumeDTO resumeDTO, Long userId) {
+    @Transactional
+    public void saveResumeInfo(StuResume stuResume, StuSimpleResumeDTO resumeDTO, Long userId) {
         //构建简历实体信息
         stuResumeConverter.updatePoWithStuSimpleResumeDTO(resumeDTO,stuResume);
         stuResume.setUserId(userId);
         //保存简历信息
         save(stuResume);
 
+        // 初始化简历状态过程
+        resumeStatusProcessService.createResumeStatusProcess(
+                stuResume.getId(),
+                stuResume.getStatus(),
+                ResumeEvent.NEXT
+        );
     }
 
     @Transactional

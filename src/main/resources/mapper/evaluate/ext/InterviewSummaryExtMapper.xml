@@ -36,7 +36,7 @@
                 and a.id = #{condition.actId,jdbcType=BIGINT}
             </if>
         </where>
-        order by average desc, i.create_time asc
+        order by average desc
     </select>
 
 </mapper>

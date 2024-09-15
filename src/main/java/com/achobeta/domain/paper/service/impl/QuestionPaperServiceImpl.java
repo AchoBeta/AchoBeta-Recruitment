@@ -1,7 +1,7 @@
 package com.achobeta.domain.paper.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.paper.model.converter.QuestionPaperConverter;
 import com.achobeta.domain.paper.model.dao.mapper.QuestionPaperMapper;
 import com.achobeta.domain.paper.model.entity.LibraryPaperLink;
 import com.achobeta.domain.paper.model.entity.QuestionPaper;
@@ -34,7 +34,7 @@ public class QuestionPaperServiceImpl extends ServiceImpl<QuestionPaperMapper, Q
 
     @Override
     public List<QuestionPaperVO> getQuestionPapers() {
-        return BeanUtil.copyToList(this.list(), QuestionPaperVO.class);
+        return QuestionPaperConverter.INSTANCE.questionPaperListToPaperVOList(this.list());
     }
 
     @Override

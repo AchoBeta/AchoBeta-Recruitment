@@ -1,4 +1,4 @@
-package com.achobeta.domain.recruit.model.convert;
+package com.achobeta.domain.recruit.model.converter;
 
 import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
 import com.achobeta.domain.recruit.model.vo.ParticipationVO;
@@ -13,9 +13,9 @@ import org.mapstruct.factory.Mappers;
  * Time: 23:17
  */
 @Mapper
-public interface ParticipationConvert {
+public interface ParticipationConverter {
 
-    ParticipationConvert INSTANCE = Mappers.getMapper(ParticipationConvert.class);
+    ParticipationConverter INSTANCE = Mappers.getMapper(ParticipationConverter.class);
 
     ParticipationVO activityParticipationToParticipationVO(ActivityParticipation activityParticipation);
 

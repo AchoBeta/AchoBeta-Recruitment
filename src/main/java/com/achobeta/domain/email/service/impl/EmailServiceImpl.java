@@ -112,8 +112,9 @@ public class EmailServiceImpl implements EmailService {
         String html = htmlEngine.builder()
                 .append(CAPTCHA.getTemplate(), verificationCodeTemplate)
                 .build();
+        emailMessage.setContent(html);
         // 发送模板消息
-        emailSender.sendModelMail(emailMessage, html);
+        emailSender.send(emailMessage);
     }
 
 }

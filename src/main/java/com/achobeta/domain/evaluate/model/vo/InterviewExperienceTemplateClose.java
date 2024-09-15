@@ -5,8 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static com.achobeta.config.DateTimeConfig.DATE_TIME_FORMAT;
 
 /**
  * Created With Intellij IDEA
@@ -26,11 +27,11 @@ public class InterviewExperienceTemplateClose {
     private Date endTime;
 
     public String getStartTime() {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(startTime);
+        return DATE_TIME_FORMAT.format(startTime);
     }
 
     public String getEndTime() {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(endTime);
+        return DATE_TIME_FORMAT.format(endTime);
     }
 
 }

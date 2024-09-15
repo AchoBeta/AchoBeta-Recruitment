@@ -19,6 +19,8 @@ import com.achobeta.domain.paper.service.PaperQuestionLinkService;
 import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.machine.StateMachineUtil;
+import com.achobeta.redis.RedisLock;
+import com.achobeta.redis.strategy.SimpleLockStrategy;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -39,11 +40,17 @@ import java.util.Optional;
 public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview>
     implements InterviewService{
 
+    private final static String EXECUTE_INTERVIEW_EVENT_LOCK = "executeInterviewEventLock:";
+
     private final InterviewMapper interviewMapper;
 
     private final InterviewerService interviewerService;
 
     private final PaperQuestionLinkService paperQuestionLinkService;
+
+    private final RedisLock redisLock;
+
+    private final SimpleLockStrategy simpleLockStrategy;
 
     @Override
     public Optional<Interview> getInterview(Long interviewId) {
@@ -109,21 +116,26 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     @Transactional
     public InterviewStatus executeInterviewStateEvent(InterviewEvent interviewEvent, InterviewContext interviewContext) {
         Interview currentInterview = interviewContext.getInterview();
-        // 获取当前状态
-        InterviewStatus fromState = currentInterview.getStatus();
-        // 执行状态机
-        InterviewStatus finalState = StateMachineUtil.fireEvent(
-                InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
-                fromState,
-                interviewEvent,
-                interviewContext
-        );
-        // 状态发生改变则进行更新
-        if(!Objects.equals(fromState, finalState)) {
-            switchInterview(currentInterview.getId(), finalState);
-        }
-        // 返回最终状态
-        return finalState;
+        Long interviewId = currentInterview.getId();
+        return redisLock.tryLockGetSomething(EXECUTE_INTERVIEW_EVENT_LOCK + interviewId, () -> {
+            // 获取当前状态
+            InterviewStatus fromState = currentInterview.getStatus();
+            // 执行状态机
+            InterviewStatus finalState = StateMachineUtil.fireEvent(
+                    InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,
+                    fromState,
+                    interviewEvent,
+                    interviewContext
+            );
+            // 能执行到这里，只有两种情况：1. 未命中、2. 轮转成功
+            if(!Boolean.TRUE.equals(interviewContext.getHit())) {
+                throw new GlobalServiceException(GlobalServiceStatusCode.INTERVIEW_STATUS_TRANS_EVENT_ERROR);
+            }
+            // 更新状态
+            switchInterview(interviewId, finalState);
+            // 返回最终状态
+            return finalState;
+        }, () -> null, simpleLockStrategy);
     }
 
     @Override

@@ -6,7 +6,7 @@ import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.achobeta.domain.recruit.model.condition.StudentGroup;
-import com.achobeta.domain.recruit.model.convert.RecruitmentActivityConverter;
+import com.achobeta.domain.recruit.model.converter.RecruitmentActivityConverter;
 import com.achobeta.domain.recruit.model.dto.ActivityPaperDTO;
 import com.achobeta.domain.recruit.model.dto.RecruitmentActivityDTO;
 import com.achobeta.domain.recruit.model.dto.RecruitmentActivityUpdateDTO;
@@ -24,6 +24,7 @@ import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -37,6 +38,7 @@ import java.util.List;
  * Time: 19:27
  */
 @Slf4j
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/recruit/activity")

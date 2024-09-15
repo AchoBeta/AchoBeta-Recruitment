@@ -42,7 +42,7 @@ public class RemovePaperPQLinkHandler extends RemovePaperHandler {
         // 涉及的招新活动的 paperId 置为 null
         List<Long> actIds = recruitmentActivityService.getActIdsByPaperId(paperId);
         if(CollectionUtils.isEmpty(actIds)) {
-            return ;
+            return;
         }
         recruitmentActivityService.lambdaUpdate()
                 .in(RecruitmentActivity::getId, actIds)

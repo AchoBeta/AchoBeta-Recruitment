@@ -41,7 +41,7 @@
                 and a.id = #{condition.actId,jdbcType=BIGINT}
             </if>
         </where>
-        order by i.status asc, s.start_time asc, s.end_time asc, i.create_time asc
+        order by i.status asc, s.start_time asc, s.end_time asc
     </select>
 
     <select id="userGetInterviewList" resultMap="InterviewMap">
@@ -64,7 +64,7 @@
                 and a.id = #{condition.actId,jdbcType=BIGINT}
             </if>
         </where>
-        order by i.status asc, s.start_time asc, s.end_time asc, i.create_time asc
+        order by i.status asc, s.start_time asc, s.end_time asc
     </select>
 
     <select id="getInterviewDetail" parameterType="java.lang.Long" resultMap="InterviewDetailMap">
