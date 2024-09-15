@@ -1,16 +1,13 @@
 package com.achobeta.domain.evaluate.model.vo;
 
-import com.achobeta.config.DateTimeConfig;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static com.achobeta.config.DateTimeConfig.DATE_TIME_FORMAT;
-import static com.achobeta.config.DateTimeConfig.DATE_TIME_PATTERN;
 
 /**
  * Created With Intellij IDEA

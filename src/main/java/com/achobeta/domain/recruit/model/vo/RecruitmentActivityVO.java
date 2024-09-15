@@ -28,10 +28,8 @@ public class RecruitmentActivityVO {
 
     private Boolean isRun;
 
-//    @JsonFormat(pattern = DATE_TIME_PATTERN, timezone = TIMEZONE)
     private Date deadline;
 
-//    @JsonFormat(pattern = DATE_TIME_PATTERN, timezone = TIMEZONE)
     private LocalDateTime createTime;
 
     public void hidden() {
