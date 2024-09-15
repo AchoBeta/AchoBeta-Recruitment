@@ -18,10 +18,10 @@ public class UserIdCondition extends ArrayList<Long> implements StudentCondition
 
     @Override
     public Predicate<StuResume> predicate() {
-        return stuResume -> {
-            return this.stream()
-                    .filter(Objects::nonNull)
-                    .anyMatch(userId -> userId.equals(stuResume.getUserId()));
-        };
+        return stuResume -> this
+                .stream()
+                .filter(Objects::nonNull)
+                .anyMatch(userId -> userId.equals(stuResume.getUserId()))
+                ;
     }
 }
