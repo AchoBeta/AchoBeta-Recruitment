@@ -4,7 +4,6 @@ import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.paper.service.PaperQuestionLinkService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.domain.question.model.vo.QuestionVO;
-import com.achobeta.domain.recruit.constants.RecruitmentActivityConstants;
 import com.achobeta.domain.recruit.model.condition.StudentGroup;
 import com.achobeta.domain.recruit.model.dao.mapper.RecruitmentActivityMapper;
 import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
@@ -15,7 +14,6 @@ import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.service.StuResumeService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.RedisLock;
-import com.achobeta.redis.strategy.ReadLockStrategy;
 import com.achobeta.redis.strategy.WriteLockStrategy;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
@@ -27,7 +25,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
-import static com.achobeta.domain.recruit.constants.RecruitmentActivityConstants.*;
+import static com.achobeta.domain.recruit.constants.RecruitmentActivityConstants.RECRUITMENT_ACTIVITY_QUESTIONNAIRE_LOCK;
 
 /**
 * @author 马拉圈

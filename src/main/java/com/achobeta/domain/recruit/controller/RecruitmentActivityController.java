@@ -3,7 +3,6 @@ package com.achobeta.domain.recruit.controller;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
-import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.achobeta.domain.recruit.model.condition.StudentGroup;
 import com.achobeta.domain.recruit.model.converter.RecruitmentActivityConverter;

@@ -17,7 +17,6 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true # 是否开启下划线和驼峰的映射
     cache-enabled: false # 是否开启二级缓存
-  type-handlers-package: com.achobeta.handler
   global-config:
     db-config:
       logic-delete-field: deleted
