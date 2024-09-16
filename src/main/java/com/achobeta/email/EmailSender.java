@@ -70,7 +70,7 @@ public class EmailSender {
      * 建议循环调用 send，因为这个方法本身就是循环发送，不是一次性发送
      */
     @Deprecated
-    public void customizedSend(EmailMessage emailMessage, Function<String, String> getText, boolean isHtml, List<File> fileList) {
+    public void customSend(EmailMessage emailMessage, Function<String, String> getText, boolean isHtml, List<File> fileList) {
         String sender = emailMessage.getSender();
         String[] carbonCopy = emailMessage.getCarbonCopy();
         String title = emailMessage.getTitle();

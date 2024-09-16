@@ -15,9 +15,9 @@ logging:
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml # Mapper.xml文件地址,默认值
   configuration:
-    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler #设置枚举处理器
     map-underscore-to-camel-case: true # 是否开启下划线和驼峰的映射
     cache-enabled: false # 是否开启二级缓存
+  type-handlers-package: com.achobeta.handler
   global-config:
     db-config:
       logic-delete-field: deleted
