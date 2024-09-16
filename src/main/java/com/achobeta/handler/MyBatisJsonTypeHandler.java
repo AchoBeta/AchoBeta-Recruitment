@@ -16,7 +16,7 @@ import java.util.Optional;
 @MappedTypes({Object.class})
 @MappedJdbcTypes({JdbcType.VARCHAR})
 @Slf4j
-public class MyBatisJacksonTypeHandler extends AbstractJsonTypeHandler<Object> {
+public class MyBatisJsonTypeHandler extends AbstractJsonTypeHandler<Object> {
 
     private final static ObjectMapper OBJECT_MAPPER;
 
@@ -28,7 +28,7 @@ public class MyBatisJacksonTypeHandler extends AbstractJsonTypeHandler<Object> {
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, Boolean.FALSE);
     }
 
-    public MyBatisJacksonTypeHandler(Class<?> type) {
+    public MyBatisJsonTypeHandler(Class<?> type) {
         if (log.isTraceEnabled()) {
             log.trace("MyBatisJacksonTypeHandler({})", type);
         }

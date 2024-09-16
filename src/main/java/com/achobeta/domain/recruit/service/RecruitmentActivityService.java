@@ -57,7 +57,6 @@ public interface RecruitmentActivityService extends IService<RecruitmentActivity
      * @param actId
      * @param paperId
      */
-    @Transactional
     void setPaperForActivity(Long actId, Long paperId);
 
     // 检测 ------------------------------------------

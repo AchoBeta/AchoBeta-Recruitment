@@ -24,8 +24,6 @@ public interface ActivityParticipationService extends IService<ActivityParticipa
     // 若不存在，会创建个默认的
     ParticipationVO getActivityParticipation(Long stuId, Long actId);
 
-    Long getActIdByParticipationId(Long participationId);
-
     List<Long> getStuIdsByActId(Long actId);
 
     /**
@@ -42,13 +40,13 @@ public interface ActivityParticipationService extends IService<ActivityParticipa
     ParticipationVO createActivityParticipation(Long stuId, Long actId);
 
     @Transactional
-    void participateInActivity(Long participationId,
+    void participateInActivity(ActivityParticipation activityParticipation,
                                List<QuestionAnswerDTO> questionAnswerVOS, List<Long> periodIds);
 
     // 检测 ------------------------------------------
 
-    void checkActivityParticipationUser(Long stuId, Long participationId);
-
     void checkParticipationExists(Long participationId);
+
+    ActivityParticipation checkAndGetActivityParticipation(Long participationId);
 
 }

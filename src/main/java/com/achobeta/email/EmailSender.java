@@ -58,11 +58,11 @@ public class EmailSender {
     }
 
     public void send(EmailMessage emailMessage, boolean isHtml) {
-        send(emailMessage, isHtml, Collections.emptyList());
+        send(emailMessage, isHtml, new ArrayList<>());
     }
 
     public void send(EmailMessage emailMessage) {
-        send(emailMessage, Boolean.TRUE, Collections.emptyList());
+        send(emailMessage, Boolean.TRUE);
     }
 
     /**

@@ -9,7 +9,7 @@
             <result property="batchId" column="batch_id" jdbcType="BIGINT"/>
             <result property="paperId" column="paper_id" jdbcType="BIGINT"/>
             <result property="title" column="title" jdbcType="VARCHAR"/>
-            <result property="target" column="target" jdbcType="OTHER" typeHandler="com.achobeta.handler.MyBatisJacksonTypeHandler"/>
+            <result property="target" column="target" jdbcType="OTHER" typeHandler="com.achobeta.handler.MyBatisJsonTypeHandler"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>
             <result property="deadline" column="deadline" jdbcType="TIMESTAMP"/>
             <result property="isRun" column="is_run" jdbcType="BIT"/>

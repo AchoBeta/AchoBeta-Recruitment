@@ -45,8 +45,6 @@ import java.util.List;
 @Intercept(permit = {UserTypeEnum.ADMIN})
 public class RecruitmentActivityController {
 
-    private final QuestionPaperService questionPaperService;
-
     private final TimePeriodService timePeriodService;
 
     private final RecruitmentBatchService recruitmentBatchService;
@@ -82,14 +80,14 @@ public class RecruitmentActivityController {
     public SystemJsonResponse updateRecruitmentActivity(@RequestBody RecruitmentActivityUpdateDTO recruitmentActivityUpdateDTO) {
         // 检测
         ValidatorUtils.validate(recruitmentActivityUpdateDTO);
-        StudentGroup target = recruitmentActivityUpdateDTO.getTarget();
-        Long actId = recruitmentActivityUpdateDTO.getActId();
-        recruitmentActivityService.checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE);
         //更新
-        String title = recruitmentActivityUpdateDTO.getTitle();
-        String description = recruitmentActivityUpdateDTO.getDescription();
-        Date deadline = new Date(recruitmentActivityUpdateDTO.getDeadline());
-        recruitmentActivityService.updateRecruitmentActivity(actId, target, title, description, deadline);
+        recruitmentActivityService.updateRecruitmentActivity(
+                recruitmentActivityUpdateDTO.getActId(),
+                recruitmentActivityUpdateDTO.getTarget(),
+                recruitmentActivityUpdateDTO.getTitle(),
+                recruitmentActivityUpdateDTO.getDescription(),
+                new Date(recruitmentActivityUpdateDTO.getDeadline())
+        );
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
@@ -97,12 +95,11 @@ public class RecruitmentActivityController {
     public SystemJsonResponse setRecruitmentQuestionPaper(@RequestBody ActivityPaperDTO activityPaperDTO) {
         // 检查
         ValidatorUtils.validate(activityPaperDTO);
-        Long actId = activityPaperDTO.getActId();
-        recruitmentActivityService.checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE);
-        Long paperId = activityPaperDTO.getPaperId();
-        questionPaperService.checkPaperExists(paperId);
         // 设置
-        recruitmentActivityService.setPaperForActivity(actId, paperId);
+        recruitmentActivityService.setPaperForActivity(
+                activityPaperDTO.getActId(),
+                activityPaperDTO.getPaperId()
+        );
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
@@ -110,20 +107,17 @@ public class RecruitmentActivityController {
     public SystemJsonResponse addTimePeriod(@RequestBody TimePeriodDTO timePeriodDTO) {
         // 校验
         ValidatorUtils.validate(timePeriodDTO);
-        Long actId = timePeriodDTO.getActId();
-        recruitmentActivityService.checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE);
         // 添加
-        Long startTime = timePeriodDTO.getStartTime();
-        Long endTime = timePeriodDTO.getEndTime();
-        timePeriodService.setPeriodForActivity(actId, startTime, endTime);
+        timePeriodService.setPeriodForActivity(
+                timePeriodDTO.getActId(),
+                timePeriodDTO.getStartTime(),
+                timePeriodDTO.getEndTime()
+        );
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
     @GetMapping("/period/remove/{periodId}")
     public SystemJsonResponse removeTimePeriod(@PathVariable("periodId") @NotNull Long periodId) {
-        // 校验
-        Long actId = timePeriodService.getActIdByPeriodId(periodId);
-        recruitmentActivityService.checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE);
         // 删除
         timePeriodService.removeTimePeriod(periodId);
         return SystemJsonResponse.SYSTEM_SUCCESS();

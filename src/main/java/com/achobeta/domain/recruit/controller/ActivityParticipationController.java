@@ -2,12 +2,15 @@ package com.achobeta.domain.recruit.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.recruit.model.dto.ActivityParticipationDTO;
+import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
 import com.achobeta.domain.recruit.model.vo.ParticipationVO;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.users.context.BaseContext;
+import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -63,11 +66,14 @@ public class ActivityParticipationController {
         // 当前用户
         Long stuId = BaseContext.getCurrentUser().getUserId();
         Long participationId = activityParticipationDTO.getParticipationId();
-        activityParticipationService.checkActivityParticipationUser(stuId, participationId);
-        Long actId = activityParticipationService.getActIdByParticipationId(participationId);
-        recruitmentActivityService.checkCanUserParticipateInActivity(stuId, actId);
-        // 参与
-        activityParticipationService.participateInActivity(participationId,
+        ActivityParticipation activityParticipation = activityParticipationService.checkAndGetActivityParticipation(participationId);
+        // 检测身份是否匹配
+        Long userId = activityParticipation.getStuId();
+        if(!userId.equals(stuId)) {
+            throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
+        }
+        // 参与活动
+        activityParticipationService.participateInActivity(activityParticipation,
                 activityParticipationDTO.getQuestionAnswerDTOS(), activityParticipationDTO.getPeriodIds());
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }

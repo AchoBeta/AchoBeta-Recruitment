@@ -1,5 +1,6 @@
 package com.achobeta.handler;
 
+import com.achobeta.common.enums.ResumeEvent;
 import com.achobeta.common.enums.ResumeStatus;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.annotation.IEnum;
@@ -32,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 在 MappedTypes 中未声明的其他枚举类按照 mp 默认的来
  * @param <E> 枚举类
  */
-@MappedTypes({ResumeStatus.class})
+@MappedTypes({ResumeStatus.class, ResumeEvent.class})
 public class MybatisEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
     private static final Map<String, String> TABLE_METHOD_OF_ENUM_TYPES = new ConcurrentHashMap<>();
     private static final ReflectorFactory REFLECTOR_FACTORY = new DefaultReflectorFactory();
