@@ -75,10 +75,6 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         //附件列表
         List<StuAttachmentDTO> stuAttachmentDTOList = stuResumeDTO.getStuAttachmentDTOList();
 
-        //简历状态更新为待筛选
-        if(Objects.isNull(stuResume.getStatus()) || ResumeStatus.DRAFT.equals(stuResume.getStatus())) {
-            stuResume.setStatus(ResumeStatus.PENDING_SELECTION);
-        }
         //是否存在已有简历信息
         Optional.ofNullable(stuResume.getId()).
                 ifPresentOrElse(id->updateResumeInfo(stuResume, resumeDTO),()->saveResumeInfo(stuResume, resumeDTO, userId));
@@ -142,7 +138,18 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     }
 
 
-    private void updateResumeInfo(StuResume stuResume, StuSimpleResumeDTO resumeDTO) {
+    @Transactional
+    public void updateResumeInfo(StuResume stuResume, StuSimpleResumeDTO resumeDTO) {
+        if(ResumeStatus.DRAFT.equals(stuResume.getStatus())) {
+            //简历状态若为草稿则更新为待筛选
+            stuResume.setStatus(ResumeStatus.PENDING_SELECTION);
+            // 添加一个简历过程节点
+            resumeStatusProcessService.createResumeStatusProcess(
+                    stuResume.getId(),
+                    ResumeStatus.PENDING_SELECTION,
+                    ResumeEvent.NEXT
+            );
+        }
 
         stuResumeConverter.updatePoWithStuSimpleResumeDTO(resumeDTO,stuResume);
         //简历提交次数加1
@@ -153,16 +160,18 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
 
     @Transactional
     public void saveResumeInfo(StuResume stuResume, StuSimpleResumeDTO resumeDTO, Long userId) {
+        // 设置初始简历状态
+        stuResume.setStatus(ResumeStatus.PENDING_SELECTION);
         //构建简历实体信息
         stuResumeConverter.updatePoWithStuSimpleResumeDTO(resumeDTO,stuResume);
         stuResume.setUserId(userId);
         //保存简历信息
         save(stuResume);
 
-        // 初始化简历状态过程
+        // 创建初始的简历状态过程节点
         resumeStatusProcessService.createResumeStatusProcess(
                 stuResume.getId(),
-                stuResume.getStatus(),
+                ResumeStatus.PENDING_SELECTION,
                 ResumeEvent.NEXT
         );
     }
@@ -199,7 +208,3 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         return stuResume;
     }
 }
-
-
-
-
