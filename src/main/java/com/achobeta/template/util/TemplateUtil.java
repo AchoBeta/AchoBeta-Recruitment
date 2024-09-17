@@ -26,7 +26,7 @@ public class TemplateUtil {
     }
 
     public static String getUniqueSymbol() {
-        return UUID.randomUUID().toString();
+        return String.format("[(${%s})]", UUID.randomUUID());
     }
 
     public static String replace(String text, List<ReplaceResource> resourceList, Function<String, String> textConverter) {
