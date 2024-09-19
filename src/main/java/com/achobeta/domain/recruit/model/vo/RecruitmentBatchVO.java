@@ -1,6 +1,5 @@
 package com.achobeta.domain.recruit.model.vo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -21,7 +20,6 @@ public class RecruitmentBatchVO {
 
     private String title;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date deadline;
 
     private Boolean isRun;

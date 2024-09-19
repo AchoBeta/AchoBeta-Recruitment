@@ -30,6 +30,7 @@ public class InterviewStateTransitionHelperConfig {
         return (from, to, event, context) -> {
             context.log(from, to, event);
             context.getInterview().setStatus(to);
+            context.setHit(Boolean.TRUE);
 //            // 面试通知
 //            if(!InterviewEvent.INTERVIEW_STARTING_NOTICE.equals(event)) {
 //                StateMachineUtil.fireEvent(InterviewStateMachineConstants.INTERVIEW_STATE_MACHINE_ID,

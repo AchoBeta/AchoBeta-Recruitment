@@ -1,6 +1,8 @@
 package com.achobeta.common.enums;
 
 import com.achobeta.exception.GlobalServiceException;
+import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 /**
@@ -34,6 +36,8 @@ public enum ResumeEvent {
         return description;
     }
 
+    @EnumValue
+    @JsonValue
     private final Integer event;
 
     private final String description;

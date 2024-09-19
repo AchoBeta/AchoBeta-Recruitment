@@ -5,7 +5,6 @@ import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
 import com.achobeta.domain.recruit.model.vo.ParticipationPeriodVO;
 import com.achobeta.domain.recruit.model.vo.ParticipationVO;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

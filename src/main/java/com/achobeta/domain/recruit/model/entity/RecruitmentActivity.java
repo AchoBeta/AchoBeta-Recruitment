@@ -1,15 +1,14 @@
 package com.achobeta.domain.recruit.model.entity;
 
 import com.achobeta.common.base.BaseIncrIDEntity;
-import com.baomidou.mybatisplus.annotation.IdType;
+import com.achobeta.domain.recruit.model.condition.StudentGroup;
+import com.achobeta.handler.MyBatisJacksonTypeHandler;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
-
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import lombok.Data;
 
 /**
  * @TableName recruitment_activity
@@ -24,7 +23,7 @@ public class RecruitmentActivity extends BaseIncrIDEntity implements Serializabl
 
     private String title;
 
-    @TableField(typeHandler = JacksonTypeHandler.class) // 这里和 xml 两边都得设置，一个针对 java，一个针对 mysql
+    @TableField(typeHandler = MyBatisJacksonTypeHandler.class) // 这里和 xml 两边都得设置，一个针对 java，一个针对 mysql
     private StudentGroup target;
 
     private String description;

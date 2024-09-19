@@ -20,15 +20,19 @@ public class InterviewSummaryDTO {
     @NotNull(message = "面试 id 不能为空")
     private Long interviewId;
 
+    @NotNull(message = "数值不能为空")
     @IntRange(min = MIN_ABILITY_VALUE, max = MAX_ABILITY_VALUE, message = "基础" + ABILITY_VALUE_MESSAGE)
     private Integer basis;
 
+    @NotNull(message = "数值不能为空")
     @IntRange(min = MIN_ABILITY_VALUE, max = MAX_ABILITY_VALUE, message = "代码" + ABILITY_VALUE_MESSAGE)
     private Integer coding;
 
+    @NotNull(message = "数值不能为空")
     @IntRange(min = MIN_ABILITY_VALUE, max = MAX_ABILITY_VALUE, message = "思维" + ABILITY_VALUE_MESSAGE)
     private Integer thinking;
 
+    @NotNull(message = "数值不能为空")
     @IntRange(min = MIN_ABILITY_VALUE, max = MAX_ABILITY_VALUE, message = "表达" + ABILITY_VALUE_MESSAGE)
     private Integer express;
 

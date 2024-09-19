@@ -1,20 +1,22 @@
 package com.achobeta.domain.shortlink.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
 import com.achobeta.domain.shortlink.util.HttpUrlValidator;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.common.annotation.Intercept;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 
 @RestController
+@Validated
 @RequiredArgsConstructor
 @Slf4j
 @Intercept(permit = {UserTypeEnum.ADMIN})

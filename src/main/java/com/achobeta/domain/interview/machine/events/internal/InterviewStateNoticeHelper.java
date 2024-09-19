@@ -3,8 +3,6 @@ package com.achobeta.domain.interview.machine.events.internal;
 import com.achobeta.common.enums.EmailTemplateEnum;
 import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
-import com.achobeta.domain.email.model.po.EmailMessage;
-import com.achobeta.domain.email.service.EmailSender;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
@@ -14,6 +12,9 @@ import com.achobeta.domain.schedule.model.vo.ParticipationDetailVO;
 import com.achobeta.domain.schedule.model.vo.ScheduleVO;
 import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
+import com.achobeta.email.EmailSender;
+import com.achobeta.email.model.po.EmailMessage;
+import com.achobeta.template.engine.HtmlEngine;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,8 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
     private String achobetaEmail;
 
     private final EmailSender emailSender;
+
+    private final HtmlEngine htmlEngine;
 
     private final Condition<InterviewContext> defaultInterviewCondition;
 
@@ -90,8 +93,12 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
                     .endTime(scheduleVO.getEndTime())
                     .status(to) // 以状态机轮转的最终状态为准
                     .build();
-            // 发送
-            emailSender.sendModelMail(emailMessage, emailTemplate.getTemplate(), interviewNoticeTemplate);
+            String html = htmlEngine.builder()
+                    .append(emailTemplate.getTemplate(), interviewNoticeTemplate)
+                    .build();
+            emailMessage.setContent(html);
+            // 发送模板消息
+            emailSender.send(emailMessage);
         };
     }
 }

@@ -47,7 +47,7 @@
              left join recruitment_batch b on a.batch_id = b.id and a.is_deleted = 0 and b.is_deleted = 0
              left join stu_resume r on r.batch_id = b.id and r.user_id = stu.id and r.is_deleted = 0 and b.is_deleted = 0 and stu.is_deleted = 0
         where m.id = #{managerId,jdbcType=BIGINT} and a.id = #{actId,jdbcType=BIGINT} and s.id is not null
-        order by s.start_time asc, s.end_time asc, s.create_time asc
+        order by s.start_time asc, s.end_time asc
     </select>
 
     <select id="getSituationsByActId" parameterType="java.lang.Long" resultMap="ParticipationScheduleMap">
@@ -91,7 +91,6 @@
              left join interviewer i on s.id = i.schedule_id and s.is_deleted = 0 and i.is_deleted = 0
              left join user m on m.id = i.manager_id and m.is_deleted = 0 and i.is_deleted = 0
         where s.id = #{scheduleId,jdbcType=BIGINT}
-        order by i.create_time asc
     </select>
 
 </mapper>

@@ -1,31 +1,30 @@
 package com.achobeta.domain.schedule.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollectionUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.interview.service.InterviewService;
-import com.achobeta.domain.recruit.model.convert.TimePeriodConverter;
-import com.achobeta.domain.recruit.model.vo.TimePeriodCountVO;
-import com.achobeta.domain.schedule.model.converter.SituationConverter;
-import com.achobeta.domain.schedule.model.entity.Interviewer;
-import com.achobeta.domain.schedule.model.vo.*;
-import com.achobeta.domain.schedule.service.InterviewerService;
+import com.achobeta.domain.recruit.model.converter.TimePeriodConverter;
 import com.achobeta.domain.recruit.model.dao.mapper.ActivityParticipationMapper;
 import com.achobeta.domain.recruit.model.vo.QuestionAnswerVO;
+import com.achobeta.domain.recruit.model.vo.TimePeriodCountVO;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.TimePeriodService;
+import com.achobeta.domain.schedule.model.converter.SituationConverter;
+import com.achobeta.domain.schedule.model.dao.mapper.InterviewScheduleMapper;
+import com.achobeta.domain.schedule.model.entity.InterviewSchedule;
+import com.achobeta.domain.schedule.model.entity.Interviewer;
+import com.achobeta.domain.schedule.model.vo.*;
+import com.achobeta.domain.schedule.service.InterviewScheduleService;
+import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.RedisLock;
 import com.achobeta.redis.strategy.SimpleLockStrategy;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.achobeta.domain.schedule.model.entity.InterviewSchedule;
-import com.achobeta.domain.schedule.service.InterviewScheduleService;
-import com.achobeta.domain.schedule.model.dao.mapper.InterviewScheduleMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -110,9 +109,7 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
                         (oldData, newData) -> newData
                 ));
         // 查询时间段选择情况
-        List<Long> participationIds = userParticipationVOMap.keySet()
-                .stream()
-                .toList();
+        List<Long> participationIds = new ArrayList<>(userParticipationVOMap.keySet());
         activityParticipationService.getParticipationPeriods(participationIds).stream()
                 .filter(participationPeriodVO -> userParticipationVOMap.containsKey(participationPeriodVO.getId()))
                 .forEach(participationPeriodVO -> {
@@ -243,7 +240,7 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
     @Override
     public void checkScheduleReferenced(Long scheduleId) {
         List<InterviewVO> interviewVOList = interviewService.getInterviewListByScheduleId(scheduleId);
-        if(!CollectionUtil.isEmpty(interviewVOList)) {
+        if(!CollectionUtils.isEmpty(interviewVOList)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.INTERVIEW_SCHEDULE_IS_REFERENCED);
         }
     }

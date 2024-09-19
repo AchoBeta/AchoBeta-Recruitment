@@ -1,11 +1,12 @@
 package com.achobeta.domain.email.service.impl;
 
-import com.achobeta.domain.email.service.EmailSender;
-import com.achobeta.domain.email.model.po.EmailMessage;
 import com.achobeta.domain.email.model.vo.VerificationCodeTemplate;
 import com.achobeta.domain.email.service.EmailService;
+import com.achobeta.email.EmailSender;
+import com.achobeta.email.model.po.EmailMessage;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.RedisCache;
+import com.achobeta.template.engine.HtmlEngine;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +45,7 @@ public class EmailServiceImpl implements EmailService {
 
     private final RedisCache redisCache;
     private final EmailSender emailSender;
+    private final HtmlEngine htmlEngine;
 
     @Override
     public void sendIdentifyingCode(String email, String code) {
@@ -107,8 +109,12 @@ public class EmailServiceImpl implements EmailService {
                 .code(code)
                 .timeout(timeout)
                 .build();
+        String html = htmlEngine.builder()
+                .append(CAPTCHA.getTemplate(), verificationCodeTemplate)
+                .build();
+        emailMessage.setContent(html);
         // 发送模板消息
-        emailSender.sendModelMail(emailMessage, CAPTCHA.getTemplate(), verificationCodeTemplate);
+        emailSender.send(emailMessage);
     }
 
 }

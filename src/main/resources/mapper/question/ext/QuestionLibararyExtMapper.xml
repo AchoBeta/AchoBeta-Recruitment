@@ -24,7 +24,6 @@
              left join library_question_link lq on q.id = lq.question_id and q.is_deleted = 0 and lq.is_deleted = 0
              left join question_library l on l.id = lq.lib_id and l.is_deleted = 0 and lq.is_deleted = 0
         where q.id = #{questionId,jdbcType=BIGINT}
-        order by lq.create_time asc
     </select>
 
 </mapper>

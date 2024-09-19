@@ -2,7 +2,6 @@ package com.achobeta.jwt.util;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.jwt.propertities.JwtProperties;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -75,7 +74,7 @@ public class JwtUtil {
         return claims;
     }
 
-    public static Date getTokenExperition(@NotNull SecretKey secretKey, @NotNull String token) {
+    public static Date getTokenExpiration(@NotNull SecretKey secretKey, @NotNull String token) {
         // TODO 可能会成为性能瓶颈
         Claims claims = parseJWT(secretKey, token);
         //返回该token的过期时间
@@ -93,7 +92,7 @@ public class JwtUtil {
     //
     public static boolean judgeApproachExpiration(@NotNull String token, @NotNull SecretKey secretKey) {
         long cur = System.currentTimeMillis();
-        long exp = getTokenExperition(secretKey, token).getTime();
+        long exp = getTokenExpiration(secretKey, token).getTime();
         return (exp - cur) < REFRESH_TIME;
     }
 }

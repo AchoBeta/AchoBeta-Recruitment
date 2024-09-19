@@ -3,10 +3,8 @@ package com.achobeta.domain.resumestate.machine.events.external;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.ResumeEvent;
 import com.achobeta.common.enums.ResumeStatus;
-import com.achobeta.domain.resumestate.machine.constants.ResumeStateMachineConstants;
 import com.achobeta.domain.resumestate.machine.context.ResumeContext;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.machine.StateMachineUtil;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
 import lombok.RequiredArgsConstructor;
@@ -69,14 +67,6 @@ public class ResumeApproveHelper implements ResumeStateExternalTransitionHelper 
      */
     @Override
     public Action<ResumeStatus, ResumeEvent, ResumeContext> getPerformAction() {
-        return (from, to, event, context) -> {
-            defaultResumeAction.execute(from, to, event, context);
-            StateMachineUtil.fireEvent(
-                    ResumeStateMachineConstants.RESUME_STATE_MACHINE_ID,
-                    to,
-                    ResumeEvent.CONFIRM,
-                    context
-            );
-        };
+        return defaultResumeAction;
     }
 }

@@ -2,9 +2,9 @@ package com.achobeta.domain.schedule.model.entity;
 
 import com.achobeta.common.base.BaseIncrIDEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * @TableName interviewer

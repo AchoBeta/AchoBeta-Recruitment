@@ -3,15 +3,16 @@ package com.achobeta.domain.resumestate.machine.events.internal;
 import com.achobeta.common.enums.EmailTemplateEnum;
 import com.achobeta.common.enums.ResumeEvent;
 import com.achobeta.common.enums.ResumeStatus;
-import com.achobeta.domain.email.model.po.EmailMessage;
-import com.achobeta.domain.email.service.EmailSender;
 import com.achobeta.domain.resumestate.machine.context.ResumeContext;
-import com.achobeta.domain.resumestate.model.dto.MemberDTO;
 import com.achobeta.domain.resumestate.model.dto.ResumeExecuteDTO;
-import com.achobeta.domain.resumestate.model.entity.Member;
 import com.achobeta.domain.resumestate.model.vo.ConfirmationNoticeTemplate;
-import com.achobeta.domain.resumestate.service.MemberService;
 import com.achobeta.domain.student.model.entity.StuResume;
+import com.achobeta.domain.users.model.dto.MemberDTO;
+import com.achobeta.domain.users.model.entity.Member;
+import com.achobeta.domain.users.service.MemberService;
+import com.achobeta.email.EmailSender;
+import com.achobeta.email.model.po.EmailMessage;
+import com.achobeta.template.engine.HtmlEngine;
 import com.achobeta.util.ValidatorUtils;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
@@ -41,6 +42,8 @@ ResumeConfirmHelper implements ResumeStateInternalTransitionHelper{
     private String achobetaEmail;
 
     private final EmailSender emailSender;
+
+    private final HtmlEngine htmlEngine;
 
     private final MemberService memberService;
 
@@ -101,8 +104,12 @@ ResumeConfirmHelper implements ResumeStateInternalTransitionHelper{
                     .username(memberDTO.getUsername())
                     .password(memberDTO.getPassword())
                     .build();
-            // 发送
-            emailSender.sendModelMail(emailMessage, emailTemplate.getTemplate(), confirmationNoticeTemplate);
+            String html = htmlEngine.builder()
+                    .append(emailTemplate.getTemplate(), confirmationNoticeTemplate)
+                    .build();
+            emailMessage.setContent(html);
+            // 发送模板消息
+            emailSender.send(emailMessage);
         };
     }
 }

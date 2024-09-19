@@ -26,6 +26,8 @@ public class ResumeContext {
 
     private StuResume resume;
 
+    private Boolean hit;
+
     ResumeExecuteDTO executeDTO;
 
     public void log(ResumeStatus from, ResumeStatus to, ResumeEvent event) {

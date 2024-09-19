@@ -1,6 +1,7 @@
 package com.achobeta.domain.interview.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
@@ -19,11 +20,11 @@ import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.common.annotation.Intercept;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,6 +38,7 @@ import java.util.Objects;
  * Time: 0:49
  */
 @Slf4j
+@Validated
 @RestController
 @RequiredArgsConstructor
 @Intercept(permit = {UserTypeEnum.ADMIN})

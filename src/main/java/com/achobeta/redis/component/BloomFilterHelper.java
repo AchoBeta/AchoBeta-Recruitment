@@ -1,9 +1,9 @@
 
 package com.achobeta.redis.component;
+
 import com.google.common.hash.Funnel;
 import com.google.common.hash.Hashing;
 import com.google.common.hash.PrimitiveSink;
-import org.assertj.core.util.Preconditions;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.stereotype.Component;
 

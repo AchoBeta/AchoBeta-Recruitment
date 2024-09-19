@@ -1,6 +1,5 @@
 package com.achobeta.domain.recruit.handler.ext;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.achobeta.domain.paper.handler.RemovePaperHandler;
 import com.achobeta.domain.recruit.model.entity.ParticipationQuestionLink;
 import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
@@ -9,6 +8,7 @@ import com.achobeta.domain.recruit.service.ParticipationQuestionLinkService;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class RemovePaperPQLinkHandler extends RemovePaperHandler {
     @Override
     public void handle(Long paperId) {
         List<Long> participationIds = activityParticipationService.getParticipationIdsByPaperId(paperId);
-        if(CollectionUtil.isEmpty(participationIds)) {
+        if(CollectionUtils.isEmpty(participationIds)) {
             return;
         }
         // 删除对应的行
@@ -41,8 +41,8 @@ public class RemovePaperPQLinkHandler extends RemovePaperHandler {
                 .remove();
         // 涉及的招新活动的 paperId 置为 null
         List<Long> actIds = recruitmentActivityService.getActIdsByPaperId(paperId);
-        if(CollectionUtil.isEmpty(actIds)) {
-            return ;
+        if(CollectionUtils.isEmpty(actIds)) {
+            return;
         }
         recruitmentActivityService.lambdaUpdate()
                 .in(RecruitmentActivity::getId, actIds)

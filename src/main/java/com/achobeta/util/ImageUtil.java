@@ -1,15 +1,11 @@
 package com.achobeta.util;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Optional;
 
 /**
@@ -21,17 +17,8 @@ import java.util.Optional;
  */
 public class ImageUtil {
 
-    public static InputStream getInputStream(String url) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-        return connection.getResponseCode() == HttpStatus.OK.value() ? connection.getInputStream() : null;
-    }
-
-    public static InputStream getInputStream(byte[] bytes) {
-        return new ByteArrayInputStream(bytes);
-    }
-
     public static Image getImage(String url) {
-        try (InputStream inputStream = getInputStream(url)) {
+        try (InputStream inputStream = MediaUtil.getInputStream(url)) {
             return ImageIO.read(inputStream);
         } catch (Exception e) {
             return null;
@@ -39,7 +26,7 @@ public class ImageUtil {
     }
 
     public static Image getImage(byte[] bytes) {
-        try (InputStream inputStream = getInputStream(bytes)) {
+        try (InputStream inputStream = MediaUtil.getInputStream(bytes)) {
             return ImageIO.read(inputStream);
         } catch (Exception e) {
             return null;

@@ -1,16 +1,16 @@
 package com.achobeta.domain.recruit.service.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.paper.service.PaperQuestionLinkService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.domain.question.model.vo.QuestionVO;
+import com.achobeta.domain.recruit.model.condition.StudentGroup;
 import com.achobeta.domain.recruit.model.dao.mapper.RecruitmentActivityMapper;
 import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
 import com.achobeta.domain.recruit.model.entity.ParticipationQuestionLink;
 import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
-import com.achobeta.domain.recruit.model.entity.StudentGroup;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
+import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.service.StuResumeService;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -18,6 +18,7 @@ import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -83,11 +84,11 @@ public class RecruitmentActivityServiceImpl extends ServiceImpl<RecruitmentActiv
     @Override
     public List<RecruitmentActivity> getRecruitmentActivities(Long batchId, Long stuId) {
         try {
-            Integer grade = stuResumeService.getGradeByBatchIdAndStuId(batchId, stuId);
+            StuResume stuResume = stuResumeService.checkAndGetStuResumeByBatchIdAndStuId(batchId, stuId);
             // 过滤出用户可见的
             return getRecruitmentActivities(batchId, Boolean.TRUE).stream().filter(recruitmentActivity -> {
                 StudentGroup target = recruitmentActivity.getTarget();
-                return target.getGrade().contains(grade) || target.getUid().contains(stuId);
+                return target.predicate().test(stuResume);
             }).toList();
         } catch (GlobalServiceException e) {
             log.warn("stuId: {} batchId: {}, exception: {}", stuId, batchId, e.getMessage());
@@ -137,7 +138,7 @@ public class RecruitmentActivityServiceImpl extends ServiceImpl<RecruitmentActiv
         if(!paperId.equals(oldPaperId)) {
             // 获取此活动已有的，“活动参与”列表，删除原本的所有回答（哪怕两份卷子有相同的问题，也照样删除）
             List<Long> participationIds = getParticipationIdsByActId(actId);
-            if (!CollectionUtil.isEmpty(participationIds)) {
+            if (!CollectionUtils.isEmpty(participationIds)) {
                 Db.lambdaUpdate(ParticipationQuestionLink.class)
                         .in(ParticipationQuestionLink::getParticipationId, participationIds)
                         .remove();
@@ -182,8 +183,8 @@ public class RecruitmentActivityServiceImpl extends ServiceImpl<RecruitmentActiv
         RecruitmentActivity recruitmentActivity = checkAndGetRecruitmentActivityIsRun(actId, Boolean.TRUE);
         Long batchId = recruitmentActivity.getBatchId();
         StudentGroup target = recruitmentActivity.getTarget();
-        Integer grade = stuResumeService.getGradeByBatchIdAndStuId(batchId, stuId);
-        if(!target.getGrade().contains(grade) && !target.getUid().contains(stuId)) {
+        StuResume stuResume = stuResumeService.checkAndGetStuResumeByBatchIdAndStuId(batchId, stuId);
+        if(!target.predicate().test(stuResume)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_CANNOT_PARTICIPATE_IN_ACTIVITY);
         }
     }
