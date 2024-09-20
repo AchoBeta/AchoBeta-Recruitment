@@ -90,7 +90,7 @@ public class ParticipationQuestionLinkServiceImpl extends ServiceImpl<Participat
                     hash.put(questionAnswerDTO.getQuestionId(), questionAnswerDTO.getAnswer());
                 });
         hash.forEach((questionId, answer) -> {
-            addParticipationQuestionLink(participationId, questionId, answer);
+            addOrUpdateParticipationQuestionLink(participationId, questionId, answer);
         });
     }
 }
