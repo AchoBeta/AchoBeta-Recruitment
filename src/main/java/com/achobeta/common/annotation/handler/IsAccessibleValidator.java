@@ -14,7 +14,7 @@ public class IsAccessibleValidator implements ConstraintValidator<IsAccessible, 
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        // 可以为 null 但是
+        // 可以为 null 但是必须可以访问
         return Optional.ofNullable(s)
                 .map(url -> {
                     try {
