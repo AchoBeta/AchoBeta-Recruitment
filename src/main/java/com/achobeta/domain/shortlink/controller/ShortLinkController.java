@@ -2,12 +2,12 @@ package com.achobeta.domain.shortlink.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
-import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.common.annotation.IsAccessible;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
-import com.achobeta.domain.shortlink.util.HttpUrlValidator;
-import com.achobeta.exception.GlobalServiceException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -47,11 +47,8 @@ public class ShortLinkController {
      * @return 短链接
      */
     @PostMapping("/trans")
-    public SystemJsonResponse transferAndSaveShortLink(HttpServletRequest request, @RequestParam("url") String url) {
-        //验证url
-        if (!HttpUrlValidator.isHttpUrl(url) || !HttpUrlValidator.isUrlAccessible(url)) {
-            throw new GlobalServiceException(String.format("url:'%s' 无效", url), GlobalServiceStatusCode.PARAM_NOT_VALID);
-        }
+    public SystemJsonResponse transferAndSaveShortLink(HttpServletRequest request,
+                                                       @RequestParam("url") @NotNull @IsAccessible(message = "链接不可访问") String url) {
         // 拼接出基础的url
         String baseUrl = String.format("%s://%s/api/v1/shortlink/", request.getScheme(), request.getHeader("host"));
         // 转化

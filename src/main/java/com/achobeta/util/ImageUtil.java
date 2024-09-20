@@ -1,11 +1,14 @@
 package com.achobeta.util;
 
+import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.util.StringUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -15,28 +18,35 @@ import java.util.Optional;
  * Date: 2024-08-22
  * Time: 23:57
  */
+@Slf4j
 public class ImageUtil {
 
-    public static Image getImage(String url) {
-        try (InputStream inputStream = MediaUtil.getInputStream(url)) {
-            return ImageIO.read(inputStream);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public static Image getImage(byte[] bytes) {
-        try (InputStream inputStream = MediaUtil.getInputStream(bytes)) {
-            return ImageIO.read(inputStream);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
+    @Nullable
     public static Image getImage(InputStream inputStream) {
         try {
-            return ImageIO.read(inputStream);
+            return Objects.nonNull(inputStream) ? ImageIO.read(inputStream) : null;
         } catch (IOException e) {
+            log.warn(e.getMessage());
+            return null;
+        }
+    }
+
+    @Nullable
+    public static Image getImage(String url) {
+        try (InputStream inputStream = MediaUtil.getInputStream(url)) {
+            return getImage(inputStream);
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+            return null;
+        }
+    }
+
+    @Nullable
+    public static Image getImage(byte[] bytes) {
+        try (InputStream inputStream = MediaUtil.getInputStream(bytes)) {
+            return getImage(inputStream);
+        } catch (Exception e) {
+            log.warn(e.getMessage());
             return null;
         }
     }

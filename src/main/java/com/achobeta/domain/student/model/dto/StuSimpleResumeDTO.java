@@ -57,7 +57,7 @@ public class StuSimpleResumeDTO implements Serializable {
     @NotBlank(message = "个人经历不能为空")
     private String experience;
 
-    @NotNull(message = "证件照不能为空")
+    @NotBlank(message = "证件照不能为空")
     @IsImage(message = "证件照非法")
     private String image;
 
