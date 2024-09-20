@@ -6,7 +6,6 @@ import com.achobeta.common.annotation.IsAccessible;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
