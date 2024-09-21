@@ -26,8 +26,8 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import static com.achobeta.redis.constants.RedisConstants.LOGIN_FAIL_CNT_KEY;
 import static com.achobeta.common.enums.GlobalServiceStatusCode.USER_ACCOUNT_ALREADY_EXIST;
+import static com.achobeta.redis.constants.RedisConstants.LOGIN_FAIL_CNT_KEY;
 
 /**
  * @author BanTanger 半糖

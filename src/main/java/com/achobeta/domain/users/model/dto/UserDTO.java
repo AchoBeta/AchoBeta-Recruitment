@@ -1,7 +1,6 @@
 package com.achobeta.domain.users.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 /**

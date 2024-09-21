@@ -2,9 +2,8 @@ package com.achobeta.domain.users.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
-import com.achobeta.domain.resource.constants.ResourceConstants;
-import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.resource.constants.ResourceConstants;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.model.converter.UserConverter;
@@ -12,7 +11,6 @@ import com.achobeta.domain.users.model.dto.UserDTO;
 import com.achobeta.domain.users.model.vo.UserTypeVO;
 import com.achobeta.domain.users.model.vo.UserVO;
 import com.achobeta.domain.users.service.UserService;
-import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.util.ValidatorUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
