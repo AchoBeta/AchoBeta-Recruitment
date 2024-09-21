@@ -17,9 +17,10 @@ import java.util.List;
 @Data
 public class StuResumeDTO implements Serializable {
     @Valid
-    @NotNull()
+    @NotNull
     private StuSimpleResumeDTO stuSimpleResumeDTO;
 
+    // 附件列表可以为 null 但是不为 null 的时候进行循环检测
     @Valid
     private List<StuAttachmentDTO> stuAttachmentDTOList;
 

@@ -44,10 +44,7 @@ public class StuResumeController {
     @Intercept(permit = {UserTypeEnum.USER})
     public SystemJsonResponse submitResume(@RequestBody StuResumeDTO stuResumeDTO) {
         //校验
-        ValidatorUtils.validate(stuResumeDTO.getStuSimpleResumeDTO());
-        Optional.ofNullable(stuResumeDTO.getStuAttachmentDTOList())
-                .ifPresent(data->ValidatorUtils.validate(data));
-        /*ValidatorUtils.validate(stuResumeDTO.getStuAttachmentDTOList());*/
+        ValidatorUtils.validate(stuResumeDTO);
         //当前用户id
         Long userId = BaseContext.getCurrentUser().getUserId();
         //检查简历提交否超过最大次数

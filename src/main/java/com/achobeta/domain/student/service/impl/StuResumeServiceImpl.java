@@ -1,5 +1,6 @@
 package com.achobeta.domain.student.service.impl;
 
+import com.achobeta.domain.resource.constants.ResourceConstants;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.ResumeEvent;
 import com.achobeta.common.enums.ResumeStatus;
@@ -74,6 +75,11 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         StuSimpleResumeDTO resumeDTO = stuResumeDTO.getStuSimpleResumeDTO();
         //附件列表
         List<StuAttachmentDTO> stuAttachmentDTOList = stuResumeDTO.getStuAttachmentDTOList();
+
+        // 设置默认头像
+        if(Objects.isNull(resumeDTO.getImage())) {
+            resumeDTO.setImage(ResourceConstants.DEFAULT_IMAGE);
+        }
 
         //是否存在已有简历信息
         Optional.ofNullable(stuResume.getId()).
