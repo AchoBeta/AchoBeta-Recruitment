@@ -18,7 +18,7 @@
             left join library_question_link lq on l.id = lq.lib_id and l.is_deleted = 0 and lq.is_deleted = 0
             left join question q on q.id = lq.question_id and q.is_deleted = 0 and lq.is_deleted = 0
         <where>
-            q.id is not null and q.is_deleted = 0
+            q.id is not null and l.is_deleted = 0
             <if test="libId != null">
                 and l.id = #{libId,jdbcType=BIGINT}
             </if>
