@@ -7,7 +7,7 @@
     <select id="queryQuestions" parameterType="java.lang.Long"
             resultMap="com.achobeta.domain.question.model.dao.mapper.QuestionMapper.BaseResultMap">
         select
-            q.id, q.title, q.standard
+            distinct q.id, q.title, q.standard
         from question q
              left join library_question_link lq on q.id = lq.question_id and q.is_deleted = 0 and lq.is_deleted = 0
              left join question_library l on l.id = lq.lib_id and l.is_deleted = 0 and lq.is_deleted = 0
