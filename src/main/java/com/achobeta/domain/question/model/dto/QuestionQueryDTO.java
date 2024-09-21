@@ -1,6 +1,5 @@
 package com.achobeta.domain.question.model.dto;
 
-import com.achobeta.common.base.BasePageQuery;
 import lombok.Data;
 
 /**

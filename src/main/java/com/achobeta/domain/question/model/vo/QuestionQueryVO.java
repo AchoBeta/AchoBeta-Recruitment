@@ -1,11 +1,7 @@
 package com.achobeta.domain.question.model.vo;
 
 import com.achobeta.common.base.BasePageResult;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 /**
  * Created With Intellij IDEA
