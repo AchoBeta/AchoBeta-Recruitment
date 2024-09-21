@@ -19,8 +19,9 @@
     </resultMap>
 
     <select id="managerGetInterviewList" resultMap="InterviewMap">
-        select distinct
-            i.id, i.title, i.status,
+        select
+            -- 面试预约与面试官多对多，在本条 sql 容易出现重复行
+            distinct i.id, i.title, i.status,
             s.id s_id, s.participation_id s_participation_id, s.start_time s_start_time, s.end_time s_end_time
         from user m
             left join interviewer ir on ir.manager_id = m.id and ir.is_deleted = 0 and m.is_deleted = 0
@@ -45,7 +46,7 @@
     </select>
 
     <select id="userGetInterviewList" resultMap="InterviewMap">
-        select distinct
+        select
             i.id, i.title, i.status,
             s.id s_id, s.participation_id s_participation_id, s.start_time s_start_time, s.end_time s_end_time
         from user u

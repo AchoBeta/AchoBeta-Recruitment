@@ -12,10 +12,11 @@
 
     <select id="queryQuestions" parameterType="java.lang.Long" resultMap="com.achobeta.domain.question.model.dao.mapper.QuestionMapper.BaseResultMap">
         select
+            -- 问题与题库多对多，在本条 sql 容易出现重复行
             distinct q.id, q.title, q.standard
-        from question q
-             left join library_question_link lq on q.id = lq.question_id and q.is_deleted = 0 and lq.is_deleted = 0
-             left join question_library l on l.id = lq.lib_id and l.is_deleted = 0 and lq.is_deleted = 0
+        from question_library l
+            left join library_question_link lq on l.id = lq.lib_id and l.is_deleted = 0 and lq.is_deleted = 0
+            left join question q on q.id = lq.question_id and q.is_deleted = 0 and lq.is_deleted = 0
         <where>
             q.id is not null and q.is_deleted = 0
             <if test="libId != null">
