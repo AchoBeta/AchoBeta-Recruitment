@@ -2,10 +2,15 @@ package com.achobeta.domain.question.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
+import com.achobeta.common.base.BasePageQuery;
+import com.achobeta.common.base.BasePageResult;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.question.handler.chain.RemoveQuestionHandlerChain;
+import com.achobeta.domain.question.model.converter.QuestionConverter;
 import com.achobeta.domain.question.model.dto.QuestionDTO;
+import com.achobeta.domain.question.model.dto.QuestionQueryDTO;
 import com.achobeta.domain.question.model.vo.QuestionDetailVO;
+import com.achobeta.domain.question.model.vo.QuestionQueryVO;
 import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.achobeta.domain.question.service.QuestionLibraryService;
 import com.achobeta.domain.question.service.QuestionService;
@@ -17,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created With Intellij IDEA
@@ -71,20 +77,11 @@ public class QuestionController {
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
-    @GetMapping("/list/all")
-    public SystemJsonResponse getQuestions() {
+    @GetMapping("/query")
+    public SystemJsonResponse getQuestions(@RequestBody(required = false) QuestionQueryDTO questionQueryDTO) {
         // 查询
-        List<QuestionVO> questions = questionService.getQuestions();
-        return SystemJsonResponse.SYSTEM_SUCCESS(questions);
-    }
-
-    @GetMapping("/list/{libId}")
-    public SystemJsonResponse getQuestions(@PathVariable("libId") @NotNull Long libId) {
-        // 检查
-        questionLibraryService.checkQuestionLibraryExists(libId);
-        // 查询
-        List<QuestionVO> questions = questionService.getQuestionsByLibId(libId);
-        return SystemJsonResponse.SYSTEM_SUCCESS(questions);
+        QuestionQueryVO result = questionService.queryQuestions(questionQueryDTO);
+        return SystemJsonResponse.SYSTEM_SUCCESS(result);
     }
 
     @GetMapping("/detail/{questionId}")

@@ -46,7 +46,7 @@
              left join recruitment_activity a on p.act_id = a.id and p.is_deleted = 0 and a.is_deleted = 0
              left join recruitment_batch b on a.batch_id = b.id and a.is_deleted = 0 and b.is_deleted = 0
              left join stu_resume r on r.batch_id = b.id and r.user_id = stu.id and r.is_deleted = 0 and b.is_deleted = 0 and stu.is_deleted = 0
-        where m.id = #{managerId,jdbcType=BIGINT} and a.id = #{actId,jdbcType=BIGINT} and s.id is not null
+        where m.id = #{managerId,jdbcType=BIGINT} and a.id = #{actId,jdbcType=BIGINT} and s.id is not null and m.is_deleted = 0
         order by s.start_time asc, s.end_time asc
     </select>
 
@@ -60,7 +60,7 @@
              left join recruitment_batch b on a.batch_id = b.id and a.is_deleted = 0 and b.is_deleted = 0
              left join stu_resume r on r.batch_id = b.id and r.user_id = stu.id and r.is_deleted = 0 and b.is_deleted = 0 and stu.is_deleted = 0
              left join interview_schedule s on s.participation_id = p.id and s.is_deleted = 0 and p.is_deleted = 0
-        where a.id = #{actId,jdbcType=BIGINT} and r.id is not null
+        where a.id = #{actId,jdbcType=BIGINT} and r.id is not null and p.is_deleted = 0
     </select>
 
     <select id="getSituationsByParticipationId" parameterType="java.lang.Long" resultMap="ParticipationScheduleMap">
@@ -73,7 +73,7 @@
              left join recruitment_batch b on a.batch_id = b.id and a.is_deleted = 0 and b.is_deleted = 0
              left join stu_resume r on r.batch_id = b.id and r.user_id = stu.id and r.is_deleted = 0 and b.is_deleted = 0 and stu.is_deleted = 0
              left join interview_schedule s on s.participation_id = p.id and s.is_deleted = 0 and p.is_deleted = 0
-        where p.id = #{participationId,jdbcType=BIGINT} and r.id is not null
+        where p.id = #{participationId,jdbcType=BIGINT} and r.id is not null and p.is_deleted = 0
     </select>
 
     <select id="getInterviewerScheduleDetail" parameterType="java.lang.Long" resultMap="ScheduleDetailMap">
@@ -90,7 +90,7 @@
              left join stu_resume r on r.batch_id = b.id and r.user_id = stu.id and r.is_deleted = 0 and b.is_deleted = 0 and stu.is_deleted = 0
              left join interviewer i on s.id = i.schedule_id and s.is_deleted = 0 and i.is_deleted = 0
              left join user m on m.id = i.manager_id and m.is_deleted = 0 and i.is_deleted = 0
-        where s.id = #{scheduleId,jdbcType=BIGINT}
+        where s.id = #{scheduleId,jdbcType=BIGINT} and s.is_deleted = 0
     </select>
 
 </mapper>

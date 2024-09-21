@@ -32,7 +32,7 @@
              left join member m on stu.id = m.manager_id and stu.is_deleted = 0 and m.is_deleted = 0
              left join stu_resume r on r.id = m.resume_id and r.is_deleted = 0 and m.is_deleted = 0
         <where>
-            stu.user_type = 2
+            stu.user_type = 2 and stu.is_deleted = 0
             <if test="batchId != null">
                 and r.batch_id = #{batchId,jdbcType=BIGINT}
             </if>
