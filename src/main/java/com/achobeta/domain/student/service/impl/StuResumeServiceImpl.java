@@ -74,13 +74,13 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         List<StuAttachmentDTO> stuAttachmentDTOList = stuResumeDTO.getStuAttachmentDTOList();
 
         // 设置默认头像
-        if(Objects.isNull(resumeDTO.getImage())) {
+        if (Objects.isNull(resumeDTO.getImage())) {
             resumeDTO.setImage(ResourceConstants.DEFAULT_IMAGE);
         }
 
         //是否存在已有简历信息
         Optional.ofNullable(stuResume.getId()).
-                ifPresentOrElse(id->updateResumeInfo(stuResume, resumeDTO),()->saveResumeInfo(stuResume, resumeDTO));
+                ifPresentOrElse(id -> updateResumeInfo(stuResume, resumeDTO), () -> saveResumeInfo(stuResume, resumeDTO));
 
         //保存附件信息
         saveStuAttachment(stuAttachmentDTOList, stuResume.getId());
@@ -105,7 +105,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         //返回信息实体
         StuResumeVO stuResumeVO = new StuResumeVO();
         //构造返回的简历表信息
-        StuSimpleResumeVO simpleResumeVO=stuResumeConverter.stuResumeToSimpleVO(stuResume);
+        StuSimpleResumeVO simpleResumeVO = stuResumeConverter.stuResumeToSimpleVO(stuResume);
         //查询并构造附件集合
         List<StuAttachment> stuAttachmentList = stuAttachmentService.lambdaQuery().eq(StuAttachment::getResumeId, queryResumeDTO.getResumeId()).list();
         List<StuAttachmentVO> stuAttachmentVOList = stuResumeConverter.stuAttachmentsToVOList(stuAttachmentList);
@@ -124,16 +124,16 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         if (Objects.nonNull(resumeOfUserDTO)) {
             //根据batchId和userId查询
             stuResume = lambdaQuery()
-                    .eq( StuResume::getUserId, resumeOfUserDTO.getUserId())
-                    .eq( StuResume::getBatchId, resumeOfUserDTO.getBatchId())
+                    .eq(StuResume::getUserId, resumeOfUserDTO.getUserId())
+                    .eq(StuResume::getBatchId, resumeOfUserDTO.getBatchId())
                     .oneOpt().orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.USER_RESUME_NOT_EXISTS));
             queryResumeDTO.setResumeId(stuResume.getId()); // 确保简历附件列表能够被查到
         } else {
             //参数校验
             Optional.ofNullable(queryResumeDTO.getResumeId()).orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.PARAM_IS_BLANK));
             //根据resumeId查询
-            stuResume=lambdaQuery()
-                    .eq( StuResume::getId, queryResumeDTO.getResumeId())
+            stuResume = lambdaQuery()
+                    .eq(StuResume::getId, queryResumeDTO.getResumeId())
                     .oneOpt().orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.USER_RESUME_NOT_EXISTS));
 
         }
@@ -144,7 +144,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     @Transactional
     public void updateResumeInfo(StuResume stuResume, StuSimpleResumeDTO resumeDTO) {
         ResumeStatus resumeStatus = stuResume.getStatus();
-        if(Objects.isNull(resumeStatus) || ResumeStatus.DRAFT.equals(resumeStatus)) {
+        if (Objects.isNull(resumeStatus) || ResumeStatus.DRAFT.equals(resumeStatus)) {
             //简历状态若为草稿则更新为待筛选
             stuResume.setStatus(ResumeStatus.PENDING_SELECTION);
             // 添加一个简历过程节点
@@ -155,7 +155,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
             );
         }
 
-        stuResumeConverter.updatePoWithStuSimpleResumeDTO(resumeDTO,stuResume);
+        stuResumeConverter.updatePoWithStuSimpleResumeDTO(resumeDTO, stuResume);
         //简历提交次数加1
         stuResume.setSubmitCount(stuResume.getSubmitCount() + 1);
         //更新简历信息
@@ -167,7 +167,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         // 设置初始简历状态
         stuResume.setStatus(ResumeStatus.PENDING_SELECTION);
         //构建简历实体信息
-        stuResumeConverter.updatePoWithStuSimpleResumeDTO(resumeDTO,stuResume);
+        stuResumeConverter.updatePoWithStuSimpleResumeDTO(resumeDTO, stuResume);
         //保存简历信息
         save(stuResume);
 
