@@ -4,8 +4,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.achobeta.domain.paper.model.dao.mapper.QuestionPaperMapper">
 
-    <select id="getQuestionPapersByLibId" parameterType="java.lang.Long"
-            resultType="com.achobeta.domain.paper.model.vo.QuestionPaperVO">
+    <resultMap id="QuestionPaperMap" type="com.achobeta.domain.paper.model.vo.QuestionPaperVO">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getQuestionPapersByLibId" parameterType="java.lang.Long" resultMap="QuestionPaperMap">
         select
             distinct p.id, p.title, p.description
         from question_paper p

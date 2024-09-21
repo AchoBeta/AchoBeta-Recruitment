@@ -49,6 +49,7 @@ public class StuResumeController {
         Long userId = BaseContext.getCurrentUser().getUserId();
         //检查简历提交否超过最大次数
         StuResume stuResume = stuResumeService.checkResumeSubmitCount(stuResumeDTO.getStuSimpleResumeDTO(),userId);
+        stuResume.setUserId(userId);
         //提交简历
         stuResumeService.submitResume(stuResumeDTO,stuResume);
 

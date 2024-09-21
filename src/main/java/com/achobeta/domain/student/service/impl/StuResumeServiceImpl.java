@@ -15,7 +15,6 @@ import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.achobeta.domain.student.model.vo.StuSimpleResumeVO;
 import com.achobeta.domain.student.service.StuAttachmentService;
 import com.achobeta.domain.student.service.StuResumeService;
-import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -69,8 +68,6 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     @Override
     @Transactional
     public void submitResume(StuResumeDTO stuResumeDTO, StuResume stuResume) {
-
-        Long userId = BaseContext.getCurrentUser().getUserId();
         //简历表信息
         StuSimpleResumeDTO resumeDTO = stuResumeDTO.getStuSimpleResumeDTO();
         //附件列表
@@ -83,7 +80,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
 
         //是否存在已有简历信息
         Optional.ofNullable(stuResume.getId()).
-                ifPresentOrElse(id->updateResumeInfo(stuResume, resumeDTO),()->saveResumeInfo(stuResume, resumeDTO, userId));
+                ifPresentOrElse(id->updateResumeInfo(stuResume, resumeDTO),()->saveResumeInfo(stuResume, resumeDTO));
 
         //保存附件信息
         saveStuAttachment(stuAttachmentDTOList, stuResume.getId());
@@ -166,12 +163,11 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     }
 
     @Transactional
-    public void saveResumeInfo(StuResume stuResume, StuSimpleResumeDTO resumeDTO, Long userId) {
+    public void saveResumeInfo(StuResume stuResume, StuSimpleResumeDTO resumeDTO) {
         // 设置初始简历状态
         stuResume.setStatus(ResumeStatus.PENDING_SELECTION);
         //构建简历实体信息
         stuResumeConverter.updatePoWithStuSimpleResumeDTO(resumeDTO,stuResume);
-        stuResume.setUserId(userId);
         //保存简历信息
         save(stuResume);
 

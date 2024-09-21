@@ -4,8 +4,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.achobeta.domain.question.model.dao.mapper.QuestionMapper">
 
-    <select id="queryQuestions" parameterType="java.lang.Long"
-            resultMap="com.achobeta.domain.question.model.dao.mapper.QuestionMapper.BaseResultMap">
+    <resultMap id="QuestionMap" type="com.achobeta.domain.question.model.vo.QuestionVO">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="standard" column="standard" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="queryQuestions" parameterType="java.lang.Long" resultMap="com.achobeta.domain.question.model.dao.mapper.QuestionMapper.BaseResultMap">
         select
             distinct q.id, q.title, q.standard
         from question q

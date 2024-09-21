@@ -4,6 +4,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.achobeta.domain.recruit.model.dao.mapper.ActivityParticipationMapper">
 
+    <resultMap id="QuestionAnswerMap" type="com.achobeta.domain.recruit.model.vo.QuestionAnswerVO">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="answer" column="answer" jdbcType="VARCHAR"/>
+    </resultMap>
+
     <resultMap id="PeriodMap" type="com.achobeta.domain.recruit.model.vo.TimePeriodVO">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
@@ -15,7 +21,7 @@
         <collection property="timePeriodVOS" columnPrefix="t_" resultMap="PeriodMap"/>
     </resultMap>
 
-    <select id="getQuestions" parameterType="java.lang.Long" resultType="com.achobeta.domain.recruit.model.vo.QuestionAnswerVO">
+    <select id="getQuestions" parameterType="java.lang.Long" resultMap="QuestionAnswerMap">
         select
             q.id, q.title, pq.answer
         from
@@ -25,7 +31,7 @@
         where ap.id = #{participationId,jdbcType=BIGINT} and q.id is not null and ap.is_deleted = 0
     </select>
 
-    <select id="getPeriods" parameterType="java.lang.Long" resultType="com.achobeta.domain.recruit.model.vo.TimePeriodVO">
+    <select id="getPeriods" parameterType="java.lang.Long" resultMap="PeriodMap">
         select
             t.id, t.start_time, t.end_time
         from
