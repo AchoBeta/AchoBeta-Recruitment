@@ -65,12 +65,12 @@ public class MediaUtil {
     }
 
     public static byte[] getBytes(InputStream inputStream) throws IOException {
-        return inputStream.readAllBytes();
+        return Objects.nonNull(inputStream) ? inputStream.readAllBytes() : null;
     }
 
     public static byte[] getBytes(String url) {
         try (InputStream inputStream = getInputStream(url)) {
-            return Objects.nonNull(inputStream) ? getBytes(inputStream) : null;
+            return getBytes(inputStream);
         } catch (IOException e) {
             log.warn(e.getMessage());
             return null;
