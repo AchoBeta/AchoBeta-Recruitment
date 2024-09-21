@@ -8,9 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -32,17 +30,11 @@ public class MediaUtil {
 
     @Nullable
     public static HttpURLConnection openConnection(String url) throws IOException {
-        try {
-            HttpURLConnection connection = isHttpUrl(url) ? (HttpURLConnection) new URL(url).openConnection() : null;
-            if(Objects.nonNull(connection) && connection.getResponseCode() / 100 == 3) {
-                return openConnection(connection.getHeaderField("Location")); // Location 就是最深的那个地址了
-            } else {
-                return connection;
-            }
-        } catch (ProtocolException | UnknownHostException e) {
-            // 处理重定向次数太多的情况
-            log.warn(e.getMessage());
-            return null;
+        HttpURLConnection connection = isHttpUrl(url) ? (HttpURLConnection) new URL(url).openConnection() : null;
+        if(Objects.nonNull(connection) && connection.getResponseCode() / 100 == 3) {
+            return openConnection(connection.getHeaderField("Location")); // Location 就是最深的那个地址了
+        } else {
+            return connection;
         }
     }
 
@@ -60,8 +52,9 @@ public class MediaUtil {
         return isAccessible(connection) ? connection.getInputStream() : null;
     }
 
+    @Nullable
     public static InputStream getInputStream(byte[] bytes) {
-        return new ByteArrayInputStream(bytes);
+        return Objects.nonNull(bytes) ? new ByteArrayInputStream(bytes) : null;
     }
 
     public static byte[] getBytes(InputStream inputStream) throws IOException {

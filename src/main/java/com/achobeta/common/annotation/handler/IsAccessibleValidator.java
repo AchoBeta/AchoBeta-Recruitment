@@ -20,7 +20,8 @@ public class IsAccessibleValidator implements ConstraintValidator<IsAccessible, 
                     try {
                         return MediaUtil.isAccessible(url);
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        log.warn(e.getMessage());
+                        return Boolean.FALSE;
                     }
                 }).orElse(Boolean.TRUE);
     }
