@@ -166,6 +166,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     public void saveResumeInfo(StuResume stuResume, StuSimpleResumeDTO resumeDTO) {
         // 设置初始简历状态
         stuResume.setStatus(ResumeStatus.PENDING_SELECTION);
+        stuResume.setSubmitCount(1); // 本次提交算一次
         //构建简历实体信息
         stuResumeConverter.updatePoWithStuSimpleResumeDTO(resumeDTO, stuResume);
         //保存简历信息
