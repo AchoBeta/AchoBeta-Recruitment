@@ -3,7 +3,6 @@ package com.achobeta.domain.resource.controller;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
-import com.achobeta.domain.login.model.dao.UserEntity;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.model.po.UserHelper;
