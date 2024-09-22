@@ -2,6 +2,8 @@ package com.achobeta.domain.paper.model.vo;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -17,4 +19,8 @@ public class QuestionPaperVO {
     private String title;
 
     private String description;
+
+    private LocalDateTime createTime;
+
+    private LocalDateTime updateTime;
 }

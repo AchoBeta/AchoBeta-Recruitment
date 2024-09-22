@@ -10,16 +10,16 @@
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-    <resultMap id="QuestionDetail" type="com.achobeta.domain.question.model.vo.QuestionDetailVO">
-        <result property="id" column="id" jdbcType="BIGINT"/>
-        <result property="title" column="title" jdbcType="VARCHAR"/>
-        <result property="standard" column="standard" jdbcType="VARCHAR"/>
+    <resultMap id="QuestionDetail"
+               extends="com.achobeta.domain.question.model.dao.mapper.QuestionMapper.QuestionMap"
+               type="com.achobeta.domain.question.model.vo.QuestionDetailVO">
         <collection property="types" columnPrefix="l_" resultMap="QuestionLibraryMap"/>
     </resultMap>
 
     <select id="getQuestionDetail" parameterType="java.lang.Long" resultMap="QuestionDetail">
         select
-            q.id, q.title, q.standard, l.id l_id, l.lib_type l_lib_type, l.create_time l_create_time
+            q.id, q.title, q.standard, q.create_time, q.update_time,
+            l.id l_id, l.lib_type l_lib_type, l.create_time l_create_time
         from question q
              left join library_question_link lq on q.id = lq.question_id and q.is_deleted = 0 and lq.is_deleted = 0
              left join question_library l on l.id = lq.lib_id and l.is_deleted = 0 and lq.is_deleted = 0

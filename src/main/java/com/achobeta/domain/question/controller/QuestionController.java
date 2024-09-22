@@ -70,7 +70,7 @@ public class QuestionController {
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
-    @GetMapping("/query")
+    @PostMapping("/query")
     public SystemJsonResponse getQuestions(@RequestBody(required = false) QuestionQueryDTO questionQueryDTO) {
         // 查询
         QuestionQueryVO result = questionService.queryQuestions(questionQueryDTO);

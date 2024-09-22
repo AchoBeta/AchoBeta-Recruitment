@@ -2,6 +2,8 @@ package com.achobeta.domain.question.model.vo;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -17,6 +19,10 @@ public class QuestionVO {
     private String title;
 
     private String standard;
+
+    private LocalDateTime createTime;
+
+    private LocalDateTime updateTime;
 
     public void hidden() {
         setStandard(null);

@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class QuestionQueryDTO {
 
-    private Integer pageNo;
+    private Integer current;
 
     private Integer pageSize;
 

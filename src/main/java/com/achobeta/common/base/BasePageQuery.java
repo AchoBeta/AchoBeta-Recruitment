@@ -24,7 +24,7 @@ import static com.achobeta.common.constants.MyBatisPageConstants.*;
 @Setter
 public class BasePageQuery {
 
-    private Integer pageNo;
+    private Integer current;
 
     private Integer pageSize;
 
@@ -33,7 +33,7 @@ public class BasePageQuery {
     private Boolean isAsc;
 
     private void init() {
-        pageNo = Objects.isNull(pageNo) ? DEFAULT_PAGE_NO : pageNo;
+        current = Objects.isNull(current) ? DEFAULT_PAGE_NO : current;
         pageSize = Objects.isNull(pageSize) ? DEFAULT_PAGE_SIZE : pageSize;
         sortBy = Objects.isNull(sortBy) ? DEFAULT_SORT_BY : sortBy;
         isAsc = Objects.isNull(isAsc) ? DEFAULT_IS_ASC : isAsc;
@@ -43,7 +43,7 @@ public class BasePageQuery {
         // 初始化
         init();
         // 1.分页条件
-        Page<T> page = Page.of(pageNo, pageSize);
+        Page<T> page = Page.of(current, pageSize);
         page.addOrder(new OrderItem(sortBy, isAsc));
         // 2.排序条件
         List<OrderItem> orderItemList = Arrays.stream(orders)

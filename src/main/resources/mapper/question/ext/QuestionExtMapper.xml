@@ -8,12 +8,15 @@
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="title" column="title" jdbcType="VARCHAR"/>
         <result property="standard" column="standard" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-    <select id="queryQuestions" parameterType="java.lang.Long" resultMap="com.achobeta.domain.question.model.dao.mapper.QuestionMapper.BaseResultMap">
+    <select id="queryQuestions" parameterType="java.lang.Long"
+            resultMap="com.achobeta.domain.question.model.dao.mapper.QuestionMapper.BaseResultMap">
         select
             -- 问题与题库多对多，在本条 sql 容易出现重复行
-            distinct q.id, q.title, q.standard
+            distinct q.id, q.title, q.standard, q.create_time, q.update_time
         from question_library l
             left join library_question_link lq on l.id = lq.lib_id and l.is_deleted = 0 and lq.is_deleted = 0
             left join question q on q.id = lq.question_id and q.is_deleted = 0 and lq.is_deleted = 0
