@@ -1,7 +1,5 @@
 package com.achobeta.domain.resumestate.model.vo;
 
-import com.achobeta.common.enums.ResumeEvent;
-import com.achobeta.common.enums.ResumeStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
