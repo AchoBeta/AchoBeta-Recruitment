@@ -4,7 +4,6 @@ import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.achobeta.domain.recruit.model.condition.StudentGroup;
 import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -57,7 +56,6 @@ public interface RecruitmentActivityService extends IService<RecruitmentActivity
      * @param actId
      * @param paperId
      */
-    @Transactional
     void setPaperForActivity(Long actId, Long paperId);
 
     // 检测 ------------------------------------------

@@ -3,6 +3,7 @@ package com.achobeta.domain.student.service.impl;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.ResumeEvent;
 import com.achobeta.common.enums.ResumeStatus;
+import com.achobeta.domain.resource.constants.ResourceConstants;
 import com.achobeta.domain.resumestate.service.ResumeStatusProcessService;
 import com.achobeta.domain.student.model.converter.StuResumeConverter;
 import com.achobeta.domain.student.model.dao.mapper.StuResumeMapper;
@@ -14,7 +15,6 @@ import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.achobeta.domain.student.model.vo.StuSimpleResumeVO;
 import com.achobeta.domain.student.service.StuAttachmentService;
 import com.achobeta.domain.student.service.StuResumeService;
-import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -68,20 +68,19 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     @Override
     @Transactional
     public void submitResume(StuResumeDTO stuResumeDTO, StuResume stuResume) {
-
-        Long userId = BaseContext.getCurrentUser().getUserId();
         //简历表信息
         StuSimpleResumeDTO resumeDTO = stuResumeDTO.getStuSimpleResumeDTO();
         //附件列表
         List<StuAttachmentDTO> stuAttachmentDTOList = stuResumeDTO.getStuAttachmentDTOList();
 
-        //简历状态更新为待筛选
-        if(Objects.isNull(stuResume.getStatus()) || ResumeStatus.DRAFT.equals(stuResume.getStatus())) {
-            stuResume.setStatus(ResumeStatus.PENDING_SELECTION);
+        // 设置默认头像
+        if (Objects.isNull(resumeDTO.getImage())) {
+            resumeDTO.setImage(ResourceConstants.DEFAULT_IMAGE);
         }
+
         //是否存在已有简历信息
         Optional.ofNullable(stuResume.getId()).
-                ifPresentOrElse(id->updateResumeInfo(stuResume, resumeDTO),()->saveResumeInfo(stuResume, resumeDTO, userId));
+                ifPresentOrElse(id -> updateResumeInfo(stuResume, resumeDTO), () -> saveResumeInfo(stuResume, resumeDTO));
 
         //保存附件信息
         saveStuAttachment(stuAttachmentDTOList, stuResume.getId());
@@ -106,7 +105,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         //返回信息实体
         StuResumeVO stuResumeVO = new StuResumeVO();
         //构造返回的简历表信息
-        StuSimpleResumeVO simpleResumeVO=stuResumeConverter.stuResumeToSimpleVO(stuResume);
+        StuSimpleResumeVO simpleResumeVO = stuResumeConverter.stuResumeToSimpleVO(stuResume);
         //查询并构造附件集合
         List<StuAttachment> stuAttachmentList = stuAttachmentService.lambdaQuery().eq(StuAttachment::getResumeId, queryResumeDTO.getResumeId()).list();
         List<StuAttachmentVO> stuAttachmentVOList = stuResumeConverter.stuAttachmentsToVOList(stuAttachmentList);
@@ -125,16 +124,16 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         if (Objects.nonNull(resumeOfUserDTO)) {
             //根据batchId和userId查询
             stuResume = lambdaQuery()
-                    .eq( StuResume::getUserId, resumeOfUserDTO.getUserId())
-                    .eq( StuResume::getBatchId, resumeOfUserDTO.getBatchId())
+                    .eq(StuResume::getUserId, resumeOfUserDTO.getUserId())
+                    .eq(StuResume::getBatchId, resumeOfUserDTO.getBatchId())
                     .oneOpt().orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.USER_RESUME_NOT_EXISTS));
             queryResumeDTO.setResumeId(stuResume.getId()); // 确保简历附件列表能够被查到
         } else {
             //参数校验
             Optional.ofNullable(queryResumeDTO.getResumeId()).orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.PARAM_IS_BLANK));
             //根据resumeId查询
-            stuResume=lambdaQuery()
-                    .eq( StuResume::getId, queryResumeDTO.getResumeId())
+            stuResume = lambdaQuery()
+                    .eq(StuResume::getId, queryResumeDTO.getResumeId())
                     .oneOpt().orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.USER_RESUME_NOT_EXISTS));
 
         }
@@ -142,9 +141,21 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     }
 
 
-    private void updateResumeInfo(StuResume stuResume, StuSimpleResumeDTO resumeDTO) {
+    @Transactional
+    public void updateResumeInfo(StuResume stuResume, StuSimpleResumeDTO resumeDTO) {
+        ResumeStatus resumeStatus = stuResume.getStatus();
+        if (Objects.isNull(resumeStatus) || ResumeStatus.DRAFT.equals(resumeStatus)) {
+            //简历状态若为草稿则更新为待筛选
+            stuResume.setStatus(ResumeStatus.PENDING_SELECTION);
+            // 添加一个简历过程节点
+            resumeStatusProcessService.createResumeStatusProcess(
+                    stuResume.getId(),
+                    ResumeStatus.PENDING_SELECTION,
+                    ResumeEvent.NEXT
+            );
+        }
 
-        stuResumeConverter.updatePoWithStuSimpleResumeDTO(resumeDTO,stuResume);
+        stuResumeConverter.updatePoWithStuSimpleResumeDTO(resumeDTO, stuResume);
         //简历提交次数加1
         stuResume.setSubmitCount(stuResume.getSubmitCount() + 1);
         //更新简历信息
@@ -152,17 +163,19 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     }
 
     @Transactional
-    public void saveResumeInfo(StuResume stuResume, StuSimpleResumeDTO resumeDTO, Long userId) {
+    public void saveResumeInfo(StuResume stuResume, StuSimpleResumeDTO resumeDTO) {
+        // 设置初始简历状态
+        stuResume.setStatus(ResumeStatus.PENDING_SELECTION);
+        stuResume.setSubmitCount(1); // 本次提交算一次
         //构建简历实体信息
-        stuResumeConverter.updatePoWithStuSimpleResumeDTO(resumeDTO,stuResume);
-        stuResume.setUserId(userId);
+        stuResumeConverter.updatePoWithStuSimpleResumeDTO(resumeDTO, stuResume);
         //保存简历信息
         save(stuResume);
 
-        // 初始化简历状态过程
+        // 创建初始的简历状态过程节点
         resumeStatusProcessService.createResumeStatusProcess(
                 stuResume.getId(),
-                stuResume.getStatus(),
+                ResumeStatus.PENDING_SELECTION,
                 ResumeEvent.NEXT
         );
     }
@@ -199,7 +212,3 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         return stuResume;
     }
 }
-
-
-
-

@@ -28,7 +28,7 @@
              left join stu_resume r on r.batch_id = b.id and stu.id = r.user_id and r.is_deleted = 0 and b.is_deleted = 0 and stu.is_deleted = 0
              left join interview_summary s on s.interview_id = i.id and s.is_deleted = 0 and i.is_deleted = 0
         <where>
-            i.id is not null
+            i.id is not null and b.is_deleted = 0
             <if test="condition.batchId != null">
                 and b.id = #{condition.batchId,jdbcType=BIGINT}
             </if>

@@ -66,6 +66,11 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         String redisKey = ShortLinkUtils.REDIS_SHORT_LINK + code;
         //如果Redis缓存了，就直接返回Redis的值
         Optional<String> originUrlCache = redisCache.getCacheObject(redisKey);
+        // 更新为已使用
+        this.lambdaUpdate()
+                .eq(ShortLink::getShortCode, code)
+                .set(ShortLink::getIsUsed, Boolean.TRUE)
+                .update();
         return originUrlCache.orElseGet(() -> {
             //否则查MySQL
             ShortLink shortLink = this.lambdaQuery().eq(ShortLink::getShortCode, code).one();

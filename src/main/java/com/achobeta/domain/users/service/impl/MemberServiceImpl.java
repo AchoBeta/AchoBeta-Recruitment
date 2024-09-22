@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -87,7 +88,13 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
 
     @Override
     public List<SimpleMemberVO> queryMemberList(Long batchId) {
-        return memberMapper.queryMemberList(batchId);
+        return memberMapper.queryMemberList(batchId)
+                .stream()
+                .peek(member -> {
+                    if(Objects.isNull(member.getId())) {
+                        member.setSimpleStudentVO(null);
+                    }
+                }).toList();
     }
 
     @Override

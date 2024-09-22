@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/resource")
+@RequestMapping("/api/v1/email")
 public class EmailController {
 
     private final EmailService emailService;
@@ -29,7 +29,7 @@ public class EmailController {
      * @param email
      * @return
      */
-    @PostMapping("/email/code")
+    @PostMapping("/code")
     public SystemJsonResponse emailIdentityCheck(@RequestParam("email") @Email String email) {
         // 生成 6位数 随机验证码
         String code = RandomUtil.randomNumbers(6);

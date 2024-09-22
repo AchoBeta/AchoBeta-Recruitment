@@ -15,7 +15,6 @@ logging:
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml # Mapper.xml文件地址,默认值
   configuration:
-    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler #设置枚举处理器
     map-underscore-to-camel-case: true # 是否开启下划线和驼峰的映射
     cache-enabled: false # 是否开启二级缓存
   global-config:
@@ -26,5 +25,6 @@ mybatis-plus:
       id-type: ASSIGN_ID #id为雪花算法生成 设置为none->为遵循版本默认，可见这个版本默认为assign_id
       update-strategy: not_null #更新策略:只更新非空字段
       insert-strategy: not_null #插入策略:为空走默认值
+  db-type: MYSQL # 分页时指定数据库类型
 
 

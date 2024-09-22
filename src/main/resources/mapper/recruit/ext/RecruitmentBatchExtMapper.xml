@@ -10,6 +10,6 @@
         from recruitment_batch rb
              left join stu_resume s on s.batch_id = rb.id and s.is_deleted = 0 and rb.is_deleted = 0
              left join user u on s.user_id = u.id and s.is_deleted = 0 and u.is_deleted = 0
-        where rb.id = #{batchId,jdbcType=BIGINT} and s.id is not null
+        where rb.id = #{batchId,jdbcType=BIGINT} and s.id is not null and rb.is_deleted = 0
     </select>
 </mapper>

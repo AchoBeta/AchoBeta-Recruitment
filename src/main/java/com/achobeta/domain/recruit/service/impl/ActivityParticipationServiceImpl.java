@@ -1,6 +1,7 @@
 package com.achobeta.domain.recruit.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.recruit.constants.RecruitmentActivityConstants;
 import com.achobeta.domain.recruit.model.converter.ParticipationConverter;
 import com.achobeta.domain.recruit.model.dao.mapper.ActivityParticipationMapper;
 import com.achobeta.domain.recruit.model.dto.QuestionAnswerDTO;
@@ -14,6 +15,8 @@ import com.achobeta.domain.recruit.service.ParticipationPeriodLinkService;
 import com.achobeta.domain.recruit.service.ParticipationQuestionLinkService;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.redis.RedisLock;
+import com.achobeta.redis.strategy.ReadLockStrategy;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,6 +43,10 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
     private final ParticipationPeriodLinkService participationPeriodLinkService;
 
     private final ParticipationQuestionLinkService participationQuestionLinkService;
+
+    private final RedisLock redisLock;
+
+    private final ReadLockStrategy readLockStrategy;
 
     @Override
     public Optional<ActivityParticipation> getActivityParticipation(Long participationId) {
@@ -68,14 +75,6 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
                     participationUserVO.setTimePeriodVOS(periods);
                     return participationUserVO;
                 }).orElseGet(() -> createActivityParticipation(stuId, actId));
-    }
-
-    @Override
-    public Long getActIdByParticipationId(Long participationId) {
-        return getActivityParticipation(participationId)
-                .orElseThrow(() ->
-                        new GlobalServiceException(GlobalServiceStatusCode.USER_DID_NOT_PARTICIPATE))
-                .getActId();
     }
 
     @Override
@@ -121,28 +120,32 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
     }
 
     @Override
-    public void participateInActivity(Long participationId, List<QuestionAnswerDTO> questionAnswerVOS, List<Long> periodIds) {
-        // 更新问题的回答
-        participationQuestionLinkService.putQuestionAnswers(participationId, questionAnswerVOS);
-        // 更新时间段的选择
-        participationPeriodLinkService.putTimePeriods(participationId, periodIds);
-    }
-
-    @Override
-    public void checkActivityParticipationUser(Long stuId, Long participationId) {
-        Long userId = getActivityParticipation(participationId)
-                .orElseThrow(() ->
-                    new GlobalServiceException(GlobalServiceStatusCode.USER_DID_NOT_PARTICIPATE)
-                ).getStuId();
-        if(!userId.equals(stuId)) {
-            throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
-        }
+    public void participateInActivity(ActivityParticipation activityParticipation, List<QuestionAnswerDTO> questionAnswerVOS, List<Long> periodIds) {
+        Long actId = activityParticipation.getActId();
+        // 读锁保证读到的数据在过程中准确
+        redisLock.tryLockDoSomething(RecruitmentActivityConstants.RECRUITMENT_ACTIVITY_QUESTIONNAIRE_LOCK + actId, () -> {
+            Long participationId = activityParticipation.getId();
+            Long stuId = activityParticipation.getStuId();
+            // 检测用户是否是活动面向的对象
+            recruitmentActivityService.checkCanUserParticipateInActivity(stuId, actId);
+            // 更新问题的回答
+            participationQuestionLinkService.putQuestionAnswers(participationId, questionAnswerVOS);
+            // 更新时间段的选择
+            participationPeriodLinkService.putTimePeriods(participationId, periodIds);
+        }, () -> {}, readLockStrategy);
     }
 
     @Override
     public void checkParticipationExists(Long participationId) {
         getActivityParticipation(participationId).orElseThrow(() ->
                 new GlobalServiceException(GlobalServiceStatusCode.ACTIVITY_PARTICIPATION_NOT_EXISTS));
+    }
+
+    @Override
+    public ActivityParticipation checkAndGetActivityParticipation(Long participationId) {
+        return getActivityParticipation(participationId)
+                .orElseThrow(() ->
+                        new GlobalServiceException(GlobalServiceStatusCode.ACTIVITY_PARTICIPATION_NOT_EXISTS));
     }
 }
 

@@ -1,5 +1,7 @@
 package com.achobeta.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -17,12 +19,14 @@ import java.util.stream.Stream;
  * Date: 2024-09-06
  * Time: 13:04
  */
+@Slf4j
 public class ObjectUtil {
 
     public static <C, F> F readByProperty(C object, Field field, Class<F> fieldClazz) {
         try {
             return fieldClazz.cast(field.get(object));
         } catch (Exception e) {
+            log.warn(e.getMessage());
             return null;
         }
     }
@@ -32,6 +36,7 @@ public class ObjectUtil {
             PropertyDescriptor propertyDescriptor = new PropertyDescriptor(field.getName(), object.getClass());
             return fieldClazz.cast(propertyDescriptor.getReadMethod().invoke(object));
         } catch (Exception e) {
+            log.warn(e.getMessage());
             return null;
         }
     }

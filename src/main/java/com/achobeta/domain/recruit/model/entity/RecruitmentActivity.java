@@ -2,7 +2,7 @@ package com.achobeta.domain.recruit.model.entity;
 
 import com.achobeta.common.base.BaseIncrIDEntity;
 import com.achobeta.domain.recruit.model.condition.StudentGroup;
-import com.achobeta.handler.MyBatisJacksonTypeHandler;
+import com.achobeta.handler.MyBatisJsonTypeHandler;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class RecruitmentActivity extends BaseIncrIDEntity implements Serializabl
 
     private String title;
 
-    @TableField(typeHandler = MyBatisJacksonTypeHandler.class) // 这里和 xml 两边都得设置，一个针对 java，一个针对 mysql
+    @TableField(typeHandler = MyBatisJsonTypeHandler.class) // 这里和 xml 两边都得设置，一个针对 java，一个针对 mysql
     private StudentGroup target;
 
     private String description;

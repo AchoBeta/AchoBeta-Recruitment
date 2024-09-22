@@ -1,9 +1,9 @@
 package com.achobeta.domain.student.model.dto;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,10 +16,12 @@ import java.util.List;
  */
 @Data
 public class StuResumeDTO implements Serializable {
+
+    @NotNull
     @Valid
-    @NotNull()
     private StuSimpleResumeDTO stuSimpleResumeDTO;
 
+    // 附件列表可以为 null 但是不为 null 的时候进行循环检测
     @Valid
     private List<StuAttachmentDTO> stuAttachmentDTOList;
 

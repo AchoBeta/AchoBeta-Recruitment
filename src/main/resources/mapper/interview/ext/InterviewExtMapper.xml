@@ -19,8 +19,9 @@
     </resultMap>
 
     <select id="managerGetInterviewList" resultMap="InterviewMap">
-        select distinct
-            i.id, i.title, i.status,
+        select
+            -- 面试预约与面试官多对多，在本条 sql 容易出现重复行
+            distinct i.id, i.title, i.status,
             s.id s_id, s.participation_id s_participation_id, s.start_time s_start_time, s.end_time s_end_time
         from user m
             left join interviewer ir on ir.manager_id = m.id and ir.is_deleted = 0 and m.is_deleted = 0
@@ -30,7 +31,7 @@
             left join recruitment_activity a on a.id = p.act_id and p.is_deleted = 0 and a.is_deleted = 0
             left join recruitment_batch b on b.id = a.batch_id and a.is_deleted = 0 and b.is_deleted = 0
         <where>
-            i.id is not null
+            i.id is not null and m.is_deleted = 0
             <if test="managerId != null">
                 and m.id = #{managerId,jdbcType=BIGINT}
             </if>
@@ -45,7 +46,7 @@
     </select>
 
     <select id="userGetInterviewList" resultMap="InterviewMap">
-        select distinct
+        select
             i.id, i.title, i.status,
             s.id s_id, s.participation_id s_participation_id, s.start_time s_start_time, s.end_time s_end_time
         from user u
@@ -55,7 +56,7 @@
              left join recruitment_activity a on a.id = p.act_id and p.is_deleted = 0 and a.is_deleted = 0
              left join recruitment_batch b on b.id = a.batch_id and a.is_deleted = 0 and b.is_deleted = 0
         <where>
-            i.id is not null
+            i.id is not null and u.is_deleted = 0
             and u.id = #{userId,jdbcType=BIGINT}
             <if test="condition.batchId != null">
                 and b.id = #{condition.batchId,jdbcType=BIGINT}
@@ -74,7 +75,7 @@
         from interview i
              left join interview_schedule s on i.schedule_id = s.id and i.is_deleted = 0 and s.is_deleted = 0
              left join activity_participation p on p.id = s.participation_id and s.is_deleted = 0 and p.is_deleted = 0
-        where i.id = #{interviewId,jdbcType=BIGINT}
+        where i.id = #{interviewId,jdbcType=BIGINT} and i.is_deleted = 0
     </select>
 
 </mapper>
