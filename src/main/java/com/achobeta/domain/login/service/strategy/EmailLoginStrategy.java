@@ -20,9 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.achobeta.common.constants.RedisConstants.CAPTCHA_CODES_KEY;
-import static com.achobeta.common.constants.RedisConstants.CAPTCHA_CODE_KEY;
 import static com.achobeta.common.enums.GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL;
+import static com.achobeta.redis.constants.RedisConstants.CAPTCHA_CODES_KEY;
+import static com.achobeta.redis.constants.RedisConstants.CAPTCHA_CODE_KEY;
 
 /**
  * @author BanTanger 半糖

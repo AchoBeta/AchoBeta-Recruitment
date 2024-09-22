@@ -1,8 +1,9 @@
 package com.achobeta.domain.question.service;
 
+import com.achobeta.domain.question.model.dto.QuestionQueryDTO;
 import com.achobeta.domain.question.model.entity.Question;
 import com.achobeta.domain.question.model.vo.QuestionDetailVO;
-import com.achobeta.domain.question.model.vo.QuestionVO;
+import com.achobeta.domain.question.model.vo.QuestionQueryVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +17,7 @@ import java.util.Optional;
 */
 public interface QuestionService extends IService<Question> {
 
-    List<QuestionVO> getQuestions();
-
-    List<QuestionVO> getQuestionsByLibId(Long libId);
+    QuestionQueryVO queryQuestions(QuestionQueryDTO questionQueryDTO);
 
     Optional<Question> getQuestion(Long questionId);
 

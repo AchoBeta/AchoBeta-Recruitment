@@ -10,19 +10,19 @@
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-    <resultMap id="QuestionPaperDetail" type="com.achobeta.domain.paper.model.vo.QuestionPaperDetailVO">
-        <result property="id" column="id" jdbcType="BIGINT"/>
-        <result property="title" column="title" jdbcType="VARCHAR"/>
-        <result property="description" column="description" jdbcType="VARCHAR"/>
+    <resultMap id="QuestionPaperDetail"
+               extends="com.achobeta.domain.paper.model.dao.mapper.QuestionPaperMapper.QuestionPaperMap"
+               type="com.achobeta.domain.paper.model.vo.QuestionPaperDetailVO">
         <collection property="types" columnPrefix="l_" resultMap="PaperLibraryMap"/>
     </resultMap>
 
     <select id="getQuestionPaperDetail" parameterType="java.lang.Long" resultMap="QuestionPaperDetail">
         select
-            p.id, p.title, p.description, l.id l_id, l.lib_type l_lib_type, l.create_time l_create_time
+            p.id, p.title, p.description, p.create_time, p.update_time,
+            l.id l_id, l.lib_type l_lib_type, l.create_time l_create_time
         from question_paper p
              left join library_paper_link lp on p.id = lp.paper_id and p.is_deleted = 0 and lp.is_deleted = 0
              left join question_paper_library l on l.id = lp.lib_id and l.is_deleted = 0 and lp.is_deleted = 0
-        where p.id = #{paperId,jdbcType=BIGINT}
+        where p.id = #{paperId,jdbcType=BIGINT} and p.is_deleted = 0
     </select>
 </mapper>

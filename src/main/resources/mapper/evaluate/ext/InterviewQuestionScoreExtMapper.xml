@@ -4,20 +4,19 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.achobeta.domain.evaluate.model.dao.mapper.InterviewQuestionScoreMapper">
 
-    <resultMap id="QuestionAverageMap" type="com.achobeta.domain.evaluate.model.vo.InterviewQuestionAverageVO">
-        <id property="id" column="id" jdbcType="BIGINT"/>
-        <result property="title" column="title" jdbcType="VARCHAR"/>
-        <result property="standard" column="standard" jdbcType="VARCHAR"/>
+    <resultMap id="QuestionAverageMap"
+               extends="com.achobeta.domain.question.model.dao.mapper.QuestionMapper.QuestionMap"
+               type="com.achobeta.domain.evaluate.model.vo.InterviewQuestionAverageVO">
         <result property="average" column="average" jdbcType="DOUBLE"/>
     </resultMap>
 
     <select id="getAverageQuestions" resultMap="QuestionAverageMap">
         select
-            q.id, q.title, q.standard, avg(s.score) average
+            q.id, q.title, q.standard, q.create_time, q.update_time, avg(s.score) average
         from question q
              left join interview_question_score s on q.id = s.question_id and s.is_deleted = 0 and q.is_deleted = 0 and s.score != -1
         where
-            q.id
+            q.is_deleted = 0 and q.id
             <foreach collection="questionIds" item="questionId" separator="," open="in (" close=")" >
                 #{questionId,jdbcType=BIGINT}
             </foreach>

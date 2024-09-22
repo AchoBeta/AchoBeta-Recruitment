@@ -1,22 +1,23 @@
 package com.achobeta.domain.paper.service.impl;
 
+import com.achobeta.common.base.BasePageQuery;
+import com.achobeta.common.base.BasePageResult;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.paper.model.converter.QuestionPaperConverter;
 import com.achobeta.domain.paper.model.dao.mapper.QuestionPaperMapper;
+import com.achobeta.domain.paper.model.dto.PaperQueryDTO;
 import com.achobeta.domain.paper.model.entity.LibraryPaperLink;
 import com.achobeta.domain.paper.model.entity.QuestionPaper;
-import com.achobeta.domain.paper.model.vo.QuestionPaperVO;
+import com.achobeta.domain.paper.model.vo.PaperQueryVO;
 import com.achobeta.domain.paper.service.LibraryPaperLinkService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.exception.GlobalServiceException;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
 * @author 马拉圈
@@ -32,14 +33,28 @@ public class QuestionPaperServiceImpl extends ServiceImpl<QuestionPaperMapper, Q
 
     private final LibraryPaperLinkService libraryPaperLinkService;
 
+    /**
+     * 流程：dto -> BasePageQuery -> page -> BasePageResult -> vo
+     * @param paperQueryDTO 分页参数
+     * @return 分页结果
+     */
     @Override
-    public List<QuestionPaperVO> getQuestionPapers() {
-        return QuestionPaperConverter.INSTANCE.questionPaperListToPaperVOList(this.list());
-    }
-
-    @Override
-    public List<QuestionPaperVO> getQuestionPapersByLibId(Long libId) {
-        return questionPaperMapper.getQuestionPapersByLibId(libId);
+    public PaperQueryVO queryPapers(PaperQueryDTO paperQueryDTO) {
+        // 解析分页参数获取 page
+        IPage<QuestionPaper> page = null;
+        Long libId = null;
+        if(Objects.isNull(paperQueryDTO)) {
+            page = new BasePageQuery().toMpPage();
+        } else {
+            page = QuestionPaperConverter.INSTANCE.paperQueryDTOToBasePageQuery(paperQueryDTO).toMpPage();
+            libId = paperQueryDTO.getLibId();
+        }
+        // 分页
+        IPage<QuestionPaper> questionIPage = questionPaperMapper.queryPapers(page, libId);
+        // 封装
+        BasePageResult<QuestionPaper> pageResult = BasePageResult.of(questionIPage);
+        // 转化
+        return QuestionPaperConverter.INSTANCE.basePageResultToPaperQueryVO(pageResult);
     }
 
     @Override

@@ -13,14 +13,19 @@ import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.service.StuResumeService;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.redis.RedisLock;
+import com.achobeta.redis.strategy.WriteLockStrategy;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+
+import static com.achobeta.domain.recruit.constants.RecruitmentActivityConstants.RECRUITMENT_ACTIVITY_QUESTIONNAIRE_LOCK;
 
 /**
 * @author 马拉圈
@@ -38,6 +43,10 @@ public class RecruitmentActivityServiceImpl extends ServiceImpl<RecruitmentActiv
     private final QuestionPaperService questionPaperService;
 
     private final StuResumeService stuResumeService;
+
+    private final RedisLock redisLock;
+
+    private final WriteLockStrategy writeLockStrategy;
 
     @Override
     public Optional<RecruitmentActivity> getRecruitmentActivity(Long actId) {
@@ -110,45 +119,54 @@ public class RecruitmentActivityServiceImpl extends ServiceImpl<RecruitmentActiv
 
     @Override
     public void updateRecruitmentActivity(Long actId, StudentGroup target, String title, String description, Date deadline) {
-        RecruitmentActivity updateRecruitmentActivity = new RecruitmentActivity();
-        updateRecruitmentActivity.setTarget(target);
-        updateRecruitmentActivity.setTitle(title);
-        updateRecruitmentActivity.setDescription(description);
-        updateRecruitmentActivity.setDeadline(deadline);
-        this.lambdaUpdate()
-                .eq(RecruitmentActivity::getId, actId)
-                .update(updateRecruitmentActivity);
+        redisLock.tryLockDoSomething(RECRUITMENT_ACTIVITY_QUESTIONNAIRE_LOCK + actId, () -> {
+            checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE);
+            RecruitmentActivity updateRecruitmentActivity = new RecruitmentActivity();
+            updateRecruitmentActivity.setTarget(target);
+            updateRecruitmentActivity.setTitle(title);
+            updateRecruitmentActivity.setDescription(description);
+            updateRecruitmentActivity.setDeadline(deadline);
+            this.lambdaUpdate()
+                    .eq(RecruitmentActivity::getId, actId)
+                    .update(updateRecruitmentActivity);
+        }, () -> {}, writeLockStrategy);
     }
 
     @Override
     public void shiftRecruitmentActivity(Long actId, Boolean isRun) {
-        this.lambdaUpdate()
-                .eq(RecruitmentActivity::getId, actId)
-                .set(RecruitmentActivity::getIsRun, isRun)
-                .update();
+        redisLock.tryLockDoSomething(RECRUITMENT_ACTIVITY_QUESTIONNAIRE_LOCK + actId, () -> {
+            this.lambdaUpdate()
+                    .eq(RecruitmentActivity::getId, actId)
+                    .set(RecruitmentActivity::getIsRun, isRun)
+                    .update();
+        }, () -> {}, writeLockStrategy);
     }
 
     @Override
+    @Transactional
     public void setPaperForActivity(Long actId, Long paperId) {
-        // 保证招新未开始
-        Long oldPaperId = checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE).getPaperId();
-        // 检测
-        questionPaperService.checkPaperExists(paperId);
-        // 只有新试卷和老试卷不一样才有必要进行
-        if(!paperId.equals(oldPaperId)) {
-            // 获取此活动已有的，“活动参与”列表，删除原本的所有回答（哪怕两份卷子有相同的问题，也照样删除）
-            List<Long> participationIds = getParticipationIdsByActId(actId);
-            if (!CollectionUtils.isEmpty(participationIds)) {
-                Db.lambdaUpdate(ParticipationQuestionLink.class)
-                        .in(ParticipationQuestionLink::getParticipationId, participationIds)
-                        .remove();
+        redisLock.tryLockDoSomething(RECRUITMENT_ACTIVITY_QUESTIONNAIRE_LOCK + actId, () -> {
+            questionPaperService.checkPaperExists(paperId);
+            // 保证招新未开始
+            Long oldPaperId = checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE).getPaperId();
+            // 检测
+            questionPaperService.checkPaperExists(paperId);
+            // 只有新试卷和老试卷不一样才有必要进行
+            if(!paperId.equals(oldPaperId)) {
+                // 获取此活动已有的，“活动参与”列表，删除原本的所有回答（哪怕两份卷子有相同的问题，也照样删除）
+                List<Long> participationIds = getParticipationIdsByActId(actId);
+                if (!CollectionUtils.isEmpty(participationIds)) {
+                    Db.lambdaUpdate(ParticipationQuestionLink.class)
+                            .in(ParticipationQuestionLink::getParticipationId, participationIds)
+                            .remove();
+                }
+                // 设置新试卷
+                this.lambdaUpdate()
+                        .eq(RecruitmentActivity::getId, actId)
+                        .set(RecruitmentActivity::getPaperId, paperId)
+                        .update();
             }
-            // 设置新试卷
-            this.lambdaUpdate()
-                    .eq(RecruitmentActivity::getId, actId)
-                    .set(RecruitmentActivity::getPaperId, paperId)
-                    .update();
-        }
+        }, () -> {}, writeLockStrategy);
     }
 
     @Override

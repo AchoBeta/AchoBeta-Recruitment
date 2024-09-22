@@ -5,7 +5,7 @@
     3. 图片 src 如果是相对路径的形式，在邮件里是看不到的，因为我们发邮件提供的是 html 代码，但邮件厂商或多或少都限制在渲染的时候请求资源的总大小
 )
 <div style="text-align: center;">
-    <img src="https://www.freeimg.cn/i/2024/08/13/66bb1f6b81c84.png" width="144px" height="144px" alt="Product and Community Highlights"/>
+    <img src="https://www.freeimg.cn/i/2024/08/13/66bb1f6b81c84.png" width="144px" height="144px" alt="AchoBeta Interview Summary"/>
     <br/>
     <h1>AchoBeta Interview Summary</h1>
 </div>

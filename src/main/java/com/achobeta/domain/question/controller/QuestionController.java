@@ -5,8 +5,9 @@ import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.question.handler.chain.RemoveQuestionHandlerChain;
 import com.achobeta.domain.question.model.dto.QuestionDTO;
+import com.achobeta.domain.question.model.dto.QuestionQueryDTO;
 import com.achobeta.domain.question.model.vo.QuestionDetailVO;
-import com.achobeta.domain.question.model.vo.QuestionVO;
+import com.achobeta.domain.question.model.vo.QuestionQueryVO;
 import com.achobeta.domain.question.service.QuestionLibraryService;
 import com.achobeta.domain.question.service.QuestionService;
 import com.achobeta.util.ValidatorUtils;
@@ -15,8 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Created With Intellij IDEA
@@ -71,20 +70,11 @@ public class QuestionController {
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
-    @GetMapping("/list/all")
-    public SystemJsonResponse getQuestions() {
+    @PostMapping("/query")
+    public SystemJsonResponse queryQuestions(@RequestBody(required = false) QuestionQueryDTO questionQueryDTO) {
         // 查询
-        List<QuestionVO> questions = questionService.getQuestions();
-        return SystemJsonResponse.SYSTEM_SUCCESS(questions);
-    }
-
-    @GetMapping("/list/{libId}")
-    public SystemJsonResponse getQuestions(@PathVariable("libId") @NotNull Long libId) {
-        // 检查
-        questionLibraryService.checkQuestionLibraryExists(libId);
-        // 查询
-        List<QuestionVO> questions = questionService.getQuestionsByLibId(libId);
-        return SystemJsonResponse.SYSTEM_SUCCESS(questions);
+        QuestionQueryVO result = questionService.queryQuestions(questionQueryDTO);
+        return SystemJsonResponse.SYSTEM_SUCCESS(result);
     }
 
     @GetMapping("/detail/{questionId}")

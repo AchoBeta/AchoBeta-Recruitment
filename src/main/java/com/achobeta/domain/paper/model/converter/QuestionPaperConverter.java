@@ -1,11 +1,12 @@
 package com.achobeta.domain.paper.model.converter;
 
+import com.achobeta.common.base.BasePageQuery;
+import com.achobeta.common.base.BasePageResult;
+import com.achobeta.domain.paper.model.dto.PaperQueryDTO;
 import com.achobeta.domain.paper.model.entity.QuestionPaper;
-import com.achobeta.domain.paper.model.vo.QuestionPaperVO;
+import com.achobeta.domain.paper.model.vo.PaperQueryVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-
-import java.util.List;
 
 /**
  * Created With Intellij IDEA
@@ -19,6 +20,8 @@ public interface QuestionPaperConverter {
 
     QuestionPaperConverter INSTANCE = Mappers.getMapper(QuestionPaperConverter.class);
 
-    List<QuestionPaperVO> questionPaperListToPaperVOList(List<QuestionPaper> questionPaperList);
+    BasePageQuery paperQueryDTOToBasePageQuery(PaperQueryDTO paperQueryDTO);
+
+    PaperQueryVO basePageResultToPaperQueryVO(BasePageResult<QuestionPaper> basePageResult);
 
 }

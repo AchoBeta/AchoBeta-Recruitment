@@ -5,6 +5,8 @@ import com.achobeta.util.ImageUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+import java.util.Optional;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -16,7 +18,10 @@ public class IsImageValidator implements ConstraintValidator<IsImage, String> {
 
     @Override
     public boolean isValid(String url, ConstraintValidatorContext constraintValidatorContext) {
-        return ImageUtil.isImage(url);
+        // 可以为 null，但不可访问或者不是图片类型都会非法
+        return Optional.ofNullable(url)
+                .map(ImageUtil::isImage)
+                .orElse(Boolean.TRUE);
     }
 
 }

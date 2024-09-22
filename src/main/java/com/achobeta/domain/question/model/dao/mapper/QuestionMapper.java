@@ -1,11 +1,9 @@
 package com.achobeta.domain.question.model.dao.mapper;
 
 import com.achobeta.domain.question.model.entity.Question;
-import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 /**
 * @author 马拉圈
@@ -15,7 +13,8 @@ import java.util.List;
 */
 public interface QuestionMapper extends BaseMapper<Question> {
 
-    List<QuestionVO> getQuestionsByLibId(@Param("libId") Long libId);
+    // 并不会将结果集加入 page，而是返回值 IPage 里
+    IPage<Question> queryQuestions(IPage<Question> page, @Param("libId") Long libId);
 
 }
 

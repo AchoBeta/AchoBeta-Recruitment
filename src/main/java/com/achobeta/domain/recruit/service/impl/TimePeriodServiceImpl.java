@@ -5,14 +5,20 @@ import com.achobeta.domain.recruit.model.converter.TimePeriodConverter;
 import com.achobeta.domain.recruit.model.dao.mapper.TimePeriodMapper;
 import com.achobeta.domain.recruit.model.entity.TimePeriod;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
+import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.recruit.service.TimePeriodService;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.redis.RedisLock;
+import com.achobeta.redis.strategy.WriteLockStrategy;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static com.achobeta.domain.recruit.constants.RecruitmentActivityConstants.RECRUITMENT_ACTIVITY_QUESTIONNAIRE_LOCK;
 
 /**
 * @author 马拉圈
@@ -20,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 * @createDate 2024-07-06 12:33:02
 */
 @Service
+@RequiredArgsConstructor
 public class TimePeriodServiceImpl extends ServiceImpl<TimePeriodMapper, TimePeriod>
     implements TimePeriodService{
 
@@ -29,6 +36,11 @@ public class TimePeriodServiceImpl extends ServiceImpl<TimePeriodMapper, TimePer
 
     private final static TimeUnit GAP_UNIT = TimeUnit.HOURS;
 
+    private final RecruitmentActivityService recruitmentActivityService;
+
+    private final RedisLock redisLock;
+
+    private final WriteLockStrategy writeLockStrategy;
 
     private void timePeriodValidate(Long startTime, Long endTime) {
         long gap = endTime - startTime;
@@ -55,17 +67,24 @@ public class TimePeriodServiceImpl extends ServiceImpl<TimePeriodMapper, TimePer
 
     @Override
     public void setPeriodForActivity(Long actId, Long startTime, Long endTime) {
-        timePeriodValidate(startTime, endTime);
-        TimePeriod timePeriod = new TimePeriod();
-        timePeriod.setActId(actId);
-        timePeriod.setStartTime(new Date(startTime));
-        timePeriod.setEndTime(new Date(endTime));
-        this.save(timePeriod);
+        redisLock.tryLockDoSomething(RECRUITMENT_ACTIVITY_QUESTIONNAIRE_LOCK + actId, () -> {
+            recruitmentActivityService.checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE);
+            timePeriodValidate(startTime, endTime);
+            TimePeriod timePeriod = new TimePeriod();
+            timePeriod.setActId(actId);
+            timePeriod.setStartTime(new Date(startTime));
+            timePeriod.setEndTime(new Date(endTime));
+            this.save(timePeriod);
+        }, () -> {}, writeLockStrategy);
     }
 
     @Override
     public void removeTimePeriod(Long periodId) {
-        this.lambdaUpdate().eq(TimePeriod::getId, periodId).remove();
+        Long actId = getActIdByPeriodId(periodId);
+        redisLock.tryLockDoSomething(RECRUITMENT_ACTIVITY_QUESTIONNAIRE_LOCK + actId, () -> {
+            recruitmentActivityService.checkAndGetRecruitmentActivityIsRun(actId, Boolean.FALSE);
+            this.lambdaUpdate().eq(TimePeriod::getId, periodId).remove();
+        }, () -> {}, writeLockStrategy);
     }
 }
 

@@ -44,4 +44,6 @@ public class StuSimpleResumeVO implements Serializable {
     private String remark;
 
     private ResumeStatus status;
+
+    private Integer submitCount;
 }

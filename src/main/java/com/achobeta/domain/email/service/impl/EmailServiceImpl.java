@@ -18,10 +18,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static com.achobeta.common.constants.RedisConstants.*;
 import static com.achobeta.common.enums.EmailTemplateEnum.CAPTCHA;
 import static com.achobeta.common.enums.GlobalServiceStatusCode.EMAIL_CAPTCHA_CODE_COUNT_EXHAUST;
 import static com.achobeta.common.enums.GlobalServiceStatusCode.EMAIL_SEND_FAIL;
+import static com.achobeta.redis.constants.RedisConstants.*;
 
 @Slf4j
 @Service

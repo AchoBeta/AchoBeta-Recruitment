@@ -1,4 +1,4 @@
-package com.achobeta.common.constants;
+package com.achobeta.redis.constants;
 
 /**
  * @author BanTanger 半糖

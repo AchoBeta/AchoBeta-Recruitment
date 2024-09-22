@@ -1,24 +1,25 @@
 package com.achobeta.domain.question.service.impl;
 
+import com.achobeta.common.base.BasePageQuery;
+import com.achobeta.common.base.BasePageResult;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.domain.paper.model.converter.QuestionConverter;
+import com.achobeta.domain.question.model.converter.QuestionConverter;
 import com.achobeta.domain.question.model.dao.mapper.QuestionLibraryMapper;
 import com.achobeta.domain.question.model.dao.mapper.QuestionMapper;
+import com.achobeta.domain.question.model.dto.QuestionQueryDTO;
 import com.achobeta.domain.question.model.entity.LibraryQuestionLink;
 import com.achobeta.domain.question.model.entity.Question;
 import com.achobeta.domain.question.model.vo.QuestionDetailVO;
-import com.achobeta.domain.question.model.vo.QuestionVO;
+import com.achobeta.domain.question.model.vo.QuestionQueryVO;
 import com.achobeta.domain.question.service.LibraryQuestionLinkService;
 import com.achobeta.domain.question.service.QuestionService;
 import com.achobeta.exception.GlobalServiceException;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
 * @author 马拉圈
@@ -37,14 +38,28 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
 
     private final LibraryQuestionLinkService libraryQuestionLinkService;
 
+    /**
+     * 流程：dto -> BasePageQuery -> page -> BasePageResult -> vo
+     * @param questionQueryDTO 分页参数
+     * @return 分页结果
+     */
     @Override
-    public List<QuestionVO> getQuestions() {
-        return QuestionConverter.INSTANCE.questionListToQuestionVOList(this.list());
-    }
-
-    @Override
-    public List<QuestionVO> getQuestionsByLibId(Long libId) {
-        return questionMapper.getQuestionsByLibId(libId);
+    public QuestionQueryVO queryQuestions(QuestionQueryDTO questionQueryDTO) {
+        // 解析分页参数获取 page
+        IPage<Question> page = null;
+        Long libId = null;
+        if(Objects.isNull(questionQueryDTO)) {
+            page = new BasePageQuery().toMpPage();
+        } else {
+            page = QuestionConverter.INSTANCE.questionQueryDTOToBasePageQuery(questionQueryDTO).toMpPage();
+            libId = questionQueryDTO.getLibId();
+        }
+        // 分页
+        IPage<Question> questionIPage = questionMapper.queryQuestions(page, libId);
+        // 封装
+        BasePageResult<Question> pageResult = BasePageResult.of(questionIPage);
+        // 转化
+        return QuestionConverter.INSTANCE.basePageResultToQuestionQueryVO(pageResult);
     }
 
     @Override
