@@ -15,7 +15,7 @@
     <select id="queryPapers" parameterType="java.lang.Long"
             resultMap="com.achobeta.domain.paper.model.dao.mapper.QuestionPaperMapper.BaseResultMap">
         select
-        -- 试卷与试卷库多对多，在本条 sql 容易出现重复行
+            -- 试卷与试卷库多对多，在本条 sql 容易出现重复行
             distinct p.id, p.title, p.description, p.create_time, p.update_time
         from question_paper_library l
             left join library_paper_link lp on l.id = lp.lib_id and l.is_deleted = 0 and lp.is_deleted = 0

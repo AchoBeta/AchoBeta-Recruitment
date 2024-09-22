@@ -33,6 +33,11 @@ public class QuestionPaperServiceImpl extends ServiceImpl<QuestionPaperMapper, Q
 
     private final LibraryPaperLinkService libraryPaperLinkService;
 
+    /**
+     * 流程：dto -> BasePageQuery -> page -> BasePageResult -> vo
+     * @param paperQueryDTO 分页参数
+     * @return 分页结果
+     */
     @Override
     public PaperQueryVO queryPapers(PaperQueryDTO paperQueryDTO) {
         // 解析分页参数获取 page
