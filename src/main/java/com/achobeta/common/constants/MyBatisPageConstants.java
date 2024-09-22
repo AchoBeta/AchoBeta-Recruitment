@@ -9,7 +9,7 @@ package com.achobeta.common.constants;
  */
 public interface MyBatisPageConstants {
 
-    Integer DEFAULT_PAGE_NO = 1;
+    Integer DEFAULT_CURRENT = 1;
 
     Integer DEFAULT_PAGE_SIZE = 10;
 

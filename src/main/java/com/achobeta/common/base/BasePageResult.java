@@ -63,7 +63,7 @@ public class BasePageResult<T> {
     public static <V, P> BasePageResult<V> of(IPage<P> p, Class<V> voClass) {
         // 1.非空校验
         List<P> records = p.getRecords();
-        if (records == null || records.size() <= 0) {
+        if (CollectionUtils.isEmpty(records)) {
             // 无数据，返回空结果
             return empty(p);
         }

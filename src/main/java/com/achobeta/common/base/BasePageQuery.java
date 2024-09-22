@@ -10,6 +10,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.achobeta.common.constants.MyBatisPageConstants.*;
 
@@ -33,10 +34,10 @@ public class BasePageQuery {
     private Boolean isAsc;
 
     private void init() {
-        current = Objects.isNull(current) ? DEFAULT_PAGE_NO : current;
-        pageSize = Objects.isNull(pageSize) ? DEFAULT_PAGE_SIZE : pageSize;
-        sortBy = Objects.isNull(sortBy) ? DEFAULT_SORT_BY : sortBy;
-        isAsc = Objects.isNull(isAsc) ? DEFAULT_IS_ASC : isAsc;
+        current = Optional.ofNullable(current).orElse(DEFAULT_CURRENT);
+        pageSize = Optional.ofNullable(pageSize).orElse(DEFAULT_PAGE_SIZE);
+        sortBy = Optional.ofNullable(sortBy).orElse(DEFAULT_SORT_BY);
+        isAsc = Optional.ofNullable(isAsc).orElse(DEFAULT_IS_ASC);
     }
 
     public <T> IPage<T> toMpPage(OrderItem... orders){
@@ -47,15 +48,13 @@ public class BasePageQuery {
         page.addOrder(new OrderItem(sortBy, isAsc));
         // 2.排序条件
         List<OrderItem> orderItemList = Arrays.stream(orders)
-                .filter(order -> Objects.nonNull(order) && Objects.nonNull(order.getColumn()))
+                .filter(Objects::nonNull)
+                .filter(order -> Objects.nonNull(order.getColumn()))
                 .toList();
         if(!CollectionUtils.isEmpty(orderItemList)) {
             page.addOrder(orderItemList);
         }
         return page;
-    }
-    public <T> IPage<T> toMpPage(OrderItem order){
-        return toMpPage(order);
     }
 
     public <T> IPage<T> toMpPage(String sortBy, boolean isAsc){
