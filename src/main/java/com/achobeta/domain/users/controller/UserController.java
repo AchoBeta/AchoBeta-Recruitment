@@ -69,9 +69,10 @@ public class UserController {
 
         // 设置默认头像
         Long avatar = userDTO.getAvatar();
-        if(Objects.isNull(avatar) || resourceService.isPermit(currentUser, avatar)) {
-            userDTO.setAvatar(ResourceConstants.DEFAULT_IMAGE_RESOURCE_CODE);
-        }
+        // todo: 判断权限
+//        if(Objects.isNull(avatar) || resourceService.isPermit(currentUser, avatar)) {
+//            userDTO.setAvatar(ResourceConstants.DEFAULT_IMAGE_RESOURCE_CODE);
+//        }
 
         // 更新
         userService.updateUser(currentUser.getUserId(), userDTO);

@@ -3,6 +3,7 @@ package com.achobeta.common.enums;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -13,6 +14,7 @@ import lombok.Getter;
  * Time: 1:29
  */
 @Getter
+@AllArgsConstructor
 public enum ResumeEvent {
 
     NEXT(1, "推进", "简历状态推进了一步"),
@@ -43,12 +45,6 @@ public enum ResumeEvent {
     private final String description;
 
     private final String remark;
-
-    ResumeEvent(Integer event, String description, String remark) {
-        this.event = event;
-        this.description = description;
-        this.remark = remark;
-    }
 
     public static ResumeEvent get(Integer event) {
         for (ResumeEvent resumeEvent : ResumeEvent.values()) {

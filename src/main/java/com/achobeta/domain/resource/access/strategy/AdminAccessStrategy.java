@@ -1,0 +1,32 @@
+package com.achobeta.domain.resource.access.strategy;
+
+import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.resource.model.entity.DigitalResource;
+import com.achobeta.domain.users.model.po.UserHelper;
+import com.achobeta.interpretor.UserInterpretor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+/**
+ * Created With Intellij IDEA
+ * Description:
+ * User: 马拉圈
+ * Date: 2024-09-23
+ * Time: 0:04
+ */
+@Service
+@RequiredArgsConstructor
+public class AdminAccessStrategy implements ResourceAccessStrategy {
+
+    private final UserInterpretor userInterpretor;
+
+    @Override
+    public boolean isAccessible(DigitalResource resource) {
+        try {
+            UserHelper userHelper = userInterpretor.getUserHelper();
+            return UserTypeEnum.ADMIN.getCode().equals(userHelper.getRole());
+        } catch (Exception e) {
+            return Boolean.FALSE;
+        }
+    }
+}

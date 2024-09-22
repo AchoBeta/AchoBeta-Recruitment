@@ -1,9 +1,11 @@
 package com.achobeta.common.enums;
 
 import com.achobeta.exception.GlobalServiceException;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum UserTypeEnum {
 
     USER("user",1),
@@ -12,11 +14,6 @@ public enum UserTypeEnum {
 
     private final String name;
     private final Integer code;
-
-    UserTypeEnum(String name, Integer code) {
-        this.name = name;
-        this.code = code;
-    }
 
     public static UserTypeEnum get(Integer role) {
         for (UserTypeEnum userTypeEnum : UserTypeEnum.values()) {

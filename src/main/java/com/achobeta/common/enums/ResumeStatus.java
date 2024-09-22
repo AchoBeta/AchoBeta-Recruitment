@@ -3,10 +3,12 @@ package com.achobeta.common.enums;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 
 @Getter
+@AllArgsConstructor
 public enum ResumeStatus {
     DRAFT("草稿", 0),
 
@@ -32,11 +34,6 @@ public enum ResumeStatus {
     SUSPENDED("挂起", 16),
 
     ;
-
-    ResumeStatus(String message, Integer code) {
-        this.message = message;
-        this.code = code;
-    }
 
     @Override
     public String toString() {

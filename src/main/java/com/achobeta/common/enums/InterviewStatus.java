@@ -3,6 +3,7 @@ package com.achobeta.common.enums;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 
@@ -14,6 +15,7 @@ import lombok.Getter;
  * Time: 23:18
  */
 @Getter
+@AllArgsConstructor
 public enum InterviewStatus {
 
     NOT_STARTED(0, "未开始"),
@@ -27,11 +29,6 @@ public enum InterviewStatus {
     private final Integer status;
 
     private final String description;
-
-    InterviewStatus(Integer status, String description) {
-        this.status = status;
-        this.description = description;
-    }
 
     @Override
     public String toString() {

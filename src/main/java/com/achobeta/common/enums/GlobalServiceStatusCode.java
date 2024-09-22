@@ -1,5 +1,6 @@
 package com.achobeta.common.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -13,6 +14,7 @@ import lombok.Getter;
  * @version 1.0
  */
 @Getter
+@AllArgsConstructor
 public enum GlobalServiceStatusCode {
     /* 成功, 默认200 */
     SYSTEM_SUCCESS(200, "操作成功"),
@@ -28,6 +30,8 @@ public enum GlobalServiceStatusCode {
     PARAM_TYPE_ERROR(1003, "参数类型错误"),
     PARAM_NOT_COMPLETE(1004, "参数缺失"),
     PARAM_FAILED_VALIDATE(1005, "参数未通过验证"),
+
+    REQUEST_NOT_VALID(1101, "请求无效"),
 
     /* 用户错误 2001-3000 */
     USER_NOT_LOGIN(2001, "用户未登录"),
@@ -91,15 +95,15 @@ public enum GlobalServiceStatusCode {
     INTERVIEW_COMMENT_NOT_EXISTS(6201, "面试评论不存在"),
     INTERVIEW_NOT_SUMMARIZED(6202, "面试还未总结"),
 
+    /* 资源错误 7001-8000 */
+    RESOURCE_LEVEL_NOT_EXISTS(7001, "资源权限不存在"),
+    RESOURCE_NOT_EXISTS(7002, "资源不存在"),
+    RESOURCE_CANNOT_BE_ACCESSED(7003, "资源不能被访问"),
+
     /* -------------- */;
 
     private final Integer code;
     private final String message;
-
-    GlobalServiceStatusCode(Integer code, String message) {
-        this.code = code;
-        this.message = message;
-    }
 
     /**
      * 根据code获取message

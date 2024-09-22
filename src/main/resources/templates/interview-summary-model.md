@@ -1,5 +1,6 @@
 
 [//]: # (
+    官方文档：https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.pdf
     1. markdown 支持 html 标签，markdown 渲染器不支持也无所谓，反正都要转成 html
     2. 部分 markdown 渲染器支持 html 标签里写 markdown 代码（例如 IDEA 的），但是在转化为 html 的时候。html 标签中的 markdown 代码并不会被识别到
     3. 图片 src 如果是相对路径的形式，在邮件里是看不到的，因为我们发邮件提供的是 html 代码，但邮件厂商或多或少都限制在渲染的时候请求资源的总大小
