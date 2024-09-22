@@ -1,8 +1,8 @@
 package com.achobeta.domain.student.model.dto;
 
+import jakarta.validation.Valid;
 import lombok.Data;
 
-import javax.validation.Valid;
 
 /**
  * @author cattleYuan
