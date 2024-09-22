@@ -7,19 +7,14 @@ import com.achobeta.domain.paper.handler.chain.RemovePaperHandlerChain;
 import com.achobeta.domain.paper.model.dto.PaperQueryDTO;
 import com.achobeta.domain.paper.model.dto.QuestionPaperDTO;
 import com.achobeta.domain.paper.model.vo.PaperQueryVO;
-import com.achobeta.domain.paper.model.vo.QuestionPaperVO;
 import com.achobeta.domain.paper.service.QuestionPaperLibraryService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
-import com.achobeta.domain.question.model.dto.QuestionQueryDTO;
-import com.achobeta.domain.question.model.vo.QuestionQueryVO;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Created With Intellij IDEA
