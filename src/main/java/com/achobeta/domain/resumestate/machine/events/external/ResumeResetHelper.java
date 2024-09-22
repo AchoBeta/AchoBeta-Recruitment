@@ -27,6 +27,8 @@ public class ResumeResetHelper implements ResumeStateExternalTransitionHelper{
 
     private final Action<ResumeStatus, ResumeEvent, ResumeContext> defaultResumeAction;
 
+    private final Action<ResumeStatus, ResumeEvent, ResumeContext> resumeNotice;
+
     private final StuResumeService stuResumeService;
 
     @Override
@@ -58,6 +60,8 @@ public class ResumeResetHelper implements ResumeStateExternalTransitionHelper{
                     .eq(StuResume::getId, context.getResume().getId())
                     .set(StuResume::getSubmitCount, 0)
                     .update();
+            // 判断是否同时发送简历状态变更的邮件
+            resumeNotice.execute(from, to, event, context);
         };
     }
 }

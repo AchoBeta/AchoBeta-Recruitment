@@ -29,6 +29,8 @@ public class ResumeEliminateHelper implements ResumeStateExternalTransitionHelpe
 
     private final Action<ResumeStatus, ResumeEvent, ResumeContext> defaultResumeAction;
 
+    private final Action<ResumeStatus, ResumeEvent, ResumeContext> resumeNotice;
+
     @Override
     public List<ResumeStatus> getFromState() {
         return List.of(
@@ -62,6 +64,10 @@ public class ResumeEliminateHelper implements ResumeStateExternalTransitionHelpe
 
     @Override
     public Action<ResumeStatus, ResumeEvent, ResumeContext> getPerformAction() {
-        return defaultResumeAction;
+        return (from, to, event, context) -> {
+            defaultResumeAction.execute(from, to, event, context);
+            // 判断是否同时发送简历状态变更的邮件
+            resumeNotice.execute(from, to, event, context);
+        };
     }
 }
