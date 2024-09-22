@@ -14,7 +14,7 @@ import org.apache.ibatis.annotations.Param;
 public interface QuestionMapper extends BaseMapper<Question> {
 
     // 并不会将结果集加入 page，而是返回值 IPage 里
-    IPage<Question> queryQuestions(IPage<?> page, @Param("libId") Long libId);
+    IPage<Question> queryQuestions(IPage<Question> page, @Param("libId") Long libId);
 
 }
 

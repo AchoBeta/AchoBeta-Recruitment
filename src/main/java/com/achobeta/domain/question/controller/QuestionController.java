@@ -71,7 +71,7 @@ public class QuestionController {
     }
 
     @PostMapping("/query")
-    public SystemJsonResponse getQuestions(@RequestBody(required = false) QuestionQueryDTO questionQueryDTO) {
+    public SystemJsonResponse queryQuestions(@RequestBody(required = false) QuestionQueryDTO questionQueryDTO) {
         // 查询
         QuestionQueryVO result = questionService.queryQuestions(questionQueryDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS(result);

@@ -12,13 +12,20 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-    <select id="getQuestionPapersByLibId" parameterType="java.lang.Long" resultMap="QuestionPaperMap">
+    <select id="queryPapers" parameterType="java.lang.Long"
+            resultMap="com.achobeta.domain.paper.model.dao.mapper.QuestionPaperMapper.BaseResultMap">
         select
-            p.id, p.title, p.description, p.create_time, p.update_time
+        -- 试卷与试卷库多对多，在本条 sql 容易出现重复行
+            distinct p.id, p.title, p.description, p.create_time, p.update_time
         from question_paper_library l
-             left join library_paper_link lp on l.id = lp.lib_id and l.is_deleted = 0 and lp.is_deleted = 0
-             left join question_paper p on p.id = lp.paper_id and p.is_deleted = 0 and lp.is_deleted = 0
-        where l.id = #{libId,jdbcType=BIGINT} and p.id is not null and l.is_deleted = 0
+            left join library_paper_link lp on l.id = lp.lib_id and l.is_deleted = 0 and lp.is_deleted = 0
+            left join question_paper p on p.id = lp.paper_id and p.is_deleted = 0 and lp.is_deleted = 0
+        <where>
+            p.id is not null and l.is_deleted = 0
+            <if test="libId != null">
+                and l.id = #{libId,jdbcType=BIGINT}
+            </if>
+        </where>
     </select>
 
 </mapper>

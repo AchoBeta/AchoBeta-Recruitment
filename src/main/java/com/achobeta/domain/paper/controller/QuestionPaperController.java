@@ -4,10 +4,14 @@ import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.paper.handler.chain.RemovePaperHandlerChain;
+import com.achobeta.domain.paper.model.dto.PaperQueryDTO;
 import com.achobeta.domain.paper.model.dto.QuestionPaperDTO;
+import com.achobeta.domain.paper.model.vo.PaperQueryVO;
 import com.achobeta.domain.paper.model.vo.QuestionPaperVO;
 import com.achobeta.domain.paper.service.QuestionPaperLibraryService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
+import com.achobeta.domain.question.model.dto.QuestionQueryDTO;
+import com.achobeta.domain.question.model.vo.QuestionQueryVO;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -70,20 +74,10 @@ public class QuestionPaperController {
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
-    @GetMapping("/list/all")
-    public SystemJsonResponse getQuestionPapers() {
+    @PostMapping("/query")
+    public SystemJsonResponse queryPapers(@RequestBody(required = false) PaperQueryDTO paperQueryDTO) {
         // 查询
-        List<QuestionPaperVO> questionPapers = questionPaperService.getQuestionPapers();
-        return SystemJsonResponse.SYSTEM_SUCCESS(questionPapers);
+        PaperQueryVO result = questionPaperService.queryPapers(paperQueryDTO);
+        return SystemJsonResponse.SYSTEM_SUCCESS(result);
     }
-
-    @GetMapping("/list/{libId}")
-    public SystemJsonResponse getQuestionPapers(@PathVariable("libId") @NotNull Long libId) {
-        // 检查
-        questionPaperLibraryService.checkPaperLibraryExists(libId);
-        // 查询
-        List<QuestionPaperVO> questionPapers = questionPaperService.getQuestionPapersByLibId(libId);
-        return SystemJsonResponse.SYSTEM_SUCCESS(questionPapers);
-    }
-
 }

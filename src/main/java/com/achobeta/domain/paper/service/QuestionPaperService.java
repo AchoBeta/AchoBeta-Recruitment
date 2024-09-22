@@ -1,6 +1,8 @@
 package com.achobeta.domain.paper.service;
 
+import com.achobeta.domain.paper.model.dto.PaperQueryDTO;
 import com.achobeta.domain.paper.model.entity.QuestionPaper;
+import com.achobeta.domain.paper.model.vo.PaperQueryVO;
 import com.achobeta.domain.paper.model.vo.QuestionPaperVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +17,7 @@ import java.util.Optional;
 */
 public interface QuestionPaperService extends IService<QuestionPaper> {
 
-    List<QuestionPaperVO> getQuestionPapers();
-
-    List<QuestionPaperVO> getQuestionPapersByLibId(Long libId);
+    PaperQueryVO queryPapers(PaperQueryDTO paperQueryDTO);
 
     Optional<QuestionPaper> getQuestionPaper(Long paperId);
 
@@ -38,4 +38,5 @@ public interface QuestionPaperService extends IService<QuestionPaper> {
     void removeQuestionPaper(Long paperId);
 
     void checkPaperExists(Long paperId);
+
 }
