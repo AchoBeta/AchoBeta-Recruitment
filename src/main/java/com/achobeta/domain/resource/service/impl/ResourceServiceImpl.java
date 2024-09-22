@@ -2,6 +2,7 @@ package com.achobeta.domain.resource.service.impl;
 
 import com.achobeta.domain.resource.constants.ResourceConstants;
 import com.achobeta.domain.resource.service.ResourceService;
+import com.achobeta.domain.users.model.po.UserHelper;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,15 +22,15 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public boolean isPermit(Long userId, Long code) {
+    public boolean isPermit(UserHelper currentUser, Long code) {
         // todo: 资源可以上传后请继续完成业务
         return isValid(code) && Boolean.TRUE;
     }
 
     @Override
-    public String analyzeCode(Long userId, Long code) {
+    public String analyzeCode(UserHelper currentUser, Long code) {
         // todo: 资源可以上传后请继续完成获取头像 url 的业务
-        return isPermit(userId, code) ? ResourceConstants.DEFAULT_IMAGE : null;
+        return isPermit(currentUser, code) ? ResourceConstants.DEFAULT_IMAGE : null;
     }
 
 }

@@ -1,5 +1,7 @@
 package com.achobeta.domain.resource.service;
 
+import com.achobeta.domain.users.model.po.UserHelper;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -11,8 +13,8 @@ public interface ResourceService {
 
     boolean isValid(Long code);
 
-    boolean isPermit(Long userId, Long code);
+    boolean isPermit(UserHelper currentUser, Long code);
 
-    String analyzeCode(Long userId, Long code);
+    String analyzeCode(UserHelper currentUser, Long code);
 
 }

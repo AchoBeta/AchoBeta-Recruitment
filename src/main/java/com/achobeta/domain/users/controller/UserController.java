@@ -8,6 +8,7 @@ import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.model.converter.UserConverter;
 import com.achobeta.domain.users.model.dto.UserDTO;
+import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.domain.users.model.vo.UserTypeVO;
 import com.achobeta.domain.users.model.vo.UserVO;
 import com.achobeta.domain.users.service.UserService;
@@ -64,16 +65,16 @@ public class UserController {
     public SystemJsonResponse updateCurrentInfo(@RequestBody UserDTO userDTO) {
         // 检测
         ValidatorUtils.validate(userDTO);
-        Long userId = BaseContext.getCurrentUser().getUserId();
+        UserHelper currentUser = BaseContext.getCurrentUser();
 
         // 设置默认头像
         Long avatar = userDTO.getAvatar();
-        if(Objects.isNull(avatar) || resourceService.isPermit(userId, avatar)) {
+        if(Objects.isNull(avatar) || resourceService.isPermit(currentUser, avatar)) {
             userDTO.setAvatar(ResourceConstants.DEFAULT_IMAGE_RESOURCE_CODE);
         }
 
         // 更新
-        userService.updateUser(userId, userDTO);
+        userService.updateUser(currentUser.getUserId(), userDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
