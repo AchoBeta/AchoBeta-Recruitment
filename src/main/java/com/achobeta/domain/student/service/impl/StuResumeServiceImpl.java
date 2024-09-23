@@ -193,7 +193,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
             //类型转换
             stuAttachmentList = stuAttachmentDTOList.stream().distinct().map(attach -> {
                 // 判断是否可以访问这个资源
-                resourceService.checkAndGetResource(attach.getAttachment());
+                resourceService.checkAndGetResource(attach.getAttachment(), null);
                 // 移出枪毙名单
                 oldAttachmentHash.remove(attach.getAttachment());
                 // 转化

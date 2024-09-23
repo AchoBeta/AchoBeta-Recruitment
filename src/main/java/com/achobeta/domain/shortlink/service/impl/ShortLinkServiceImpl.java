@@ -1,19 +1,24 @@
 package com.achobeta.domain.shortlink.service.impl;
 
+import com.achobeta.common.base.BasePageQuery;
+import com.achobeta.common.base.BasePageResult;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.shortlink.model.converter.ShortLinkConverter;
 import com.achobeta.domain.shortlink.model.dao.mapper.ShortLinkMapper;
 import com.achobeta.domain.shortlink.model.dao.po.ShortLink;
+import com.achobeta.domain.shortlink.model.dto.ShortLinkQueryDTO;
+import com.achobeta.domain.shortlink.model.vo.ShortLinkQueryVO;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
 import com.achobeta.domain.shortlink.util.ShortLinkUtils;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.RedisCache;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +40,21 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final RedisCache redisCache;
 
     @Override
+    public Optional<ShortLink> getShortLink(Long id) {
+        return this.lambdaQuery()
+                .eq(ShortLink::getId, id)
+                .oneOpt();
+    }
+
+    @Override
+    public Optional<ShortLink> getShortLinkByCode(String code) {
+        return this.lambdaQuery()
+                .eq(ShortLink::getShortCode, code)
+                .oneOpt();
+    }
+
+
+    @Override
     public String transShortLinkURL(String baseUrl, String url) {
         //获取短链接code
         String code = url;
@@ -48,10 +68,6 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         ShortLink shortLink = new ShortLink();
         shortLink.setOriginUrl(url);
         shortLink.setShortCode(code);
-        shortLink.setDeleted(0);
-        shortLink.setVersion(0);
-        shortLink.setIsUsed(false);
-        shortLink.setCreateTime(LocalDateTime.now());
         log.info("原链接:{} -> redisKey:{}", url, redisKey);
         this.save(shortLink);
         // 缓存到Redis，加入布隆过滤器
@@ -64,20 +80,18 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     @Override
     public String getOriginUrl(String code) {
         String redisKey = ShortLinkUtils.REDIS_SHORT_LINK + code;
-        //如果Redis缓存了，就直接返回Redis的值
-        Optional<String> originUrlCache = redisCache.getCacheObject(redisKey);
         // 更新为已使用
         this.lambdaUpdate()
                 .eq(ShortLink::getShortCode, code)
                 .set(ShortLink::getIsUsed, Boolean.TRUE)
+                .set(ShortLink::getUpdateTime, LocalDateTime.now())
                 .update();
-        return originUrlCache.orElseGet(() -> {
+        //如果Redis缓存了，就直接返回Redis的值
+        return (String) redisCache.getCacheObject(redisKey).orElseGet(() -> {
             //否则查MySQL
-            ShortLink shortLink = this.lambdaQuery().eq(ShortLink::getShortCode, code).one();
-            if (Objects.isNull(shortLink)) {
-                throw new GlobalServiceException("不存在此短链接code：" + code, GlobalServiceStatusCode.PARAM_NOT_VALID);
-            }
-            String originUrl = shortLink.getOriginUrl();
+            String originUrl = getShortLinkByCode(code)
+                    .orElseThrow(() -> new GlobalServiceException("不存在此短链接code：" + code, GlobalServiceStatusCode.PARAM_NOT_VALID))
+                    .getOriginUrl();
             // 缓存到Redis里
             redisCache.setCacheObject(redisKey, originUrl, SHORT_LINK_TIMEOUT, SHORT_LINK_UNIT);
             redisCache.addToBloomFilter(ShortLinkUtils.BLOOM_FILTER_NAME, redisKey);
@@ -85,6 +99,33 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         });
     }
 
+    @Override
+    public ShortLinkQueryVO queryShortLinkList(ShortLinkQueryDTO shortLinkQueryDTO) {
+        // 解析分页参数获取 page
+        IPage<ShortLink> page = Optional.ofNullable(shortLinkQueryDTO)
+                .map(ShortLinkConverter.INSTANCE::shortLinkQueryDTOToBasePageQuery)
+                .orElseGet(BasePageQuery::new)
+                .toMpPage();
+        // 分页
+        IPage<ShortLink> resourceIPage = this.page(page);
+        // 封装
+        BasePageResult<ShortLink> pageResult = BasePageResult.of(resourceIPage);
+        // 转化
+        return ShortLinkConverter.INSTANCE.basePageResultToShortLinkQueryVO(pageResult);
+    }
+
+    @Override
+    public void removeShortLink(Long id) {
+        getShortLink(id).ifPresent(shortLink -> {
+            // 删除数据库对应的行
+            this.lambdaUpdate()
+                    .eq(ShortLink::getId, id)
+                    .remove();
+            // 删除缓存（哪怕出现并发问题，影响也不大，也就在缓存期间短链仍有效罢了）
+            redisCache.deleteObject(ShortLinkUtils.REDIS_SHORT_LINK + shortLink.getShortCode());
+        });
+
+    }
 
 }
 

@@ -16,8 +16,6 @@ import java.util.List;
  */
 public interface ResourceService {
 
-    DigitalResource checkAndGetResource(Long code);
-
     DigitalResource checkAndGetResource(Long code, ResourceAccessLevel level);
 
     DigitalResource analyzeCode(Long code);

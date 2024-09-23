@@ -41,22 +41,10 @@ public class ResourceServiceImpl implements ResourceService {
     private final ObjectStorageServiceFactory objectStorageServiceFactory;
 
     @Override
-    public DigitalResource checkAndGetResource(Long code) {
-        DigitalResource resource = digitalResourceService.getResourceByCode(code);
-        // 获取策略并判断是否可以访问
-        ResourceAccessStrategy accessStrategy = accessStrategyFactory.getStrategy(resource.getAccessLevel());
-        if (accessStrategy.isAccessible(resource)) {
-            return resource;
-        } else {
-            throw accessStrategy.failed(resource);
-        }
-    }
-
-    @Override
     public DigitalResource checkAndGetResource(Long code, ResourceAccessLevel level) {
         DigitalResource resource = digitalResourceService.getResourceByCode(code);
         // 获取策略并判断是否可以访问
-        ResourceAccessStrategy accessStrategy = accessStrategyFactory.getStrategy(level);
+        ResourceAccessStrategy accessStrategy = accessStrategyFactory.getStrategy(resource.getAccessLevel().and(level));
         if (accessStrategy.isAccessible(resource)) {
             return resource;
         } else {
@@ -66,7 +54,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public DigitalResource analyzeCode(Long code) {
-        return checkAndGetResource(code);
+        return checkAndGetResource(code, null);
     }
 
     @Override
@@ -143,7 +131,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Transactional
     public void remove(Long code) {
         ObjectStorageService storageService = objectStorageServiceFactory.load();
-        // 固定 USER_ACCESS 权限
+        // 若权限小于 USER_ACCESS 就按 USER_ACCESS 权限
         DigitalResource resource = checkAndGetResource(code, ResourceAccessLevel.USER_ACCESS);
         storageService.remove(resource.getFileName());
         digitalResourceService.removeDigitalResource(resource.getId());

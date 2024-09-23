@@ -4,6 +4,8 @@ import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.annotation.IsAccessible;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.shortlink.model.dto.ShortLinkQueryDTO;
+import com.achobeta.domain.shortlink.model.vo.ShortLinkQueryVO;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
@@ -54,5 +56,17 @@ public class ShortLinkController {
         String shortLinkURL = shortLinkService.transShortLinkURL(baseUrl, url);
         log.info("原链接:{} -> 短链接:{}", url, shortLinkURL);
         return SystemJsonResponse.SYSTEM_SUCCESS(shortLinkURL);
+    }
+
+    @PostMapping("/query")
+    public SystemJsonResponse queryShortLinkList(@RequestBody(required = false) ShortLinkQueryDTO shortLinkQueryDTO) {
+        ShortLinkQueryVO shortLinkQueryVO = shortLinkService.queryShortLinkList(shortLinkQueryDTO);
+        return SystemJsonResponse.SYSTEM_SUCCESS(shortLinkQueryVO);
+    }
+
+    @GetMapping("/remove/{id}")
+    public SystemJsonResponse removeShortLink(@PathVariable("id") @NotNull Long id) {
+        shortLinkService.removeShortLink(id);
+        return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 }

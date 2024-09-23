@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Optional;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -44,6 +46,10 @@ public enum ResourceAccessLevel {
             }
         }
         throw new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_LEVEL_NOT_EXISTS);
+    }
+
+    public ResourceAccessLevel and(ResourceAccessLevel accessLevel) {
+        return Optional.ofNullable(accessLevel).filter(otherLevel -> this.getLevel().compareTo(otherLevel.getLevel()) <= 0).orElse(this);
     }
 
 }
