@@ -11,13 +11,16 @@ import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.util.MediaUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created With Intellij IDEA
@@ -27,6 +30,7 @@ import java.util.List;
  * Time: 12:17
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class ResourceServiceImpl implements ResourceService {
@@ -45,7 +49,7 @@ public class ResourceServiceImpl implements ResourceService {
         if (accessStrategy.isAccessible(resource)) {
             return resource;
         } else {
-            throw new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_CANNOT_BE_ACCESSED);
+            throw accessStrategy.failed(resource);
         }
     }
 
@@ -57,7 +61,7 @@ public class ResourceServiceImpl implements ResourceService {
         if (accessStrategy.isAccessible(resource)) {
             return resource;
         } else {
-            throw new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_CANNOT_BE_ACCESSED);
+            throw accessStrategy.failed(resource);
         }
     }
 
@@ -82,6 +86,22 @@ public class ResourceServiceImpl implements ResourceService {
     public byte[] load(Long code) {
         DigitalResource resource = analyzeCode(code);
         return objectStorageServiceFactory.load().load(resource.getFileName());
+    }
+
+    @Override
+    public void checkImage(Long code) {
+        // 加载资源
+        byte[] bytes = load(code);
+        // 判断是否为图片
+        ResourceUtil.checkImage(MediaUtil.getContentType(bytes));
+    }
+
+    @Override
+    public void checkAndRemoveImage(Long code, Long old) {
+        if(!code.equals(old)) {
+            checkImage(code);
+            removeKindly(old);
+        }
     }
 
     @Override
@@ -123,8 +143,20 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public void remove(Long code) {
         ObjectStorageService storageService = objectStorageServiceFactory.load();
-        DigitalResource digitalResource = checkAndGetResource(code, ResourceAccessLevel.USER_ACCESS);
-        storageService.remove(digitalResource.getFileName());
-        digitalResourceService.removeDigitalResource(digitalResource.getId());
+        // 固定 USER_ACCESS 权限
+        DigitalResource resource = checkAndGetResource(code, ResourceAccessLevel.USER_ACCESS);
+        storageService.remove(resource.getFileName());
+        digitalResourceService.removeDigitalResource(resource.getId());
+    }
+
+    @Override
+    public void removeKindly(Long code) {
+        try {
+            if(Objects.nonNull(code)) {
+                remove(code);
+            }
+        } catch (GlobalServiceException e) {
+            log.warn("尝试删除 code： {}，失败：{} {}", code, e.getStatusCode(), e.getMessage());
+        }
     }
 }

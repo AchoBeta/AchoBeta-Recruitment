@@ -1,7 +1,6 @@
 package com.achobeta.domain.student.model.dto;
 
 import com.achobeta.common.annotation.IntRange;
-import com.achobeta.common.annotation.IsImage;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -57,10 +56,8 @@ public class StuSimpleResumeDTO implements Serializable {
     @NotBlank(message = "个人经历不能为空")
     private String experience;
 
-    // todo: 若资源可以上传后请进行校验
-//    @NotBlank(message = "证件照不能为空")
-    @IsImage(message = "证件照非法")
-    private String image;
+    @NotNull(message = "证件照不能为空")
+    private Long image;
 
     private String awards;
 

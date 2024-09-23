@@ -81,9 +81,4 @@ public class SnowFlakeUtil{
         return ID;
     }
 
-    public static void main(String[] args) {
-        System.out.println(getID());
-        System.out.println(getID());
-        System.out.println(getID());
-    }
 }

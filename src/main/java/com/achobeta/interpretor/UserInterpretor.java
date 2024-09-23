@@ -23,6 +23,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.crypto.SecretKey;
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 /**
  * @author cattleYuan
@@ -50,18 +51,14 @@ public class UserInterpretor implements HandlerInterceptor {
         Claims claims = JwtUtil.parseJWT(secretKey, token);
         Long userId = Long.valueOf(claims.get(UserInterpretor.USER_ID).toString());
         Integer role = Integer.parseInt(claims.get(UserInterpretor.USER_ROLE_NAME).toString());
-        return UserHelper.builder()
-                .userId(userId)
-                .token(token)
-                .role(role)
-                .build();
+        return UserHelper.builder().userId(userId).token(token).role(role).build();
     }
 
     public UserHelper getUserHelper() {
-        // 获取当前 request
-        return HttpServletUtil.getRequest()
-                .map(this::getUserHelper)
-                .orElseThrow(GlobalServiceException::new);
+        return Optional.ofNullable(BaseContext.getCurrentUser())
+                .or(() -> HttpServletUtil.getRequest().map(this::getUserHelper))
+                .orElseThrow(GlobalServiceException::new)
+        ;
     }
 
     @Override

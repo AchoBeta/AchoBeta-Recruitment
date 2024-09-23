@@ -50,17 +50,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity>
     public void updateUser(Long userId, UserDTO userDTO) {
         // 设置默认头像
         Long avatar = userDTO.getAvatar();
-        getUserById(userId).map(UserEntity::getAvatar).filter(avatar::equals).ifPresentOrElse(code -> {}, () -> {
-            // 加载资源
-            byte[] bytes = resourceService.load(avatar);
-            // 判断是否为图片
-            ResourceUtil.checkImage(MediaUtil.getContentType(bytes));
-            // 更新
-            this.lambdaUpdate()
-                    .eq(UserEntity::getId, userId)
-                    .update(UserConverter.INSTANCE.userDTOToUser(userDTO));
-            // 删除原图片
-            resourceService.remove(avatar);
+        UserEntity userEntity = UserConverter.INSTANCE.userDTOToUser(userDTO);
+        getUserById(userId).map(UserEntity::getAvatar).ifPresent(code -> {
+            resourceService.checkAndRemoveImage(avatar, code);
         });
+        // 更新
+        this.lambdaUpdate()
+                .eq(UserEntity::getId, userId)
+                .update(userEntity);
     }
 }

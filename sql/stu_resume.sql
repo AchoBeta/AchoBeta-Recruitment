@@ -58,7 +58,7 @@ CREATE TABLE `stu_resume`
     `introduce`        text CHARACTER SET utf8 COLLATE utf8_bin         NOT NULL COMMENT '个人介绍（自我认知）',
     `experience`       text CHARACTER SET utf8 COLLATE utf8_bin         NOT NULL COMMENT '个人经历 （项目经历、 职业规划等）',
     `awards`           text CHARACTER SET utf8 COLLATE utf8_bin         NOT NULL COMMENT '获奖经历',
-    `image`            varchar(500) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '照片',
+    `image`            bitint                                           NOT NULL DEFAULT 0 COMMENT '照片',
     `remark`           varchar(500) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '备注',
     `status`           int                                              NOT NULL DEFAULT 1 COMMENT '简历状态',
     `submit_count`     int                                              NOT NULL DEFAULT 0 COMMENT '提交次数',

@@ -4,6 +4,8 @@ import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.ResumeEvent;
 import com.achobeta.common.enums.ResumeStatus;
 import com.achobeta.domain.resource.constants.ResourceConstants;
+import com.achobeta.domain.resource.model.entity.DigitalResource;
+import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.resumestate.service.ResumeStatusProcessService;
 import com.achobeta.domain.student.model.converter.StuResumeConverter;
 import com.achobeta.domain.student.model.dao.mapper.StuResumeMapper;
@@ -22,10 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author 马拉圈
@@ -39,6 +39,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     private final StuAttachmentService stuAttachmentService;
     private final StuResumeConverter stuResumeConverter;
     private final ResumeStatusProcessService resumeStatusProcessService;
+    private final ResourceService resourceService;
     //简历最大提交数
     private final Integer MAX_SUBMIT_COUNT = 3;
 
@@ -70,17 +71,16 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     public void submitResume(StuResumeDTO stuResumeDTO, StuResume stuResume) {
         //简历表信息
         StuSimpleResumeDTO resumeDTO = stuResumeDTO.getStuSimpleResumeDTO();
+
+        // 检测
+        resourceService.checkAndRemoveImage(resumeDTO.getImage(), stuResume.getImage());
+
         //附件列表
         List<StuAttachmentDTO> stuAttachmentDTOList = stuResumeDTO.getStuAttachmentDTOList();
 
-        // 设置默认头像
-        if (Objects.isNull(resumeDTO.getImage())) {
-            resumeDTO.setImage(ResourceConstants.DEFAULT_IMAGE);
-        }
-
         //是否存在已有简历信息
-        Optional.ofNullable(stuResume.getId()).
-                ifPresentOrElse(id -> updateResumeInfo(stuResume, resumeDTO), () -> saveResumeInfo(stuResume, resumeDTO));
+        Optional.ofNullable(stuResume.getId())
+                .ifPresentOrElse(id -> updateResumeInfo(stuResume, resumeDTO), () -> saveResumeInfo(stuResume, resumeDTO));
 
         //保存附件信息
         saveStuAttachment(stuAttachmentDTOList, stuResume.getId());
@@ -107,7 +107,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         //构造返回的简历表信息
         StuSimpleResumeVO simpleResumeVO = stuResumeConverter.stuResumeToSimpleVO(stuResume);
         //查询并构造附件集合
-        List<StuAttachment> stuAttachmentList = stuAttachmentService.lambdaQuery().eq(StuAttachment::getResumeId, queryResumeDTO.getResumeId()).list();
+        List<StuAttachment> stuAttachmentList = stuAttachmentService.listByResumeId(queryResumeDTO.getResumeId());
         List<StuAttachmentVO> stuAttachmentVOList = stuResumeConverter.stuAttachmentsToVOList(stuAttachmentList);
 
         //将简历表信息和附件信息封装返回
@@ -182,21 +182,36 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
 
     @Transactional
     public void saveStuAttachment(List<StuAttachmentDTO> stuAttachmentDTOList, Long resumeId) {
-        //删除原有简历附件
-        stuAttachmentService.lambdaUpdate().eq(StuAttachment::getResumeId, resumeId).remove();
+        // 待枪毙名单
+        Set<Long> oldAttachmentHash = stuAttachmentService.listByResumeId(resumeId).stream()
+                .map(StuAttachment::getAttachment)
+                .collect(Collectors.toSet());
+
         //构造附件保存信息列表
         List<StuAttachment> stuAttachmentList = new ArrayList<>();
 
         if (!CollectionUtils.isEmpty(stuAttachmentDTOList)) {
             //类型转换
             stuAttachmentList = stuAttachmentDTOList.stream().map(attach -> {
+                // 判断是否可以访问这个资源
+                resourceService.checkAndGetResource(attach.getAttachment());
+                // 移出枪毙名单
+                oldAttachmentHash.remove(attach.getAttachment());
+                // 转化
                 StuAttachment stuAttachment = stuResumeConverter.stuAttachmentDTOToPo(attach);
                 stuAttachment.setResumeId(resumeId);
                 return stuAttachment;
             }).toList();
 
+            //删除原有简历附件
+            stuAttachmentService.lambdaUpdate().eq(StuAttachment::getResumeId, resumeId).remove();
             //批量插入附件信息
             stuAttachmentService.saveBatch(stuAttachmentList);
+        }
+
+        if (!CollectionUtils.isEmpty(oldAttachmentHash)) {
+             // 这些都是最新的附件里面没有的，挨个枪毙（删除必然只能删除自己的）
+            oldAttachmentHash.forEach(resourceService::removeKindly);
         }
 
     }

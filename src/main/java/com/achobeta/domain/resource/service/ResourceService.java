@@ -28,6 +28,10 @@ public interface ResourceService {
 
     byte[] load(Long code);
 
+    void checkImage(Long code);
+
+    void checkAndRemoveImage(Long code, Long old);
+
     String gerObjectUrl(Long code);
 
     Long upload(Long userId, MultipartFile file);
@@ -37,5 +41,11 @@ public interface ResourceService {
     void setAccessLevel(Long id, ResourceAccessLevel level);
 
     void remove(Long code);
+
+    /**
+     * 删除一个资源，宽恕删除失败的情况
+     * @param code 资源码
+     */
+    void removeKindly(Long code);
 
 }
