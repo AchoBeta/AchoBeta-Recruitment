@@ -34,3 +34,4 @@ resource:
   upload:
     maxFileSize: 20
     maxRequestSize: 100
+

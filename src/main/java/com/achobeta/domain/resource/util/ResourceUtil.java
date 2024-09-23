@@ -38,8 +38,8 @@ public class ResourceUtil {
 
     public static String getUniqueFileName(String suffix) {
         return String.format(
-                "/%s/%s%s",
-                DateTimeConfig.DATE_FORMAT.format(new Date()),
+                "%s/%s/%s%s",
+                DateTimeConfig.DATE_FORMAT.format(new Date()), suffix,
                 UUID.randomUUID().toString().replace("-", ""),
                 suffix
         );

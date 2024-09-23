@@ -54,12 +54,24 @@ public class MinioEngine {
      */
     public String getObjectUrl(String fileName) throws Exception {
         // 查看文件地址
-        GetPresignedObjectUrlArgs objectUrlArgs = new GetPresignedObjectUrlArgs().builder()
+        GetPresignedObjectUrlArgs objectUrlArgs = GetPresignedObjectUrlArgs.builder()
                 .bucket(minioConfig.getBucketName())
                 .object(fileName)
                 .method(Method.GET)
                 .build();
         return minioClient.getPresignedObjectUrl(objectUrlArgs);
+    }
+
+    /**
+     * 获取基本的 url，但这个地址不一定能够公网访问~
+     *
+     * @param fileName
+     * @return
+     */
+    public String getObjectBaseUrl(String fileName) throws Exception {
+        // 查看文件地址
+        String objectUrl = getObjectUrl(fileName);
+        return objectUrl.substring(0, objectUrl.indexOf("?"));
     }
 
     /**

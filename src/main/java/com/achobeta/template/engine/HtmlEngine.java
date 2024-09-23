@@ -33,7 +33,7 @@ public class HtmlEngine {
      */
     private final TemplateEngine templateEngine;
 
-    private final MarkdownEngine markdownEngine;
+    private final TextEngine textEngine;
 
     public HtmlBuilder builder() {
         return new HtmlBuilder();
@@ -110,19 +110,19 @@ public class HtmlEngine {
 
         // 合并 md 后转化为 html 追加
         public <T> HtmlBuilder appendMarkdown(String template, T data) {
-            String markdown = markdownEngine.builder().append(template, data).build();
+            String markdown = textEngine.builder().append(template, data).build();
             return appendMarkdown(markdown);
         }
 
         // 合并 md 后转化为 html 追加
         public HtmlBuilder appendMarkdown(Resource resource) {
-            String markdown = markdownEngine.builder().append(resource).build();
+            String markdown = textEngine.builder().append(resource).build();
             return appendMarkdown(markdown);
         }
 
         // 合并 html 并依次追加
         public HtmlBuilder appendMarkdown(List<Resource> resourceList) {
-            String markdown = markdownEngine.builder().append(resourceList).build();
+            String markdown = textEngine.builder().append(resourceList).build();
             return appendMarkdown(markdown);
         }
 
