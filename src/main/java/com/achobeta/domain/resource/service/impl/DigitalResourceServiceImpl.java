@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -41,6 +42,14 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
         return this.lambdaQuery()
                 .eq(DigitalResource::getCode, code)
                 .oneOpt()
+                .map(resource -> {
+                    // 以 updateTime 字段作为最近访问时间的标识
+                    this.lambdaUpdate()
+                            .eq(DigitalResource::getId, resource.getId())
+                            .set(DigitalResource::getUpdateTime, LocalDateTime.now())
+                            .update();
+                    return resource;
+                })
                 .orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_NOT_EXISTS));
     }
 

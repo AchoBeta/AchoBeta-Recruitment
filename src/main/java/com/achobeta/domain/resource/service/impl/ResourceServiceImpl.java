@@ -140,6 +140,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    @Transactional
     public void remove(Long code) {
         ObjectStorageService storageService = objectStorageServiceFactory.load();
         // 固定 USER_ACCESS 权限
@@ -149,6 +150,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    @Transactional
     public void removeKindly(Long code) {
         try {
             if(Objects.nonNull(code)) {
