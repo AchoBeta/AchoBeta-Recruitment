@@ -16,4 +16,8 @@ public class ResourceQueryDTO {
 
     private Integer pageSize;
 
+    private Long userId;
+
+    private Integer level;
+
 }

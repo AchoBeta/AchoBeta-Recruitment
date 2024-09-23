@@ -34,6 +34,8 @@ public interface ResourceService {
 
     Long upload(Long userId, MultipartFile file);
 
+    Long upload(Long userId, String originalName, byte[] data, ResourceAccessLevel level);
+
     List<Long> uploadList(Long userId, List<MultipartFile> fileList);
 
     void setAccessLevel(Long id, ResourceAccessLevel level);

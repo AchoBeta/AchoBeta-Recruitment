@@ -106,8 +106,9 @@ public enum GlobalServiceStatusCode {
     RESOURCE_DOWNLOAD_FAILED(7008, "资源下载失败"),
     RESOURCE_GET_OBJECT_URL_FAILED(7009, "获取资源 url 失败"),
     RESOURCE_NOT_VALID(7010, "资源非法"),
-    RESOURCE_OUT_SIZE(7011, "资源过大"),
-    RESOURCE_TYPE_NOT_MATCH(7012, "资源类型不匹配"),
+    RESOURCE_IS_BLANK(7011, "资源为空"),
+    RESOURCE_OUT_SIZE(7012, "资源过大"),
+    RESOURCE_TYPE_NOT_MATCH(7013, "资源类型不匹配"),
 
 
     /* -------------- */;

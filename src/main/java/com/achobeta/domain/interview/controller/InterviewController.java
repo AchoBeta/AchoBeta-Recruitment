@@ -2,10 +2,7 @@ package com.achobeta.domain.interview.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
-import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.common.enums.InterviewEvent;
-import com.achobeta.common.enums.InterviewStatus;
-import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.common.enums.*;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.model.converter.InterviewConverter;
 import com.achobeta.domain.interview.model.dto.*;
@@ -20,7 +17,9 @@ import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.util.HttpServletUtil;
 import com.achobeta.util.ValidatorUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Created With Intellij IDEA
@@ -130,8 +130,20 @@ public class InterviewController {
     @PostMapping("/list/manager/all")
     public SystemJsonResponse managerGetAllInterviewList(@RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 查询
-        List<InterviewVO> interviewVOList = interviewService.managerGetInterviewList(null, InterviewConditionDTO.getCondition(interviewConditionDTO));
+        List<InterviewVO> interviewVOList = interviewService.managerGetInterviewList(null, InterviewConditionDTO.of(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewVOList);
+    }
+
+    @PostMapping("/print/all")
+    public SystemJsonResponse printAllInterviewList(HttpServletRequest request,
+                                                    @RequestParam(name = "level", required = false) Integer level,
+                                                    @RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
+        // 获取当前管理员 id
+        Long managerId = BaseContext.getCurrentUser().getUserId();
+        ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(ResourceAccessLevel.FREE_ACCESS);
+        Long code = interviewService.printAllInterviewList(managerId, InterviewConditionDTO.of(interviewConditionDTO), accessLevel);
+        String baseUrl = HttpServletUtil.getBaseUrl("/api/v1/resource/download/", request);
+        return SystemJsonResponse.SYSTEM_SUCCESS(baseUrl + code);
     }
 
     @PostMapping("/list/manager/own")
@@ -139,7 +151,7 @@ public class InterviewController {
         // 获取当前管理员 id
         Long managerId = BaseContext.getCurrentUser().getUserId();
         // 查询
-        List<InterviewVO> interviewVOList = interviewService.managerGetInterviewList(managerId, InterviewConditionDTO.getCondition(interviewConditionDTO));
+        List<InterviewVO> interviewVOList = interviewService.managerGetInterviewList(managerId, InterviewConditionDTO.of(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewVOList);
     }
 
@@ -149,7 +161,7 @@ public class InterviewController {
         // 获取当前用户 id
         Long userId = BaseContext.getCurrentUser().getUserId();
         // 查询
-        List<InterviewVO> interviewVOList = interviewService.userGetInterviewList(userId, InterviewConditionDTO.getCondition(interviewConditionDTO));
+        List<InterviewVO> interviewVOList = interviewService.userGetInterviewList(userId, InterviewConditionDTO.of(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewVOList);
     }
 

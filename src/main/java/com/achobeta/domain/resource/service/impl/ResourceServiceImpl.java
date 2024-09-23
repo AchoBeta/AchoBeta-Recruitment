@@ -8,9 +8,9 @@ import com.achobeta.domain.resource.model.entity.DigitalResource;
 import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.domain.resource.service.ResourceService;
-import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.util.MediaUtil;
+import com.achobeta.util.ResourceUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -84,6 +84,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    @Transactional
     public void checkAndRemoveImage(Long code, Long old) {
         if(!code.equals(old)) {
             checkImage(code);
@@ -103,7 +104,17 @@ public class ResourceServiceImpl implements ResourceService {
         resource.setUserId(userId);
         resource.setOriginalName(ResourceUtil.getOriginalName(file));
         resource.setFileName(objectStorageServiceFactory.load().upload(file));
-        return digitalResourceService.createResource(resource);
+        return digitalResourceService.createResource(resource).getCode();
+    }
+
+    @Override
+    public Long upload(Long userId, String originalName, byte[] data, ResourceAccessLevel level) {
+        DigitalResource resource = new DigitalResource();
+        resource.setUserId(userId);
+        resource.setOriginalName(originalName);
+        resource.setFileName(objectStorageServiceFactory.load().upload(originalName, data));
+        resource.setAccessLevel(level);
+        return digitalResourceService.createResource(resource).getCode();
     }
 
     @Override

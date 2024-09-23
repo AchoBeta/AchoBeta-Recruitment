@@ -14,8 +14,6 @@ import java.util.List;
 @Slf4j
 public class ExcelUtil {
 
-    private static final String DEFAULT_SUFFIX = ".xlsx";
-
     /**
      * 打印表格
      * @param title 表格标题

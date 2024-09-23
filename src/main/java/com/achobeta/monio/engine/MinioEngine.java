@@ -1,8 +1,8 @@
 package com.achobeta.monio.engine;
 
-import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.monio.config.MinioConfig;
 import com.achobeta.util.MediaUtil;
+import com.achobeta.util.ResourceUtil;
 import io.minio.*;
 import io.minio.http.Method;
 import io.minio.messages.Item;
@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +25,20 @@ public class MinioEngine {
 
     private final MinioClient minioClient;
 
+    public String upload(String originalName, byte[] bytes) throws Exception {
+        String suffix = ResourceUtil.getFileNameSuffix(originalName);
+        String uniqueFileName = ResourceUtil.getUniqueFileName(suffix);
+        PutObjectArgs objectArgs = PutObjectArgs.builder()
+                .bucket(minioConfig.getBucketName())
+                .object(uniqueFileName)
+                .stream(MediaUtil.getInputStream(bytes), bytes.length, -1) // 不分块
+                .contentType(MediaUtil.getContentType(bytes))
+                .build();
+        //文件名称相同会覆盖
+        minioClient.putObject(objectArgs);
+        return uniqueFileName;
+    }
+
     /**
      * 文件上传
      *
@@ -31,18 +46,9 @@ public class MinioEngine {
      * @return Boolean
      */
     public String upload(MultipartFile file) throws Exception {
-        String originalFilename = ResourceUtil.getOriginalName(file);
-        String suffix = ResourceUtil.getFileNameSuffix(originalFilename);
-        String uniqueFileName = ResourceUtil.getUniqueFileName(suffix);
-        PutObjectArgs objectArgs = PutObjectArgs.builder()
-                .bucket(minioConfig.getBucketName())
-                .object(uniqueFileName)
-                .stream(file.getInputStream(), file.getSize(), -1) // 不分块
-                .contentType(file.getContentType())
-                .build();
-        //文件名称相同会覆盖
-        minioClient.putObject(objectArgs);
-        return uniqueFileName;
+        try (InputStream inputStream = file.getInputStream()){
+            return upload(ResourceUtil.getOriginalName(file), MediaUtil.getBytes(inputStream));
+        }
     }
 
     /**

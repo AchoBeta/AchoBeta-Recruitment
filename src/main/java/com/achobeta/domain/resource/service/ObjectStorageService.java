@@ -20,6 +20,8 @@ public interface ObjectStorageService {
      */
     String upload(MultipartFile file);
 
+    String upload(String originalName, byte[] bytes);
+
     /**
      * 预览图片
      *

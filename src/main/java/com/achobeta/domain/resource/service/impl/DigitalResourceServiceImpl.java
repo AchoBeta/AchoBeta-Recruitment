@@ -56,12 +56,24 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
     @Override
     public ResourceQueryVO queryResources(ResourceQueryDTO resourceQueryDTO) {
         // 解析分页参数获取 page
-        IPage<DigitalResource> page = Optional.ofNullable(resourceQueryDTO)
-                .map(DigitalResourceConverter.INSTANCE::resourceQueryDTOToBasePageQuery)
-                .orElseGet(BasePageQuery::new)
-                .toMpPage();
+        IPage<DigitalResource> page = null;
+        Long userId = null;
+        Integer level = null;
+        if (Objects.isNull(resourceQueryDTO)) {
+            page = new BasePageQuery().toMpPage();
+        } else {
+            page = DigitalResourceConverter.INSTANCE.resourceQueryDTOToBasePageQuery(resourceQueryDTO).toMpPage();
+            userId = resourceQueryDTO.getUserId();
+            level = Optional.ofNullable(resourceQueryDTO.getLevel())
+                    .map(ResourceAccessLevel::get) // 这个时候就要求必须是有效的 level
+                    .map(ResourceAccessLevel::getLevel)
+                    .orElse(null);
+        }
         // 分页
-        IPage<DigitalResource> resourceIPage = this.page(page);
+        IPage<DigitalResource> resourceIPage = this.lambdaQuery()
+                .eq(Objects.nonNull(userId), DigitalResource::getUserId, userId)
+                .eq(Objects.nonNull(level), DigitalResource::getUserId, level) // eq 不能用枚举
+                .page(page);
         // 封装
         BasePageResult<DigitalResource> pageResult = BasePageResult.of(resourceIPage);
         // 转化
@@ -69,15 +81,12 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
     }
 
     @Override
-    public Long createResource(DigitalResource digitalResource) {
-        return Optional.ofNullable(digitalResource)
-                .map(resource -> {
-                    // 生成一个雪花数字
-                    Long code = resourceCodeGenerator.nextId();
-                    resource.setCode(code);
-                    this.save(resource);
-                    return code;
-                }).orElse(null);
+    public DigitalResource createResource(DigitalResource digitalResource) {
+        // 生成一个雪花数字
+        Long code = resourceCodeGenerator.nextId();
+        digitalResource.setCode(code);
+        this.save(digitalResource);
+        return digitalResource;
     }
 
     @Override

@@ -19,7 +19,7 @@ public interface DigitalResourceService extends IService<DigitalResource> {
 
     ResourceQueryVO queryResources(ResourceQueryDTO resourceQueryDTO);
 
-    Long createResource(DigitalResource digitalResource);
+    DigitalResource createResource(DigitalResource digitalResource);
 
     List<Long> createResourceBatch(List<DigitalResource> resourceList);
 

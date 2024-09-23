@@ -29,6 +29,15 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService {
     }
 
     @Override
+    public String upload(String originalName, byte[] bytes) {
+        try {
+            return minioEngine.upload(originalName, bytes);
+        } catch (Exception e) {
+            throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_UPLOAD_FAILED);
+        }
+    }
+
+    @Override
     public String getObjectUrl(String fileName) {
         try {
             return minioEngine.getObjectBaseUrl(fileName);
