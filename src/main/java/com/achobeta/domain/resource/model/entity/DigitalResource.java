@@ -22,6 +22,8 @@ public class DigitalResource extends BaseIncrIDEntity implements Serializable {
 
     private ResourceAccessLevel accessLevel;
 
+    private String originalName;
+
     private String fileName;
 
     @TableField(exist = false)

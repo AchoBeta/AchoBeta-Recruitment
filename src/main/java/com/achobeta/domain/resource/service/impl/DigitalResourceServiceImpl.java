@@ -21,6 +21,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
 * @author 马拉圈
@@ -58,36 +59,32 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
     }
 
     @Override
-    public Long createResource(Long userId, String fileName) {
-        DigitalResource digitalResource = new DigitalResource();
-        // 生成一个雪花数字
-        Long code = resourceCodeGenerator.nextId();
-        digitalResource.setCode(code);
-        digitalResource.setUserId(userId);
-        digitalResource.setFileName(fileName);
-        this.save(digitalResource);
-        return code;
+    public Long createResource(DigitalResource digitalResource) {
+        return Optional.ofNullable(digitalResource)
+                .map(resource -> {
+                    // 生成一个雪花数字
+                    Long code = resourceCodeGenerator.nextId();
+                    resource.setCode(code);
+                    this.save(resource);
+                    return code;
+                }).orElse(null);
     }
 
     @Override
     @Transactional
-    public List<Long> createResourceBatch(Long userId, List<String> fileNameList) {
-        if(CollectionUtils.isEmpty(fileNameList)) {
+    public List<Long> createResourceBatch(List<DigitalResource> resourceList) {
+        if(CollectionUtils.isEmpty(resourceList)) {
             return new ArrayList<>();
         }
         List<Long> codeList = new ArrayList<>();
-        List<DigitalResource> digitalResourceList = fileNameList.stream()
+        resourceList.stream()
                 .filter(Objects::nonNull)
-                .map(fileName -> {
-                    DigitalResource digitalResource = new DigitalResource();
+                .forEach(resource -> {
                     Long code = resourceCodeGenerator.nextId();
                     codeList.add(code);
-                    digitalResource.setCode(code);
-                    digitalResource.setUserId(userId);
-                    digitalResource.setFileName(fileName);
-                    return digitalResource;
-                }).toList();
-        this.saveBatch(digitalResourceList);
+                    resource.setCode(code);
+                });
+        this.saveBatch(resourceList);
         return codeList;
     }
 

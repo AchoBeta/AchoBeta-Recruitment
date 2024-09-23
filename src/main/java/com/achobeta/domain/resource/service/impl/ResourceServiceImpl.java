@@ -73,17 +73,27 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Long upload(Long userId, MultipartFile file) {
         String fileName = objectStorageServiceFactory.load().upload(file);
-        return digitalResourceService.createResource(userId, fileName);
+        DigitalResource resource = new DigitalResource();
+        resource.setFileName(fileName);
+        resource.setOriginalName(file.getOriginalFilename());
+        resource.setUserId(userId);
+        return digitalResourceService.createResource(resource);
     }
 
     @Override
     @Transactional
     public List<Long> uploadList(Long userId, List<MultipartFile> fileList) {
         ObjectStorageService storageService = objectStorageServiceFactory.load();
-        List<String> fileNameList = fileList.stream()
-                .map(storageService::upload)
+        List<DigitalResource> resourceList = fileList.stream()
+                .map(file -> {
+                    DigitalResource resource = new DigitalResource();
+                    resource.setFileName(storageService.upload(file));
+                    resource.setOriginalName(file.getOriginalFilename());
+                    resource.setUserId(userId);
+                    return resource;
+                })
                 .toList();
-        return digitalResourceService.createResourceBatch(userId, fileNameList);
+        return digitalResourceService.createResourceBatch(resourceList);
     }
 
     @Override

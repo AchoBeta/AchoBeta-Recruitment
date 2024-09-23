@@ -3,7 +3,6 @@ package com.achobeta.domain.resource.service;
 import com.achobeta.common.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.dto.ResourceQueryDTO;
 import com.achobeta.domain.resource.model.entity.DigitalResource;
-import com.achobeta.domain.resource.model.vo.DigitalResourceVO;
 import com.achobeta.domain.resource.model.vo.ResourceQueryVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -20,9 +19,9 @@ public interface DigitalResourceService extends IService<DigitalResource> {
 
     ResourceQueryVO queryResources(ResourceQueryDTO resourceQueryDTO);
 
-    Long createResource(Long userId, String fileName);
+    Long createResource(DigitalResource digitalResource);
 
-    List<Long> createResourceBatch(Long userId, List<String> fileNameList);
+    List<Long> createResourceBatch(List<DigitalResource> resourceList);
 
     void updateAccessLevel(Long id, ResourceAccessLevel level);
 

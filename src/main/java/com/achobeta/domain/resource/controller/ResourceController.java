@@ -6,7 +6,6 @@ import com.achobeta.common.enums.ResourceAccessLevel;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.resource.model.converter.DigitalResourceConverter;
 import com.achobeta.domain.resource.model.dto.ResourceQueryDTO;
-import com.achobeta.domain.resource.model.vo.DigitalResourceVO;
 import com.achobeta.domain.resource.model.vo.ResourceAccessLevelVO;
 import com.achobeta.domain.resource.model.vo.ResourceQueryVO;
 import com.achobeta.domain.resource.service.DigitalResourceService;

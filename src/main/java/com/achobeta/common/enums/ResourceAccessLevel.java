@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import static net.sf.jsqlparser.util.validation.metadata.NamedObject.role;
-
 /**
  * Created With Intellij IDEA
  * Description:

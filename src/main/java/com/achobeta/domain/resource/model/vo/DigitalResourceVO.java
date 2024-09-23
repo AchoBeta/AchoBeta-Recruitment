@@ -23,6 +23,8 @@ public class DigitalResourceVO {
 
     private ResourceAccessLevel accessLevel;
 
+    private String originalName;
+
 //    private String fileName;
 
     protected LocalDateTime createTime;

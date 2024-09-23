@@ -9,6 +9,7 @@
             <result property="code" column="code" jdbcType="BIGINT"/>
             <result property="userId" column="user_id" jdbcType="BIGINT"/>
             <result property="accessLevel" column="access_level" jdbcType="INTEGER"/>
+            <result property="originalName" column="original_name" jdbcType="VARCHAR"/>
             <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
             <result property="version" column="version" jdbcType="INTEGER"/>
             <result property="deleted" column="is_deleted" jdbcType="BIT"/>
@@ -18,7 +19,7 @@
 
     <sql id="Base_Column_List">
         id,code,user_id,
-        access_level,file_name,version,
+        access_level,original_name,file_name,version,
         is_deleted,create_time,update_time
     </sql>
 </mapper>
