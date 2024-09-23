@@ -1,8 +1,6 @@
 package com.achobeta.domain.resource.factory;
 
-import cn.hutool.extra.spring.SpringUtil;
 import com.achobeta.domain.resource.service.ObjectStorageService;
-import com.achobeta.domain.resource.service.impl.ObjectStorageMinioServiceImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;

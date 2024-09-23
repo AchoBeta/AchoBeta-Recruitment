@@ -3,13 +3,13 @@ package com.achobeta.domain.resource.service.impl;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.converter.DigitalResourceConverter;
+import com.achobeta.domain.resource.model.dao.mapper.DigitalResourceMapper;
+import com.achobeta.domain.resource.model.entity.DigitalResource;
 import com.achobeta.domain.resource.model.vo.DigitalResourceVO;
+import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.util.SnowflakeIdGenerator;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.achobeta.domain.resource.model.entity.DigitalResource;
-import com.achobeta.domain.resource.service.DigitalResourceService;
-import com.achobeta.domain.resource.model.dao.mapper.DigitalResourceMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +48,7 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
     @Override
     public Long createResource(Long userId, String fileName) {
         DigitalResource digitalResource = new DigitalResource();
+        // 生成一个雪花数字
         Long code = resourceCodeGenerator.nextId();
         digitalResource.setCode(code);
         digitalResource.setUserId(userId);

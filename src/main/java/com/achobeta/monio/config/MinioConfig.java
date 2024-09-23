@@ -1,6 +1,5 @@
-package com.achobeta.domain.resource.config;
+package com.achobeta.monio.config;
 
-import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import io.minio.MinioClient;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

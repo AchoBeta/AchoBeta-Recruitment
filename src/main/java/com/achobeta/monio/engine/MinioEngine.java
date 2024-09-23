@@ -1,9 +1,8 @@
-package com.achobeta.domain.resource.repository;
+package com.achobeta.monio.engine;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.domain.resource.config.MinioConfig;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.util.HttpServletUtil;
+import com.achobeta.monio.config.MinioConfig;
 import io.minio.*;
 import io.minio.http.Method;
 import io.minio.messages.Bucket;

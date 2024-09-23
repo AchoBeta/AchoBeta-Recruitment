@@ -2,7 +2,6 @@ package com.achobeta.domain.resource.service;
 
 import com.achobeta.common.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.entity.DigitalResource;
-import com.achobeta.domain.resource.model.vo.DigitalResourceVO;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 

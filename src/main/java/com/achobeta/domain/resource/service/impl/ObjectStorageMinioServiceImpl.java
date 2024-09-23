@@ -2,9 +2,9 @@ package com.achobeta.domain.resource.service.impl;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.domain.resource.repository.MinioEngine;
 import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.monio.engine.MinioEngine;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 

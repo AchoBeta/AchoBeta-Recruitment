@@ -1,10 +1,7 @@
 package com.achobeta.domain.resource.model.vo;
 
 import com.achobeta.common.enums.ResourceAccessLevel;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
