@@ -4,8 +4,9 @@ import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.ResourceAccessLevel;
 import com.achobeta.common.enums.UserTypeEnum;
-import com.achobeta.domain.resource.engine.MinioEngine;
 import com.achobeta.domain.resource.model.converter.DigitalResourceConverter;
+import com.achobeta.domain.resource.model.vo.ResourceAccessLevelVO;
+import com.achobeta.domain.resource.repository.MinioEngine;
 import com.achobeta.domain.resource.model.vo.DigitalResourceVO;
 import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ResourceService;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created With Intellij IDEA
@@ -40,13 +40,11 @@ public class ResourceController {
 
     private final DigitalResourceService digitalResourceService;
 
-    private final MinioEngine minioEngine;
-
     @GetMapping("/get/{code}")
     @Intercept(ignore = true)
-    public void analyzeCode(@PathVariable("code") @NotNull Long code) {
+    public void analyzeCode(@PathVariable("code") @NotNull Long code, HttpServletResponse response) {
         String fileName = resourceService.analyzeCode(code);
-        minioEngine.download(fileName);
+        resourceService.download(fileName, response);
     }
 
     @GetMapping("/list")
@@ -54,6 +52,14 @@ public class ResourceController {
     public SystemJsonResponse getResourceList() {
         List<DigitalResourceVO> resourceList = digitalResourceService.getResourceList();
         return SystemJsonResponse.SYSTEM_SUCCESS(resourceList);
+    }
+
+    @GetMapping("/levels")
+    @Intercept(ignore = true)
+    public SystemJsonResponse getLevels() {
+        List<ResourceAccessLevelVO> resourceAccessLevelVOList =
+                DigitalResourceConverter.INSTANCE.levelListToLevelVOList(List.of(ResourceAccessLevel.values()));
+        return SystemJsonResponse.SYSTEM_SUCCESS(resourceAccessLevelVOList);
     }
 
     @PostMapping("/upload/one")

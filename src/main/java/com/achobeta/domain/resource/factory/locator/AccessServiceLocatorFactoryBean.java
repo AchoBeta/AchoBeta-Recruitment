@@ -1,12 +1,13 @@
-package com.achobeta.domain.resource.access.locator;
+package com.achobeta.domain.resource.factory.locator;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.ResourceAccessLevel;
-import com.achobeta.domain.resource.access.factory.AccessStrategyFactory;
+import com.achobeta.domain.resource.factory.AccessStrategyFactory;
 import com.achobeta.domain.resource.access.strategy.ResourceAccessStrategy;
 import com.achobeta.exception.GlobalServiceException;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
  * Date: 2024-09-22
  * Time: 23:31
  */
+@Component
 public class AccessServiceLocatorFactoryBean extends ServiceLocatorFactoryBean {
 
     @Override

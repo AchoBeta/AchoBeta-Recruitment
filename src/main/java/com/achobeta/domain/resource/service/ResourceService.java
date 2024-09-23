@@ -3,6 +3,7 @@ package com.achobeta.domain.resource.service;
 import com.achobeta.common.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.entity.DigitalResource;
 import com.achobeta.domain.resource.model.vo.DigitalResourceVO;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -21,6 +22,8 @@ public interface ResourceService {
     DigitalResource checkAndGetResource(Long code, ResourceAccessLevel level);
 
     String analyzeCode(Long code);
+
+    void download(String fileName, HttpServletResponse response);
 
     Long upload(Long userId, MultipartFile file);
 

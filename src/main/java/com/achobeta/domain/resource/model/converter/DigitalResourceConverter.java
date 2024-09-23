@@ -1,7 +1,9 @@
 package com.achobeta.domain.resource.model.converter;
 
+import com.achobeta.common.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.entity.DigitalResource;
 import com.achobeta.domain.resource.model.vo.DigitalResourceVO;
+import com.achobeta.domain.resource.model.vo.ResourceAccessLevelVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -21,4 +23,5 @@ public interface DigitalResourceConverter {
 
     List<DigitalResourceVO> digitalResourceListDigitalResourceVOList(List<DigitalResource> digitalResourceList);
 
+    List<ResourceAccessLevelVO> levelListToLevelVOList(List<ResourceAccessLevel> resourceAccessLevelList);
 }

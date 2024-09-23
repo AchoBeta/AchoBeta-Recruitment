@@ -99,6 +99,10 @@ public enum GlobalServiceStatusCode {
     RESOURCE_LEVEL_NOT_EXISTS(7001, "资源权限不存在"),
     RESOURCE_NOT_EXISTS(7002, "资源不存在"),
     RESOURCE_CANNOT_BE_ACCESSED(7003, "资源不能被访问"),
+    RESOURCE_UPLOAD_FAILED(7004, "资源上传失败"),
+    RESOURCE_DOWNLOAD_FAILED(7005, "资源下载失败"),
+    RESOURCE_REMOVE_FAILED(7006, "资源删除失败"),
+    RESOURCE_PREVIEW_FAILED(7007, "资源预览失败"),
 
     /* -------------- */;
 

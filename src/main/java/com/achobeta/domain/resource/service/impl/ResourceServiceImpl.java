@@ -2,21 +2,23 @@ package com.achobeta.domain.resource.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.ResourceAccessLevel;
-import com.achobeta.domain.resource.access.factory.AccessStrategyFactory;
+import com.achobeta.domain.resource.factory.AccessStrategyFactory;
 import com.achobeta.domain.resource.access.strategy.ResourceAccessStrategy;
-import com.achobeta.domain.resource.engine.MinioEngine;
+import com.achobeta.domain.resource.factory.ObjectStorageServiceFactory;
+import com.achobeta.domain.resource.repository.MinioEngine;
 import com.achobeta.domain.resource.model.entity.DigitalResource;
-import com.achobeta.domain.resource.model.vo.DigitalResourceVO;
 import com.achobeta.domain.resource.service.DigitalResourceService;
+import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.exception.GlobalServiceException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created With Intellij IDEA
@@ -34,7 +36,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     private final DigitalResourceService digitalResourceService;
 
-    private final MinioEngine minioEngine;
+    private final ObjectStorageServiceFactory objectStorageServiceFactory;
 
     @Override
     public DigitalResource checkAndGetResource(Long code) {
@@ -66,16 +68,22 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    public void download(String fileName, HttpServletResponse response) {
+        objectStorageServiceFactory.load().download(fileName, response);
+    }
+
+    @Override
     public Long upload(Long userId, MultipartFile file) {
-        String fileName = minioEngine.upload(file);
+        String fileName = objectStorageServiceFactory.load().upload(file);
         return digitalResourceService.createResource(userId, fileName);
     }
 
     @Override
     @Transactional
     public List<Long> uploadList(Long userId, List<MultipartFile> fileList) {
+        ObjectStorageService storageService = objectStorageServiceFactory.load();
         List<String> fileNameList = fileList.stream()
-                .map(minioEngine::upload)
+                .map(storageService::upload)
                 .toList();
         return digitalResourceService.createResourceBatch(userId, fileNameList);
     }
@@ -87,8 +95,9 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public void remove(Long code) {
+        ObjectStorageService storageService = objectStorageServiceFactory.load();
         DigitalResource digitalResource = checkAndGetResource(code, ResourceAccessLevel.USER_ACCESS);
-        minioEngine.remove(digitalResource.getFileName());
+        storageService.remove(digitalResource.getFileName());
         digitalResourceService.removeDigitalResource(digitalResource.getId());
     }
 }
