@@ -22,21 +22,30 @@ public class ResourceUtil {
 
     private final static Tika TIKA = new Tika();
 
-    public static String getOriginalName(MultipartFile file) {
-        String originalName = file.getOriginalFilename();
+    public static void checkOriginalName(String originalName) {
         // 判断是否有非空字符以及是否有后缀
         if (!StringUtils.hasText(originalName) || !originalName.contains(".")) {
             throw new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_NOT_VALID);
         }
+    }
+
+    public static String getOriginalName(MultipartFile file) {
+        String originalName = file.getOriginalFilename();
+        checkOriginalName(originalName);
         return originalName;
     }
 
     public static String getFileNameSuffix(String originalName) {
-        // 判断是否有非空字符以及是否有后缀
-        if (!StringUtils.hasText(originalName) || !originalName.contains(".")) {
-            throw new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_NOT_VALID);
-        }
+        checkOriginalName(originalName);
         return originalName.substring(originalName.lastIndexOf("."));
+    }
+
+    public static String getContentType(InputStream inputStream, String suffix) {
+        try {
+            return TIKA.detect(inputStream, suffix);
+        } catch (IOException e) {
+            throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_NOT_VALID);
+        }
     }
 
     public static String getContentType(byte[] data, String suffix) {

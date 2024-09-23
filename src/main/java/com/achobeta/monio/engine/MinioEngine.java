@@ -2,6 +2,7 @@ package com.achobeta.monio.engine;
 
 import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.monio.config.MinioConfig;
+import com.achobeta.util.MediaUtil;
 import io.minio.*;
 import io.minio.http.Method;
 import io.minio.messages.Bucket;
@@ -114,18 +115,11 @@ public class MinioEngine {
                 .object(fileName)
                 .build();
         try (GetObjectResponse objectResponse = minioClient.getObject(objectArgs);
-             FastByteArrayOutputStream outputStream = new FastByteArrayOutputStream();
              ServletOutputStream stream = response.getOutputStream()) {
-            byte[] buffer = new byte[1024];
-            int length = 0;
-            while ((length = objectResponse.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, length);
-            }
-            outputStream.flush();
-            byte[] data = outputStream.toByteArray();
+            byte[] data = MediaUtil.getBytes(objectResponse);
             // 设置响应内容类型
             String suffix = ResourceUtil.getFileNameSuffix(fileName);
-            response.setContentType(ResourceUtil.getContentType(data, suffix));
+            response.setContentType(ResourceUtil.getContentType(objectResponse, suffix));
             // 指定字符集
             response.setCharacterEncoding("utf-8");
             // 指定下载的文件名
