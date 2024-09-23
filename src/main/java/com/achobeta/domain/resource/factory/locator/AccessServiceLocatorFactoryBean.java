@@ -29,15 +29,16 @@ public class AccessServiceLocatorFactoryBean extends ServiceLocatorFactoryBean {
     public void afterPropertiesSet() {
         // 设置服务接口
         super.setServiceLocatorInterface(AccessStrategyFactory.class);
-        // 设置规则
-        Map<ResourceAccessLevel, String> mappings = Arrays.stream(ResourceAccessLevel.values())
-                .collect(Collectors.toMap(
-                        level -> level,
-                        level -> level.getBeanPrefix() + ResourceAccessStrategy.BASE_NAME,
-                        (newData, oldData) -> oldData
-                ));
+
         Properties properties = new Properties();
-        properties.putAll(mappings);
+        // 设置规则
+        Arrays.stream(ResourceAccessLevel.values())
+            .forEach(level -> {
+                properties.setProperty(
+                        String.valueOf(level),
+                        level.getBeanPrefix() + ResourceAccessStrategy.BASE_NAME
+                );
+            });
         super.setServiceMappings(properties);
         // 自定义异常
         super.setServiceLocatorExceptionClass(GlobalServiceException.class);

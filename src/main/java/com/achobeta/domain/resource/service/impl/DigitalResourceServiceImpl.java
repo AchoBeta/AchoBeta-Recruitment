@@ -1,5 +1,7 @@
 package com.achobeta.domain.resource.service.impl;
 
+import cn.hutool.core.lang.Opt;
+import com.achobeta.common.base.BasePageQuery;
 import com.achobeta.common.base.BasePageResult;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.ResourceAccessLevel;
@@ -46,10 +48,10 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
     @Override
     public ResourceQueryVO queryResources(ResourceQueryDTO resourceQueryDTO) {
         // 解析分页参数获取 page
-        IPage<DigitalResource> page = DigitalResourceConverter.INSTANCE
-                .resourceQueryDTOToBasePageQuery(resourceQueryDTO)
+        IPage<DigitalResource> page = Optional.ofNullable(resourceQueryDTO)
+                .map(DigitalResourceConverter.INSTANCE::resourceQueryDTOToBasePageQuery)
+                .orElseGet(BasePageQuery::new)
                 .toMpPage();
-
         // 分页
         IPage<DigitalResource> resourceIPage = this.page(page);
         // 封装
