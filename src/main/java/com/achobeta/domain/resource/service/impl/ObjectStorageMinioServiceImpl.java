@@ -38,6 +38,15 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService {
     }
 
     @Override
+    public byte[] load(String fileName) {
+        try {
+            return minioEngine.load(fileName);
+        } catch (Exception e) {
+            throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_LOAD_FAILED);
+        }
+    }
+
+    @Override
     public void preview(String fileName, HttpServletResponse response) {
         try {
             minioEngine.preview(fileName, response);

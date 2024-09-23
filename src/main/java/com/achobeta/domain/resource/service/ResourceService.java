@@ -26,6 +26,8 @@ public interface ResourceService {
 
     void preview(Long code, HttpServletResponse response);
 
+    byte[] load(Long code);
+
     String gerObjectUrl(Long code);
 
     Long upload(Long userId, MultipartFile file);

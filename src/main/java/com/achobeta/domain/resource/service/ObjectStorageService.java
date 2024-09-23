@@ -29,6 +29,13 @@ public interface ObjectStorageService {
     String getObjectUrl(String fileName);
 
     /**
+     * 加载图片
+     *
+     * @param fileName
+     */
+    byte[] load(String fileName);
+
+    /**
      * 预览图片
      *
      * @param fileName

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -75,13 +76,21 @@ public class MediaUtil {
         }
     }
 
-    public static String getContentType(InputStream inputStream, String suffix) throws IOException {
-        return TIKA.detect(inputStream, suffix);
+    public static String getContentType(InputStream inputStream) throws IOException {
+        return TIKA.detect(inputStream);
     }
 
-    public static String getContentType(byte[] data, String suffix) {
+    public static String getContentType(MultipartFile file) {
+        try(InputStream inputStream = file.getInputStream()) {
+            return getContentType(inputStream);
+        } catch (IOException e) {
+            throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_NOT_VALID);
+        }
+    }
+
+    public static String getContentType(byte[] data) {
         try(InputStream inputStream = MediaUtil.getInputStream(data)) {
-            return getContentType(inputStream, suffix);
+            return getContentType(inputStream);
         } catch (IOException e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_NOT_VALID);
         }

@@ -11,11 +11,16 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.*;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -76,26 +81,37 @@ public class MinioEngine {
     }
 
     /**
+     * 文件加载
+     *
+     * @param fileName 文件名称
+     */
+    public byte[] load(String fileName) throws Exception {
+        GetObjectArgs objectArgs = GetObjectArgs.builder()
+                .bucket(minioConfig.getBucketName())
+                .object(fileName)
+                .build();
+        try(GetObjectResponse objectResponse = minioClient.getObject(objectArgs)) {
+            return MediaUtil.getBytes(objectResponse);
+        }
+    }
+
+    /**
      * 文件预览
      *
      * @param fileName 文件名称
      */
     public void preview(String fileName, HttpServletResponse response) throws Exception {
-        GetObjectArgs objectArgs = GetObjectArgs.builder()
-                .bucket(minioConfig.getBucketName())
-                .object(fileName)
-                .build();
-        try (GetObjectResponse objectResponse = minioClient.getObject(objectArgs);
-             ServletOutputStream stream = response.getOutputStream()) {
-            byte[] data = MediaUtil.getBytes(objectResponse);
-            // 设置响应内容类型
-            String suffix = ResourceUtil.getFileNameSuffix(fileName);
-            response.setContentType(MediaUtil.getContentType(objectResponse, suffix));
-            // 指定字符集
-            response.setCharacterEncoding("utf-8");
-            // 指定下载的文件名
-            stream.write(data);
-            stream.flush();
+        try (ServletOutputStream outputStream = response.getOutputStream()) {
+            // 写入数据
+            byte[] bytes = load(fileName);
+            if(Objects.nonNull(bytes)) {
+                // 设置响应内容类型（用同一个 inputStream 会互相影响）
+                response.setContentType(MediaUtil.getContentType(bytes));
+                // 指定字符集
+                response.setCharacterEncoding("utf-8");
+                outputStream.write(bytes);
+                outputStream.flush();
+            }
         }
     }
 

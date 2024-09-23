@@ -10,7 +10,9 @@ import com.achobeta.domain.resource.model.vo.ResourceAccessLevelVO;
 import com.achobeta.domain.resource.model.vo.ResourceQueryVO;
 import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ResourceService;
+import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.domain.users.context.BaseContext;
+import com.achobeta.util.MediaUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -76,6 +78,24 @@ public class ResourceController {
 
     @PostMapping("/upload/one")
     public SystemJsonResponse upload(@RequestParam("file") MultipartFile file) {
+        long userId = BaseContext.getCurrentUser().getUserId();
+        Long code = resourceService.upload(userId, file);
+        return SystemJsonResponse.SYSTEM_SUCCESS(code);
+    }
+
+    @PostMapping("/upload/image")
+    public SystemJsonResponse uploadImage(@RequestParam("file") MultipartFile file) {
+        // 检查
+        ResourceUtil.checkImage(MediaUtil.getContentType(file));
+        long userId = BaseContext.getCurrentUser().getUserId();
+        Long code = resourceService.upload(userId, file);
+        return SystemJsonResponse.SYSTEM_SUCCESS(code);
+    }
+
+    @PostMapping("/upload/video")
+    public SystemJsonResponse uploadVideo(@RequestParam("file") MultipartFile file) {
+        // 检查
+        ResourceUtil.checkVideo(MediaUtil.getContentType(file));
         long userId = BaseContext.getCurrentUser().getUserId();
         Long code = resourceService.upload(userId, file);
         return SystemJsonResponse.SYSTEM_SUCCESS(code);
