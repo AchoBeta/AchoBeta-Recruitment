@@ -1,6 +1,9 @@
 package com.achobeta.util;
 
+import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.exception.GlobalServiceException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tika.Tika;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.util.StringUtils;
 
@@ -23,6 +26,8 @@ import java.util.regex.Pattern;
 public class MediaUtil {
 
     private static final Pattern HTTP_PATTERN = Pattern.compile("^(http|https)://.*$");
+
+    private final static Tika TIKA = new Tika();
 
     public static boolean isHttpUrl(String url) {
         return StringUtils.hasText(url) && HTTP_PATTERN.matcher(url).matches();
@@ -67,6 +72,18 @@ public class MediaUtil {
         } catch (IOException e) {
             log.warn(e.getMessage());
             return null;
+        }
+    }
+
+    public static String getContentType(InputStream inputStream, String suffix) throws IOException {
+        return TIKA.detect(inputStream, suffix);
+    }
+
+    public static String getContentType(byte[] data, String suffix) {
+        try(InputStream inputStream = MediaUtil.getInputStream(data)) {
+            return getContentType(inputStream, suffix);
+        } catch (IOException e) {
+            throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_NOT_VALID);
         }
     }
 

@@ -79,6 +79,12 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    public String gerObjectUrl(Long code) {
+        DigitalResource resource = analyzeCode(code);
+        return objectStorageServiceFactory.load().getObjectUrl(resource.getFileName());
+    }
+
+    @Override
     public Long upload(Long userId, MultipartFile file) {
         DigitalResource resource = new DigitalResource();
         resource.setUserId(userId);

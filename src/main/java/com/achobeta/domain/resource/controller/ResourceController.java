@@ -52,6 +52,13 @@ public class ResourceController {
         resourceService.download(code, response);
     }
 
+    @GetMapping("/get/{code}")
+    @Intercept(permit = {UserTypeEnum.ADMIN})
+    public SystemJsonResponse gerObjectUrl(@PathVariable("code") @NotNull Long code) {
+        String url = resourceService.gerObjectUrl(code);
+        return SystemJsonResponse.SYSTEM_SUCCESS(url);
+    }
+
     @PostMapping("/query")
     @Intercept(permit = {UserTypeEnum.ADMIN})
     public SystemJsonResponse getResourceList(@RequestBody(required = false) ResourceQueryDTO resourceQueryDTO) {

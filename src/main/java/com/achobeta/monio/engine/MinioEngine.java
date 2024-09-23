@@ -118,7 +118,7 @@ public class MinioEngine {
             byte[] data = MediaUtil.getBytes(objectResponse);
             // 设置响应内容类型
             String suffix = ResourceUtil.getFileNameSuffix(fileName);
-            response.setContentType(ResourceUtil.getContentType(objectResponse, suffix));
+            response.setContentType(MediaUtil.getContentType(objectResponse, suffix));
             // 指定字符集
             response.setCharacterEncoding("utf-8");
             // 指定下载的文件名
