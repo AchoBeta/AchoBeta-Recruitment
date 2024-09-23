@@ -5,8 +5,10 @@ import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.ResourceAccessLevel;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.resource.model.converter.DigitalResourceConverter;
+import com.achobeta.domain.resource.model.dto.ResourceQueryDTO;
 import com.achobeta.domain.resource.model.vo.DigitalResourceVO;
 import com.achobeta.domain.resource.model.vo.ResourceAccessLevelVO;
+import com.achobeta.domain.resource.model.vo.ResourceQueryVO;
 import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.users.context.BaseContext;
@@ -46,15 +48,15 @@ public class ResourceController {
         resourceService.download(fileName, response);
     }
 
-    @GetMapping("/list")
+    @PostMapping("/query")
     @Intercept(permit = {UserTypeEnum.ADMIN})
-    public SystemJsonResponse getResourceList() {
-        List<DigitalResourceVO> resourceList = digitalResourceService.getResourceList();
-        return SystemJsonResponse.SYSTEM_SUCCESS(resourceList);
+    public SystemJsonResponse getResourceList(@RequestBody(required = false) ResourceQueryDTO resourceQueryDTO) {
+        ResourceQueryVO resourceQueryVO = digitalResourceService.queryResources(resourceQueryDTO);
+        return SystemJsonResponse.SYSTEM_SUCCESS(resourceQueryVO);
     }
 
-    @GetMapping("/levels")
-    @Intercept(ignore = true)
+    @GetMapping("/list/level")
+    @Intercept(permit = {UserTypeEnum.ADMIN})
     public SystemJsonResponse getLevels() {
         List<ResourceAccessLevelVO> resourceAccessLevelVOList =
                 DigitalResourceConverter.INSTANCE.levelListToLevelVOList(List.of(ResourceAccessLevel.values()));

@@ -1,9 +1,13 @@
 package com.achobeta.domain.resource.model.converter;
 
+import com.achobeta.common.base.BasePageQuery;
+import com.achobeta.common.base.BasePageResult;
 import com.achobeta.common.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.model.dto.ResourceQueryDTO;
 import com.achobeta.domain.resource.model.entity.DigitalResource;
 import com.achobeta.domain.resource.model.vo.DigitalResourceVO;
 import com.achobeta.domain.resource.model.vo.ResourceAccessLevelVO;
+import com.achobeta.domain.resource.model.vo.ResourceQueryVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -20,6 +24,10 @@ import java.util.List;
 public interface DigitalResourceConverter {
 
     DigitalResourceConverter INSTANCE = Mappers.getMapper(DigitalResourceConverter.class);
+
+    BasePageQuery resourceQueryDTOToBasePageQuery(ResourceQueryDTO resourceQueryDTO);
+
+    ResourceQueryVO basePageResultToResourceQueryVO(BasePageResult<DigitalResource> basePageResult);
 
     List<DigitalResourceVO> digitalResourceListDigitalResourceVOList(List<DigitalResource> digitalResourceList);
 

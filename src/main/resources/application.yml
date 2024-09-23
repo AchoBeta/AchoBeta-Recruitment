@@ -29,5 +29,5 @@ mybatis-plus:
 
 resource:
   code:
-    workerId: 1L
-    datacenterId: 1L
+    workerId: 1
+    datacenterId: 1

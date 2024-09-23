@@ -1,14 +1,17 @@
 package com.achobeta.domain.resource.service.impl;
 
+import com.achobeta.common.base.BasePageResult;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.converter.DigitalResourceConverter;
 import com.achobeta.domain.resource.model.dao.mapper.DigitalResourceMapper;
+import com.achobeta.domain.resource.model.dto.ResourceQueryDTO;
 import com.achobeta.domain.resource.model.entity.DigitalResource;
-import com.achobeta.domain.resource.model.vo.DigitalResourceVO;
+import com.achobeta.domain.resource.model.vo.ResourceQueryVO;
 import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.util.SnowflakeIdGenerator;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,9 +43,18 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
     }
 
     @Override
-    public List<DigitalResourceVO> getResourceList() {
-        // todo: 实现分页
-        return DigitalResourceConverter.INSTANCE.digitalResourceListDigitalResourceVOList(list());
+    public ResourceQueryVO queryResources(ResourceQueryDTO resourceQueryDTO) {
+        // 解析分页参数获取 page
+        IPage<DigitalResource> page = DigitalResourceConverter.INSTANCE
+                .resourceQueryDTOToBasePageQuery(resourceQueryDTO)
+                .toMpPage();
+
+        // 分页
+        IPage<DigitalResource> resourceIPage = this.page(page);
+        // 封装
+        BasePageResult<DigitalResource> pageResult = BasePageResult.of(resourceIPage);
+        // 转化
+        return DigitalResourceConverter.INSTANCE.basePageResultToResourceQueryVO(pageResult);
     }
 
     @Override
