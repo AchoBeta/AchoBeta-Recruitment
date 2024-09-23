@@ -1,10 +1,12 @@
 package com.achobeta.domain.resource.util;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.config.DateTimeConfig;
 import com.achobeta.exception.GlobalServiceException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -35,7 +37,12 @@ public class ResourceUtil {
     }
 
     public static String getUniqueFileName(String suffix) {
-        return UUID.randomUUID().toString().replace("-", "") + suffix;
+        return String.format(
+                "/%s/%s%s",
+                DateTimeConfig.DATE_FORMAT.format(new Date()),
+                UUID.randomUUID().toString().replace("-", ""),
+                suffix
+        );
     }
 
 }

@@ -105,6 +105,7 @@ public enum GlobalServiceStatusCode {
     RESOURCE_PREVIEW_FAILED(7007, "资源预览失败"),
     RESOURCE_GET_OBJECT_URL_FAILED(7007, "获取资源 url 失败"),
     RESOURCE_NOT_VALID(7008, "资源非法"),
+    RESOURCE_OUT_SIZE(7009, "资源过大"),
 
     /* -------------- */;
 
