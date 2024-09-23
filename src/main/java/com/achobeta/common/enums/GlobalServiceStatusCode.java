@@ -103,6 +103,8 @@ public enum GlobalServiceStatusCode {
     RESOURCE_DOWNLOAD_FAILED(7005, "资源下载失败"),
     RESOURCE_REMOVE_FAILED(7006, "资源删除失败"),
     RESOURCE_PREVIEW_FAILED(7007, "资源预览失败"),
+    RESOURCE_GET_OBJECT_URL_FAILED(7007, "获取资源 url 失败"),
+    RESOURCE_NOT_VALID(7008, "资源非法"),
 
     /* -------------- */;
 

@@ -9,6 +9,7 @@ import com.achobeta.domain.resource.model.entity.DigitalResource;
 import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.domain.resource.service.ResourceService;
+import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.exception.GlobalServiceException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -61,22 +62,28 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public String analyzeCode(Long code) {
-        return checkAndGetResource(code).getFileName();
+    public DigitalResource analyzeCode(Long code) {
+        return checkAndGetResource(code);
     }
 
     @Override
-    public void download(String fileName, HttpServletResponse response) {
-        objectStorageServiceFactory.load().download(fileName, response);
+    public void download(Long code, HttpServletResponse response) {
+        DigitalResource resource = analyzeCode(code);
+        objectStorageServiceFactory.load().download(resource.getOriginalName(), resource.getFileName(), response);
+    }
+
+    @Override
+    public void preview(Long code, HttpServletResponse response) {
+        DigitalResource resource = analyzeCode(code);
+        objectStorageServiceFactory.load().preview(resource.getFileName(), response);
     }
 
     @Override
     public Long upload(Long userId, MultipartFile file) {
-        String fileName = objectStorageServiceFactory.load().upload(file);
         DigitalResource resource = new DigitalResource();
-        resource.setFileName(fileName);
-        resource.setOriginalName(file.getOriginalFilename());
         resource.setUserId(userId);
+        resource.setOriginalName(ResourceUtil.getOriginalName(file));
+        resource.setFileName(objectStorageServiceFactory.load().upload(file));
         return digitalResourceService.createResource(resource);
     }
 
@@ -87,9 +94,9 @@ public class ResourceServiceImpl implements ResourceService {
         List<DigitalResource> resourceList = fileList.stream()
                 .map(file -> {
                     DigitalResource resource = new DigitalResource();
-                    resource.setFileName(storageService.upload(file));
-                    resource.setOriginalName(file.getOriginalFilename());
                     resource.setUserId(userId);
+                    resource.setOriginalName(ResourceUtil.getOriginalName(file));
+                    resource.setFileName(storageService.upload(file));
                     return resource;
                 })
                 .toList();

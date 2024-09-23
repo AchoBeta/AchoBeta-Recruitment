@@ -40,11 +40,16 @@ public class ResourceController {
 
     private final DigitalResourceService digitalResourceService;
 
-    @GetMapping("/get/{code}")
+    @GetMapping("/preview/{code}")
     @Intercept(ignore = true)
-    public void analyzeCode(@PathVariable("code") @NotNull Long code, HttpServletResponse response) {
-        String fileName = resourceService.analyzeCode(code);
-        resourceService.download(fileName, response);
+    public void preview(@PathVariable("code") @NotNull Long code, HttpServletResponse response) {
+        resourceService.preview(code, response);
+    }
+
+    @GetMapping("/download/{code}")
+    @Intercept(ignore = true)
+    public void download(@PathVariable("code") @NotNull Long code, HttpServletResponse response) {
+        resourceService.download(code, response);
     }
 
     @PostMapping("/query")

@@ -9,10 +9,10 @@ import java.util.List;
 
 /**
  * Created With Intellij IDEA
- * Description:
  * User: 马拉圈
  * Date: 2024-09-21
  * Time: 12:16
+ * Description: 仅仅针对本服务内部的资源
  */
 public interface ResourceService {
 
@@ -20,9 +20,11 @@ public interface ResourceService {
 
     DigitalResource checkAndGetResource(Long code, ResourceAccessLevel level);
 
-    String analyzeCode(Long code);
+    DigitalResource analyzeCode(Long code);
 
-    void download(String fileName, HttpServletResponse response);
+    void download(Long code, HttpServletResponse response);
+
+    void preview(Long code, HttpServletResponse response);
 
     Long upload(Long userId, MultipartFile file);
 

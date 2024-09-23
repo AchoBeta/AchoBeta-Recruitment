@@ -1,7 +1,6 @@
 package com.achobeta.monio.engine;
 
-import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.monio.config.MinioConfig;
 import io.minio.*;
 import io.minio.http.Method;
@@ -13,12 +12,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.FastByteArrayOutputStream;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Repository
 @Slf4j
@@ -76,29 +73,27 @@ public class MinioEngine {
      * @return Boolean
      */
     public String upload(MultipartFile file) throws Exception {
-        String originalFilename = file.getOriginalFilename();
-        if (!StringUtils.hasText(originalFilename)) {
-            throw new GlobalServiceException(GlobalServiceStatusCode.PARAM_IS_BLANK);
-        }
-        String fileName = UUID.randomUUID() + originalFilename.substring(originalFilename.lastIndexOf("."));
+        String originalFilename = ResourceUtil.getOriginalName(file);
+        String suffix = ResourceUtil.getFileNameSuffix(originalFilename);
+        String uniqueFileName = ResourceUtil.getUniqueFileName(suffix);
         PutObjectArgs objectArgs = PutObjectArgs.builder()
                 .bucket(minioConfig.getBucketName())
-                .object(fileName)
+                .object(uniqueFileName)
                 .stream(file.getInputStream(), file.getSize(), -1)
                 .contentType(file.getContentType())
                 .build();
         //文件名称相同会覆盖
         minioClient.putObject(objectArgs);
-        return fileName;
+        return uniqueFileName;
     }
 
     /**
-     * 预览图片
+     * 获取 url
      *
      * @param fileName
      * @return
      */
-    public String preview(String fileName) throws Exception {
+    public String getObjectUrl(String fileName) throws Exception {
         // 查看文件地址
         GetPresignedObjectUrlArgs objectUrlArgs = new GetPresignedObjectUrlArgs().builder()
                 .bucket(minioConfig.getBucketName())
@@ -109,35 +104,45 @@ public class MinioEngine {
     }
 
     /**
-     * 文件下载
+     * 文件预览
      *
      * @param fileName 文件名称
-     * @return Boolean
      */
-    public void download(String fileName, HttpServletResponse res) throws Exception {
+    public void preview(String fileName, HttpServletResponse response) throws Exception {
         GetObjectArgs objectArgs = GetObjectArgs.builder()
                 .bucket(minioConfig.getBucketName())
                 .object(fileName)
                 .build();
-        try (GetObjectResponse response = minioClient.getObject(objectArgs)) {
-            byte[] buf = new byte[1024];
-            int len;
-            try (FastByteArrayOutputStream os = new FastByteArrayOutputStream()) {
-                while ((len = response.read(buf)) != -1) {
-                    os.write(buf, 0, len);
-                }
-                os.flush();
-                byte[] bytes = os.toByteArray();
-                res.setCharacterEncoding("utf-8");
-                // 设置强制下载不打开
-                // res.setContentType("application/force-download");
-                res.addHeader("Content-Disposition", "attachment;fileName=" + fileName);
-                try (ServletOutputStream stream = res.getOutputStream()) {
-                    stream.write(bytes);
-                    stream.flush();
-                }
+        try (GetObjectResponse objectResponse = minioClient.getObject(objectArgs);
+             FastByteArrayOutputStream outputStream = new FastByteArrayOutputStream();
+             ServletOutputStream stream = response.getOutputStream()) {
+            byte[] buffer = new byte[1024];
+            int length = 0;
+            while ((length = objectResponse.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, length);
             }
+            outputStream.flush();
+            byte[] data = outputStream.toByteArray();
+            // 设置响应内容类型
+            String suffix = ResourceUtil.getFileNameSuffix(fileName);
+            response.setContentType(ResourceUtil.getContentType(data, suffix));
+            // 指定字符集
+            response.setCharacterEncoding("utf-8");
+            // 指定下载的文件名
+            stream.write(data);
+            stream.flush();
         }
+    }
+
+    /**
+     * 文件下载
+     *
+     * @param fileName 文件名称
+     */
+    public void download(String downloadName, String fileName, HttpServletResponse response) throws Exception {
+        // 在设置内容类型之前设置下载的文件名称
+        response.addHeader("Content-Disposition", "attachment;fileName=" + downloadName);
+        preview(fileName, response);
     }
 
     /**

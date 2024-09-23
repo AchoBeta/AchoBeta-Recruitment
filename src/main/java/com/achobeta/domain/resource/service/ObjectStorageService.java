@@ -24,23 +24,30 @@ public interface ObjectStorageService {
      * 预览图片
      *
      * @param fileName
-     * @return url
+     * @return 资源 url
      */
-    String preview(String fileName);
+    String getObjectUrl(String fileName);
+
+    /**
+     * 预览图片
+     *
+     * @param fileName
+     * @param response
+     */
+    void preview(String fileName, HttpServletResponse response);
 
     /**
      * 文件下载
      *
+     * @param downloadName 下载的文件名称
      * @param fileName 文件名称
      */
-    void download(String fileName, HttpServletResponse res);
+    void download(String downloadName, String fileName, HttpServletResponse response);
 
     /**
      * 删除
      *
      * @param fileName
-     * @return
-     * @throws Exception
      */
     void remove(String fileName);
 

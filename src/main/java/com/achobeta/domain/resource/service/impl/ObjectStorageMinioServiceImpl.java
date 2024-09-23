@@ -29,18 +29,27 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService {
     }
 
     @Override
-    public String preview(String fileName) {
+    public String getObjectUrl(String fileName) {
         try {
-            return minioEngine.preview(fileName);
+            return minioEngine.getObjectUrl(fileName);
+        } catch (Exception e) {
+            throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_GET_OBJECT_URL_FAILED);
+        }
+    }
+
+    @Override
+    public void preview(String fileName, HttpServletResponse response) {
+        try {
+            minioEngine.preview(fileName, response);
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_PREVIEW_FAILED);
         }
     }
 
     @Override
-    public void download(String fileName, HttpServletResponse res) {
+    public void download(String downloadName, String fileName, HttpServletResponse response) {
         try {
-            minioEngine.download(fileName, res);
+            minioEngine.download(downloadName, fileName, response);
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_DOWNLOAD_FAILED);
         }

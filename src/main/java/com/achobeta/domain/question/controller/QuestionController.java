@@ -40,7 +40,7 @@ public class QuestionController {
         // 检查
         ValidatorUtils.validate(questionDTO);
         // 添加
-        Long questionId =questionService.addQuestion(questionDTO.getLibIds(), questionDTO.getTitle(), questionDTO.getStandard());
+        Long questionId = questionService.addQuestion(questionDTO.getLibIds(), questionDTO.getTitle(), questionDTO.getStandard());
         return SystemJsonResponse.SYSTEM_SUCCESS(questionId);
     }
 
