@@ -184,13 +184,14 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         Set<Long> oldAttachmentHash = stuAttachmentService.listByResumeId(resumeId).stream()
                 .map(StuAttachment::getAttachment)
                 .collect(Collectors.toSet());
+        //删除原有简历附件
+        stuAttachmentService.lambdaUpdate().eq(StuAttachment::getResumeId, resumeId).remove();
 
         //构造附件保存信息列表
         List<StuAttachment> stuAttachmentList = new ArrayList<>();
-
         if (!CollectionUtils.isEmpty(stuAttachmentDTOList)) {
             //类型转换
-            stuAttachmentList = stuAttachmentDTOList.stream().map(attach -> {
+            stuAttachmentList = stuAttachmentDTOList.stream().distinct().map(attach -> {
                 // 判断是否可以访问这个资源
                 resourceService.checkAndGetResource(attach.getAttachment());
                 // 移出枪毙名单
@@ -201,8 +202,6 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
                 return stuAttachment;
             }).toList();
 
-            //删除原有简历附件
-            stuAttachmentService.lambdaUpdate().eq(StuAttachment::getResumeId, resumeId).remove();
             //批量插入附件信息
             stuAttachmentService.saveBatch(stuAttachmentList);
         }
