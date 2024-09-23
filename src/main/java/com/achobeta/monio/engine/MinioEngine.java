@@ -64,6 +64,7 @@ public class MinioEngine {
 
     /**
      * 获取基本的 url，但这个地址不一定能够公网访问~
+     *  需要设置 bucket 的权限
      *
      * @param fileName
      * @return
