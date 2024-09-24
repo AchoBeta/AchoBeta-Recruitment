@@ -141,7 +141,9 @@ public class InterviewController {
         // 获取当前管理员 id
         Long managerId = BaseContext.getCurrentUser().getUserId();
         ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(ResourceAccessLevel.FREE_ACCESS);
+        // 打印成表格
         Long code = interviewService.printAllInterviewList(managerId, InterviewConditionDTO.of(interviewConditionDTO), accessLevel);
+        // 构造 url 并返回
         String baseUrl = HttpServletUtil.getBaseUrl("/api/v1/resource/download/", request);
         return SystemJsonResponse.SYSTEM_SUCCESS(baseUrl + code);
     }
