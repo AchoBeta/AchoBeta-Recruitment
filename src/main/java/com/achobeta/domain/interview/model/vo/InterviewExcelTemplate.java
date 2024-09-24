@@ -3,13 +3,9 @@ package com.achobeta.domain.interview.model.vo;
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import cn.afterturn.easypoi.excel.annotation.ExcelTarget;
 import com.achobeta.common.enums.InterviewStatus;
-import com.achobeta.config.DateTimeConfig;
 import com.achobeta.domain.schedule.model.vo.ScheduleVO;
 import lombok.Data;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.springframework.util.StringUtils;
 
-import java.text.DateFormat;
 import java.util.Optional;
 
 import static com.achobeta.config.DateTimeConfig.DATE_TIME_FORMAT;

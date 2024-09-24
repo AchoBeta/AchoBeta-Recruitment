@@ -1,9 +1,7 @@
 package com.achobeta.domain.schedule.model.vo;
 
-import com.achobeta.config.DateTimeConfig;
 import lombok.Data;
 
-import java.text.DateFormat;
 import java.util.Date;
 
 /**
