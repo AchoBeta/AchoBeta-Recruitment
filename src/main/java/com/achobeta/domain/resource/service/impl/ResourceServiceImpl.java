@@ -97,9 +97,9 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public String gerObjectUrl(Long code) {
+    public String gerObjectUrl(Long code, Boolean hidden) {
         DigitalResource resource = analyzeCode(code);
-        return objectStorageServiceFactory.load().getObjectUrl(resource.getFileName());
+        return objectStorageServiceFactory.load().getObjectUrl(resource.getFileName(), hidden);
     }
 
     @Override

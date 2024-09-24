@@ -54,10 +54,11 @@ public class ResourceController {
         resourceService.download(code, response);
     }
 
-    @GetMapping("/get/{code}")
+    @GetMapping("/share/{code}")
     @Intercept(permit = {UserTypeEnum.ADMIN})
-    public SystemJsonResponse gerObjectUrl(@PathVariable("code") @NotNull Long code) {
-        String url = resourceService.gerObjectUrl(code);
+    public SystemJsonResponse gerObjectUrl(@PathVariable("code") @NotNull Long code,
+                                           @RequestParam(name = "hidden", required = false) Boolean hidden) {
+        String url = resourceService.gerObjectUrl(code, hidden);
         return SystemJsonResponse.SYSTEM_SUCCESS(url);
     }
 

@@ -26,9 +26,10 @@ public interface ObjectStorageService {
      * 预览图片
      *
      * @param fileName
+     * @param hidden
      * @return 资源 url
      */
-    String getObjectUrl(String fileName);
+    String getObjectUrl(String fileName, Boolean hidden);
 
     /**
      * 加载图片

@@ -38,9 +38,9 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService {
     }
 
     @Override
-    public String getObjectUrl(String fileName) {
+    public String getObjectUrl(String fileName, Boolean hidden) {
         try {
-            return minioEngine.getObjectBaseUrl(fileName);
+            return minioEngine.getObjectUrl(fileName, hidden);
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_GET_OBJECT_URL_FAILED);
         }

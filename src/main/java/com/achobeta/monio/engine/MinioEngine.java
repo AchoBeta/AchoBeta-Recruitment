@@ -40,9 +40,6 @@ public class MinioEngine {
 
     /**
      * 文件上传
-     *
-     * @param file 文件
-     * @return Boolean
      */
     public String upload(MultipartFile file) throws Exception {
         try (InputStream inputStream = file.getInputStream()){
@@ -52,9 +49,6 @@ public class MinioEngine {
 
     /**
      * 获取 url
-     *
-     * @param fileName
-     * @return
      */
     public String getObjectUrl(String fileName) throws Exception {
         // 查看文件地址
@@ -67,22 +61,19 @@ public class MinioEngine {
     }
 
     /**
-     * 获取基本的 url，但这个地址不一定能够公网访问
-     * 需要设置 bucket 的权限
-     *
-     * @param fileName
-     * @return
+     * 如果是基本的 url，不一定能够公网访问，需要设置 bucket 的权限
+     * 如果不隐藏，那就是携带 queryString 的公网链接，是一定能够访问的
+     * 隐藏链接 quertString 的访问签名（如果是 true，返回的链接可能会因为对象存储服务器的权限没打开而不多能访问）
      */
-    public String getObjectBaseUrl(String fileName) throws Exception {
+    public String getObjectUrl(String fileName, boolean hidden) throws Exception {
         // 查看文件地址
         String objectUrl = getObjectUrl(fileName);
-        return HttpServletUtil.hiddenQueryString(objectUrl);
+        // 判断是否隐藏
+        return Boolean.TRUE.equals(hidden) ? HttpServletUtil.hiddenQueryString(objectUrl) : objectUrl;
     }
 
     /**
      * 文件加载
-     *
-     * @param fileName 文件名称
      */
     public byte[] load(String fileName) throws Exception {
         GetObjectArgs objectArgs = GetObjectArgs.builder()
@@ -96,8 +87,6 @@ public class MinioEngine {
 
     /**
      * 文件预览
-     *
-     * @param fileName 文件名称
      */
     public void preview(String fileName, HttpServletResponse response) throws Exception {
         byte[] bytes = load(fileName);
@@ -106,8 +95,6 @@ public class MinioEngine {
 
     /**
      * 文件下载
-     *
-     * @param fileName 文件名称
      */
     public void download(String downloadName, String fileName, HttpServletResponse response) throws Exception {
         byte[] bytes = load(fileName);
@@ -130,10 +117,6 @@ public class MinioEngine {
 
     /**
      * 删除
-     *
-     * @param fileName
-     * @return
-     * @throws Exception
      */
     public void remove(String fileName) throws Exception {
         RemoveObjectArgs removeObjectArgs = RemoveObjectArgs.builder()

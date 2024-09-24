@@ -30,7 +30,7 @@ public interface ResourceService {
 
     void checkAndRemoveImage(Long code, Long old);
 
-    String gerObjectUrl(Long code);
+    String gerObjectUrl(Long code, Boolean hidden);
 
     Long upload(Long userId, MultipartFile file);
 
