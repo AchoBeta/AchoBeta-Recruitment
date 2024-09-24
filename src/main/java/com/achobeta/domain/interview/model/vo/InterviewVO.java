@@ -19,7 +19,7 @@ public class InterviewVO {
 
     private Long id;
 
-    @Excel(name = "标题", width = 20)//列名、宽度
+    @Excel(name = "标题", width = 50)//列名、宽度
     private String title;
 
     @Excel(name = "状态", width = 20)//列名、宽度

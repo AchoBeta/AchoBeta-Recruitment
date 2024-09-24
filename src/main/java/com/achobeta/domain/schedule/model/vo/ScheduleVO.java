@@ -24,9 +24,4 @@ public class ScheduleVO {
 
     private Date endTime;
 
-    @Override
-    public String toString() {
-        DateFormat dateTimeFormat = DateTimeConfig.DATE_TIME_FORMAT;
-        return String.format("%s —— %s", dateTimeFormat.format(startTime), dateTimeFormat.format(endTime));
-    }
 }

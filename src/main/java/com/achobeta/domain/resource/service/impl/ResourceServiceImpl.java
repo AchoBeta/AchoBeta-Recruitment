@@ -1,5 +1,6 @@
 package com.achobeta.domain.resource.service.impl;
 
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.access.strategy.ResourceAccessStrategy;
 import com.achobeta.domain.resource.factory.AccessStrategyFactory;
@@ -48,7 +49,10 @@ public class ResourceServiceImpl implements ResourceService {
         if (accessStrategy.isAccessible(resource)) {
             return resource;
         } else {
-            throw accessStrategy.failed(resource);
+            throw new GlobalServiceException(
+                    String.format("尝试访问资源 %s，已阻拦", resource.getCode()),
+                    GlobalServiceStatusCode.RESOURCE_CANNOT_BE_ACCESSED
+            );
         }
     }
 
