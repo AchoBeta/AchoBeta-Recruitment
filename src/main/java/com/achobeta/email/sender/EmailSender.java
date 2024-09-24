@@ -1,4 +1,4 @@
-package com.achobeta.email;
+package com.achobeta.email.sender;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.email.model.po.EmailMessage;

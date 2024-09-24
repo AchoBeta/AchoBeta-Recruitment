@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class EmailAsynchronousSendAspect {
 
-    @Pointcut("execution(* com.achobeta.email.EmailSender.*(..))")
+    @Pointcut("execution(* com.achobeta.email.sender.EmailSender.*(..))")
     public void send() {}
 
     @Around("send()")

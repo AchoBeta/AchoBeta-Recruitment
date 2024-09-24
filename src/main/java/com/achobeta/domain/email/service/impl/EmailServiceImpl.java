@@ -2,10 +2,10 @@ package com.achobeta.domain.email.service.impl;
 
 import com.achobeta.domain.email.model.vo.VerificationCodeTemplate;
 import com.achobeta.domain.email.service.EmailService;
-import com.achobeta.email.EmailSender;
 import com.achobeta.email.model.po.EmailMessage;
+import com.achobeta.email.sender.EmailSender;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.redis.RedisCache;
+import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.template.engine.HtmlEngine;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 import static com.achobeta.common.enums.EmailTemplateEnum.CAPTCHA;
 import static com.achobeta.common.enums.GlobalServiceStatusCode.EMAIL_CAPTCHA_CODE_COUNT_EXHAUST;
 import static com.achobeta.common.enums.GlobalServiceStatusCode.EMAIL_SEND_FAIL;
-import static com.achobeta.redis.constants.RedisConstants.*;
+import static com.achobeta.domain.email.constants.EmailConstants.*;
 
 @Slf4j
 @Service

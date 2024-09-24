@@ -1,6 +1,5 @@
-package com.achobeta.redis;
+package com.achobeta.redis.cache;
 
-import com.achobeta.redis.component.RedisBloomFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -21,8 +20,6 @@ import java.util.function.Consumer;
 public class RedisCache {
 
     private final RedisTemplate redisTemplate;
-
-    private final RedisBloomFilter redisBloomFilter;
 
     /**
      * 设置有效时间
@@ -175,59 +172,6 @@ public class RedisCache {
         long number = redisTemplate.opsForValue().increment(key);
         log.info("Redis key[{}] 自增后：{}", key, number);
         return number;
-    }
-
-    /**
-     * 初始化布隆过滤器
-     *
-     * @param bloomFilterName
-     */
-    public void initBloomFilter(final String bloomFilterName) {
-        log.info("初始化布隆过滤器[{}]", bloomFilterName);
-        execute(() -> {
-            redisBloomFilter.init(bloomFilterName);
-        });
-    }
-
-    /**
-     * 初始化布隆过滤器
-     *
-     * @param bloomFilterName
-     * @param timeout
-     * @param timeUnit
-     */
-    public void initBloomFilter(final String bloomFilterName, final long timeout, final TimeUnit timeUnit) {
-        log.info("初始化布隆过滤器[{}]  超时时间:[{}  {}]", bloomFilterName, timeout, timeUnit);
-        execute(() -> {
-            redisBloomFilter.init(bloomFilterName);
-            expire(bloomFilterName, timeout, timeUnit);
-        });
-    }
-
-    /**
-     * 加入布隆过滤器
-     *
-     * @param bloomFilterName 隆过滤器的名字
-     * @param key             key 键
-     */
-    public <T> void addToBloomFilter(final String bloomFilterName, final T key) {
-        log.info("加入布隆过滤器[{}]\tkey[{}]", bloomFilterName, key);
-        execute(() -> {
-            redisBloomFilter.add(bloomFilterName, key);
-        });
-    }
-
-    /**
-     * 布隆过滤器是否存在该键值
-     *
-     * @param bloomFilterName 布隆过滤器的名字
-     * @param key             键
-     * @return 键是否存在
-     */
-    public <T> boolean containsInBloomFilter(final String bloomFilterName, final T key) {
-        boolean flag = redisBloomFilter.contains(bloomFilterName, key);
-        log.info("key[{}]\t是否存在于布隆过滤器[{}]:\t{}", key, bloomFilterName, flag);
-        return flag;
     }
 
     /**

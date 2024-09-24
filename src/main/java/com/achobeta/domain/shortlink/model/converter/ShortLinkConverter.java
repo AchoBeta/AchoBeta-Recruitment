@@ -2,9 +2,11 @@ package com.achobeta.domain.shortlink.model.converter;
 
 import com.achobeta.common.base.BasePageQuery;
 import com.achobeta.common.base.BasePageResult;
+import com.achobeta.domain.shortlink.bloomfilter.ShortLinkBloomFilterProperties;
 import com.achobeta.domain.shortlink.model.dao.po.ShortLink;
 import com.achobeta.domain.shortlink.model.dto.ShortLinkQueryDTO;
 import com.achobeta.domain.shortlink.model.vo.ShortLinkQueryVO;
+import com.achobeta.redis.bloomfilter.BloomFilterProperties;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -19,6 +21,8 @@ import org.mapstruct.factory.Mappers;
 public interface ShortLinkConverter {
 
     ShortLinkConverter INSTANCE = Mappers.getMapper(ShortLinkConverter.class);
+
+    BloomFilterProperties shortLinkBloomFilterPropertiesToBloomFilterProperties(ShortLinkBloomFilterProperties properties);
 
     BasePageQuery shortLinkQueryDTOToBasePageQuery(ShortLinkQueryDTO shortLinkQueryDTO);
 
