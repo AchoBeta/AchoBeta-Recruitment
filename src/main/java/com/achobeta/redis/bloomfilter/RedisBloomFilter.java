@@ -29,7 +29,6 @@ public class RedisBloomFilter<T> {
         this.timeout = properties.getTimeout();
         this.unit = properties.getUnit();
         this.rBloomFilter = redissonClient.getBloomFilter(this.name);
-        // 值得注意的是布隆过滤器的位图（本体）和布隆过滤器的配置是分开来存储的
         tryInit();
     }
 
