@@ -37,7 +37,7 @@ public class StuSimpleResumeVO implements Serializable {
 
     private String experience;
 
-    private String image;
+    private Long image;
 
     private String awards;
 

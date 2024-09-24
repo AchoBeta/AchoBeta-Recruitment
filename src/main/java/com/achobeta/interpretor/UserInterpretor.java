@@ -11,6 +11,7 @@ import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.jwt.propertities.JwtProperties;
 import com.achobeta.jwt.util.JwtUtil;
+import com.achobeta.util.HttpServletUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.crypto.SecretKey;
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 /**
  * @author cattleYuan
@@ -38,12 +40,33 @@ public class UserInterpretor implements HandlerInterceptor {
     public static final String USER_ID = "user_id";
     public static final String USER_ROLE_NAME = "user";
 
+    public UserHelper getUserHelper(HttpServletRequest request) {
+        String token = request.getHeader(jwtProperties.getTokenName());
+        //从请求头中获取token
+        if (StrUtil.isEmpty(token)) {
+            throw new GlobalServiceException("用户未登录,token为空", GlobalServiceStatusCode.USER_NOT_LOGIN);
+        }
+        //通过明文钥匙生成密钥
+        SecretKey secretKey = JwtUtil.generalKey(jwtProperties.getSecretKey());
+        Claims claims = JwtUtil.parseJWT(secretKey, token);
+        Long userId = Long.valueOf(claims.get(UserInterpretor.USER_ID).toString());
+        Integer role = Integer.parseInt(claims.get(UserInterpretor.USER_ROLE_NAME).toString());
+        return UserHelper.builder().userId(userId).token(token).role(role).build();
+    }
+
+    public UserHelper getUserHelper() {
+        return Optional.ofNullable(BaseContext.getCurrentUser())
+                .or(() -> HttpServletUtil.getRequest().map(this::getUserHelper))
+                .orElseThrow(GlobalServiceException::new)
+        ;
+    }
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //可以解决拦截器跨域问题
         if (!(handler instanceof HandlerMethod)) {
             // 并不处理非目标方法的请求
-            // todo: 例如获取资源的请求，而这些请求需要进行其他的处理！
+            // todo: 例如通过本服务，但不是通过目标方法获取资源的请求，而这些请求需要进行其他的处理！
             return true;
         }
 

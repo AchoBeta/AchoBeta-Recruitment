@@ -1,6 +1,7 @@
 package com.achobeta.common.enums;
 
 import com.achobeta.exception.GlobalServiceException;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Getter;
  * Time: 0:56
  */
 @Getter
+@AllArgsConstructor
 public enum InterviewEvent {
 
     INTERVIEW_START(1, "面试开始"),
@@ -31,11 +33,6 @@ public enum InterviewEvent {
     private final Integer event;
 
     private final String description;
-
-    InterviewEvent(Integer event, String description) {
-        this.event = event;
-        this.description = description;
-    }
 
     @Override
     public String toString() {

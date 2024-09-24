@@ -1,20 +1,51 @@
 package com.achobeta.domain.resource.service;
 
-import com.achobeta.domain.users.model.po.UserHelper;
+import com.achobeta.common.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.model.entity.DigitalResource;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * Created With Intellij IDEA
- * Description:
  * User: 马拉圈
  * Date: 2024-09-21
  * Time: 12:16
+ * Description: 仅仅针对本服务内部的资源
  */
 public interface ResourceService {
 
-    boolean isValid(Long code);
+    DigitalResource checkAndGetResource(Long code, ResourceAccessLevel level);
 
-    boolean isPermit(UserHelper currentUser, Long code);
+    DigitalResource analyzeCode(Long code);
 
-    String analyzeCode(UserHelper currentUser, Long code);
+    void download(Long code, HttpServletResponse response);
+
+    void preview(Long code, HttpServletResponse response);
+
+    byte[] load(Long code);
+
+    void checkImage(Long code);
+
+    void checkAndRemoveImage(Long code, Long old);
+
+    String gerObjectUrl(Long code, Boolean hidden);
+
+    Long upload(Long userId, MultipartFile file);
+
+    Long upload(Long userId, String originalName, byte[] data, ResourceAccessLevel level);
+
+    List<Long> uploadList(Long userId, List<MultipartFile> fileList);
+
+    void setAccessLevel(Long id, ResourceAccessLevel level);
+
+    void remove(Long code);
+
+    /**
+     * 删除一个资源，宽恕删除失败的情况
+     * @param code 资源码
+     */
+    void removeKindly(Long code);
 
 }

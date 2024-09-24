@@ -74,7 +74,7 @@ public class InterviewSummaryController {
     @PostMapping("/rank")
     public SystemJsonResponse rankInterview(@RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 查询
-        List<InterviewRankVO> interviewRankList = interviewSummaryService.getInterviewRankList(InterviewConditionDTO.getCondition(interviewConditionDTO));
+        List<InterviewRankVO> interviewRankList = interviewSummaryService.getInterviewRankList(InterviewConditionDTO.of(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewRankList);
     }
 

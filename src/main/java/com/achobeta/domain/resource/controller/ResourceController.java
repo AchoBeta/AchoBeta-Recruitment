@@ -2,19 +2,26 @@ package com.achobeta.domain.resource.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
+import com.achobeta.common.enums.ResourceAccessLevel;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.resource.model.converter.DigitalResourceConverter;
+import com.achobeta.domain.resource.model.dto.ResourceQueryDTO;
+import com.achobeta.domain.resource.model.vo.ResourceAccessLevelVO;
+import com.achobeta.domain.resource.model.vo.ResourceQueryVO;
+import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.users.context.BaseContext;
-import com.achobeta.domain.users.model.po.UserHelper;
+import com.achobeta.util.MediaUtil;
+import com.achobeta.util.ResourceUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * Created With Intellij IDEA
@@ -33,20 +40,88 @@ public class ResourceController {
 
     private final ResourceService resourceService;
 
-    @GetMapping("/{code}")
-    public SystemJsonResponse analyzeCode(HttpServletResponse response, @PathVariable("code") @NotNull Long code) {
-        UserHelper currentUser = BaseContext.getCurrentUser();
-        String url = resourceService.analyzeCode(currentUser, code);
-//        response.setContentType(ResourceConstants.DEFAULT_MEDIA_TYPE);
-//        byte[] bytes = MediaUtil.getBytes(url);
-//        try (OutputStream outputStream = response.getOutputStream()) {
-//            if(Objects.nonNull(bytes)) {
-//                outputStream.write(bytes);
-//            }
-//        } catch (IOException e) {
-//            throw new GlobalServiceException(e.getMessage());
-//        }
+    private final DigitalResourceService digitalResourceService;
+
+    @GetMapping("/preview/{code}")
+    @Intercept(ignore = true)
+    public void preview(@PathVariable("code") @NotNull Long code, HttpServletResponse response) {
+        resourceService.preview(code, response);
+    }
+
+    @GetMapping("/download/{code}")
+    @Intercept(ignore = true)
+    public void download(@PathVariable("code") @NotNull Long code, HttpServletResponse response) {
+        resourceService.download(code, response);
+    }
+
+    @GetMapping("/share/{code}")
+    @Intercept(permit = {UserTypeEnum.ADMIN})
+    public SystemJsonResponse gerObjectUrl(@PathVariable("code") @NotNull Long code,
+                                           @RequestParam(name = "hidden", required = false) Boolean hidden) {
+        String url = resourceService.gerObjectUrl(code, hidden);
         return SystemJsonResponse.SYSTEM_SUCCESS(url);
+    }
+
+    @PostMapping("/query")
+    @Intercept(permit = {UserTypeEnum.ADMIN})
+    public SystemJsonResponse getResourceList(@RequestBody(required = false) ResourceQueryDTO resourceQueryDTO) {
+        ResourceQueryVO resourceQueryVO = digitalResourceService.queryResources(resourceQueryDTO);
+        return SystemJsonResponse.SYSTEM_SUCCESS(resourceQueryVO);
+    }
+
+    @GetMapping("/list/level")
+    @Intercept(permit = {UserTypeEnum.ADMIN})
+    public SystemJsonResponse getLevels() {
+        List<ResourceAccessLevelVO> resourceAccessLevelVOList =
+                DigitalResourceConverter.INSTANCE.levelListToLevelVOList(List.of(ResourceAccessLevel.values()));
+        return SystemJsonResponse.SYSTEM_SUCCESS(resourceAccessLevelVOList);
+    }
+
+    @PostMapping("/upload/one")
+    public SystemJsonResponse upload(@RequestParam("file") MultipartFile file) {
+        long userId = BaseContext.getCurrentUser().getUserId();
+        Long code = resourceService.upload(userId, file);
+        return SystemJsonResponse.SYSTEM_SUCCESS(code);
+    }
+
+    @PostMapping("/upload/image")
+    public SystemJsonResponse uploadImage(@RequestParam("file") MultipartFile file) {
+        // 检查
+        ResourceUtil.checkImage(MediaUtil.getContentType(file));
+        long userId = BaseContext.getCurrentUser().getUserId();
+        Long code = resourceService.upload(userId, file);
+        return SystemJsonResponse.SYSTEM_SUCCESS(code);
+    }
+
+    @PostMapping("/upload/video")
+    public SystemJsonResponse uploadVideo(@RequestParam("file") MultipartFile file) {
+        // 检查
+        ResourceUtil.checkVideo(MediaUtil.getContentType(file));
+        long userId = BaseContext.getCurrentUser().getUserId();
+        Long code = resourceService.upload(userId, file);
+        return SystemJsonResponse.SYSTEM_SUCCESS(code);
+    }
+
+    @PostMapping("/upload/list")
+    public SystemJsonResponse upload(@RequestParam("file") List<MultipartFile> fileList) {
+        long userId = BaseContext.getCurrentUser().getUserId();
+        List<Long> codeList = resourceService.uploadList(userId, fileList);
+        return SystemJsonResponse.SYSTEM_SUCCESS(codeList);
+    }
+
+    @PostMapping("/set/level/{id}")
+    @Intercept(permit = {UserTypeEnum.ADMIN})
+    public SystemJsonResponse setLevel(@PathVariable("id") @NotNull Long id,
+                                       @RequestParam("level") @NotNull Integer level) {
+        ResourceAccessLevel accessLevel = ResourceAccessLevel.get(level);
+        resourceService.setAccessLevel(id, accessLevel);
+        return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
+
+    @GetMapping("/remove/{code}")
+    public SystemJsonResponse remove(@PathVariable("code") @NotNull Long code) {
+        resourceService.remove(code);
+        return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
 }

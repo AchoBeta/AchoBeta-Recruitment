@@ -21,4 +21,5 @@ public class ScheduleVO {
     private Date startTime;
 
     private Date endTime;
+
 }

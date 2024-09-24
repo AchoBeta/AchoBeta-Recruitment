@@ -1,8 +1,6 @@
 package com.achobeta.domain.interview.service.impl;
 
-import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.common.enums.InterviewEvent;
-import com.achobeta.common.enums.InterviewStatus;
+import com.achobeta.common.enums.*;
 import com.achobeta.domain.evaluate.model.entity.InterviewQuestionScore;
 import com.achobeta.domain.interview.machine.constants.InterviewStateMachineConstants;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
@@ -13,14 +11,17 @@ import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
 import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
+import com.achobeta.domain.interview.model.vo.InterviewExcelTemplate;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.service.PaperQuestionLinkService;
+import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.machine.StateMachineUtil;
 import com.achobeta.redis.RedisLock;
 import com.achobeta.redis.strategy.SimpleLockStrategy;
+import com.achobeta.util.ExcelUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
@@ -42,11 +43,15 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
 
     private final static String EXECUTE_INTERVIEW_EVENT_LOCK = "executeInterviewEventLock:";
 
+    private final static String ACHOBETA_RECRUITMENT_XLSX = "";
+
     private final InterviewMapper interviewMapper;
 
     private final InterviewerService interviewerService;
 
     private final PaperQuestionLinkService paperQuestionLinkService;
+
+    private final ResourceService resourceService;
 
     private final RedisLock redisLock;
 
@@ -70,6 +75,16 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     @Override
     public List<InterviewVO> managerGetInterviewList(Long managerId, InterviewConditionDTO condition) {
         return interviewMapper.managerGetInterviewList(managerId, condition);
+    }
+
+    @Override
+    public Long printAllInterviewList(Long managerId, InterviewConditionDTO condition, ResourceAccessLevel level) {
+        List<InterviewVO> interviewVOList = managerGetInterviewList(null, condition);
+        ExcelTemplateEnum excelTemplateEnum = ExcelTemplateEnum.ACHOBETA_INTERVIEW_ALL;
+        // 获取数据
+        byte[] bytes = ExcelUtil.exportXlsxFile(excelTemplateEnum.getTitle(), excelTemplateEnum.getSheetName(), InterviewExcelTemplate.class, interviewVOList);
+        // 上传对象存储服务器
+        return resourceService.upload(managerId, excelTemplateEnum.getOriginalName(), bytes, level);
     }
 
     @Override

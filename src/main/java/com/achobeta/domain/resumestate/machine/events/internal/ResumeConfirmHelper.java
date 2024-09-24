@@ -49,6 +49,8 @@ ResumeConfirmHelper implements ResumeStateInternalTransitionHelper{
 
     private final Action<ResumeStatus, ResumeEvent, ResumeContext> defaultResumeAction;
 
+    private final Action<ResumeStatus, ResumeEvent, ResumeContext> resumeNotice;
+
     @Override
     public List<ResumeStatus> getWithin() {
         return List.of(
@@ -110,6 +112,8 @@ ResumeConfirmHelper implements ResumeStateInternalTransitionHelper{
             emailMessage.setContent(html);
             // 发送模板消息
             emailSender.send(emailMessage);
+            // 判断是否同时发送简历状态变更的邮件
+            resumeNotice.execute(from, to, event, context);
         };
     }
 }

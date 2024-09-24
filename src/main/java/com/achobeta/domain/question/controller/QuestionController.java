@@ -8,7 +8,6 @@ import com.achobeta.domain.question.model.dto.QuestionDTO;
 import com.achobeta.domain.question.model.dto.QuestionQueryDTO;
 import com.achobeta.domain.question.model.vo.QuestionDetailVO;
 import com.achobeta.domain.question.model.vo.QuestionQueryVO;
-import com.achobeta.domain.question.service.QuestionLibraryService;
 import com.achobeta.domain.question.service.QuestionService;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
@@ -32,8 +31,6 @@ import org.springframework.web.bind.annotation.*;
 @Intercept(permit = {UserTypeEnum.ADMIN})
 public class QuestionController {
 
-    private final QuestionLibraryService questionLibraryService;
-
     private final QuestionService questionService;
 
     private final RemoveQuestionHandlerChain removeQuestionHandlerChain;
@@ -43,7 +40,7 @@ public class QuestionController {
         // 检查
         ValidatorUtils.validate(questionDTO);
         // 添加
-        Long questionId =questionService.addQuestion(questionDTO.getLibIds(), questionDTO.getTitle(), questionDTO.getStandard());
+        Long questionId = questionService.addQuestion(questionDTO.getLibIds(), questionDTO.getTitle(), questionDTO.getStandard());
         return SystemJsonResponse.SYSTEM_SUCCESS(questionId);
     }
 

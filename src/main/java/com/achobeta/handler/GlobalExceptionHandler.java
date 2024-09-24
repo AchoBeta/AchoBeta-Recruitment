@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,6 +38,15 @@ public class GlobalExceptionHandler {
         String requestURI = request.getRequestURI();
         String message = e.getMessage();
         GlobalServiceStatusCode statusCode = e.getStatusCode();
+        log.error("请求地址'{}', {}: '{}'", requestURI, statusCode, message);
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(statusCode, message);
+    }
+
+    @ExceptionHandler({FileUploadException.class})
+    public SystemJsonResponse handleFileUploadException(FileUploadException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        String message = e.getMessage();
+        GlobalServiceStatusCode statusCode = GlobalServiceStatusCode.RESOURCE_OUT_SIZE;
         log.error("请求地址'{}', {}: '{}'", requestURI, statusCode, message);
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(statusCode, message);
     }

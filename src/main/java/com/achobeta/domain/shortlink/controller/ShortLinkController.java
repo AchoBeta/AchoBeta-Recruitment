@@ -4,7 +4,10 @@ import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.annotation.IsAccessible;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.shortlink.model.dto.ShortLinkQueryDTO;
+import com.achobeta.domain.shortlink.model.vo.ShortLinkQueryVO;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
+import com.achobeta.util.HttpServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -49,10 +52,22 @@ public class ShortLinkController {
     public SystemJsonResponse transferAndSaveShortLink(HttpServletRequest request,
                                                        @RequestParam("url") @NotNull @IsAccessible(message = "链接不可访问") String url) {
         // 拼接出基础的url
-        String baseUrl = String.format("%s://%s/api/v1/shortlink/", request.getScheme(), request.getHeader("host"));
+        String baseUrl = HttpServletUtil.getBaseUrl("/api/v1/shortlink/", request);
         // 转化
         String shortLinkURL = shortLinkService.transShortLinkURL(baseUrl, url);
         log.info("原链接:{} -> 短链接:{}", url, shortLinkURL);
         return SystemJsonResponse.SYSTEM_SUCCESS(shortLinkURL);
+    }
+
+    @PostMapping("/query")
+    public SystemJsonResponse queryShortLinkList(@RequestBody(required = false) ShortLinkQueryDTO shortLinkQueryDTO) {
+        ShortLinkQueryVO shortLinkQueryVO = shortLinkService.queryShortLinkList(shortLinkQueryDTO);
+        return SystemJsonResponse.SYSTEM_SUCCESS(shortLinkQueryVO);
+    }
+
+    @GetMapping("/remove/{id}")
+    public SystemJsonResponse removeShortLink(@PathVariable("id") @NotNull Long id) {
+        shortLinkService.removeShortLink(id);
+        return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 }

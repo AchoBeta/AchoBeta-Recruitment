@@ -19,7 +19,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface IsAccessible {
 
-    String message() default "url 非法"; // 默认消息
+    String message() default "url 无法访问"; // 默认消息
 
     Class<?>[] groups() default {}; // 分组校验
 

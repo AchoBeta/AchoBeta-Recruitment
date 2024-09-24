@@ -20,6 +20,7 @@ public class IsAccessibleValidator implements ConstraintValidator<IsAccessible, 
                     try {
                         return MediaUtil.isAccessible(url);
                     } catch (IOException e) {
+                        // 重定向次数过多也判定为无法访问
                         log.warn(e.getMessage());
                         return Boolean.FALSE;
                     }

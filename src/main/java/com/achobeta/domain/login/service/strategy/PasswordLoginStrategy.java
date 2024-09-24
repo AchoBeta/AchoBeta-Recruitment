@@ -57,10 +57,6 @@ public class PasswordLoginStrategy implements LoginStrategy {
         return loginService.login(buildLoginUser(user));
     }
 
-    public static void main(String[] args) {
-        System.out.println(BCrypt.checkpw(null, null));
-    }
-
     /**
      * 数据脱敏处理
      *
