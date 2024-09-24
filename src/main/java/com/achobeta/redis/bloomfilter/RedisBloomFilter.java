@@ -8,8 +8,6 @@ import java.util.concurrent.TimeUnit;
 
 public class RedisBloomFilter<T> {
 
-    private BloomFilterProperties properties;
-
     private String name;
 
     private Long preSize;
