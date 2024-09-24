@@ -24,9 +24,9 @@ DROP TABLE IF EXISTS `stu_attachment`;
 CREATE TABLE `stu_attachment`
 (
     `id`          bigint UNSIGNED                                  NOT NULL AUTO_INCREMENT COMMENT 'ID',
-    `resume_id`      bigint UNSIGNED                                  NOT NULL COMMENT '学生表主键id',
+    `resume_id`   bigint UNSIGNED                                  NOT NULL COMMENT '学生表主键id',
     `filename`    varchar(256) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '附件名',
-    `attachment`  varchar(256) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '附件路径',
+    `attachment`  bigint                                           NOT NULL COMMENT '附件资源码',
     `create_time` datetime                                         NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` datetime                                         NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     `version`     int                                              NOT NULL DEFAULT 0 COMMENT '乐观锁',

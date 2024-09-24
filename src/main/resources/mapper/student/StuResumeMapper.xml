@@ -20,7 +20,7 @@
             <result property="introduce" column="introduce" jdbcType="VARCHAR"/>
             <result property="experience" column="experience" jdbcType="VARCHAR"/>
             <result property="awards" column="awards" jdbcType="VARCHAR"/>
-            <result property="image" column="image" jdbcType="VARCHAR"/>
+            <result property="image" column="image" jdbcType="BIGINT"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
             <result property="status" column="status" jdbcType="INTEGER"/>
             <result property="submitCount" column="submit_count" jdbcType="INTEGER"/>

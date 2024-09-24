@@ -17,4 +17,7 @@ public class ResumeExecuteDTO {
 //    @NotNull(message = "成员信息不能为空")
     private MemberDTO memberDTO;
 
+//    @NotNull(message = "是否通知不能为空")
+    private Boolean isNotified;
+
 }

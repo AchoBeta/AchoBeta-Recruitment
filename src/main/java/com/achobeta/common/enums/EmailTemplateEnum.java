@@ -19,13 +19,15 @@ public enum EmailTemplateEnum {
 
     INTERVIEW_SUMMARY_MARKDOWN("面试总结", "interview-summary-model.md"),
 
-    MEMBER_NOTICE("转正通知", "confirmation-notice-model.html"),
-
     INTERVIEW_EXPERIENCE_OPEN("面试经历", "interview-experience-open.html"),
 
     INTERVIEW_EXPERIENCE_INNER("面试经历", "interview-experience-inner.html"),
 
     INTERVIEW_EXPERIENCE_CLOSE("面试经历", "interview-experience-close.html"),
+
+    RESUME_NOTICE("简历状态轮转通知", "resume-notice-model.html"),
+
+    MEMBER_NOTICE("转正通知", "confirmation-notice-model.html"),
 
     ;
 

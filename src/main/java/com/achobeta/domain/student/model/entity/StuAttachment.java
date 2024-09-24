@@ -29,7 +29,7 @@ public class StuAttachment extends BaseIncrIDEntity implements Serializable {
     /**
      * 附件路径
      */
-    private String attachment;
+    private Long attachment;
 
 
 

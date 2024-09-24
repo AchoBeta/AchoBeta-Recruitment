@@ -1,5 +1,6 @@
 package com.achobeta.common.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -9,11 +10,13 @@ import lombok.Getter;
  * Date: 2024-08-29
  * Time: 15:02
  */
-@Getter
 /**
  * 用于插入邮件的 html 元素的 style 属性：
  * th:style="${style}"
  */
+@Getter
+@AllArgsConstructor
+
 public enum TextStyle {
 
     RED("color: red"),
@@ -24,7 +27,4 @@ public enum TextStyle {
 
     private final String style;
 
-    TextStyle(String style) {
-        this.style = style;
-    }
 }

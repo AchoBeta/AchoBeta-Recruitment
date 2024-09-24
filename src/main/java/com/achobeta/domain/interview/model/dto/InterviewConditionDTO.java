@@ -20,7 +20,7 @@ public class InterviewConditionDTO {
 //    @NotNull(message = "招新活动 id 不能为空")
     private Long actId;
 
-    public static InterviewConditionDTO getCondition(InterviewConditionDTO interviewConditionDTO) {
+    public static InterviewConditionDTO of(InterviewConditionDTO interviewConditionDTO) {
         return Optional.ofNullable(interviewConditionDTO).orElse(new InterviewConditionDTO());
     }
 }

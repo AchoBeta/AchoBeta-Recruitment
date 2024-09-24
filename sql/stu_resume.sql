@@ -43,7 +43,6 @@ DROP TABLE IF EXISTS `stu_resume`;
 CREATE TABLE `stu_resume`
 (
     `id`               bigint UNSIGNED                                  NOT NULL AUTO_INCREMENT COMMENT 'ID',
---    `questionnaire_id` int                                              NOT NULL DEFAULT 1 COMMENT '问卷id',
     `user_id`          bigint                                           NOT NULL COMMENT '用户 id',
     `batch_id`         bigint                                           NOT NULL COMMENT '招新批次 id',
     `student_id`       varchar(13) CHARACTER SET utf8 COLLATE utf8_bin  NOT NULL DEFAULT '' COMMENT '学号',
@@ -58,11 +57,10 @@ CREATE TABLE `stu_resume`
     `introduce`        text CHARACTER SET utf8 COLLATE utf8_bin         NOT NULL COMMENT '个人介绍（自我认知）',
     `experience`       text CHARACTER SET utf8 COLLATE utf8_bin         NOT NULL COMMENT '个人经历 （项目经历、 职业规划等）',
     `awards`           text CHARACTER SET utf8 COLLATE utf8_bin         NOT NULL COMMENT '获奖经历',
-    `image`            varchar(500) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '照片',
+    `image`            bigint                                           NOT NULL COMMENT '照片',
     `remark`           varchar(500) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '备注',
     `status`           int                                              NOT NULL DEFAULT 1 COMMENT '简历状态',
     `submit_count`     int                                              NOT NULL DEFAULT 0 COMMENT '提交次数',
---    `batch`            int                                              NOT NULL DEFAULT 1 COMMENT 'ab版本',
     `create_time`      datetime                                         NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`      datetime                                         NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     `version`          int                                              NOT NULL DEFAULT 0 COMMENT '乐观锁',

@@ -2,7 +2,11 @@ package com.achobeta.domain.shortlink.service;
 
 
 import com.achobeta.domain.shortlink.model.dao.po.ShortLink;
+import com.achobeta.domain.shortlink.model.dto.ShortLinkQueryDTO;
+import com.achobeta.domain.shortlink.model.vo.ShortLinkQueryVO;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.Optional;
 
 /**
  * @author 马拉圈
@@ -10,6 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @createDate 2024-01-12 19:48:07
  */
 public interface ShortLinkService extends IService<ShortLink> {
+
+    Optional<ShortLink> getShortLink(Long id);
+
+    Optional<ShortLink> getShortLinkByCode(String code);
 
     /**
      * url生成唯一的code
@@ -32,4 +40,8 @@ public interface ShortLinkService extends IService<ShortLink> {
      * @return 原链接
      */
     String getOriginUrl(String code);
+
+    ShortLinkQueryVO queryShortLinkList(ShortLinkQueryDTO shortLinkQueryDTO);
+
+    void removeShortLink(Long id);
 }

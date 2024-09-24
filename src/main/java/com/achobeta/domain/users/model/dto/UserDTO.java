@@ -1,6 +1,7 @@
 package com.achobeta.domain.users.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -16,7 +17,7 @@ public class UserDTO {
     @NotBlank(message = "昵称不能为空")
     private String nickname;
 
-//    @NotNull(message = "头像不能为空")
+    @NotNull(message = "头像不能为空")
     private Long avatar;
 
 }

@@ -44,7 +44,7 @@ public class StuResume extends BaseIncrIDEntity implements Serializable {
 
     private String awards;
 
-    private String image;
+    private Long image;
 
     private String remark;
 

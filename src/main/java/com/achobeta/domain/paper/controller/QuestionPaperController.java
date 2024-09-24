@@ -7,7 +7,6 @@ import com.achobeta.domain.paper.handler.chain.RemovePaperHandlerChain;
 import com.achobeta.domain.paper.model.dto.PaperQueryDTO;
 import com.achobeta.domain.paper.model.dto.QuestionPaperDTO;
 import com.achobeta.domain.paper.model.vo.PaperQueryVO;
-import com.achobeta.domain.paper.service.QuestionPaperLibraryService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
@@ -30,8 +29,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/qpaper")
 @Intercept(permit = {UserTypeEnum.ADMIN})
 public class QuestionPaperController {
-
-    private final QuestionPaperLibraryService questionPaperLibraryService;
 
     private final QuestionPaperService questionPaperService;
 
