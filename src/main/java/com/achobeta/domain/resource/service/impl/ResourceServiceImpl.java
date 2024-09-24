@@ -43,7 +43,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public DigitalResource checkAndGetResource(Long code, ResourceAccessLevel level) {
         DigitalResource resource = digitalResourceService.getResourceByCode(code);
-        // 获取策略并判断是否可以访问
+        // 获取策略并判断是否可以访问（level 取最高的那个）
         ResourceAccessStrategy accessStrategy = accessStrategyFactory.getStrategy(resource.getAccessLevel().and(level));
         if (accessStrategy.isAccessible(resource)) {
             return resource;
@@ -104,7 +104,7 @@ public class ResourceServiceImpl implements ResourceService {
         resource.setUserId(userId);
         resource.setOriginalName(ResourceUtil.getOriginalName(file));
         resource.setFileName(objectStorageServiceFactory.load().upload(file));
-        return digitalResourceService.createResource(resource).getCode();
+        return digitalResourceService.createResource(resource);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class ResourceServiceImpl implements ResourceService {
         resource.setOriginalName(originalName);
         resource.setFileName(objectStorageServiceFactory.load().upload(originalName, data));
         resource.setAccessLevel(level);
-        return digitalResourceService.createResource(resource).getCode();
+        return digitalResourceService.createResource(resource);
     }
 
     @Override
@@ -135,7 +135,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public void setAccessLevel(Long id, ResourceAccessLevel level) {
-        digitalResourceService.updateAccessLevel(id, level);
+        digitalResourceService.setAccessLevel(id, level);
     }
 
     @Override

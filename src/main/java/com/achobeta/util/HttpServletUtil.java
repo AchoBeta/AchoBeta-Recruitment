@@ -4,6 +4,7 @@ import com.achobeta.exception.GlobalServiceException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -56,6 +57,10 @@ public class HttpServletUtil {
 
     public static String getBaseUrl(String uri, HttpServletRequest request) {
         return String.format("%s://%s%s", request.getScheme(), request.getHeader("host"), uri);
+    }
+
+    public static String hiddenQueryString(String url) {
+        return StringUtils.hasText(url) && url.contains("?") ? url.substring(0, url.indexOf("?")) : null;
     }
 
 }

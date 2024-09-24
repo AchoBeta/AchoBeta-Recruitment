@@ -1,12 +1,12 @@
 package com.achobeta.monio.engine;
 
 import com.achobeta.monio.config.MinioConfig;
+import com.achobeta.util.HttpServletUtil;
 import com.achobeta.util.MediaUtil;
 import com.achobeta.util.ResourceUtil;
 import io.minio.*;
 import io.minio.http.Method;
 import io.minio.messages.Item;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Repository
 @RequiredArgsConstructor
@@ -62,14 +61,14 @@ public class MinioEngine {
         GetPresignedObjectUrlArgs objectUrlArgs = GetPresignedObjectUrlArgs.builder()
                 .bucket(minioConfig.getBucketName())
                 .object(fileName)
-                .method(Method.GET)
+                .method(Method.GET) //这里必须显式声明请求方法
                 .build();
         return minioClient.getPresignedObjectUrl(objectUrlArgs);
     }
 
     /**
-     * 获取基本的 url，但这个地址不一定能够公网访问~
-     *  需要设置 bucket 的权限
+     * 获取基本的 url，但这个地址不一定能够公网访问
+     * 需要设置 bucket 的权限
      *
      * @param fileName
      * @return
@@ -77,7 +76,7 @@ public class MinioEngine {
     public String getObjectBaseUrl(String fileName) throws Exception {
         // 查看文件地址
         String objectUrl = getObjectUrl(fileName);
-        return objectUrl.substring(0, objectUrl.indexOf("?"));
+        return HttpServletUtil.hiddenQueryString(objectUrl);
     }
 
     /**
@@ -101,18 +100,8 @@ public class MinioEngine {
      * @param fileName 文件名称
      */
     public void preview(String fileName, HttpServletResponse response) throws Exception {
-        try (ServletOutputStream outputStream = response.getOutputStream()) {
-            // 写入数据
-            byte[] bytes = load(fileName);
-            if(Objects.nonNull(bytes)) {
-                // 设置响应内容类型（用同一个 inputStream 会互相影响）
-                response.setContentType(MediaUtil.getContentType(bytes));
-                // 指定字符集
-                response.setCharacterEncoding("utf-8");
-                outputStream.write(bytes);
-                outputStream.flush();
-            }
-        }
+        byte[] bytes = load(fileName);
+        HttpServletUtil.returnBytes(bytes, response);
     }
 
     /**
@@ -121,9 +110,8 @@ public class MinioEngine {
      * @param fileName 文件名称
      */
     public void download(String downloadName, String fileName, HttpServletResponse response) throws Exception {
-        // 在设置内容类型之前设置下载的文件名称
-        response.addHeader("Content-Disposition", "attachment;fileName=" + downloadName);
-        preview(fileName, response);
+        byte[] bytes = load(fileName);
+        HttpServletUtil.returnBytes(downloadName, bytes, response);
     }
 
     /**

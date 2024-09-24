@@ -58,7 +58,7 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
         // 解析分页参数获取 page
         IPage<DigitalResource> page = null;
         Long userId = null;
-        Integer level = null;
+        ResourceAccessLevel level = null;
         if (Objects.isNull(resourceQueryDTO)) {
             page = new BasePageQuery().toMpPage();
         } else {
@@ -66,13 +66,12 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
             userId = resourceQueryDTO.getUserId();
             level = Optional.ofNullable(resourceQueryDTO.getLevel())
                     .map(ResourceAccessLevel::get) // 这个时候就要求必须是有效的 level
-                    .map(ResourceAccessLevel::getLevel)
                     .orElse(null);
         }
         // 分页
         IPage<DigitalResource> resourceIPage = this.lambdaQuery()
                 .eq(Objects.nonNull(userId), DigitalResource::getUserId, userId)
-                .eq(Objects.nonNull(level), DigitalResource::getUserId, level) // eq 不能用枚举
+                .eq(Objects.nonNull(level), DigitalResource::getAccessLevel, level)
                 .page(page);
         // 封装
         BasePageResult<DigitalResource> pageResult = BasePageResult.of(resourceIPage);
@@ -81,12 +80,12 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
     }
 
     @Override
-    public DigitalResource createResource(DigitalResource digitalResource) {
+    public Long createResource(DigitalResource digitalResource) {
         // 生成一个雪花数字
         Long code = resourceCodeGenerator.nextId();
         digitalResource.setCode(code);
         this.save(digitalResource);
-        return digitalResource;
+        return digitalResource.getCode();
     }
 
     @Override
@@ -108,7 +107,7 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
     }
 
     @Override
-    public void updateAccessLevel(Long id, ResourceAccessLevel level) {
+    public void setAccessLevel(Long id, ResourceAccessLevel level) {
         DigitalResource digitalResource = new DigitalResource();
         digitalResource.setAccessLevel(level);
         this.lambdaUpdate()
