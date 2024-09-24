@@ -1,4 +1,4 @@
-package com.achobeta.redis.strategy;
+package com.achobeta.redis.lock.strategy;
 
 import org.redisson.api.RLock;
 

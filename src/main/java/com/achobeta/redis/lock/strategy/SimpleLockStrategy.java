@@ -1,4 +1,4 @@
-package com.achobeta.redis.strategy;
+package com.achobeta.redis.lock.strategy;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

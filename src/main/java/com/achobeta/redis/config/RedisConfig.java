@@ -1,6 +1,6 @@
 package com.achobeta.redis.config;
 
-import com.achobeta.redis.component.FastJsonRedisSerializer;
+import com.achobeta.redis.cache.FastJsonRedisSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -12,8 +12,7 @@ public class RedisConfig {
  
     @Bean
     @SuppressWarnings(value = { "unchecked", "rawtypes" })
-    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory connectionFactory)
-    {
+    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<Object, Object> template = new RedisTemplate<Object, Object>();
         template.setConnectionFactory(connectionFactory);
         FastJsonRedisSerializer serializer = new FastJsonRedisSerializer(Object.class);

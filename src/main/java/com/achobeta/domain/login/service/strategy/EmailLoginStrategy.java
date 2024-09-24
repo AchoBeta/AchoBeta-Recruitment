@@ -11,7 +11,7 @@ import com.achobeta.domain.login.model.entity.LoginUser;
 import com.achobeta.domain.login.model.vo.LoginVO;
 import com.achobeta.domain.login.service.LoginService;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.redis.RedisCache;
+import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.util.ValidatorUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 import static com.achobeta.common.enums.GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL;
-import static com.achobeta.redis.constants.RedisConstants.CAPTCHA_CODES_KEY;
-import static com.achobeta.redis.constants.RedisConstants.CAPTCHA_CODE_KEY;
+import static com.achobeta.domain.email.constants.EmailConstants.CAPTCHA_CODES_KEY;
+import static com.achobeta.domain.email.constants.EmailConstants.CAPTCHA_CODE_KEY;
 
 /**
  * @author BanTanger 半糖

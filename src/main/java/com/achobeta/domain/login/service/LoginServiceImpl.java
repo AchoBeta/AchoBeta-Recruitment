@@ -12,7 +12,7 @@ import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.interpretor.UserInterpretor;
 import com.achobeta.jwt.propertities.JwtProperties;
 import com.achobeta.jwt.util.JwtUtil;
-import com.achobeta.redis.RedisCache;
+import com.achobeta.redis.cache.RedisCache;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static com.achobeta.common.enums.GlobalServiceStatusCode.USER_ACCOUNT_ALREADY_EXIST;
-import static com.achobeta.redis.constants.RedisConstants.LOGIN_FAIL_CNT_KEY;
+import static com.achobeta.domain.email.constants.EmailConstants.LOGIN_FAIL_CNT_KEY;
 
 /**
  * @author BanTanger 半糖
