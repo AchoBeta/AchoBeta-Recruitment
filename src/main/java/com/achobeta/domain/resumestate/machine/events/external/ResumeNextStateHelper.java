@@ -1,8 +1,8 @@
 package com.achobeta.domain.resumestate.machine.events.external;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.common.enums.ResumeEvent;
-import com.achobeta.common.enums.ResumeStatus;
+import com.achobeta.domain.resumestate.enums.ResumeEvent;
+import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import com.achobeta.domain.resumestate.machine.context.ResumeContext;
 import com.achobeta.exception.GlobalServiceException;
 import com.alibaba.cola.statemachine.Action;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.achobeta.common.enums.ResumeStatus.*;
+import static com.achobeta.domain.resumestate.enums.ResumeStatus.*;
 
 /**
  * Created With Intellij IDEA

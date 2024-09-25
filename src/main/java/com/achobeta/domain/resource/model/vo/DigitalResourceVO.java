@@ -1,6 +1,6 @@
 package com.achobeta.domain.resource.model.vo;
 
-import com.achobeta.common.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import lombok.Data;
 
 import java.time.LocalDateTime;

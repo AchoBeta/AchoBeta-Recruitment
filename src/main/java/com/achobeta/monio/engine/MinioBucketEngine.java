@@ -1,13 +1,9 @@
 package com.achobeta.monio.engine;
 
-import com.achobeta.monio.config.MinioConfig;
-import com.achobeta.monio.template.DefaultPolicyTemplate;
-import com.achobeta.template.engine.TextEngine;
 import io.minio.*;
 import io.minio.messages.Bucket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,15 +18,9 @@ import java.util.List;
 @Repository
 @Slf4j
 @RequiredArgsConstructor
-public class MinioBucketEngine implements InitializingBean {
-
-    private final static String DEFAULT_POLICY_TEMPLATE = "minio-bucket-policy.json";
-
-    private final MinioConfig minioConfig;
+public class MinioBucketEngine {
 
     private final MinioClient minioClient;
-
-    private final TextEngine textEngine;
 
     /**
      * 查看存储bucket是否存在
@@ -54,21 +44,22 @@ public class MinioBucketEngine implements InitializingBean {
         minioClient.makeBucket(makeBucketArgs);
     }
 
-    /**
-     * 尝试创建存储bucket
-     */
-    public void tryMakeBucket(String bucketName) throws Exception {
-        if(!bucketExists(bucketName)) {
-            makeBucket(bucketName);
-        }
-    }
-
     public void setBucketPolicy(String bucketName, String policy) throws Exception {
         SetBucketPolicyArgs bucketPolicyArgs = SetBucketPolicyArgs.builder()
                 .bucket(bucketName)
                 .config(policy)
                 .build();
         minioClient.setBucketPolicy(bucketPolicyArgs);
+    }
+
+    /**
+     * 尝试创建存储bucket
+     */
+    public void tryMakeBucket(String bucketName, String policy) throws Exception {
+        if(!bucketExists(bucketName)) {
+            makeBucket(bucketName);
+            setBucketPolicy(bucketName, policy);
+        }
     }
 
     /**
@@ -88,17 +79,4 @@ public class MinioBucketEngine implements InitializingBean {
         return minioClient.listBuckets();
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        String bucketName = minioConfig.getBucketName();
-        tryMakeBucket(bucketName);
-        // 设置规则：所有人都能读（否则就只能获取）
-        DefaultPolicyTemplate policyTemplate = DefaultPolicyTemplate.builder()
-                .bucketName(bucketName)
-                .build();
-        String policy = textEngine.builder()
-                .append(DEFAULT_POLICY_TEMPLATE, policyTemplate)
-                .build();
-        setBucketPolicy(bucketName, policy);
-    }
 }

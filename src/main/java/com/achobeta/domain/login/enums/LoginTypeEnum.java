@@ -1,5 +1,6 @@
-package com.achobeta.common.enums;
+package com.achobeta.domain.login.enums;
 
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

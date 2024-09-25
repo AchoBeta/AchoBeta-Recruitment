@@ -1,5 +1,6 @@
-package com.achobeta.common.enums;
+package com.achobeta.domain.resource.enums;
 
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;

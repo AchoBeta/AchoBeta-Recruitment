@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 import static com.achobeta.config.DateTimeConfig.DATE_TIME_FORMAT;
 
@@ -13,14 +14,20 @@ import static com.achobeta.config.DateTimeConfig.DATE_TIME_FORMAT;
  * Created With Intellij IDEA
  * Description:
  * User: 马拉圈
- * Date: 2024-08-29
- * Time: 12:12
+ * Date: 2024-09-25
+ * Time: 10:35
  */
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class InterviewExperienceTemplateClose {
+public class InterviewExperienceTemplate {
+
+    private String studentId;
+
+    private String title;
+
+    private List<InterviewExperienceTemplateInner> inners;
 
     private Date startTime;
 

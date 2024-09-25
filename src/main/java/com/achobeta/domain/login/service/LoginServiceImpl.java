@@ -1,8 +1,8 @@
 package com.achobeta.domain.login.service;
 
 import cn.hutool.crypto.digest.BCrypt;
-import com.achobeta.common.enums.LoginTypeEnum;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.login.enums.LoginTypeEnum;
 import com.achobeta.domain.login.model.dao.UserEntity;
 import com.achobeta.domain.login.model.dao.mapper.UserMapper;
 import com.achobeta.domain.login.model.dto.RegisterDTO;

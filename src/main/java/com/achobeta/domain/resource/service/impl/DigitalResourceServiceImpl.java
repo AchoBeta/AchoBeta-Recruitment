@@ -3,7 +3,7 @@ package com.achobeta.domain.resource.service.impl;
 import com.achobeta.common.base.BasePageQuery;
 import com.achobeta.common.base.BasePageResult;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.common.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.converter.DigitalResourceConverter;
 import com.achobeta.domain.resource.model.dao.mapper.DigitalResourceMapper;
 import com.achobeta.domain.resource.model.dto.ResourceQueryDTO;

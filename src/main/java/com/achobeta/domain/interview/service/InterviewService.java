@@ -1,8 +1,7 @@
 package com.achobeta.domain.interview.service;
 
-import com.achobeta.common.enums.InterviewEvent;
-import com.achobeta.common.enums.InterviewStatus;
-import com.achobeta.common.enums.ResourceAccessLevel;
+import com.achobeta.domain.interview.enums.InterviewEvent;
+import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.model.dto.InterviewConditionDTO;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
@@ -10,6 +9,7 @@ import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
 import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
+import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

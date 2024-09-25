@@ -1,6 +1,6 @@
 package com.achobeta.domain.student.model.vo;
 
-import com.achobeta.common.enums.ResumeStatus;
+import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import lombok.Data;
 
 /**
