@@ -1,6 +1,6 @@
 package com.achobeta.domain.resumestate.machine.config;
 
-import com.achobeta.common.enums.EmailTemplateEnum;
+import com.achobeta.email.enums.EmailTemplateEnum;
 import com.achobeta.domain.resumestate.enums.ResumeEvent;
 import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import com.achobeta.domain.resumestate.machine.context.ResumeContext;

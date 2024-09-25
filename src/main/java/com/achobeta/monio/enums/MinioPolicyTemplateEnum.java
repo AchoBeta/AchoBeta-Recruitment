@@ -1,4 +1,4 @@
-package com.achobeta.domain.resource.enums;
+package com.achobeta.monio.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

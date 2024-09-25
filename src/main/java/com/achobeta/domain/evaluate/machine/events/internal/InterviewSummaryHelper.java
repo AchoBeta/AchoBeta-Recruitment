@@ -1,6 +1,6 @@
 package com.achobeta.domain.evaluate.machine.events.internal;
 
-import com.achobeta.common.enums.EmailTemplateEnum;
+import com.achobeta.email.enums.EmailTemplateEnum;
 import com.achobeta.domain.evaluate.model.vo.InterviewSummaryTemplate;
 import com.achobeta.domain.evaluate.model.vo.InterviewSummaryVO;
 import com.achobeta.domain.evaluate.service.InterviewSummaryService;

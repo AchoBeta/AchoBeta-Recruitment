@@ -1,7 +1,7 @@
 package com.achobeta.domain.resource.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.domain.resource.enums.MinioPolicyTemplateEnum;
+import com.achobeta.monio.enums.MinioPolicyTemplateEnum;
 import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.monio.config.MinioConfig;
