@@ -20,6 +20,4 @@ public enum MinioPolicyTemplateEnum {
 
     private final String template;
 
-
-
 }
