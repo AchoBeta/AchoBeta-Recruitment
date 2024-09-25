@@ -100,6 +100,7 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService, Init
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        // 如果不存在，则初始化桶
         String bucketName = minioConfig.getBucketName();
         // 设置规则：所有人都能读（否则就只能获取）
         DefaultPolicyTemplate policyTemplate = DefaultPolicyTemplate.builder()
