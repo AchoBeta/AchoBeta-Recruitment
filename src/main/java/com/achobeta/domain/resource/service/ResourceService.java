@@ -1,5 +1,6 @@
 package com.achobeta.domain.resource.service;
 
+import com.achobeta.common.enums.ExcelTemplateEnum;
 import com.achobeta.common.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.entity.DigitalResource;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,6 +36,8 @@ public interface ResourceService {
     Long upload(Long userId, MultipartFile file);
 
     Long upload(Long userId, String originalName, byte[] data, ResourceAccessLevel level);
+
+    <T, E> Long uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<T> clazz, List<E> data, ResourceAccessLevel level);
 
     List<Long> uploadList(Long userId, List<MultipartFile> fileList);
 

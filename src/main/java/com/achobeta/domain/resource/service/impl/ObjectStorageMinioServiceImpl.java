@@ -2,10 +2,23 @@ package com.achobeta.domain.resource.service.impl;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.common.enums.MinioPolicyTemplateEnum;
 import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.monio.config.MinioConfig;
+import com.achobeta.monio.engine.MinioBucketEngine;
 import com.achobeta.monio.engine.MinioEngine;
+import com.achobeta.monio.template.DefaultPolicyTemplate;
+import com.achobeta.template.engine.TextEngine;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.formula.functions.T;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -15,9 +28,19 @@ import org.springframework.web.multipart.MultipartFile;
  * Date: 2024-09-23
  * Time: 10:32
  */
-public class ObjectStorageMinioServiceImpl implements ObjectStorageService {
+public class ObjectStorageMinioServiceImpl implements ObjectStorageService, InitializingBean {
 
-    private final MinioEngine minioEngine = SpringUtil.getBean(MinioEngine.class);
+    @Resource
+    private MinioBucketEngine minioBucketEngine;
+
+    @Resource
+    private MinioEngine minioEngine;
+
+    @Resource
+    private MinioConfig minioConfig;
+
+    @Resource
+    private TextEngine textEngine;
 
     @Override
     public String upload(MultipartFile file) {
@@ -80,5 +103,18 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService {
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_REMOVE_FAILED);
         }
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        String bucketName = minioConfig.getBucketName();
+        // 设置规则：所有人都能读（否则就只能获取）
+        DefaultPolicyTemplate policyTemplate = DefaultPolicyTemplate.builder()
+                .bucketName(bucketName)
+                .build();
+        String policy = textEngine.builder()
+                .append(MinioPolicyTemplateEnum.ALLOW_ALL_GET.getTemplate(), policyTemplate)
+                .build();
+        minioBucketEngine.tryMakeBucket(bucketName, policy);
     }
 }

@@ -43,8 +43,6 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
 
     private final static String EXECUTE_INTERVIEW_EVENT_LOCK = "executeInterviewEventLock:";
 
-    private final static String ACHOBETA_RECRUITMENT_XLSX = "";
-
     private final InterviewMapper interviewMapper;
 
     private final InterviewerService interviewerService;
@@ -80,11 +78,8 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     @Override
     public Long printAllInterviewList(Long managerId, InterviewConditionDTO condition, ResourceAccessLevel level) {
         List<InterviewVO> interviewVOList = managerGetInterviewList(null, condition);
-        ExcelTemplateEnum excelTemplateEnum = ExcelTemplateEnum.ACHOBETA_INTERVIEW_ALL;
-        // 获取数据
-        byte[] bytes = ExcelUtil.exportXlsxFile(excelTemplateEnum.getTitle(), excelTemplateEnum.getSheetName(), InterviewExcelTemplate.class, interviewVOList);
-        // 上传对象存储服务器
-        return resourceService.upload(managerId, excelTemplateEnum.getOriginalName(), bytes, level);
+        // 上传表格到对象存储服务器
+        return resourceService.uploadExcel(managerId, ExcelTemplateEnum.ACHOBETA_INTERVIEW_ALL, InterviewExcelTemplate.class, interviewVOList, level);
     }
 
     @Override
