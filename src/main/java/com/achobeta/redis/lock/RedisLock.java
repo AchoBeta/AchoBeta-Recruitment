@@ -1,7 +1,7 @@
-package com.achobeta.redis;
+package com.achobeta.redis.lock;
 
-import com.achobeta.redis.strategy.LockStrategy;
-import com.achobeta.redis.strategy.SimpleLockStrategy;
+import com.achobeta.redis.lock.strategy.LockStrategy;
+import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
@@ -23,13 +23,13 @@ import java.util.function.Supplier;
 @Slf4j
 public class RedisLock {
 
-    @Value("${spring.redisson.wait:10}")
+    @Value("${spring.redisson.lock.wait:10}")
     private Long wait;
 
-    @Value("${spring.redisson.timeout:10}")
+    @Value("${spring.redisson.lock.timeout:10}")
     private Long timeout;
 
-    @Value("${spring.redisson.unit:SECONDS}")
+    @Value("${spring.redisson.lock.unit:SECONDS}")
     private TimeUnit unit;
 
     private final SimpleLockStrategy simpleLockStrategy;

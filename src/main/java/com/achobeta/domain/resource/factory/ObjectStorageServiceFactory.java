@@ -18,7 +18,7 @@ public class ObjectStorageServiceFactory {
 
     private final ServiceLoader<ObjectStorageService> services = ServiceLoader.load(ObjectStorageService.class);
 
-    public ObjectStorageService load() {
+    public ObjectStorageService getService() {
         // 选取服务
         Iterator<ObjectStorageService> iterator = services.iterator();
         return iterator.hasNext() ? iterator.next() : null;

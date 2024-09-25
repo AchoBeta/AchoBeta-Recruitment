@@ -64,19 +64,19 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public void download(Long code, HttpServletResponse response) {
         DigitalResource resource = analyzeCode(code);
-        objectStorageServiceFactory.load().download(resource.getOriginalName(), resource.getFileName(), response);
+        objectStorageServiceFactory.getService().download(resource.getOriginalName(), resource.getFileName(), response);
     }
 
     @Override
     public void preview(Long code, HttpServletResponse response) {
         DigitalResource resource = analyzeCode(code);
-        objectStorageServiceFactory.load().preview(resource.getFileName(), response);
+        objectStorageServiceFactory.getService().preview(resource.getFileName(), response);
     }
 
     @Override
     public byte[] load(Long code) {
         DigitalResource resource = analyzeCode(code);
-        return objectStorageServiceFactory.load().load(resource.getFileName());
+        return objectStorageServiceFactory.getService().load(resource.getFileName());
     }
 
     @Override
@@ -99,7 +99,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public String gerObjectUrl(Long code, Boolean hidden) {
         DigitalResource resource = analyzeCode(code);
-        return objectStorageServiceFactory.load().getObjectUrl(resource.getFileName(), hidden);
+        return objectStorageServiceFactory.getService().getObjectUrl(resource.getFileName(), hidden);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class ResourceServiceImpl implements ResourceService {
         DigitalResource resource = new DigitalResource();
         resource.setUserId(userId);
         resource.setOriginalName(ResourceUtil.getOriginalName(file));
-        resource.setFileName(objectStorageServiceFactory.load().upload(file));
+        resource.setFileName(objectStorageServiceFactory.getService().upload(file));
         return digitalResourceService.createResource(resource);
     }
 
@@ -116,7 +116,7 @@ public class ResourceServiceImpl implements ResourceService {
         DigitalResource resource = new DigitalResource();
         resource.setUserId(userId);
         resource.setOriginalName(originalName);
-        resource.setFileName(objectStorageServiceFactory.load().upload(originalName, data));
+        resource.setFileName(objectStorageServiceFactory.getService().upload(originalName, data));
         resource.setAccessLevel(level);
         return digitalResourceService.createResource(resource);
     }
@@ -124,7 +124,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     @Transactional
     public List<Long> uploadList(Long userId, List<MultipartFile> fileList) {
-        ObjectStorageService storageService = objectStorageServiceFactory.load();
+        ObjectStorageService storageService = objectStorageServiceFactory.getService();
         List<DigitalResource> resourceList = fileList.stream()
                 .map(file -> {
                     DigitalResource resource = new DigitalResource();
@@ -145,7 +145,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     @Transactional
     public void remove(Long code) {
-        ObjectStorageService storageService = objectStorageServiceFactory.load();
+        ObjectStorageService storageService = objectStorageServiceFactory.getService();
         // 若权限小于 USER_ACCESS 就按 USER_ACCESS 权限
         DigitalResource resource = checkAndGetResource(code, ResourceAccessLevel.USER_ACCESS);
         storageService.remove(resource.getFileName());

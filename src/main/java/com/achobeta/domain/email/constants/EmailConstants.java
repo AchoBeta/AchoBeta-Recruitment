@@ -1,10 +1,10 @@
-package com.achobeta.redis.constants;
+package com.achobeta.domain.email.constants;
 
 /**
  * @author BanTanger 半糖
  * @date 2024/1/22 16:52
  */
-public class RedisConstants {
+public class EmailConstants {
 
     /**
      * 验证码集合
