@@ -1,6 +1,5 @@
 package com.achobeta.domain.resource.service.impl;
 
-import cn.hutool.extra.spring.SpringUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.MinioPolicyTemplateEnum;
 import com.achobeta.domain.resource.service.ObjectStorageService;
@@ -12,13 +11,7 @@ import com.achobeta.monio.template.DefaultPolicyTemplate;
 import com.achobeta.template.engine.TextEngine;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 /**

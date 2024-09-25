@@ -1,13 +1,9 @@
 package com.achobeta.monio.engine;
 
-import com.achobeta.monio.config.MinioConfig;
-import com.achobeta.monio.template.DefaultPolicyTemplate;
-import com.achobeta.template.engine.TextEngine;
 import io.minio.*;
 import io.minio.messages.Bucket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
