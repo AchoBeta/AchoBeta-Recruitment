@@ -6,6 +6,7 @@ import com.achobeta.domain.message.handler.MessageSendHandler;
 import com.achobeta.domain.message.handler.MessageSendHandlerChain;
 import com.achobeta.domain.message.model.dto.MessageSendDTO;
 import com.achobeta.exception.GlobalServiceException;
+import com.alibaba.fastjson.JSON;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
@@ -41,7 +42,8 @@ public class MessageReceiveServer {
     }
 
     @OnMessage
-    public void onMessage(MessageSendDTO messageSendDTO){
+    public void onMessage(String message){
+        MessageSendDTO messageSendDTO= JSON.parseObject(message, MessageSendDTO.class);
         //构造消息发送链路
         MessageSendHandlerChain sendHandlerChain = buildMessageSendHandlerChain(messageSendDTO);
         //消息发送,启动!

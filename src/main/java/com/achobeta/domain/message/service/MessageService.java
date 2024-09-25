@@ -2,6 +2,7 @@ package com.achobeta.domain.message.service;
 
 import com.achobeta.common.base.BasePageResultEntity;
 import com.achobeta.domain.message.handler.websocket.MessageReceiveServer;
+import com.achobeta.domain.message.model.dto.EmailSendDTO;
 import com.achobeta.domain.message.model.dto.MessageContentDTO;
 import com.achobeta.domain.message.model.dto.QueryStuListDTO;
 import com.achobeta.domain.message.model.dto.StuOfMessageVO;
@@ -35,4 +36,7 @@ public interface MessageService extends IService<Message> {
     Long storeMessage(MessageContentDTO messageContent);
 
     List<MessageContentVO> getMessageListofUser();
+
+    void sendMessageByEmail(EmailSendDTO emailSendDTO);
+
 }

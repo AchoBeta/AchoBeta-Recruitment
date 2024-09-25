@@ -41,5 +41,5 @@ public class FeedbackMessageVO {
     /**
      * 附件url
      */
-    private String attachment;
+    private long attachment;
 }

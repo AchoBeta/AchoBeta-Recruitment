@@ -5,6 +5,7 @@ import com.achobeta.domain.message.handler.MessageSendHandler;
 import com.achobeta.domain.message.handler.MessageSendHandlerChain;
 import com.achobeta.domain.message.model.dto.MessageSendDTO;
 import com.achobeta.domain.message.model.entity.DelayMessage;
+import com.alibaba.fastjson.JSON;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -42,13 +43,13 @@ public class MessageSendDelayChain extends MessageSendHandlerChain {
         MessageSendHandler messageSendHandler = initHandlerChain();
         //构建延时消息体
         DelayMessage delayMessage = buildDelayMessage(messageSendBody, webSocketSet, messageSendHandler);
-
+        String jsonString = JSON.toJSONString(delayMessage);
         //延时发送消息
-        rabbitTemplate.convertAndSend(MESSAGE_SEND_QUEUE,MESSAGE_SEND_KEY,delayMessage,message -> {
+        rabbitTemplate.convertAndSend(MESSAGE_SEND_QUEUE,MESSAGE_SEND_KEY,jsonString,message -> {
             message.getMessageProperties().setDelay(countDelayTime(messageSendBody));
             return message;
         });
-
+        log.info("延时消息发送成功");
     }
 
     //计算延时时间

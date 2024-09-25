@@ -30,6 +30,8 @@ public enum EmailTemplateEnum {
 
     MEMBER_NOTICE("转正通知", "confirmation-notice-model.html"),
 
+    MESSAGE_EMAIL_NOTICE("Achobeta消息通知", "message-email-notice.html"),
+
     ;
 
     /**

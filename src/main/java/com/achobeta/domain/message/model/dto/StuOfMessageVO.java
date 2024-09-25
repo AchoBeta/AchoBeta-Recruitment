@@ -23,6 +23,8 @@ public class StuOfMessageVO implements Serializable {
 
     private Integer grade;
 
+    private String email;
+
     private ResumeStatus status;
 
 }

@@ -47,7 +47,7 @@ public class UserFeedback extends BaseIncrIDEntity implements Serializable {
     /**
      * 附件链接
      */
-    private String attachment;
+    private long attachment;
 
     /**
      * 反馈时间

@@ -5,6 +5,7 @@ import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.base.BasePageResultEntity;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.message.model.dto.EmailSendDTO;
 import com.achobeta.domain.message.model.dto.MessageSendDTO;
 import com.achobeta.domain.message.model.dto.QueryStuListDTO;
 import com.achobeta.domain.message.model.dto.StuOfMessageVO;
@@ -56,5 +57,17 @@ public class MessageController {
         List<MessageContentVO> messageContentVOList=messageService.getMessageListofUser();
 
         return SystemJsonResponse.SYSTEM_SUCCESS(messageContentVOList);
+    }
+
+    @PostMapping("/email/send")
+    @Intercept(permit = {UserTypeEnum.ADMIN,UserTypeEnum.USER})
+    public SystemJsonResponse sendMessageByEmail(@RequestBody EmailSendDTO emailSendDTO){
+
+        //校验
+        ValidatorUtils.validate(emailSendDTO);
+        //发送邮箱
+        messageService.sendMessageByEmail(emailSendDTO);
+
+        return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 }

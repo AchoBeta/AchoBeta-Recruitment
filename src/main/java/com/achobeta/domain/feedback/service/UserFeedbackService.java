@@ -3,6 +3,7 @@ package com.achobeta.domain.feedback.service;
 import com.achobeta.common.base.BasePageResultEntity;
 import com.achobeta.domain.feedback.model.dto.HandleFeedbackDTO;
 import com.achobeta.domain.feedback.model.dto.QueryUserOfFeedbackDTO;
+import com.achobeta.domain.feedback.model.dto.UserFeedbackDTO;
 import com.achobeta.domain.feedback.model.vo.FeedbackMessageVO;
 import com.achobeta.domain.feedback.model.vo.UserFeedbackVO;
 import com.achobeta.domain.feedback.model.vo.UserPersonalFeedBackVO;
@@ -21,7 +22,7 @@ public interface UserFeedbackService extends IService<UserFeedback> {
 
     List<UserPersonalFeedBackVO> getUserFeedbackList();
 
-    void submitUserFeedback(UserPersonalFeedBackVO userPersonalFeedBackVO);
+    void submitUserFeedback(UserFeedbackDTO userFeedbackDTO);
 
     BasePageResultEntity<UserFeedbackVO> queryUserOfFeedbackList(QueryUserOfFeedbackDTO queryUserOfFeedbackDTO);
 

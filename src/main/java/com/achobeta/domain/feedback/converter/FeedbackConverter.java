@@ -1,6 +1,7 @@
 package com.achobeta.domain.feedback.converter;
 
 
+import com.achobeta.domain.feedback.model.dto.UserFeedbackDTO;
 import com.achobeta.domain.feedback.model.vo.FeedbackMessageVO;
 import com.achobeta.domain.feedback.model.vo.UserFeedbackVO;
 import com.achobeta.domain.feedback.model.vo.UserPersonalFeedBackVO;
@@ -18,7 +19,7 @@ public interface FeedbackConverter {
 
     List<UserPersonalFeedBackVO> userFeedbackPoToPersonalVoList(List<UserFeedback> userFeedbackList);
 
-    UserFeedback userFeedbackDTOToPo(UserPersonalFeedBackVO userPersonalFeedBackVO);
+    UserFeedback userFeedbackDTOToPo(UserFeedbackDTO userFeedbackDTO);
 
     List<UserFeedbackVO> userFeedbackPoToVOList(List<UserFeedback> userFeedbackList);
 

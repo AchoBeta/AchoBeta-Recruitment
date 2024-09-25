@@ -47,7 +47,7 @@ public class Message extends BaseIncrIDEntity implements Serializable {
     /**
      * 附件url
      */
-    private String attachment;
+    private long attachment;
 
 
 

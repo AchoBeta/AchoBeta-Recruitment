@@ -6,6 +6,7 @@ import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.feedback.converter.FeedbackConverter;
 import com.achobeta.domain.feedback.model.dto.HandleFeedbackDTO;
 import com.achobeta.domain.feedback.model.dto.QueryUserOfFeedbackDTO;
+import com.achobeta.domain.feedback.model.dto.UserFeedbackDTO;
 import com.achobeta.domain.feedback.model.vo.FeedbackMessageVO;
 import com.achobeta.domain.feedback.model.vo.UserFeedbackVO;
 import com.achobeta.domain.feedback.model.vo.UserPersonalFeedBackVO;
@@ -53,11 +54,11 @@ public class UserFeedbackServiceImpl extends ServiceImpl<UserFeedbackMapper, Use
     }
 
     @Override
-    public void submitUserFeedback(UserPersonalFeedBackVO userPersonalFeedBackVO) {
+    public void submitUserFeedback(UserFeedbackDTO userFeedbackDTO) {
         //获取用户id
         long userId = BaseContext.getCurrentUser().getUserId();
         //构造反馈实体
-        UserFeedback userFeedback=feedbackConverter.userFeedbackDTOToPo(userPersonalFeedBackVO);
+        UserFeedback userFeedback=feedbackConverter.userFeedbackDTOToPo(userFeedbackDTO);
         userFeedback.setUserId(userId);
         //保存反馈
         save(userFeedback);

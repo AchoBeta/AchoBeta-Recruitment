@@ -6,6 +6,7 @@ import com.achobeta.common.base.BasePageResultEntity;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.feedback.model.dto.HandleFeedbackDTO;
 import com.achobeta.domain.feedback.model.dto.QueryUserOfFeedbackDTO;
+import com.achobeta.domain.feedback.model.dto.UserFeedbackDTO;
 import com.achobeta.domain.feedback.model.vo.FeedbackMessageVO;
 import com.achobeta.domain.feedback.model.vo.UserFeedbackVO;
 import com.achobeta.domain.feedback.model.vo.UserPersonalFeedBackVO;
@@ -52,11 +53,11 @@ public class UserFeedbackController {
 
     @PostMapping("/submit")
     @Intercept(permit = UserTypeEnum.USER)
-    public SystemJsonResponse submitFeedback(@RequestBody UserPersonalFeedBackVO userPersonalFeedBackVO){
+    public SystemJsonResponse submitFeedback(@RequestBody UserFeedbackDTO userFeedbackDTO){
         //校验
-        ValidatorUtils.validate(userPersonalFeedBackVO);
+        ValidatorUtils.validate(userFeedbackDTO);
         //提交反馈
-        userFeedbackService.submitUserFeedback(userPersonalFeedBackVO);
+        userFeedbackService.submitUserFeedback(userFeedbackDTO);
 
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }

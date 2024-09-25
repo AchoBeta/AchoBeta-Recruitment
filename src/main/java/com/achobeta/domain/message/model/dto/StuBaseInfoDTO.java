@@ -17,4 +17,6 @@ public class StuBaseInfoDTO implements Serializable {
     private Long userId;
     /*用户姓名*/
     private String stuName;
+    /*用户邮箱*/
+    private String email;
 }
