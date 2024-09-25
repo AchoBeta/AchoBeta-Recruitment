@@ -3,9 +3,8 @@ package com.achobeta.domain.evaluate.machine.events.internal;
 import com.achobeta.common.enums.EmailTemplateEnum;
 import com.achobeta.common.enums.InterviewEvent;
 import com.achobeta.common.enums.InterviewStatus;
-import com.achobeta.domain.evaluate.model.vo.InterviewExperienceTemplateClose;
+import com.achobeta.domain.evaluate.model.vo.InterviewExperienceTemplate;
 import com.achobeta.domain.evaluate.model.vo.InterviewExperienceTemplateInner;
-import com.achobeta.domain.evaluate.model.vo.InterviewExperienceTemplateOpen;
 import com.achobeta.domain.evaluate.service.InterviewQuestionScoreService;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.machine.events.internal.InterviewStateInternalTransitionHelper;
@@ -18,7 +17,6 @@ import com.achobeta.email.model.po.EmailMessage;
 import com.achobeta.email.sender.EmailSender;
 import com.achobeta.template.engine.HtmlEngine;
 import com.achobeta.template.model.po.ReplaceResource;
-import com.achobeta.template.model.po.Resource;
 import com.achobeta.template.util.TemplateUtil;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
@@ -89,50 +87,42 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                     .getSimpleStudentVO();
 
             // 构造邮件消息
+            EmailTemplateEnum emailTemplate = EmailTemplateEnum.INTERVIEW_EXPERIENCE;
             EmailMessage emailMessage = new EmailMessage();
             emailMessage.setSender(achobetaEmail);
             emailMessage.setCarbonCopy();
             emailMessage.setCreateTime(new Date());
-            emailMessage.setTitle(EmailTemplateEnum.INTERVIEW_EXPERIENCE_OPEN.getTitle());
+            emailMessage.setTitle(emailTemplate.getTitle());
             emailMessage.setRecipient(simpleStudentVO.getEmail());
 
-            String openTemplate = EmailTemplateEnum.INTERVIEW_EXPERIENCE_OPEN.getTemplate();
-            InterviewExperienceTemplateOpen templateOpen = InterviewExperienceTemplateOpen.builder()
-                    .studentId(simpleStudentVO.getStudentId())
-                    .title(interviewDetail.getTitle())
-                    .build();
-
-            String innerTemplate = EmailTemplateEnum.INTERVIEW_EXPERIENCE_INNER.getTemplate();
-            List<Resource> htmlResourceList = new LinkedList<>();
             List<ReplaceResource> replaceResourceList = new LinkedList<>();
-            interviewQuestionScoreService.getInterviewPaperDetail(interviewId)
+            List<InterviewExperienceTemplateInner> inners = interviewQuestionScoreService.getInterviewPaperDetail(interviewId)
                     .getQuestions()
-                    .forEach(question -> {
+                    .stream()
+                    .map(question -> {
                         String target = TemplateUtil.getUniqueSymbol();
-                        InterviewExperienceTemplateInner inner =  InterviewExperienceTemplateInner.builder()
+                        InterviewExperienceTemplateInner inner = InterviewExperienceTemplateInner.builder()
                                 .title(question.getTitle())
                                 .score(question.getScore())
                                 .average(question.getAverage())
                                 .standard(target)
                                 .build();
-                        htmlResourceList.add(new Resource(innerTemplate, inner));
                         replaceResourceList.add(new ReplaceResource(target, question.getStandard()));
-                    });
-
-            String closeTemplate = EmailTemplateEnum.INTERVIEW_EXPERIENCE_CLOSE.getTemplate();
-            InterviewExperienceTemplateClose templateClose = InterviewExperienceTemplateClose.builder()
+                        return inner;
+                    }).toList();
+            InterviewExperienceTemplate interviewExperience = InterviewExperienceTemplate.builder()
+                    .studentId(simpleStudentVO.getStudentId())
+                    .title(interviewDetail.getTitle())
+                    .inners(inners)
                     .startTime(interviewDetailScheduleVO.getStartTime())
                     .endTime(interviewDetailScheduleVO.getEndTime())
                     .build();
 
             // 构造 html
             String html = htmlEngine.builder()
-                    .append(openTemplate, templateOpen)
-                    .append(htmlResourceList)
-                    .append(closeTemplate, templateClose)
+                    .append(emailTemplate.getTemplate(), interviewExperience)
                     .replaceMarkdown(replaceResourceList)
                     .build();
-
             emailMessage.setContent(html);
             // 发送模板消息
             emailSender.send(emailMessage);
