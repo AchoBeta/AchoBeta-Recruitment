@@ -15,8 +15,7 @@ import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.service.StuResumeService;
 
 import com.achobeta.domain.users.context.BaseContext;
-import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.redis.RedisCache;
+
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -49,7 +48,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
     private final MessageConverter messageConverter;
     private final MessageSendWithEmailHandler messageSendWithEmailHandler;
 
-    private final RedisCache redisCache;
+
 
     @Override
     public BasePageResultEntity<StuOfMessageVO> queryStuListByCondition(QueryStuListDTO queryStuDTO) {
