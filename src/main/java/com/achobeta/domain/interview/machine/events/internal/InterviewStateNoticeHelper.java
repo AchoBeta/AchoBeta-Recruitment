@@ -1,6 +1,5 @@
 package com.achobeta.domain.interview.machine.events.internal;
 
-import com.achobeta.email.enums.EmailTemplateEnum;
 import com.achobeta.domain.interview.enums.InterviewEvent;
 import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
@@ -12,6 +11,7 @@ import com.achobeta.domain.schedule.model.vo.ParticipationDetailVO;
 import com.achobeta.domain.schedule.model.vo.ScheduleVO;
 import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
+import com.achobeta.email.enums.EmailTemplateEnum;
 import com.achobeta.email.model.po.EmailMessage;
 import com.achobeta.email.sender.EmailSender;
 import com.achobeta.template.engine.HtmlEngine;

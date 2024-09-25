@@ -1,6 +1,5 @@
 package com.achobeta.domain.resumestate.machine.events.internal;
 
-import com.achobeta.email.enums.EmailTemplateEnum;
 import com.achobeta.domain.resumestate.enums.ResumeEvent;
 import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import com.achobeta.domain.resumestate.machine.context.ResumeContext;
@@ -10,6 +9,7 @@ import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.users.model.dto.MemberDTO;
 import com.achobeta.domain.users.model.entity.Member;
 import com.achobeta.domain.users.service.MemberService;
+import com.achobeta.email.enums.EmailTemplateEnum;
 import com.achobeta.email.model.po.EmailMessage;
 import com.achobeta.email.sender.EmailSender;
 import com.achobeta.template.engine.HtmlEngine;
