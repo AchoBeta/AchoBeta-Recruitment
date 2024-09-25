@@ -24,16 +24,16 @@ import org.springframework.web.multipart.MultipartFile;
 public class ObjectStorageMinioServiceImpl implements ObjectStorageService, InitializingBean {
 
     @Resource
-    private MinioBucketEngine minioBucketEngine;
-
-    @Resource
-    private MinioEngine minioEngine;
-
-    @Resource
     private MinioConfig minioConfig;
 
     @Resource
     private TextEngine textEngine;
+
+    @Resource
+    private MinioBucketEngine minioBucketEngine;
+
+    @Resource
+    private MinioEngine minioEngine;
 
     @Override
     public String upload(MultipartFile file) {
