@@ -45,7 +45,7 @@ public class ObjectUtil {
     /**
      * 读取对象的某一个字段的值
      * 1. 若字段不是指定类型 F 或者不是 F 的子类，则返回 null
-     * 2. 若字段不能直接访问，则尝试获取字段的 Getter 方法，若仍然获取不到值，则返回 null
+     * 2. 尝试获取字段的 Getter 方法获取值，若没有可以访问的 Getter，就访问字段，若字段不能直接访问，则返回 null
      * 
      * @param object 对象
      * @param field 字段
@@ -56,8 +56,8 @@ public class ObjectUtil {
      */
     public static <C, F> F read(C object, Field field, Class<F> fieldClazz) {
         if (fieldClazz.isAssignableFrom(field.getType())) {
-            return Optional.ofNullable(readByProperty(object, field, fieldClazz))
-                    .orElseGet(() -> readByMethod(object, field, fieldClazz));
+            return Optional.ofNullable(readByMethod(object, field, fieldClazz))
+                    .orElseGet(() -> readByProperty(object, field, fieldClazz));
         } else {
             return null;
         }

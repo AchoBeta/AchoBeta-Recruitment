@@ -45,7 +45,7 @@ public class InterviewSummaryTemplate {
 
     private String playback;
 
-    // 分数转化为 emoji 字符串
+    // 分数转化为 emoji 字符串（输入模板之前，用 java 控制输出字符串与处理边界情况，会更加方便）
     private static String getStars(Integer credit) {
         int num = Optional.ofNullable(credit)
                 .filter(i -> i.compareTo(MIN_ABILITY_VALUE) >= 0 && i.compareTo(MAX_ABILITY_VALUE) <= 0)

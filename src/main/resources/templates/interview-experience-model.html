@@ -33,7 +33,11 @@
     <p th:each="inner : ${inners}">
         <strong style="background-color: #ffc832" th:text="${inner.title}"></strong>
         <br />
-        <strong>得分（0-10）：</strong><strong th:style="${inner.style}" th:text="${inner.score}"></strong>
+        <strong th:with="score=${inner.score}">得分（0-10）：
+            <span th:if="${score} lt 0"                     style="color: grey">问题超纲</span>
+            <span th:if="${score} ge 0 and ${score} lt 6"   style="color: red" th:text="${score}"></span>
+            <span th:if="${score} ge 6"                     style="color: green" th:text="${score}"></span>
+        </strong>
         <br />
         <strong>历史平均分：</strong><span th:text="${inner.average}"></span>
         <br />
