@@ -1,7 +1,7 @@
 package com.achobeta.domain.interview.model.entity;
 
 import com.achobeta.common.base.BaseIncrIDEntity;
-import com.achobeta.common.enums.InterviewStatus;
+import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 

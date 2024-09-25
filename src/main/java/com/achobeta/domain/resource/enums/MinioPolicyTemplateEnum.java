@@ -1,4 +1,4 @@
-package com.achobeta.common.enums;
+package com.achobeta.domain.resource.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

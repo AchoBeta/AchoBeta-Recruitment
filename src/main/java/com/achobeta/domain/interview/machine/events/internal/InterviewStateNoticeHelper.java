@@ -1,8 +1,8 @@
 package com.achobeta.domain.interview.machine.events.internal;
 
 import com.achobeta.common.enums.EmailTemplateEnum;
-import com.achobeta.common.enums.InterviewEvent;
-import com.achobeta.common.enums.InterviewStatus;
+import com.achobeta.domain.interview.enums.InterviewEvent;
+import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;

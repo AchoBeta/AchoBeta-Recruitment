@@ -1,9 +1,9 @@
 package com.achobeta.domain.resource.service.impl;
 
-import com.achobeta.common.enums.ExcelTemplateEnum;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.common.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.access.strategy.ResourceAccessStrategy;
+import com.achobeta.domain.resource.enums.ExcelTemplateEnum;
+import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.factory.AccessStrategyFactory;
 import com.achobeta.domain.resource.model.entity.DigitalResource;
 import com.achobeta.domain.resource.service.DigitalResourceService;

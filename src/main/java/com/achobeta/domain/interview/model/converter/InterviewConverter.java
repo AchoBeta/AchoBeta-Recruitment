@@ -1,7 +1,7 @@
 package com.achobeta.domain.interview.model.converter;
 
-import com.achobeta.common.enums.InterviewEvent;
-import com.achobeta.common.enums.InterviewStatus;
+import com.achobeta.domain.interview.enums.InterviewEvent;
+import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
 import com.achobeta.domain.interview.model.entity.Interview;
@@ -26,7 +26,7 @@ public interface InterviewConverter {
 
     InterviewConverter INSTANCE = Mappers.getMapper(InterviewConverter.class);
 
-    @Mapping(target = "status", expression = "java(com.achobeta.common.enums.InterviewStatus.NOT_STARTED)")
+    @Mapping(target = "status", expression = "java(InterviewStatus.NOT_STARTED)")
     Interview interviewCreateDTOtoInterview(InterviewCreateDTO interviewCreateDTO);
 
     Interview interviewUpdateDTOtoInterview(InterviewUpdateDTO interviewUpdateDTO);

@@ -2,7 +2,7 @@ package com.achobeta.domain.interview.model.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import cn.afterturn.easypoi.excel.annotation.ExcelTarget;
-import com.achobeta.common.enums.InterviewStatus;
+import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.schedule.model.vo.ScheduleVO;
 import lombok.Data;
 

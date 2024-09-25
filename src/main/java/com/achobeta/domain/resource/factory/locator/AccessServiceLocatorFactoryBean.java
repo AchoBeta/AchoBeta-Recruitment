@@ -1,8 +1,8 @@
 package com.achobeta.domain.resource.factory.locator;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.common.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.access.strategy.ResourceAccessStrategy;
+import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.factory.AccessStrategyFactory;
 import com.achobeta.exception.GlobalServiceException;
 import org.springframework.beans.BeansException;

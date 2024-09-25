@@ -1,7 +1,7 @@
 package com.achobeta.domain.interview.machine.config;
 
-import com.achobeta.common.enums.InterviewEvent;
-import com.achobeta.common.enums.InterviewStatus;
+import com.achobeta.domain.interview.enums.InterviewEvent;
+import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;

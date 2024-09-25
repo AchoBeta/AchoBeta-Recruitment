@@ -1,5 +1,6 @@
-package com.achobeta.common.enums;
+package com.achobeta.domain.interview.enums;
 
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.exception.GlobalServiceException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

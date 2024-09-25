@@ -1,6 +1,6 @@
 package com.achobeta.domain.interview.model.vo;
 
-import com.achobeta.common.enums.InterviewStatus;
+import com.achobeta.domain.interview.enums.InterviewStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package com.achobeta.domain.evaluate.model.vo;
 
-import com.achobeta.common.enums.InterviewStatus;
+import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import lombok.Data;
 
