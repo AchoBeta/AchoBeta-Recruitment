@@ -7,9 +7,14 @@ import com.achobeta.feishu.config.FeishuAppConfig;
 import com.achobeta.feishu.token.FeishuTenantAccessToken;
 import com.achobeta.feishu.util.FeishuRequestUtil;
 import com.achobeta.util.TimeUtil;
-import com.lark.oapi.Client;
-import com.lark.oapi.service.contact.v3.model.*;
-import com.lark.oapi.service.vc.v1.model.*;
+import com.lark.oapi.service.contact.v3.model.BatchGetIdUserReqBody;
+import com.lark.oapi.service.contact.v3.model.BatchGetIdUserResp;
+import com.lark.oapi.service.contact.v3.model.BatchGetIdUserRespBody;
+import com.lark.oapi.service.contact.v3.model.UserContactInfo;
+import com.lark.oapi.service.vc.v1.model.ApplyReserveReqBody;
+import com.lark.oapi.service.vc.v1.model.ApplyReserveResp;
+import com.lark.oapi.service.vc.v1.model.ApplyReserveRespBody;
+import com.lark.oapi.service.vc.v1.model.ReserveMeetingSetting;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
@@ -20,7 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.achobeta.feishu.constants.FeishuConstants.*;
-import static com.lark.oapi.service.contact.v3.enums.BatchGetIdUserUserIdTypeEnum.*;
+import static com.lark.oapi.service.contact.v3.enums.BatchGetIdUserUserIdTypeEnum.USER_ID;
 import static com.lark.oapi.service.vc.v1.enums.ReserveMeetingSettingMeetingInitialTypeEnum.GROUP_MEETING;
 
 /**

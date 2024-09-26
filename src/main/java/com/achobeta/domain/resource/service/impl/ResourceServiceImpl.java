@@ -22,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Objects;
 
+import static com.achobeta.domain.resource.constants.ResourceConstants.DEFAULT_RESOURCE_ACCESS_LEVEL;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -110,10 +112,16 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public Long upload(Long userId, MultipartFile file) {
+        return upload(userId, file, DEFAULT_RESOURCE_ACCESS_LEVEL);
+    }
+
+    @Override
+    public Long upload(Long userId, MultipartFile file, ResourceAccessLevel level) {
         DigitalResource resource = new DigitalResource();
         resource.setUserId(userId);
         resource.setOriginalName(ResourceUtil.getOriginalName(file));
         resource.setFileName(objectStorageService.upload(file));
+        resource.setAccessLevel(level);
         return digitalResourceService.createResource(resource);
     }
 
@@ -161,7 +169,7 @@ public class ResourceServiceImpl implements ResourceService {
     public void remove(Long code) {
         ObjectStorageService storageService = objectStorageService;
         // 若权限小于 USER_ACCESS 就按 USER_ACCESS 权限
-        DigitalResource resource = checkAndGetResource(code, ResourceAccessLevel.USER_ACCESS);
+        DigitalResource resource = checkAndGetResource(code, DEFAULT_RESOURCE_ACCESS_LEVEL);
         storageService.remove(resource.getFileName());
         digitalResourceService.removeDigitalResource(resource.getId());
     }

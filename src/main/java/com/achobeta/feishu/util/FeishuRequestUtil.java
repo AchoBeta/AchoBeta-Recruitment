@@ -5,11 +5,7 @@ import com.achobeta.common.enums.HttpRequestEnum;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.util.HttpRequestUtil;
 import com.lark.oapi.core.response.BaseResponse;
-import org.apache.poi.ss.formula.functions.T;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

@@ -38,6 +38,8 @@ public interface ResourceService {
 
     Long upload(Long userId, MultipartFile file);
 
+    Long upload(Long userId, MultipartFile file, ResourceAccessLevel level);
+
     Long upload(Long userId, String originalName, byte[] data, ResourceAccessLevel level);
 
     <T, E> Long uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<T> clazz, List<E> data, ResourceAccessLevel level);
