@@ -87,7 +87,6 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
     @Override
     public ApplyReserveRespBody reserveApply(ApplyReserveReqBody applyReserveReqBody) {
         String token = feishuTenantAccessToken.getToken();
-        applyReserveReqBody.setOwnerId(getDefaultOwnerId());
         return FeishuRequestUtil.request(
                 HttpRequestEnum.RESERVE_APPLY,
                 applyReserveReqBody,

@@ -22,6 +22,7 @@ import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -82,7 +83,7 @@ public class InterviewController {
 
     @GetMapping("/reserve/{interviewId}")
     public SystemJsonResponse interviewReserveApply(@PathVariable("interviewId") @NotNull Long interviewId,
-                                                    @RequestParam(name = "mobile", required = false) String mobile) {
+                                                    @RequestParam(name = "mobile", required = false) @Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号非法") String mobile) {
         // 检查
         interviewService.checkInterviewExists(interviewId);
         // 当前管理员
