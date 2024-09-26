@@ -151,6 +151,7 @@ public class ResourceServiceImpl implements ResourceService {
                 .map(file -> {
                     DigitalResource resource = new DigitalResource();
                     resource.setUserId(userId);
+                    resource.setAccessLevel(DEFAULT_RESOURCE_ACCESS_LEVEL);
                     resource.setOriginalName(ResourceUtil.getOriginalName(file));
                     resource.setFileName(storageService.upload(file));
                     return resource;

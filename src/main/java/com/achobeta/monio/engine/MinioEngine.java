@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,9 +41,7 @@ public class MinioEngine {
      * 文件上传
      */
     public String upload(MultipartFile file) throws Exception {
-        try (InputStream inputStream = file.getInputStream()){
-            return upload(ResourceUtil.getOriginalName(file), MediaUtil.getBytes(inputStream));
-        }
+        return upload(ResourceUtil.getOriginalName(file), file.getBytes());
     }
 
     /**
