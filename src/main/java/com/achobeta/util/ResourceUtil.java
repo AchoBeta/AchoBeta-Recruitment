@@ -2,7 +2,6 @@ package com.achobeta.util;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.config.DateTimeConfig;
 import com.achobeta.exception.GlobalServiceException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -64,7 +63,7 @@ public class ResourceUtil {
     public static String getUniqueFileName(String suffix) {
         return String.format(
                 "%s/%s/%s%s",
-                DateTimeConfig.DATE_FORMAT.format(new Date()), suffix,
+                TimeUtil.getDate(new Date()), suffix,
                 UUID.randomUUID().toString().replace("-", ""),
                 suffix
         );

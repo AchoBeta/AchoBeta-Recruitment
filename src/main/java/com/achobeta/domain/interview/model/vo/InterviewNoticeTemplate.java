@@ -1,14 +1,13 @@
 package com.achobeta.domain.interview.model.vo;
 
 import com.achobeta.domain.interview.enums.InterviewStatus;
+import com.achobeta.util.TimeUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-
-import static com.achobeta.config.DateTimeConfig.DATE_TIME_FORMAT;
 
 /**
  * Created With Intellij IDEA
@@ -38,11 +37,11 @@ public class InterviewNoticeTemplate {
     private InterviewStatus status;
 
     public String getStartTime() {
-        return DATE_TIME_FORMAT.format(startTime);
+        return TimeUtil.getDateTime(startTime);
     }
 
     public String getEndTime() {
-        return DATE_TIME_FORMAT.format(endTime);
+        return TimeUtil.getDateTime(endTime);
     }
 
     public String getStatus() {

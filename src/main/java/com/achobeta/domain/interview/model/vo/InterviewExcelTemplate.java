@@ -4,11 +4,10 @@ import cn.afterturn.easypoi.excel.annotation.Excel;
 import cn.afterturn.easypoi.excel.annotation.ExcelTarget;
 import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.schedule.model.vo.ScheduleVO;
+import com.achobeta.util.TimeUtil;
 import lombok.Data;
 
 import java.util.Optional;
-
-import static com.achobeta.config.DateTimeConfig.DATE_TIME_FORMAT;
 
 /**
  * Created With Intellij IDEA
@@ -34,8 +33,8 @@ public class InterviewExcelTemplate {
         return Optional.ofNullable(scheduleVO).map(schedule -> {
             return String.format(
                     "%s —— %s",
-                    DATE_TIME_FORMAT.format(schedule.getStartTime()),
-                    DATE_TIME_FORMAT.format(schedule.getEndTime())
+                    TimeUtil.getDateTime(schedule.getStartTime()),
+                    TimeUtil.getDateTime(schedule.getEndTime())
             );
         }).orElse(null);
     }

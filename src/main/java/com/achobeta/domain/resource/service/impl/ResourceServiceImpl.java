@@ -10,9 +10,8 @@ import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.util.ExcelUtil;
-import com.achobeta.util.MediaUtil;
-import com.achobeta.util.ResourceUtil;
+import com.achobeta.util.*;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
+
+import static com.achobeta.domain.resource.constants.ResourceConstants.DEFAULT_RESOURCE_ACCESS_LEVEL;
 
 /**
  * Created With Intellij IDEA
@@ -98,6 +99,12 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    public String getSystemUrl(HttpServletRequest request, Long code) {
+        String baseUrl = HttpServletUtil.getBaseUrl(request, "/api/v1/resource/download", "/{code}");
+        return HttpRequestUtil.buildUrl(baseUrl, null, code);
+    }
+
+    @Override
     public String gerObjectUrl(Long code, Boolean hidden) {
         DigitalResource resource = analyzeCode(code);
         return objectStorageService.getObjectUrl(resource.getFileName(), hidden);
@@ -105,10 +112,16 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public Long upload(Long userId, MultipartFile file) {
+        return upload(userId, file, DEFAULT_RESOURCE_ACCESS_LEVEL);
+    }
+
+    @Override
+    public Long upload(Long userId, MultipartFile file, ResourceAccessLevel level) {
         DigitalResource resource = new DigitalResource();
         resource.setUserId(userId);
         resource.setOriginalName(ResourceUtil.getOriginalName(file));
         resource.setFileName(objectStorageService.upload(file));
+        resource.setAccessLevel(level);
         return digitalResourceService.createResource(resource);
     }
 
@@ -156,7 +169,7 @@ public class ResourceServiceImpl implements ResourceService {
     public void remove(Long code) {
         ObjectStorageService storageService = objectStorageService;
         // 若权限小于 USER_ACCESS 就按 USER_ACCESS 权限
-        DigitalResource resource = checkAndGetResource(code, ResourceAccessLevel.USER_ACCESS);
+        DigitalResource resource = checkAndGetResource(code, DEFAULT_RESOURCE_ACCESS_LEVEL);
         storageService.remove(resource.getFileName());
         digitalResourceService.removeDigitalResource(resource.getId());
     }

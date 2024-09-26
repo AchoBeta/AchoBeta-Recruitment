@@ -98,7 +98,6 @@ public class EmailServiceImpl implements EmailService {
     private void buildEmailAndSend(String email, String code) {
         // 封装 Email
         EmailMessage emailMessage = new EmailMessage();
-        emailMessage.setContent(code);
         emailMessage.setCreateTime(new Date());
         emailMessage.setTitle(CAPTCHA.getTitle());
         emailMessage.setRecipient(email);

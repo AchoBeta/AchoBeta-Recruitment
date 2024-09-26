@@ -8,6 +8,7 @@ import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
 import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
+import com.achobeta.domain.interview.model.vo.InterviewReserveVO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -38,6 +39,8 @@ public interface InterviewService extends IService<Interview> {
 
     Long getInterviewPaperId(Long interviewId);
 
+    InterviewReserveVO interviewReserveApply(Long interviewId, String mobile);
+
     // 写入 ------------------------------------------
 
     Long createInterview(InterviewCreateDTO interviewCreateDTO, Long managerId);
@@ -56,6 +59,6 @@ public interface InterviewService extends IService<Interview> {
 
     Interview checkAndGetInterviewExists(Long interviewId);
 
-    void checkInterviewStatus(Long interviewId, InterviewStatus interviewStatus);
+    void checkInterviewStatus(Long interviewId, List<InterviewStatus> interviewStatus);
 
 }
