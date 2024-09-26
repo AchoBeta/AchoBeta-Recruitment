@@ -1,8 +1,7 @@
 package com.achobeta.feishu.token;
 
 import com.achobeta.common.enums.HttpRequestEnum;
-import com.achobeta.feishu.config.FeishuTokenProperties;
-import com.achobeta.feishu.response.FeishuTenantTokenResponse;
+import com.achobeta.feishu.config.FeishuAppConfig;
 import com.achobeta.feishu.util.FeishuRequestUtil;
 import com.achobeta.util.TimeUtil;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FeishuTenantAccessToken {
 
-    private final static Integer SUCCESS_CODE = 0;
-
-    private final FeishuTokenProperties feishuTokenProperties;
+    private final FeishuAppConfig feishuAppConfig;
 
     private String tenantAccessToken;
 
@@ -37,19 +34,20 @@ public class FeishuTenantAccessToken {
 
     private boolean shouldRefresh() {
         return !StringUtils.hasText(tenantAccessToken) || Optional.ofNullable(expire)
+                // 这里判断的一般是准确的，如果非本类请求到的 token，可能会出现到期前三十分钟获取另一个 token，那也不影响这个 token 的有效性
                 .filter(tokenExpire -> compareToNow(tokenExpire) > 0)
                 .isPresent();
     }
 
     private void refreshToken() {
-        FeishuTenantTokenResponse feishuTenantTokenVO = FeishuRequestUtil.request(
+        FeishuTenantTokenResponse responseBody = FeishuRequestUtil.request(
                 HttpRequestEnum.TENANT_ACCESS_TOKEN,
-                feishuTokenProperties,
+                feishuAppConfig.getToken(),
                 FeishuTenantTokenResponse.class,
                 null
         );
-        this.tenantAccessToken = feishuTenantTokenVO.getTenantAccessToken();
-        this.expire = feishuTenantTokenVO.getExpire();
+        this.tenantAccessToken = responseBody.getTenantAccessToken();
+        this.expire = responseBody.getExpire();
     }
 
     public String getToken() {

@@ -11,8 +11,10 @@ import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.util.ExcelUtil;
+import com.achobeta.util.HttpServletUtil;
 import com.achobeta.util.MediaUtil;
 import com.achobeta.util.ResourceUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -95,6 +97,11 @@ public class ResourceServiceImpl implements ResourceService {
             checkImage(code);
             removeKindly(old);
         }
+    }
+
+    @Override
+    public String getSystemUrl(HttpServletRequest request, Long code) {
+        return HttpServletUtil.getBaseUrl("/api/v1/resource/download/", request) + code;
     }
 
     @Override

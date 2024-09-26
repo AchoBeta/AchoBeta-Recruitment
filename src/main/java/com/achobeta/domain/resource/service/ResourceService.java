@@ -3,6 +3,7 @@ package com.achobeta.domain.resource.service;
 import com.achobeta.domain.resource.enums.ExcelTemplateEnum;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.entity.DigitalResource;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +31,8 @@ public interface ResourceService {
     void checkImage(Long code);
 
     void checkAndRemoveImage(Long code, Long old);
+
+    String getSystemUrl(HttpServletRequest request, Long code);
 
     String gerObjectUrl(Long code, Boolean hidden);
 

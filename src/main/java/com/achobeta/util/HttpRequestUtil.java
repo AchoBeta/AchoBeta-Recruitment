@@ -7,6 +7,10 @@ import com.achobeta.exception.GlobalServiceException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.LongSerializationPolicy;
+import com.lark.oapi.core.utils.Jsons;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.util.StringUtils;
 
@@ -28,12 +32,12 @@ public class HttpRequestUtil {
 
     public final static Map<String, String> JSON_CONTENT_TYPE_HEADER = Map.of("CONTENT_TYPE", "application/json; charset=utf-8");
 
-    private final static ObjectMapper OBJECT_MAPPER;
+    private static final Gson GSON;
 
     static {
-        // 忽略未定义的属性
-        OBJECT_MAPPER = new ObjectMapper()
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, Boolean.FALSE);
+        GSON = new GsonBuilder()
+                .disableHtmlEscaping() // 取消对 html 代码的转义（可能的场景是需要保存 html 代码的字段）
+                .create();
     }
 
     private static final Pattern HTTP_PATTERN = Pattern.compile("^(http|https)://.*$");
@@ -53,17 +57,13 @@ public class HttpRequestUtil {
     }
 
     public static  <R, T> R jsonRequest(HttpRequestEnum requestEnum, T requestBody, Class<R> responseClazz, Map<String, String> headers) {
-        try {
-            String json = HttpUtil.createRequest(Method.valueOf(requestEnum.getMethod()), requestEnum.getUrl())
-                    .headerMap(headers, Boolean.TRUE)
-                    .headerMap(JSON_CONTENT_TYPE_HEADER, Boolean.TRUE)
-                    .body(OBJECT_MAPPER.writeValueAsString(requestBody))
-                    .execute()
-                    .body();
-            return OBJECT_MAPPER.readValue(json, responseClazz);
-        } catch (JsonProcessingException e) {
-            throw new GlobalServiceException(e.getMessage());
-        }
+        String json = HttpUtil.createRequest(Method.valueOf(requestEnum.getMethod()), requestEnum.getUrl())
+                .headerMap(headers, Boolean.TRUE)
+                .headerMap(JSON_CONTENT_TYPE_HEADER, Boolean.TRUE)
+                .body(GSON.toJson(requestBody))
+                .execute()
+                .body();
+        return GSON.fromJson(json, responseClazz);
     }
 
 }

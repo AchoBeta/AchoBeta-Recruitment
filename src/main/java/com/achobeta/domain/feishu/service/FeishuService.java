@@ -1,9 +1,11 @@
 package com.achobeta.domain.feishu.service;
 
-import com.achobeta.domain.feishu.model.dto.FeishuGetUserIdDTO;
-import com.achobeta.domain.feishu.model.dto.FeishuScheduleDTO;
-import com.achobeta.domain.feishu.model.vo.FeishuGetUserIdResponse;
-import com.achobeta.domain.feishu.model.vo.FeishuScheduleResponse;
+import com.lark.oapi.service.contact.v3.model.BatchGetIdUserReqBody;
+import com.lark.oapi.service.contact.v3.model.BatchGetIdUserRespBody;
+import com.lark.oapi.service.vc.v1.model.ApplyReserveReq;
+import com.lark.oapi.service.vc.v1.model.ApplyReserveReqBody;
+import com.lark.oapi.service.vc.v1.model.ApplyReserveResp;
+import com.lark.oapi.service.vc.v1.model.ApplyReserveRespBody;
 
 /**
  * Created With Intellij IDEA
@@ -14,10 +16,14 @@ import com.achobeta.domain.feishu.model.vo.FeishuScheduleResponse;
  */
 public interface FeishuService {
 
-    FeishuGetUserIdResponse getUserId(FeishuGetUserIdDTO feishuGetUserIdDTO);
+    BatchGetIdUserRespBody batchGetUserId(BatchGetIdUserReqBody batchGetIdUserReqBody);
+
+    BatchGetIdUserRespBody batchGetUserIdByMobiles(String... mobiles);
+
+    String getUserIdByMobile(String mobile);
 
     String getOwnerId();
 
-    FeishuScheduleResponse reserveApply(FeishuScheduleDTO feishuScheduleDTO);
+    ApplyReserveRespBody reserveApply(ApplyReserveReqBody applyReserveReqBody);
 
 }

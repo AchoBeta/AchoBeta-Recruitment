@@ -17,6 +17,7 @@ import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.model.po.UserHelper;
@@ -54,6 +55,8 @@ public class InterviewController {
     private final QuestionPaperService questionPaperService;
 
     private final InterviewScheduleService interviewScheduleService;
+
+    private final ResourceService resourceService;
 
     @PostMapping("/create")
     public SystemJsonResponse createInterview(@RequestBody InterviewCreateDTO interviewCreateDTO) {
@@ -148,8 +151,7 @@ public class InterviewController {
         // 打印成表格
         Long code = interviewService.printAllInterviewList(managerId, InterviewConditionDTO.of(interviewConditionDTO), accessLevel);
         // 构造 url 并返回
-        String baseUrl = HttpServletUtil.getBaseUrl("/api/v1/resource/download/", request);
-        return SystemJsonResponse.SYSTEM_SUCCESS(baseUrl + code);
+        return SystemJsonResponse.SYSTEM_SUCCESS(resourceService.getSystemUrl(request, code));
     }
 
     @PostMapping("/list/manager/own")

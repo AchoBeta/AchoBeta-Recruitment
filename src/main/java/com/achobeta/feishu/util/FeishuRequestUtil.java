@@ -3,8 +3,8 @@ package com.achobeta.feishu.util;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.HttpRequestEnum;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.feishu.response.FeishuResponse;
 import com.achobeta.util.HttpRequestUtil;
+import com.lark.oapi.core.response.BaseResponse;
 
 import java.util.Map;
 
@@ -17,14 +17,12 @@ import java.util.Map;
  */
 public class FeishuRequestUtil {
 
-    private final static Integer SUCCESS_CODE = 0;
-
-    public static <T, R extends FeishuResponse> R request(HttpRequestEnum httpRequestEnum, T requestBody, Class<R> rClazz, Map<String, String> headers) {
-        R responseBody = HttpRequestUtil.jsonRequest(httpRequestEnum, requestBody, rClazz, headers);
-        if(SUCCESS_CODE.equals(responseBody.getCode())) {
-            return responseBody;
+    public static <T, E, R extends BaseResponse<E>> R request(HttpRequestEnum httpRequestEnum, T requestBody, Class<R> rClazz, Map<String, String> headers) {
+        R resp = HttpRequestUtil.jsonRequest(httpRequestEnum, requestBody, rClazz, headers);
+        if(resp.success()) {
+            return resp;
         } else {
-            throw new GlobalServiceException(responseBody.getMsg(), GlobalServiceStatusCode.REQUEST_NOT_VALID);
+            throw new GlobalServiceException(resp.getMsg(), GlobalServiceStatusCode.REQUEST_NOT_VALID);
         }
     }
 

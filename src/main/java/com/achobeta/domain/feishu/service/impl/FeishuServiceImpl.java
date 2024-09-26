@@ -1,18 +1,19 @@
 package com.achobeta.domain.feishu.service.impl;
 
+import cn.hutool.core.util.ArrayUtil;
 import com.achobeta.common.enums.HttpRequestEnum;
-import com.achobeta.domain.feishu.model.dto.FeishuGetUserIdDTO;
-import com.achobeta.domain.feishu.model.dto.FeishuScheduleDTO;
-import com.achobeta.domain.feishu.model.vo.FeishuGetUserIdResponse;
-import com.achobeta.domain.feishu.model.vo.FeishuScheduleResponse;
 import com.achobeta.domain.feishu.service.FeishuService;
+import com.achobeta.feishu.config.FeishuAppConfig;
 import com.achobeta.feishu.token.FeishuTenantAccessToken;
 import com.achobeta.feishu.util.FeishuRequestUtil;
+import com.lark.oapi.service.contact.v3.model.*;
+import com.lark.oapi.service.vc.v1.model.ApplyReserveReqBody;
+import com.lark.oapi.service.vc.v1.model.ApplyReserveResp;
+import com.lark.oapi.service.vc.v1.model.ApplyReserveRespBody;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.*;
 
 import static com.achobeta.feishu.constants.FeishuConstants.AUTHORIZATION_HEADER;
 import static com.achobeta.feishu.constants.FeishuConstants.getAuthorization;
@@ -28,43 +29,53 @@ import static com.achobeta.feishu.constants.FeishuConstants.getAuthorization;
 @RequiredArgsConstructor
 public class FeishuServiceImpl implements FeishuService {
 
-    @Value("${ab.feishu.owner.mobile}")
-    private String ownerMobile;
+    private final FeishuAppConfig feishuAppConfig;
 
     private final FeishuTenantAccessToken feishuTenantAccessToken;
 
     @Override
-    public FeishuGetUserIdResponse getUserId(FeishuGetUserIdDTO feishuGetUserIdDTO) {
+    public BatchGetIdUserRespBody batchGetUserId(BatchGetIdUserReqBody batchGetIdUserReqBody) {
         String token = feishuTenantAccessToken.getToken();
         return FeishuRequestUtil.request(
                 HttpRequestEnum.GET_USER_ID,
-                feishuGetUserIdDTO,
-                FeishuGetUserIdResponse.class,
+                batchGetIdUserReqBody,
+                BatchGetIdUserResp.class,
                 Map.of(
                         AUTHORIZATION_HEADER, getAuthorization(token)
                 )
-        );
+        ).getData();
+    }
+
+    @Override
+    public BatchGetIdUserRespBody batchGetUserIdByMobiles(String... mobiles) {
+        BatchGetIdUserReqBody batchGetIdUserReqBody = BatchGetIdUserReqBody.newBuilder()
+                .mobiles(Optional.ofNullable(mobiles).orElseGet(() -> new String[0]))
+                .build();
+        return batchGetUserId(batchGetIdUserReqBody);
+    }
+
+    @Override
+    public String getUserIdByMobile(String mobile) {
+        UserContactInfo[] userList = batchGetUserIdByMobiles(mobile).getUserList();
+        return ArrayUtil.isEmpty(userList) ? null : userList[0].getUserId();
     }
 
     @Override
     public String getOwnerId() {
-        return getUserId(FeishuGetUserIdDTO.of(ownerMobile)).getData()
-                .getUserList()
-                .getFirst()
-                .getUserId();
+        return getUserIdByMobile(feishuAppConfig.getOwner().getMobile());
     }
 
     @Override
-    public FeishuScheduleResponse reserveApply(FeishuScheduleDTO feishuScheduleDTO) {
+    public ApplyReserveRespBody reserveApply(ApplyReserveReqBody applyReserveReqBody) {
         String token = feishuTenantAccessToken.getToken();
         return FeishuRequestUtil.request(
                 HttpRequestEnum.RESERVE_APPLY,
-                feishuScheduleDTO,
-                FeishuScheduleResponse.class,
+                applyReserveReqBody,
+                ApplyReserveResp.class,
                 Map.of(
                         AUTHORIZATION_HEADER, getAuthorization(token)
                 )
-        );
+        ).getData();
     }
 
 
