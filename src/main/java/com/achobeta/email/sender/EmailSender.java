@@ -1,6 +1,7 @@
 package com.achobeta.email.sender;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.email.model.po.EmailAttachment;
 import com.achobeta.email.model.po.EmailMessage;
 import com.achobeta.exception.GlobalServiceException;
 import jakarta.mail.MessagingException;
@@ -11,7 +12,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.util.*;
 import java.util.function.Function;
 
@@ -25,7 +25,7 @@ public class EmailSender {
 
     public void send(String sender, String[] recipient, String[] carbonCopy,
                      String title, String content, boolean isHtml,
-                     Date sentDate, List<File> fileList) {
+                     Date sentDate, List<EmailAttachment> fileList) {
         // 封装对象
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -38,9 +38,10 @@ public class EmailSender {
             // 设置文本
             mimeMessageHelper.setText(content, isHtml);
             // 设置附件
-            for (File file : fileList) {
-                if (Objects.nonNull(file)) {
-                    mimeMessageHelper.addAttachment(file.getName(), file);
+            // 创建一个 MimeMultipart 对象表示邮件的多个部分
+            for (EmailAttachment attachment : fileList) {
+                if (Objects.nonNull(attachment)) {
+                    mimeMessageHelper.addAttachment(attachment.getFileName(), attachment);
                 }
             }
             // 发送
@@ -50,7 +51,7 @@ public class EmailSender {
         }
     }
 
-    public void send(EmailMessage emailMessage, boolean isHtml, List<File> files) {
+    public void send(EmailMessage emailMessage, boolean isHtml, List<EmailAttachment> files) {
         // 封装对象
         send(emailMessage.getSender(), emailMessage.getRecipient(), emailMessage.getCarbonCopy(),
                 emailMessage.getTitle(), emailMessage.getContent(), isHtml,
@@ -70,7 +71,7 @@ public class EmailSender {
      * 建议循环调用 send，因为这个方法本身就是循环发送，不是一次性发送
      */
     @Deprecated
-    public void customSend(EmailMessage emailMessage, Function<String, String> getText, boolean isHtml, List<File> fileList) {
+    public void customSend(EmailMessage emailMessage, Function<String, String> getText, boolean isHtml, List<EmailAttachment> fileList) {
         String sender = emailMessage.getSender();
         String[] carbonCopy = emailMessage.getCarbonCopy();
         String title = emailMessage.getTitle();
