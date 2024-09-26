@@ -16,9 +16,9 @@ public interface ObjectStorageService {
      * 文件上传
      *
      */
-    String upload(MultipartFile file);
+    String upload(Long userId, String originalName, byte[] bytes);
 
-    String upload(String originalName, byte[] bytes);
+    String upload(Long userId, MultipartFile file);
 
     /**
      * 预览图片

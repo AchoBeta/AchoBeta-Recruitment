@@ -11,7 +11,6 @@ import io.minio.messages.Item;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +23,9 @@ public class MinioEngine {
 
     private final MinioClient minioClient;
 
+    /**
+     * 文件上传
+     */
     public String upload(String originalName, byte[] bytes) throws Exception {
         String suffix = ResourceUtil.getFileNameSuffix(originalName);
         String uniqueFileName = ResourceUtil.getUniqueFileName(suffix);
@@ -36,13 +38,6 @@ public class MinioEngine {
         //文件名称相同会覆盖
         minioClient.putObject(objectArgs);
         return uniqueFileName;
-    }
-
-    /**
-     * 文件上传
-     */
-    public String upload(MultipartFile file) throws Exception {
-        return upload(ResourceUtil.getOriginalName(file), file.getBytes());
     }
 
     /**

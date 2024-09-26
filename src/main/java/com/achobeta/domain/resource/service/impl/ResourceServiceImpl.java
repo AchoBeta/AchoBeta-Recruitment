@@ -120,7 +120,7 @@ public class ResourceServiceImpl implements ResourceService {
         DigitalResource resource = new DigitalResource();
         resource.setUserId(userId);
         resource.setOriginalName(ResourceUtil.getOriginalName(file));
-        resource.setFileName(objectStorageService.upload(file));
+        resource.setFileName(objectStorageService.upload(userId, file));
         resource.setAccessLevel(level);
         return digitalResourceService.createResource(resource);
     }
@@ -130,7 +130,7 @@ public class ResourceServiceImpl implements ResourceService {
         DigitalResource resource = new DigitalResource();
         resource.setUserId(userId);
         resource.setOriginalName(originalName);
-        resource.setFileName(objectStorageService.upload(originalName, data));
+        resource.setFileName(objectStorageService.upload(userId, originalName, data));
         resource.setAccessLevel(level);
         return digitalResourceService.createResource(resource);
     }
@@ -153,7 +153,7 @@ public class ResourceServiceImpl implements ResourceService {
                     resource.setUserId(userId);
                     resource.setAccessLevel(DEFAULT_RESOURCE_ACCESS_LEVEL);
                     resource.setOriginalName(ResourceUtil.getOriginalName(file));
-                    resource.setFileName(storageService.upload(file));
+                    resource.setFileName(storageService.upload(userId, file));
                     return resource;
                 })
                 .toList();

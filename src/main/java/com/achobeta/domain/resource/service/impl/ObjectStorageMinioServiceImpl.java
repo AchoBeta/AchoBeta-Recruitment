@@ -1,6 +1,8 @@
 package com.achobeta.domain.resource.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.resource.config.UploadLimitProperties;
+import com.achobeta.domain.resource.constants.ResourceConstants;
 import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.monio.config.MinioConfig;
@@ -8,7 +10,9 @@ import com.achobeta.monio.engine.MinioBucketEngine;
 import com.achobeta.monio.engine.MinioEngine;
 import com.achobeta.monio.enums.MinioPolicyTemplateEnum;
 import com.achobeta.monio.template.DefaultPolicyTemplate;
+import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.template.engine.TextEngine;
+import com.achobeta.util.ResourceUtil;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.InitializingBean;
@@ -27,6 +31,9 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService, Init
     private MinioConfig minioConfig;
 
     @Resource
+    private UploadLimitProperties uploadLimitProperties;
+
+    @Resource
     private TextEngine textEngine;
 
     @Resource
@@ -35,19 +42,35 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService, Init
     @Resource
     private MinioEngine minioEngine;
 
+    @Resource
+    private RedisCache redisCache;
+
     @Override
-    public String upload(MultipartFile file) {
+    public String upload(Long userId, String originalName, byte[] bytes) {
         try {
-            return minioEngine.upload(file);
+            String redisKey = ResourceConstants.REDIS_USER_UPLOAD_LIMIT + userId;
+            // 获得已上传的次数
+            Integer times = (Integer) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+                redisCache.setCacheObject(redisKey, 0, uploadLimitProperties.getCycle(), uploadLimitProperties.getUnit());
+                return 0;
+            });
+            // 判断次数是否达到上限
+            if(uploadLimitProperties.getFrequency().compareTo(times) <= 0) {
+                throw new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_UPLOAD_TOO_FREQUENT);
+            }
+            // 自增
+            redisCache.incrementCacheNumber(redisKey);
+            // 上传
+            return minioEngine.upload(originalName, bytes);
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_UPLOAD_FAILED);
         }
     }
 
     @Override
-    public String upload(String originalName, byte[] bytes) {
+    public String upload(Long userId, MultipartFile file) {
         try {
-            return minioEngine.upload(originalName, bytes);
+            return upload(userId, ResourceUtil.getOriginalName(file), file.getBytes());
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_UPLOAD_FAILED);
         }

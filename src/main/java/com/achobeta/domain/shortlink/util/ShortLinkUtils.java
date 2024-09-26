@@ -12,7 +12,7 @@ public class ShortLinkUtils {
     private static final String CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
     private static final int LINK_LENGTH = 6;
 
-    public static final String REDIS_SHORT_LINK = "redis_short_link:";//前缀
+    public static final String REDIS_SHORT_LINK = "redisShortLink:";//前缀
 
     public static final int FETCH_RADIX = 16;
 
