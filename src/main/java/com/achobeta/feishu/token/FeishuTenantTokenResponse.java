@@ -1,6 +1,5 @@
 package com.achobeta.feishu.token;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 import com.lark.oapi.core.response.BaseResponse;
 import com.lark.oapi.core.response.EmptyData;

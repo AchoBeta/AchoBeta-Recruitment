@@ -5,7 +5,12 @@ import com.achobeta.common.enums.HttpRequestEnum;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.util.HttpRequestUtil;
 import com.lark.oapi.core.response.BaseResponse;
+import org.apache.poi.ss.formula.functions.T;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,13 +22,29 @@ import java.util.Map;
  */
 public class FeishuRequestUtil {
 
-    public static <T, E, R extends BaseResponse<E>> R request(HttpRequestEnum httpRequestEnum, T requestBody, Class<R> rClazz, Map<String, String> headers) {
-        R resp = HttpRequestUtil.jsonRequest(httpRequestEnum, requestBody, rClazz, headers);
-        if(resp.success()) {
-            return resp;
-        } else {
-            throw new GlobalServiceException(resp.getMsg(), GlobalServiceStatusCode.REQUEST_NOT_VALID);
+    public static <E> void checkResponse(BaseResponse<E> response) {
+        if(!response.success()) {
+            throw new GlobalServiceException(response.getMsg(), GlobalServiceStatusCode.REQUEST_NOT_VALID);
         }
     }
 
+    public static <T, E, R extends BaseResponse<E>> R request(HttpRequestEnum httpRequestEnum, T requestBody, Class<R> rClazz, Map<String, String> headers) {
+        R resp = HttpRequestUtil.jsonRequest(httpRequestEnum.getUrl(), httpRequestEnum.getMethod(), requestBody, rClazz, headers);
+        checkResponse(resp);
+        return resp;
+    }
+
+    public static <T, E, R extends BaseResponse<E>> R request(HttpRequestEnum httpRequestEnum, T requestBody, Class<R> rClazz,
+                                                              Map<String, String> headers, Map<String, List<String>> queryParams, Map<String, ?> pathParams) {
+        R resp = HttpRequestUtil.jsonRequest(httpRequestEnum, requestBody, rClazz, headers, queryParams, pathParams);
+        checkResponse(resp);
+        return resp;
+    }
+
+    public static <T, E, V, R extends BaseResponse<E>> R request(HttpRequestEnum httpRequestEnum, T requestBody, Class<R> rClazz,
+                                                               Map<String, String> headers, Map<String, List<String>> queryParams, V... uriVariableValues) {
+        R resp = HttpRequestUtil.jsonRequest(httpRequestEnum, requestBody, rClazz, headers, queryParams, uriVariableValues);
+        checkResponse(resp);
+        return resp;
+    }
 }

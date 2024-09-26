@@ -2,9 +2,7 @@ package com.achobeta.domain.feishu.service;
 
 import com.lark.oapi.service.contact.v3.model.BatchGetIdUserReqBody;
 import com.lark.oapi.service.contact.v3.model.BatchGetIdUserRespBody;
-import com.lark.oapi.service.vc.v1.model.ApplyReserveReq;
 import com.lark.oapi.service.vc.v1.model.ApplyReserveReqBody;
-import com.lark.oapi.service.vc.v1.model.ApplyReserveResp;
 import com.lark.oapi.service.vc.v1.model.ApplyReserveRespBody;
 
 /**
@@ -22,8 +20,10 @@ public interface FeishuService {
 
     String getUserIdByMobile(String mobile);
 
-    String getOwnerId();
+    String getDefaultOwnerId();
 
     ApplyReserveRespBody reserveApply(ApplyReserveReqBody applyReserveReqBody);
+
+    ApplyReserveRespBody reserveApplyBriefly(String ownerId, Long endTime, String topic);
 
 }

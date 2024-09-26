@@ -30,12 +30,4 @@ public class TimeUtil {
         return TimeUnit.MILLISECONDS.toSeconds(timestamp);
     }
 
-    public static String parseToSecond(Long timestamp, TimeUnit unit) {
-        return String.valueOf(unit.toSeconds(timestamp));
-    }
-
-    public static Date parseToDate(Long timestamp, TimeUnit unit) {
-        return new Date(unit.toMillis(timestamp));
-    }
-
 }

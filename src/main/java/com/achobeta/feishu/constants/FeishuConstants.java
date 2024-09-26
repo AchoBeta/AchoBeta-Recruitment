@@ -15,6 +15,8 @@ public interface FeishuConstants {
 
     String AUTHORIZATION_PREFIX = "Bearer ";
 
+    String USER_ID_TYPE_QUERY_KEY = "use_id_type";
+
     static String getAuthorization(String accessToken) {
         return Optional.ofNullable(accessToken)
                 .map(token -> AUTHORIZATION_PREFIX + token)

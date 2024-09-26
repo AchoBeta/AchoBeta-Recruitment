@@ -10,10 +10,7 @@ import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.util.ExcelUtil;
-import com.achobeta.util.HttpServletUtil;
-import com.achobeta.util.MediaUtil;
-import com.achobeta.util.ResourceUtil;
+import com.achobeta.util.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -101,7 +98,8 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public String getSystemUrl(HttpServletRequest request, Long code) {
-        return HttpServletUtil.getBaseUrl("/api/v1/resource/download/", request) + code;
+        String baseUrl = HttpServletUtil.getBaseUrl("/api/v1/resource/download/{code}", request);
+        return HttpRequestUtil.buildUrl(baseUrl, null, code);
     }
 
     @Override
