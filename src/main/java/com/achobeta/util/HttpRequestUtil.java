@@ -96,6 +96,10 @@ public class HttpRequestUtil {
         return GSON.fromJson(respJson, responseClazz);
     }
 
+    public static <R, T> R jsonRequest(HttpRequestEnum requestEnum, T requestBody, Class<R> responseClazz, Map<String, String> headers) {
+        return jsonRequest(requestEnum.getUrl(), requestEnum.getMethod(), requestBody, responseClazz, headers);
+    }
+
     public static <R, T, P> R jsonRequest(HttpRequestEnum requestEnum, T requestBody, Class<R> responseClazz,
                                        Map<String, String> headers, Map<String, List<String>> queryParams, Map<String, P> pathParams) {
         String url = buildUrl(requestEnum.getUrl(), queryParams, pathParams);
