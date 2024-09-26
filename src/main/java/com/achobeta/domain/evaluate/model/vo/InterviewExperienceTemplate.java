@@ -1,5 +1,6 @@
 package com.achobeta.domain.evaluate.model.vo;
 
+import com.achobeta.util.TimeUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,8 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
-
-import static com.achobeta.config.DateTimeConfig.DATE_TIME_FORMAT;
 
 /**
  * Created With Intellij IDEA
@@ -34,11 +33,11 @@ public class InterviewExperienceTemplate {
     private Date endTime;
 
     public String getStartTime() {
-        return DATE_TIME_FORMAT.format(startTime);
+        return TimeUtil.getDateTime(startTime);
     }
 
     public String getEndTime() {
-        return DATE_TIME_FORMAT.format(endTime);
+        return TimeUtil.getDateTime(endTime);
     }
 
 }
