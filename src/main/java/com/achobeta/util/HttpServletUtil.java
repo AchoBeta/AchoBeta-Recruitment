@@ -62,8 +62,4 @@ public class HttpServletUtil {
         return String.format("%s://%s%s", request.getScheme(), request.getHeader("host"), uri);
     }
 
-    public static String hiddenQueryString(String url) {
-        return StringUtils.hasText(url) && url.contains("?") ? url.substring(0, url.indexOf("?")) : null;
-    }
-
 }

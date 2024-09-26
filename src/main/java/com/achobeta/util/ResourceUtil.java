@@ -1,6 +1,5 @@
 package com.achobeta.util;
 
-import cn.hutool.core.util.ArrayUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.exception.GlobalServiceException;
 import org.springframework.util.StringUtils;
@@ -25,12 +24,6 @@ public class ResourceUtil {
     public static void checkOriginalName(String originalName) {
         // 判断是否有非空字符以及是否有后缀
         if (!StringUtils.hasText(originalName) || !originalName.contains(".")) {
-            throw new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_NOT_VALID);
-        }
-    }
-
-    public static void checkBytes(byte[] bytes) {
-        if (ArrayUtil.isEmpty(bytes)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_NOT_VALID);
         }
     }

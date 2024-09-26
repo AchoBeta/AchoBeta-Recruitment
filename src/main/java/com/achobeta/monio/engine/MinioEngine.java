@@ -1,6 +1,7 @@
 package com.achobeta.monio.engine;
 
 import com.achobeta.monio.config.MinioConfig;
+import com.achobeta.util.HttpRequestUtil;
 import com.achobeta.util.HttpServletUtil;
 import com.achobeta.util.MediaUtil;
 import com.achobeta.util.ResourceUtil;
@@ -66,7 +67,7 @@ public class MinioEngine {
         // 查看文件地址
         String objectUrl = getObjectUrl(fileName);
         // 判断是否隐藏
-        return Boolean.TRUE.equals(hidden) ? HttpServletUtil.hiddenQueryString(objectUrl) : objectUrl;
+        return Boolean.TRUE.equals(hidden) ? HttpRequestUtil.hiddenQueryString(objectUrl) : objectUrl;
     }
 
     /**

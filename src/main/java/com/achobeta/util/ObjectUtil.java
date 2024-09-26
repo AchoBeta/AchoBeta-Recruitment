@@ -2,7 +2,6 @@ package com.achobeta.util;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -82,11 +81,6 @@ public class ObjectUtil {
         stream(object, fieldClazz)
                 .filter(Objects::nonNull)
                 .forEach(consumer);
-    }
-
-    public static <T> String getBeanName(T bean) {
-//        return Introspector.decapitalize(ClassUtils.getShortName(bean.getClass()));
-        return Introspector.decapitalize(bean.getClass().getSimpleName());
     }
 
 }

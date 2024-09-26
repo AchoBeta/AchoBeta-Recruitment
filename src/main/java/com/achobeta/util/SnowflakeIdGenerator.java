@@ -40,11 +40,9 @@ public class SnowflakeIdGenerator {
 
     public long nextId() {
         long timestamp = timeGen();
-
         if (timestamp < lastTimestamp) {
             throw new RuntimeException(String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
         }
-
         if (lastTimestamp == timestamp) {
             sequence = (sequence + 1) & (-1L ^ (-1L << SEQUENCE_BITS));
             if (sequence == 0) {
@@ -53,9 +51,7 @@ public class SnowflakeIdGenerator {
         } else {
             sequence = 0L;
         }
-
         lastTimestamp = timestamp;
-
         return ((timestamp - START_TIMESTAMP) << TIMESTAMP_LEFT_SHIFT) |
                 (datacenterId << DATACENTER_ID_SHIFT) |
                 (workerId << WORKER_ID_SHIFT) |

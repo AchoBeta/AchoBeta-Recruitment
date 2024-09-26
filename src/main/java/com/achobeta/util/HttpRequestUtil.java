@@ -55,7 +55,11 @@ public class HttpRequestUtil {
         }
     }
 
-    public static <V> String buildUrl(String baseUrl, Map<String, List<String>> queryParams, V... uriVariableValues) {
+    public static String hiddenQueryString(String url) {
+        return StringUtils.hasText(url) && url.contains("?") ? url.substring(0, url.indexOf("?")) : url;
+    }
+
+    public static String buildUrl(String baseUrl, Map<String, List<String>> queryParams, Object... uriVariableValues) {
         queryParams = Optional.ofNullable(queryParams).orElseGet(Map::of);
         return UriComponentsBuilder
                 .fromHttpUrl(baseUrl)
@@ -98,8 +102,8 @@ public class HttpRequestUtil {
         return jsonRequest(url, requestEnum.getMethod(), requestBody, responseClazz, headers);
     }
 
-    public static <R, T, V> R jsonRequest(HttpRequestEnum requestEnum, T requestBody, Class<R> responseClazz,
-                                       Map<String, String> headers, Map<String, List<String>> queryParams, V... uriVariableValues) {
+    public static <R, T> R jsonRequest(HttpRequestEnum requestEnum, T requestBody, Class<R> responseClazz,
+                                       Map<String, String> headers, Map<String, List<String>> queryParams, Object... uriVariableValues) {
         String url = buildUrl(requestEnum.getUrl(), queryParams, uriVariableValues);
         return jsonRequest(url, requestEnum.getMethod(), requestBody, responseClazz, headers);
     }

@@ -37,8 +37,8 @@ public class FeishuRequestUtil {
         return resp;
     }
 
-    public static <T, E, V, R extends BaseResponse<E>> R request(HttpRequestEnum httpRequestEnum, T requestBody, Class<R> rClazz,
-                                                               Map<String, String> headers, Map<String, List<String>> queryParams, V... uriVariableValues) {
+    public static <T, E, R extends BaseResponse<E>> R request(HttpRequestEnum httpRequestEnum, T requestBody, Class<R> rClazz,
+                                                               Map<String, String> headers, Map<String, List<String>> queryParams, Object... uriVariableValues) {
         R resp = HttpRequestUtil.jsonRequest(httpRequestEnum, requestBody, rClazz, headers, queryParams, uriVariableValues);
         checkResponse(resp);
         return resp;
