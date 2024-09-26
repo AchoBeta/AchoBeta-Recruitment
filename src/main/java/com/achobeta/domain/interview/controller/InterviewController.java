@@ -10,10 +10,7 @@ import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.model.converter.InterviewConverter;
 import com.achobeta.domain.interview.model.dto.*;
 import com.achobeta.domain.interview.model.entity.Interview;
-import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
-import com.achobeta.domain.interview.model.vo.InterviewEventVO;
-import com.achobeta.domain.interview.model.vo.InterviewStatusVO;
-import com.achobeta.domain.interview.model.vo.InterviewVO;
+import com.achobeta.domain.interview.model.vo.*;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
@@ -33,6 +30,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import static com.achobeta.domain.interview.enums.InterviewStatus.ENDED;
+import static com.achobeta.domain.interview.enums.InterviewStatus.NOT_STARTED;
 
 /**
  * Created With Intellij IDEA
@@ -74,10 +74,23 @@ public class InterviewController {
         // 检查
         ValidatorUtils.validate(interviewUpdateDTO);
         // 未开始才能修改
-        interviewService.checkInterviewStatus(interviewUpdateDTO.getInterviewId(), InterviewStatus.NOT_STARTED);
+        interviewService.checkInterviewStatus(interviewUpdateDTO.getInterviewId(), List.of(NOT_STARTED, ENDED));
         // 更新
         interviewService.updateInterview(interviewUpdateDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
+
+    @GetMapping("/reserve/{interviewId}")
+    public SystemJsonResponse interviewReserveApply(@PathVariable("interviewId") @NotNull Long interviewId,
+                                                    @RequestParam(name = "mobile", required = false) String mobile) {
+        // 检查
+        interviewService.checkInterviewExists(interviewId);
+        // 当前管理员
+        Long managerId = BaseContext.getCurrentUser().getUserId();
+        log.warn("管理员 {} 尝试预约面试 {}", managerId, interviewId);
+        // 预约会议
+        InterviewReserveVO interviewReserveVO = interviewService.interviewReserveApply(interviewId, mobile);
+        return SystemJsonResponse.SYSTEM_SUCCESS(interviewReserveVO);
     }
 
     @GetMapping("/list/status")
@@ -122,7 +135,7 @@ public class InterviewController {
         Long interviewId = interviewPaperDTO.getInterviewId();
         Interview interview = interviewService.checkAndGetInterviewExists(interviewId);
         // 检查面试是否未开始
-        interview.getStatus().check(InterviewStatus.NOT_STARTED);
+        interview.getStatus().check(List.of(NOT_STARTED, ENDED));
         Long paperId = interviewPaperDTO.getPaperId();
         if(!Objects.equals(interview.getPaperId(), paperId)) {
             // 检查试卷是否存在
@@ -175,6 +188,8 @@ public class InterviewController {
     @GetMapping("/detail/{interviewId}")
     @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER})
     public SystemJsonResponse getInterviewDetail(@PathVariable("interviewId") @NotNull Long interviewId) {
+        // 检查
+        interviewService.checkInterviewExists(interviewId);
         // 获取当前用户
         UserHelper currentUser = BaseContext.getCurrentUser();
         // 查询

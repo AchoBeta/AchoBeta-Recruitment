@@ -100,7 +100,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public String getSystemUrl(HttpServletRequest request, Long code) {
-        String baseUrl = HttpServletUtil.getBaseUrl("/api/v1/resource/download/{code}", request);
+        String baseUrl = HttpServletUtil.getBaseUrl(request, "/api/v1/resource/download", "/{code}");
         return HttpRequestUtil.buildUrl(baseUrl, null, code);
     }
 
