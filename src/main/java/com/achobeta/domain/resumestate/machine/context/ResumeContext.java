@@ -1,7 +1,7 @@
 package com.achobeta.domain.resumestate.machine.context;
 
-import com.achobeta.common.enums.ResumeEvent;
-import com.achobeta.common.enums.ResumeStatus;
+import com.achobeta.domain.resumestate.enums.ResumeEvent;
+import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import com.achobeta.domain.resumestate.model.dto.ResumeExecuteDTO;
 import com.achobeta.domain.student.model.entity.StuResume;
 import lombok.*;

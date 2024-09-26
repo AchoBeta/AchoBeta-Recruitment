@@ -1,15 +1,16 @@
 package com.achobeta.domain.interview.service;
 
-import com.achobeta.common.enums.InterviewEvent;
-import com.achobeta.common.enums.InterviewStatus;
-import com.achobeta.common.enums.ResourceAccessLevel;
+import com.achobeta.domain.interview.enums.InterviewEvent;
+import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.model.dto.InterviewConditionDTO;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
 import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
+import com.achobeta.domain.interview.model.vo.InterviewReserveVO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
+import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -38,6 +39,8 @@ public interface InterviewService extends IService<Interview> {
 
     Long getInterviewPaperId(Long interviewId);
 
+    InterviewReserveVO interviewReserveApply(Long interviewId, String mobile);
+
     // 写入 ------------------------------------------
 
     Long createInterview(InterviewCreateDTO interviewCreateDTO, Long managerId);
@@ -56,6 +59,6 @@ public interface InterviewService extends IService<Interview> {
 
     Interview checkAndGetInterviewExists(Long interviewId);
 
-    void checkInterviewStatus(Long interviewId, InterviewStatus interviewStatus);
+    void checkInterviewStatus(Long interviewId, List<InterviewStatus> interviewStatus);
 
 }

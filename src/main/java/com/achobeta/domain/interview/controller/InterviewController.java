@@ -2,22 +2,23 @@ package com.achobeta.domain.interview.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
-import com.achobeta.common.enums.*;
+import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.interview.enums.InterviewEvent;
+import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.model.converter.InterviewConverter;
 import com.achobeta.domain.interview.model.dto.*;
 import com.achobeta.domain.interview.model.entity.Interview;
-import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
-import com.achobeta.domain.interview.model.vo.InterviewEventVO;
-import com.achobeta.domain.interview.model.vo.InterviewStatusVO;
-import com.achobeta.domain.interview.model.vo.InterviewVO;
+import com.achobeta.domain.interview.model.vo.*;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
+import com.achobeta.domain.resource.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.util.HttpServletUtil;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
@@ -29,6 +30,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import static com.achobeta.domain.interview.enums.InterviewStatus.ENDED;
+import static com.achobeta.domain.interview.enums.InterviewStatus.NOT_STARTED;
 
 /**
  * Created With Intellij IDEA
@@ -51,6 +55,8 @@ public class InterviewController {
 
     private final InterviewScheduleService interviewScheduleService;
 
+    private final ResourceService resourceService;
+
     @PostMapping("/create")
     public SystemJsonResponse createInterview(@RequestBody InterviewCreateDTO interviewCreateDTO) {
         // 检查
@@ -68,10 +74,23 @@ public class InterviewController {
         // 检查
         ValidatorUtils.validate(interviewUpdateDTO);
         // 未开始才能修改
-        interviewService.checkInterviewStatus(interviewUpdateDTO.getInterviewId(), InterviewStatus.NOT_STARTED);
+        interviewService.checkInterviewStatus(interviewUpdateDTO.getInterviewId(), List.of(NOT_STARTED, ENDED));
         // 更新
         interviewService.updateInterview(interviewUpdateDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
+
+    @GetMapping("/reserve/{interviewId}")
+    public SystemJsonResponse interviewReserveApply(@PathVariable("interviewId") @NotNull Long interviewId,
+                                                    @RequestParam(name = "mobile", required = false) String mobile) {
+        // 检查
+        interviewService.checkInterviewExists(interviewId);
+        // 当前管理员
+        Long managerId = BaseContext.getCurrentUser().getUserId();
+        log.warn("管理员 {} 尝试预约面试 {}", managerId, interviewId);
+        // 预约会议
+        InterviewReserveVO interviewReserveVO = interviewService.interviewReserveApply(interviewId, mobile);
+        return SystemJsonResponse.SYSTEM_SUCCESS(interviewReserveVO);
     }
 
     @GetMapping("/list/status")
@@ -116,7 +135,7 @@ public class InterviewController {
         Long interviewId = interviewPaperDTO.getInterviewId();
         Interview interview = interviewService.checkAndGetInterviewExists(interviewId);
         // 检查面试是否未开始
-        interview.getStatus().check(InterviewStatus.NOT_STARTED);
+        interview.getStatus().check(List.of(NOT_STARTED, ENDED));
         Long paperId = interviewPaperDTO.getPaperId();
         if(!Objects.equals(interview.getPaperId(), paperId)) {
             // 检查试卷是否存在
@@ -144,8 +163,7 @@ public class InterviewController {
         // 打印成表格
         Long code = interviewService.printAllInterviewList(managerId, InterviewConditionDTO.of(interviewConditionDTO), accessLevel);
         // 构造 url 并返回
-        String baseUrl = HttpServletUtil.getBaseUrl("/api/v1/resource/download/", request);
-        return SystemJsonResponse.SYSTEM_SUCCESS(baseUrl + code);
+        return SystemJsonResponse.SYSTEM_SUCCESS(resourceService.getSystemUrl(request, code));
     }
 
     @PostMapping("/list/manager/own")
@@ -170,6 +188,8 @@ public class InterviewController {
     @GetMapping("/detail/{interviewId}")
     @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER})
     public SystemJsonResponse getInterviewDetail(@PathVariable("interviewId") @NotNull Long interviewId) {
+        // 检查
+        interviewService.checkInterviewExists(interviewId);
         // 获取当前用户
         UserHelper currentUser = BaseContext.getCurrentUser();
         // 查询

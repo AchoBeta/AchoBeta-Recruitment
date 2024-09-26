@@ -9,8 +9,10 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created With Intellij IDEA
@@ -55,7 +57,8 @@ public class HttpServletUtil {
         returnBytes(bytes, response);
     }
 
-    public static String getBaseUrl(String uri, HttpServletRequest request) {
+    public static String getBaseUrl(HttpServletRequest request, String... uris) {
+        String uri = Arrays.stream(uris).filter(StringUtils::hasText).collect(Collectors.joining());
         return String.format("%s://%s%s", request.getScheme(), request.getHeader("host"), uri);
     }
 

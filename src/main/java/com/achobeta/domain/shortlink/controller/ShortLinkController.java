@@ -52,7 +52,7 @@ public class ShortLinkController {
     public SystemJsonResponse transferAndSaveShortLink(HttpServletRequest request,
                                                        @RequestParam("url") @NotNull @IsAccessible(message = "链接不可访问") String url) {
         // 拼接出基础的url
-        String baseUrl = HttpServletUtil.getBaseUrl("/api/v1/shortlink/", request);
+        String baseUrl = HttpServletUtil.getBaseUrl(request, "/api/v1/shortlink", "/{code}");
         // 转化
         String shortLinkURL = shortLinkService.transShortLinkURL(baseUrl, url);
         log.info("原链接:{} -> 短链接:{}", url, shortLinkURL);

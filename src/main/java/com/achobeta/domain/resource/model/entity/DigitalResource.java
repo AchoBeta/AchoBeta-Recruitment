@@ -1,7 +1,7 @@
 package com.achobeta.domain.resource.model.entity;
 
 import com.achobeta.common.base.BaseIncrIDEntity;
-import com.achobeta.common.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 

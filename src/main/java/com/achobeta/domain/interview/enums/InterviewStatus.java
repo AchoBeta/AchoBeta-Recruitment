@@ -1,10 +1,14 @@
-package com.achobeta.common.enums;
+package com.achobeta.domain.interview.enums;
 
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 
 /**
@@ -35,8 +39,8 @@ public enum InterviewStatus {
         return description;
     }
 
-    public void check(InterviewStatus interviewStatus) {
-        if(interviewStatus != this) {
+    public void check(List<InterviewStatus> interviewStatus) {
+        if(CollectionUtils.isEmpty(interviewStatus) || !interviewStatus.contains(this)) {
             throw new GlobalServiceException(String.format("面试%s", this.getDescription()),
                     GlobalServiceStatusCode.INTERVIEW_STATUS_EXCEPTION);
         }

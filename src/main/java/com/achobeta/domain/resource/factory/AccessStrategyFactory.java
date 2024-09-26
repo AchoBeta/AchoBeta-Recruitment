@@ -1,7 +1,7 @@
 package com.achobeta.domain.resource.factory;
 
-import com.achobeta.common.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.access.strategy.ResourceAccessStrategy;
+import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 
 /**
  * Created With Intellij IDEA

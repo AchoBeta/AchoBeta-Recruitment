@@ -1,7 +1,10 @@
 package com.achobeta.domain.interview.service.impl;
 
-import com.achobeta.common.enums.*;
+import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.evaluate.model.entity.InterviewQuestionScore;
+import com.achobeta.domain.feishu.service.FeishuService;
+import com.achobeta.domain.interview.enums.InterviewEvent;
+import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.constants.InterviewStateMachineConstants;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.model.converter.InterviewConverter;
@@ -12,18 +15,21 @@ import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
 import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.model.vo.InterviewExcelTemplate;
+import com.achobeta.domain.interview.model.vo.InterviewReserveVO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.service.PaperQuestionLinkService;
+import com.achobeta.domain.resource.enums.ExcelTemplateEnum;
+import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.machine.StateMachineUtil;
 import com.achobeta.redis.lock.RedisLock;
 import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
-import com.achobeta.util.ExcelUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
+import com.lark.oapi.service.vc.v1.model.ApplyReserveRespBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,8 +49,6 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
 
     private final static String EXECUTE_INTERVIEW_EVENT_LOCK = "executeInterviewEventLock:";
 
-    private final static String ACHOBETA_RECRUITMENT_XLSX = "";
-
     private final InterviewMapper interviewMapper;
 
     private final InterviewerService interviewerService;
@@ -52,6 +56,8 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     private final PaperQuestionLinkService paperQuestionLinkService;
 
     private final ResourceService resourceService;
+
+    private final FeishuService feishuService;
 
     private final RedisLock redisLock;
 
@@ -80,11 +86,8 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     @Override
     public Long printAllInterviewList(Long managerId, InterviewConditionDTO condition, ResourceAccessLevel level) {
         List<InterviewVO> interviewVOList = managerGetInterviewList(null, condition);
-        ExcelTemplateEnum excelTemplateEnum = ExcelTemplateEnum.ACHOBETA_INTERVIEW_ALL;
-        // 获取数据
-        byte[] bytes = ExcelUtil.exportXlsxFile(excelTemplateEnum.getTitle(), excelTemplateEnum.getSheetName(), InterviewExcelTemplate.class, interviewVOList);
-        // 上传对象存储服务器
-        return resourceService.upload(managerId, excelTemplateEnum.getOriginalName(), bytes, level);
+        // 上传表格到对象存储服务器
+        return resourceService.uploadExcel(managerId, ExcelTemplateEnum.ACHOBETA_INTERVIEW_ALL, InterviewExcelTemplate.class, interviewVOList, level);
     }
 
     @Override
@@ -100,6 +103,21 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     @Override
     public Long getInterviewPaperId(Long interviewId) {
         return checkAndGetInterviewExists(interviewId).getPaperId();
+    }
+
+    @Override
+    public InterviewReserveVO interviewReserveApply(Long interviewId, String mobile) {
+        InterviewDetailVO interviewDetail = getInterviewDetail(interviewId);
+        // 如果输入的手机号有效则是该手机号对应的 userId 作为此处的 ownerId，但 ownerId 不是同租户下的合法飞书用户，可能会在后续过程中报错
+        String ownerId = feishuService.getUserIdByMobile(mobile);
+        String title = interviewDetail.getTitle();
+        Long endTime = interviewDetail.getScheduleVO().getEndTime().getTime();
+        if(endTime.compareTo(System.currentTimeMillis()) < 0) {
+            throw new GlobalServiceException("面试预约时间为过去时", GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
+        }
+        // 预约会议
+        ApplyReserveRespBody reserveRespBody = feishuService.reserveApplyBriefly(ownerId, endTime, title);
+        return InterviewConverter.INSTANCE.feishuReserveToInterviewReserveVO(reserveRespBody.getReserve());
     }
 
     @Override
@@ -182,7 +200,7 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     }
 
     @Override
-    public void checkInterviewStatus(Long interviewId, InterviewStatus interviewStatus) {
+    public void checkInterviewStatus(Long interviewId, List<InterviewStatus> interviewStatus) {
         checkAndGetInterviewExists(interviewId)
                 .getStatus()
                 .check(interviewStatus);

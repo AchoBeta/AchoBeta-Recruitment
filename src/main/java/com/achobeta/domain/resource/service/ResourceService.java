@@ -1,7 +1,9 @@
 package com.achobeta.domain.resource.service;
 
-import com.achobeta.common.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.enums.ExcelTemplateEnum;
+import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.entity.DigitalResource;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,11 +32,17 @@ public interface ResourceService {
 
     void checkAndRemoveImage(Long code, Long old);
 
+    String getSystemUrl(HttpServletRequest request, Long code);
+
     String gerObjectUrl(Long code, Boolean hidden);
 
     Long upload(Long userId, MultipartFile file);
 
+    Long upload(Long userId, MultipartFile file, ResourceAccessLevel level);
+
     Long upload(Long userId, String originalName, byte[] data, ResourceAccessLevel level);
+
+    <T, E> Long uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<T> clazz, List<E> data, ResourceAccessLevel level);
 
     List<Long> uploadList(Long userId, List<MultipartFile> fileList);
 

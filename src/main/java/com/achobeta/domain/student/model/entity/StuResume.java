@@ -1,7 +1,7 @@
 package com.achobeta.domain.student.model.entity;
 
 import com.achobeta.common.base.BaseIncrIDEntity;
-import com.achobeta.common.enums.ResumeStatus;
+import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;

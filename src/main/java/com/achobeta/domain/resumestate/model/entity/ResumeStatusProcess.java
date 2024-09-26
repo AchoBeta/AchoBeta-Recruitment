@@ -1,8 +1,8 @@
 package com.achobeta.domain.resumestate.model.entity;
 
 import com.achobeta.common.base.BaseIncrIDEntity;
-import com.achobeta.common.enums.ResumeEvent;
-import com.achobeta.common.enums.ResumeStatus;
+import com.achobeta.domain.resumestate.enums.ResumeEvent;
+import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;

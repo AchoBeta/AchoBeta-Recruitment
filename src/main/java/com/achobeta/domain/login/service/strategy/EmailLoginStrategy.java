@@ -1,7 +1,7 @@
 package com.achobeta.domain.login.service.strategy;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.common.enums.LoginTypeEnum;
+import com.achobeta.domain.login.enums.LoginTypeEnum;
 import com.achobeta.domain.login.model.dao.UserEntity;
 import com.achobeta.domain.login.model.dao.mapper.UserMapper;
 import com.achobeta.domain.login.model.dto.EmailLoginDTO;

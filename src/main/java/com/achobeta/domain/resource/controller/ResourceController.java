@@ -2,8 +2,8 @@ package com.achobeta.domain.resource.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
-import com.achobeta.common.enums.ResourceAccessLevel;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.converter.DigitalResourceConverter;
 import com.achobeta.domain.resource.model.dto.ResourceQueryDTO;
 import com.achobeta.domain.resource.model.vo.ResourceAccessLevelVO;
@@ -78,14 +78,14 @@ public class ResourceController {
     }
 
     @PostMapping("/upload/one")
-    public SystemJsonResponse upload(@RequestParam("file") MultipartFile file) {
+    public SystemJsonResponse upload(@RequestPart("file") MultipartFile file) {
         long userId = BaseContext.getCurrentUser().getUserId();
         Long code = resourceService.upload(userId, file);
         return SystemJsonResponse.SYSTEM_SUCCESS(code);
     }
 
     @PostMapping("/upload/image")
-    public SystemJsonResponse uploadImage(@RequestParam("file") MultipartFile file) {
+    public SystemJsonResponse uploadImage(@RequestPart("file") MultipartFile file) {
         // 检查
         ResourceUtil.checkImage(MediaUtil.getContentType(file));
         long userId = BaseContext.getCurrentUser().getUserId();
@@ -94,7 +94,7 @@ public class ResourceController {
     }
 
     @PostMapping("/upload/video")
-    public SystemJsonResponse uploadVideo(@RequestParam("file") MultipartFile file) {
+    public SystemJsonResponse uploadVideo(@RequestPart("file") MultipartFile file) {
         // 检查
         ResourceUtil.checkVideo(MediaUtil.getContentType(file));
         long userId = BaseContext.getCurrentUser().getUserId();
@@ -103,7 +103,7 @@ public class ResourceController {
     }
 
     @PostMapping("/upload/list")
-    public SystemJsonResponse upload(@RequestParam("file") List<MultipartFile> fileList) {
+    public SystemJsonResponse upload(@RequestPart("file") List<MultipartFile> fileList) {
         long userId = BaseContext.getCurrentUser().getUserId();
         List<Long> codeList = resourceService.uploadList(userId, fileList);
         return SystemJsonResponse.SYSTEM_SUCCESS(codeList);

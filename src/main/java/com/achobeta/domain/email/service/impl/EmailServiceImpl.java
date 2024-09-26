@@ -18,10 +18,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static com.achobeta.common.enums.EmailTemplateEnum.CAPTCHA;
 import static com.achobeta.common.enums.GlobalServiceStatusCode.EMAIL_CAPTCHA_CODE_COUNT_EXHAUST;
 import static com.achobeta.common.enums.GlobalServiceStatusCode.EMAIL_SEND_FAIL;
 import static com.achobeta.domain.email.constants.EmailConstants.*;
+import static com.achobeta.email.enums.EmailTemplateEnum.CAPTCHA;
 
 @Slf4j
 @Service
@@ -98,7 +98,6 @@ public class EmailServiceImpl implements EmailService {
     private void buildEmailAndSend(String email, String code) {
         // 封装 Email
         EmailMessage emailMessage = new EmailMessage();
-        emailMessage.setContent(code);
         emailMessage.setCreateTime(new Date());
         emailMessage.setTitle(CAPTCHA.getTitle());
         emailMessage.setRecipient(email);
