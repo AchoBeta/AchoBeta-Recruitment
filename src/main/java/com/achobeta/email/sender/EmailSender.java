@@ -38,7 +38,6 @@ public class EmailSender {
             // 设置文本
             mimeMessageHelper.setText(content, isHtml);
             // 设置附件
-            // 创建一个 MimeMultipart 对象表示邮件的多个部分
             for (EmailAttachment attachment : fileList) {
                 if (Objects.nonNull(attachment)) {
                     mimeMessageHelper.addAttachment(attachment.getFileName(), attachment);
