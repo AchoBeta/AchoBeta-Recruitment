@@ -4,7 +4,6 @@ import com.achobeta.common.base.BasePageQuery;
 import com.achobeta.common.base.BasePageResult;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.shortlink.bloomfilter.ShortLinkBloomFilter;
-import com.achobeta.domain.shortlink.constants.ShortLinkConstants;
 import com.achobeta.domain.shortlink.model.converter.ShortLinkConverter;
 import com.achobeta.domain.shortlink.model.dao.mapper.ShortLinkMapper;
 import com.achobeta.domain.shortlink.model.dao.po.ShortLink;

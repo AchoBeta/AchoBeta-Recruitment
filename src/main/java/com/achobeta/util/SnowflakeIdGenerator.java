@@ -1,7 +1,5 @@
 package com.achobeta.util;
 
-import cn.hutool.core.util.RandomUtil;
-
 import java.util.Random;
 
 public class SnowflakeIdGenerator {
