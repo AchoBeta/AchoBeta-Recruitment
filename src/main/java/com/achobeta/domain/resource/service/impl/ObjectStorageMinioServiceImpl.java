@@ -19,8 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.Optional;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -55,10 +54,17 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService, Init
         // 查询是否被封禁
         String blockKey = ResourceConstants.REDIS_USER_UPLOAD_BLOCK + userId;
         redisCache.getCacheObject(blockKey).ifPresent(date -> {
-            String message = String.format("用户当前无法上传资源，将于 %s 解封，如有异议请联系管理员！", TimeUtil.getDateTime((long) date));
-            throw new GlobalServiceException(message, GlobalServiceStatusCode.RESOURCE_UPLOAD_BLOCKED);
+            long blockDDL = (long) date;
+            // 理论上 blockDDL 是肯定小于等于当前时间的，因为大于的时候 redisKey 应该到期了
+            // （但还是进行判断，如果出现大于的情况，则把本该过期的 key 删了）
+            if(blockDDL <= System.currentTimeMillis()) {
+                String message = String.format("用户当前无法上传资源，将于 %s 解封，如有异议请联系管理员！", TimeUtil.getDateTime(blockDDL));
+                throw new GlobalServiceException(message, GlobalServiceStatusCode.RESOURCE_UPLOAD_BLOCKED);
+            }else {
+                redisCache.deleteObject(blockKey);
+            }
         });
-
+        // 进行上传的检测
         String redisKey = ResourceConstants.REDIS_USER_UPLOAD_LIMIT + userId;
         // 获得已上传的次数
         Integer times = (Integer) redisCache.getCacheObject(redisKey).orElseGet(() -> {
@@ -72,7 +78,7 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService, Init
         // 自增
         redisCache.incrementCacheNumber(redisKey);
         try {
-            // 上传
+            // 上传资源
             return minioEngine.upload(originalName, bytes);
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_UPLOAD_FAILED);
@@ -83,7 +89,9 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService, Init
     public String upload(Long userId, MultipartFile file) {
         try {
             return upload(userId, ResourceUtil.getOriginalName(file), file.getBytes());
-        } catch (Exception e) {
+        } catch (GlobalServiceException e) {
+            throw e;
+        } catch (IOException e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_UPLOAD_FAILED);
         }
     }
@@ -134,13 +142,13 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService, Init
     }
 
     @Override
-    public void blockUser(Long userId, Long date) {
+    public void blockUser(Long userId, Long blockDDL) {
         String blockKey = ResourceConstants.REDIS_USER_UPLOAD_BLOCK + userId;
-        long timeout = date - System.currentTimeMillis();
+        long timeout = blockDDL - System.currentTimeMillis(); // 现在距离解封时间的时长
         if(timeout > 0) {
-            redisCache.setCacheObject(blockKey, date, timeout, TimeUnit.MILLISECONDS);
+            redisCache.setCacheObject(blockKey, blockDDL, timeout, TimeUnit.MILLISECONDS);
         } else {
-            // 设置为过去，则接触封禁
+            // 设置为过去时，则直接封禁
             redisCache.deleteObject(blockKey);
         }
     }

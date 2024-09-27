@@ -130,7 +130,7 @@ public class ResourceController {
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
-    @GetMapping("/block/{userId}")
+    @GetMapping("/block/upload/{userId}")
     @Intercept(permit = {UserTypeEnum.ADMIN})
     public SystemJsonResponse blockUser(@PathVariable("userId") @NotNull Long userId,
                                         @RequestParam("date") @NotNull Long date) {

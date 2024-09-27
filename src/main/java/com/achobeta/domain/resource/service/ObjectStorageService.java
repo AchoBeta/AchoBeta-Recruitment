@@ -52,5 +52,5 @@ public interface ObjectStorageService {
      */
     void remove(String fileName);
 
-    void blockUser(Long userId, Long date);
+    void blockUser(Long userId, Long blockDDL);
 }

@@ -15,6 +15,6 @@ public interface ResourceConstants {
 
     String REDIS_USER_UPLOAD_LIMIT = "userUploadLimit:";
 
-    String REDIS_USER_UPLOAD_BLOCK = "userUploadBLOCK:";
+    String REDIS_USER_UPLOAD_BLOCK = "userUploadBlock:";
 
 }
