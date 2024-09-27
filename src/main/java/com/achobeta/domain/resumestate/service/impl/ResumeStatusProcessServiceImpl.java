@@ -1,5 +1,6 @@
 package com.achobeta.domain.resumestate.service.impl;
 
+import com.achobeta.domain.resumestate.constants.ResumeStateConstants;
 import com.achobeta.domain.resumestate.enums.ResumeEvent;
 import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import com.achobeta.domain.resumestate.model.dao.mapper.ResumeStatusProcessMapper;
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
 * @author 马拉圈
@@ -24,7 +26,7 @@ public class ResumeStatusProcessServiceImpl extends ServiceImpl<ResumeStatusProc
         ResumeStatusProcess resumeStatusProcess = new ResumeStatusProcess();
         resumeStatusProcess.setResumeId(resumeId);
         resumeStatusProcess.setResumeStatus(resumeStatus);
-        resumeStatusProcess.setResumeEvent(resumeEvent);
+        resumeStatusProcess.setResumeEvent(Optional.ofNullable(resumeEvent).orElse(ResumeStateConstants.DEFAULT_RESUME_EVENT));
         this.save(resumeStatusProcess);
         return resumeStatusProcess;
     }

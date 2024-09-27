@@ -22,8 +22,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
-import static com.achobeta.domain.resumestate.constants.ResumeStateConstants.DEFAULT_RESUME_EVENT;
-
 /**
  * Created With Intellij IDEA
  * Description:
@@ -86,25 +84,10 @@ public class ResumeStateServiceImpl implements ResumeStateService {
         Long resumeId = currentResume.getId();
         ResumeStatus currentStatus = currentResume.getStatus();
         List<ResumeStatusProcess> statusProcesses = resumeStatusProcessService.getProcessByResumeId(resumeId);
-        if(CollectionUtils.isEmpty(statusProcesses)) {
-            // 设置默认节点
-            ResumeStatusProcess process = resumeStatusProcessService.createResumeStatusProcess(
-                    resumeId,
-                    currentStatus,
-                    DEFAULT_RESUME_EVENT
-            );
-            return List.of(process);
-        } else {
-            ResumeStatus lastStatus = statusProcesses.getLast().getResumeStatus();
-            // 如果最后一个节点不是当前状态，则推进到当前状态
-            if(!currentStatus.equals(lastStatus)) {
-                ResumeStatusProcess process = resumeStatusProcessService.createResumeStatusProcess(
-                        resumeId,
-                        currentStatus,
-                        DEFAULT_RESUME_EVENT
-                );
-                statusProcesses.add(process);
-            }
+        // 如果没有节点或者最后一个节点不是当前状态，则推进到当前状态
+        if(CollectionUtils.isEmpty(statusProcesses) || !currentStatus.equals(statusProcesses.getLast().getResumeStatus())) {
+            ResumeStatusProcess process = resumeStatusProcessService.createResumeStatusProcess(resumeId, currentStatus, ResumeEvent.NEXT);
+            statusProcesses.add(process);
         }
         return statusProcesses;
     }

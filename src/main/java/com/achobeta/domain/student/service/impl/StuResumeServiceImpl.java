@@ -27,8 +27,6 @@ import org.springframework.util.CollectionUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.achobeta.domain.resumestate.constants.ResumeStateConstants.DEFAULT_RESUME_EVENT;
-
 /**
  * @author 马拉圈
  * @description 针对表【stu_resume(学生简历表)】的数据库操作Service实现
@@ -159,11 +157,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
             //简历状态若为草稿则更新为待筛选
             stuResume.setStatus(ResumeStatus.PENDING_SELECTION);
             // 添加一个简历过程节点
-            resumeStatusProcessService.createResumeStatusProcess(
-                    stuResume.getId(),
-                    ResumeStatus.PENDING_SELECTION,
-                    DEFAULT_RESUME_EVENT
-            );
+            resumeStatusProcessService.createResumeStatusProcess(stuResume.getId(), ResumeStatus.PENDING_SELECTION, null);
         }
 
         stuResumeConverter.updatePoWithStuSimpleResumeDTO(resumeDTO, stuResume);
@@ -184,11 +178,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         save(stuResume);
 
         // 创建初始的简历状态过程节点
-        resumeStatusProcessService.createResumeStatusProcess(
-                stuResume.getId(),
-                ResumeStatus.PENDING_SELECTION,
-                DEFAULT_RESUME_EVENT
-        );
+        resumeStatusProcessService.createResumeStatusProcess(stuResume.getId(), ResumeStatus.PENDING_SELECTION, null);
     }
 
     @Transactional
