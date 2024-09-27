@@ -85,9 +85,9 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
     }
 
     @Override
-    public void setAccessLevel(Long id, ResourceAccessLevel level) {
+    public void setAccessLevel(Long resourceId, ResourceAccessLevel level) {
         DigitalResource digitalResource = new DigitalResource();
-        digitalResource.setId(id);
+        digitalResource.setId(resourceId);
         digitalResource.setAccessLevel(level);
         this.updateById(digitalResource);
     }

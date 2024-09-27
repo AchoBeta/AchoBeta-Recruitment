@@ -46,7 +46,7 @@ public interface ResourceService {
 
     List<Long> uploadList(Long userId, List<MultipartFile> fileList);
 
-    void setAccessLevel(Long id, ResourceAccessLevel level);
+    void setAccessLevel(Long resourceId, ResourceAccessLevel level);
 
     void remove(Long code);
 

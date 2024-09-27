@@ -159,17 +159,16 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public void setAccessLevel(Long id, ResourceAccessLevel level) {
-        digitalResourceService.setAccessLevel(id, level);
+    public void setAccessLevel(Long resourceId, ResourceAccessLevel level) {
+        digitalResourceService.setAccessLevel(resourceId, level);
     }
 
     @Override
     @Transactional
     public void remove(Long code) {
-        ObjectStorageService storageService = objectStorageService;
         // 若权限小于 USER_ACCESS 就按 USER_ACCESS 权限
         DigitalResource resource = checkAndGetResource(code, DEFAULT_RESOURCE_ACCESS_LEVEL);
-        storageService.remove(resource.getFileName());
+        objectStorageService.remove(resource.getFileName());
         digitalResourceService.removeDigitalResource(resource.getId());
     }
 

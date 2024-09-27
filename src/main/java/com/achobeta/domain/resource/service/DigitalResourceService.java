@@ -19,7 +19,7 @@ public interface DigitalResourceService extends IService<DigitalResource> {
 
     DigitalResource createResource(DigitalResource digitalResource);
 
-    void setAccessLevel(Long id, ResourceAccessLevel level);
+    void setAccessLevel(Long resourceId, ResourceAccessLevel level);
 
     void removeDigitalResource(Long id);
 

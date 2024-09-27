@@ -116,12 +116,12 @@ public class ResourceController {
         return SystemJsonResponse.SYSTEM_SUCCESS(codeList);
     }
 
-    @PostMapping("/set/level/{id}")
+    @PostMapping("/set/level/{resourceId}")
     @Intercept(permit = {UserTypeEnum.ADMIN})
-    public SystemJsonResponse setLevel(@PathVariable("id") @NotNull Long id,
+    public SystemJsonResponse setLevel(@PathVariable("resourceId") @NotNull Long resourceId,
                                        @RequestParam("level") @NotNull Integer level) {
         ResourceAccessLevel accessLevel = ResourceAccessLevel.get(level);
-        resourceService.setAccessLevel(id, accessLevel);
+        resourceService.setAccessLevel(resourceId, accessLevel);
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
