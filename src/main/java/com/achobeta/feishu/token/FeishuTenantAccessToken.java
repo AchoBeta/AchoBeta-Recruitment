@@ -61,7 +61,7 @@ public class FeishuTenantAccessToken {
 //        }
         FeishuTenantTokenResponse responseBody = FeishuRequestUtil.request(
                 HttpRequestEnum.TENANT_ACCESS_TOKEN,
-                feishuAppConfig.getToken(),
+                feishuAppConfig.getCredentials(),
                 FeishuTenantTokenResponse.class,
                 null
         );

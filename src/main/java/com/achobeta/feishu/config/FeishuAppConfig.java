@@ -16,12 +16,12 @@ public class FeishuAppConfig {
 
     private OwnerProperties owner;
 
-    private InternalTenantAccessTokenReqBody token;
+    private InternalTenantAccessTokenReqBody credentials;
 
     @Bean
     public Client feishuClient() {
         // 如果不会用 client，可以直接发请求访问
-        return Client.newBuilder(token.getAppId(), token.getAppSecret()).build();
+        return Client.newBuilder(credentials.getAppId(), credentials.getAppSecret()).build();
     }
 
 }
