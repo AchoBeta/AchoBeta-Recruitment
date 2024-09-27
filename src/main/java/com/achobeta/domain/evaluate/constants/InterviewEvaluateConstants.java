@@ -26,4 +26,9 @@ public interface InterviewEvaluateConstants {
     String ABILITY_VALUE_MESSAGE = "能力值范围为" + MIN_ABILITY_VALUE + "-" + MAX_ABILITY_VALUE;
 
     String QUESTION_SCORE_MESSAGE = "题目得分数值范围为" + MIN_QUESTION_SCORE + "-" + MAX_QUESTION_SCORE + "，" + SUPERCLASS_QUESTION_SCORE + "代表" + SUPERCLASS_MESSAGE;
+
+    String QUESTION_SCORE_LOCK = "questionScoreLock:%d:%d";
+
+    String INTERVIEW_SUMMARY_LOCK = "interviewSummaryLock:";
+
 }

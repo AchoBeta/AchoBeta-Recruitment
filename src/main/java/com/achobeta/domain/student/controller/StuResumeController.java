@@ -6,7 +6,6 @@ import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.student.model.dto.QueryResumeDTO;
 import com.achobeta.domain.student.model.dto.QueryResumeOfUserDTO;
 import com.achobeta.domain.student.model.dto.StuResumeDTO;
-import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.achobeta.domain.student.service.StuResumeService;
 import com.achobeta.domain.users.context.BaseContext;
@@ -47,11 +46,9 @@ public class StuResumeController {
         ValidatorUtils.validate(stuResumeDTO);
         //当前用户id
         Long userId = BaseContext.getCurrentUser().getUserId();
-        //检查简历提交否超过最大次数
-        StuResume stuResume = stuResumeService.checkResumeSubmitCount(stuResumeDTO.getStuSimpleResumeDTO(),userId);
-        stuResume.setUserId(userId);
+
         //提交简历
-        stuResumeService.submitResume(stuResumeDTO,stuResume);
+        stuResumeService.submitResume(stuResumeDTO, userId);
 
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }

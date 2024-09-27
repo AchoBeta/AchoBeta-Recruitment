@@ -3,6 +3,7 @@ package com.achobeta.domain.interview.service.impl;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.evaluate.model.entity.InterviewQuestionScore;
 import com.achobeta.domain.feishu.service.FeishuService;
+import com.achobeta.domain.interview.constants.InterviewConstants;
 import com.achobeta.domain.interview.enums.InterviewEvent;
 import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.constants.InterviewStateMachineConstants;
@@ -46,8 +47,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview>
     implements InterviewService{
-
-    private final static String EXECUTE_INTERVIEW_EVENT_LOCK = "executeInterviewEventLock:";
 
     private final InterviewMapper interviewMapper;
 
@@ -150,7 +149,7 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     public InterviewStatus executeInterviewStateEvent(InterviewEvent interviewEvent, InterviewContext interviewContext) {
         Interview currentInterview = interviewContext.getInterview();
         Long interviewId = currentInterview.getId();
-        return redisLock.tryLockGetSomething(EXECUTE_INTERVIEW_EVENT_LOCK + interviewId, () -> {
+        return redisLock.tryLockGetSomething(InterviewConstants.EXECUTE_INTERVIEW_EVENT_LOCK + interviewId, () -> {
             // 获取当前状态
             InterviewStatus fromState = currentInterview.getStatus();
             // 执行状态机

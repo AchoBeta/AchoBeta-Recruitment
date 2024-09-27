@@ -13,4 +13,6 @@ public interface ResumeStateConstants {
 
     ResumeEvent DEFAULT_RESUME_EVENT = ResumeEvent.NEXT;
 
+    String EXECUTE_RESUME_EVENT_LOCK = "executeResumeEventLock:";
+
 }

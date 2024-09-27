@@ -20,6 +20,7 @@ public class StuSimpleResumeDTO implements Serializable {
     private Long batchId;
 
     @NotBlank(message = "学号不能为空")
+    @Pattern(regexp = "^20\\d{8,11}$", message = "学号非法")
     private String studentId;
 
     @NotBlank(message = "名字不能为空")
@@ -30,7 +31,7 @@ public class StuSimpleResumeDTO implements Serializable {
     private Integer gender;
 
     @NotNull(message = "年级不能为空")
-    @IntRange(min = 1000, max = 9999, message = "年级应为四位数")
+    @IntRange(min = 2000, max = 2100, message = "年级应为四位数")
     private Integer grade;
 
     @NotBlank(message = "专业不能为空")

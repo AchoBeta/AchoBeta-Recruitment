@@ -83,7 +83,7 @@ public class EmailLoginStrategy implements LoginStrategy {
         UserEntity user = userMapper.selectOne(new LambdaQueryWrapper<UserEntity>()
                 .eq(UserEntity::getEmail, email));
         return Optional.ofNullable(user).orElseGet(() -> {
-            // 不存在邮箱走注册逻辑
+            // 不存在邮箱走注册逻辑（用户名设置为邮箱，注册时也会对用户名进行唯一性校验）
             RegisterDTO registerDTO = new RegisterDTO();
             registerDTO.setEmail(email);
             registerDTO.setUsername(email);

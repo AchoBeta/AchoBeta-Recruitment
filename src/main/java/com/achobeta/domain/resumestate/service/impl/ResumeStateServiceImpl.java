@@ -1,6 +1,7 @@
 package com.achobeta.domain.resumestate.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.resumestate.constants.ResumeStateConstants;
 import com.achobeta.domain.resumestate.enums.ResumeEvent;
 import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import com.achobeta.domain.resumestate.machine.constants.ResumeStateMachineConstants;
@@ -34,8 +35,6 @@ import static com.achobeta.domain.resumestate.constants.ResumeStateConstants.DEF
 @RequiredArgsConstructor
 public class ResumeStateServiceImpl implements ResumeStateService {
 
-    private final static String EXECUTE_RESUME_EVENT_LOCK = "executeResumeEventLock:";
-
     private final StuResumeService stuResumeService;
 
     private final ResumeStatusProcessService resumeStatusProcessService;
@@ -60,7 +59,7 @@ public class ResumeStateServiceImpl implements ResumeStateService {
     public ResumeStatus executeResumeEvent(ResumeEvent resumeEvent, ResumeContext resumeContext) {
         StuResume currentResume = resumeContext.getResume();
         Long resumeId = currentResume.getId();
-        return redisLock.tryLockGetSomething(EXECUTE_RESUME_EVENT_LOCK + resumeId, () -> {
+        return redisLock.tryLockGetSomething(ResumeStateConstants.EXECUTE_RESUME_EVENT_LOCK + resumeId, () -> {
             // 获取当前状态
             ResumeStatus fromState = currentResume.getStatus();
             // 执行状态机

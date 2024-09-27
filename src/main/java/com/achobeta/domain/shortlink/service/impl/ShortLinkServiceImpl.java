@@ -4,6 +4,7 @@ import com.achobeta.common.base.BasePageQuery;
 import com.achobeta.common.base.BasePageResult;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.shortlink.bloomfilter.ShortLinkBloomFilter;
+import com.achobeta.domain.shortlink.constants.ShortLinkConstants;
 import com.achobeta.domain.shortlink.model.converter.ShortLinkConverter;
 import com.achobeta.domain.shortlink.model.dao.mapper.ShortLinkMapper;
 import com.achobeta.domain.shortlink.model.dao.po.ShortLink;
@@ -22,7 +23,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+
+import static com.achobeta.domain.shortlink.constants.ShortLinkConstants.SHORT_LINK_TIMEOUT;
+import static com.achobeta.domain.shortlink.constants.ShortLinkConstants.SHORT_LINK_UNIT;
 
 /**
  * @author 马拉圈
@@ -34,10 +37,6 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink>
         implements ShortLinkService {
-
-    private static final long SHORT_LINK_TIMEOUT = 7; // 超时时间 (默认七天)
-
-    private static final TimeUnit SHORT_LINK_UNIT = TimeUnit.DAYS;
 
     private final RedisCache redisCache;
 
@@ -66,7 +65,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         // 生成唯一的code
         do {
             code = ShortLinkUtils.getShortCodeByURL(code);
-            redisKey = ShortLinkUtils.REDIS_SHORT_LINK + code;
+            redisKey = ShortLinkConstants.REDIS_SHORT_LINK + code;
         } while (shortLinkBloomFilter.contains(redisKey));//误判为存在也无所谓，无非就是再重新生成一个
         // 保存
         ShortLink shortLink = new ShortLink();

@@ -27,8 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static com.achobeta.domain.schedule.constants.InterviewScheduleConstants.*;
 
 /**
 * @author 马拉圈
@@ -39,14 +40,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleMapper, InterviewSchedule>
     implements InterviewScheduleService{
-
-    private final static Integer MIN_GAP = 30;
-
-    private final static Integer MAX_GAP = 120;
-
-    private final static TimeUnit GAP_UNIT = TimeUnit.MINUTES;
-
-    private final static String SCHEDULE_EXIT_LOCK = "scheduleExitLock:";
 
     private final RedisLock redisLock;
 
