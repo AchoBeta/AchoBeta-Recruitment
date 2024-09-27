@@ -2,8 +2,6 @@ package com.achobeta.domain.student.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.resource.service.ResourceService;
-import com.achobeta.domain.resumestate.constants.ResumeStateConstants;
-import com.achobeta.domain.resumestate.enums.ResumeEvent;
 import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import com.achobeta.domain.resumestate.service.ResumeStatusProcessService;
 import com.achobeta.domain.student.model.converter.StuResumeConverter;

@@ -1,7 +1,6 @@
 package com.achobeta.domain.resumestate.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.domain.resumestate.constants.ResumeStateConstants;
 import com.achobeta.domain.resumestate.enums.ResumeEvent;
 import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import com.achobeta.domain.resumestate.machine.constants.ResumeStateMachineConstants;
