@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.achobeta.common.enums.GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL;
@@ -35,11 +36,10 @@ public class PasswordLoginStrategy implements LoginStrategy {
 
     @Override
     public LoginVO doLogin(LoginDTO body) {
-        if (LoginTypeEnum.PASSWORD.getMessage().equals(body.getLoginType()) && body.getPasswordParams() == null) {
-            String message = String.format("'%s'参数为空，原请求参数为:'%s'", body.getLoginType(), body);
-            throw new GlobalServiceException(message, SYSTEM_SERVICE_FAIL);
-        }
-        PasswordLoginDTO loginBody = body.getPasswordParams();
+        PasswordLoginDTO loginBody = Optional.ofNullable(body.getPasswordParams()).orElseThrow(() -> {
+            String message = String.format("'%s'参数为空，原请求参数为:'%s'", LoginTypeEnum.PASSWORD, body);
+            return new GlobalServiceException(message, SYSTEM_SERVICE_FAIL);
+        });
 
         String username = loginBody.getUsername();
         String password = loginBody.getPassword();

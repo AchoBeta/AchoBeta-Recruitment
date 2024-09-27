@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.achobeta.common.enums.GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL;
@@ -38,11 +39,10 @@ public class EmailLoginStrategy implements LoginStrategy {
 
     @Override
     public LoginVO doLogin(LoginDTO body) {
-        if (LoginTypeEnum.EMAIL.getMessage().equals(body.getLoginType()) && body.getEmailParams() == null) {
-            String message = String.format("'%s'参数为空，原请求参数为:'%s'", body.getLoginType(), body);
-            throw new GlobalServiceException(message, SYSTEM_SERVICE_FAIL);
-        }
-        EmailLoginDTO loginBody = body.getEmailParams();
+        EmailLoginDTO loginBody = Optional.ofNullable(body.getEmailParams()).orElseThrow(() -> {
+            String message = String.format("'%s'参数为空，原请求参数为:'%s'", LoginTypeEnum.EMAIL, body);
+            return new GlobalServiceException(message, SYSTEM_SERVICE_FAIL);
+        });
 
         String email = loginBody.getEmail();
         String emailCode = loginBody.getEmailCode();
