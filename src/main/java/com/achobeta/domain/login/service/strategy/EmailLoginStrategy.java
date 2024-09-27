@@ -12,7 +12,6 @@ import com.achobeta.domain.login.model.vo.LoginVO;
 import com.achobeta.domain.login.service.LoginService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.cache.RedisCache;
-import com.achobeta.util.ValidatorUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +54,7 @@ public class EmailLoginStrategy implements LoginStrategy {
         loginService.checkLogin(LoginTypeEnum.EMAIL, user.getUsername(),
                 () -> !validateEmailCode(email, emailCode));
 
-        // TODO 自定义分配，不同用户有不同 token 授权时间，不设置默认走全局
+//  TODO 自定义分配，不同用户有不同 token 授权时间，不设置默认走全局
 //        LoginModel loginModel = new LoginModel();
 //        loginModel.setTimeout();
 

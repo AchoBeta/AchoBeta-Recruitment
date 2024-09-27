@@ -9,7 +9,6 @@ import com.achobeta.domain.question.model.dto.QuestionQueryDTO;
 import com.achobeta.domain.question.model.vo.QuestionDetailVO;
 import com.achobeta.domain.question.model.vo.QuestionQueryVO;
 import com.achobeta.domain.question.service.QuestionService;
-import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
