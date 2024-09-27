@@ -3,7 +3,6 @@ package com.achobeta.domain.resumestate.controller;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
-import com.achobeta.domain.resumestate.constants.ResumeStateConstants;
 import com.achobeta.domain.resumestate.enums.ResumeEvent;
 import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import com.achobeta.domain.resumestate.machine.context.ResumeContext;
