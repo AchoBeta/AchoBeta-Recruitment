@@ -22,9 +22,11 @@ public class ResourceCodeConfig {
 
     private Long datacenterId;
 
+    private Integer length;
+
     @Bean
     public SnowflakeIdGenerator resourceCodeGenerator() {
-        return new SnowflakeIdGenerator(workerId, datacenterId);
+        return new SnowflakeIdGenerator(workerId, datacenterId, length);
     }
 
 }

@@ -13,8 +13,6 @@ public class ShortLinkUtils {
 
     private static final int LINK_LENGTH = 6;
 
-    public static final String REDIS_SHORT_LINK = "redisShortLink:";//前缀
-
     public static final int FETCH_RADIX = 16;
 
     public static final int MODULES = CHARSET.length();

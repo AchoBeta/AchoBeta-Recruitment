@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  */
 public interface ShortLinkConstants {
 
-    String REDIS_SHORT_LINK = "redisShortLink:";//前缀
+    String REDIS_SHORT_LINK = "redisShortLink:";// 前缀
 
     Long SHORT_LINK_TIMEOUT = 7L; // 超时时间 (默认七天)
 

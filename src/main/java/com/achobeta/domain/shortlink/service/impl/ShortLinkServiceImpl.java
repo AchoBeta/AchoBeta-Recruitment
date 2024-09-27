@@ -24,8 +24,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static com.achobeta.domain.shortlink.constants.ShortLinkConstants.SHORT_LINK_TIMEOUT;
-import static com.achobeta.domain.shortlink.constants.ShortLinkConstants.SHORT_LINK_UNIT;
+import static com.achobeta.domain.shortlink.constants.ShortLinkConstants.*;
 
 /**
  * @author 马拉圈
@@ -65,7 +64,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         // 生成唯一的code
         do {
             code = ShortLinkUtils.getShortCodeByURL(code);
-            redisKey = ShortLinkConstants.REDIS_SHORT_LINK + code;
+            redisKey = REDIS_SHORT_LINK + code;
         } while (shortLinkBloomFilter.contains(redisKey));//误判为存在也无所谓，无非就是再重新生成一个
         // 保存
         ShortLink shortLink = new ShortLink();
@@ -82,7 +81,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
 
     @Override
     public String getOriginUrl(String code) {
-        String redisKey = ShortLinkUtils.REDIS_SHORT_LINK + code;
+        String redisKey = REDIS_SHORT_LINK + code;
         // 更新为已使用
         this.lambdaUpdate()
                 .eq(ShortLink::getShortCode, code)
@@ -124,7 +123,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .eq(ShortLink::getId, id)
                     .remove();
             // 删除缓存（哪怕出现并发问题，影响也不大，也就在缓存期间短链仍有效罢了）
-            redisCache.deleteObject(ShortLinkUtils.REDIS_SHORT_LINK + shortLink.getShortCode());
+            redisCache.deleteObject(REDIS_SHORT_LINK + shortLink.getShortCode());
         });
 
     }
