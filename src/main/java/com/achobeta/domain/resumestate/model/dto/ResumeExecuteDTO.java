@@ -1,6 +1,7 @@
 package com.achobeta.domain.resumestate.model.dto;
 
 import com.achobeta.domain.users.model.dto.MemberDTO;
+import jakarta.validation.Valid;
 import lombok.Data;
 
 /**
@@ -13,7 +14,7 @@ import lombok.Data;
 @Data
 public class ResumeExecuteDTO {
 
-//    @Valid
+    @Valid
 //    @NotNull(message = "成员信息不能为空")
     private MemberDTO memberDTO;
 

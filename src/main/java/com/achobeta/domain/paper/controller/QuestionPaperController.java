@@ -8,7 +8,7 @@ import com.achobeta.domain.paper.model.dto.PaperQueryDTO;
 import com.achobeta.domain.paper.model.dto.QuestionPaperDTO;
 import com.achobeta.domain.paper.model.vo.PaperQueryVO;
 import com.achobeta.domain.paper.service.QuestionPaperService;
-import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +35,7 @@ public class QuestionPaperController {
     private final RemovePaperHandlerChain removePaperHandlerChain;
 
     @PostMapping("/add")
-    public SystemJsonResponse addQuestionPaper(@RequestBody QuestionPaperDTO questionPaperDTO) {
-        // 检查
-        ValidatorUtils.validate(questionPaperDTO);
+    public SystemJsonResponse addQuestionPaper(@Valid @RequestBody QuestionPaperDTO questionPaperDTO) {
         // 添加
         Long paperId = questionPaperService.addQuestionPaper(questionPaperDTO.getLibIds(), questionPaperDTO.getTitle(), questionPaperDTO.getDescription());
         return SystemJsonResponse.SYSTEM_SUCCESS(paperId);
@@ -45,9 +43,8 @@ public class QuestionPaperController {
 
     @PostMapping("/update/{paperId}")
     public SystemJsonResponse renamePaperTitle(@PathVariable("paperId") @NotNull Long paperId,
-                                               @RequestBody QuestionPaperDTO questionPaperDTO){
+                                               @Valid @RequestBody QuestionPaperDTO questionPaperDTO){
         // 检查
-        ValidatorUtils.validate(questionPaperDTO);
         questionPaperService.checkPaperExists(paperId);
         // 重命名
         questionPaperService.updateQuestionPaper(paperId, questionPaperDTO.getLibIds(),
@@ -67,7 +64,7 @@ public class QuestionPaperController {
     }
 
     @PostMapping("/query")
-    public SystemJsonResponse queryPapers(@RequestBody(required = false) PaperQueryDTO paperQueryDTO) {
+    public SystemJsonResponse queryPapers(@Valid @RequestBody(required = false) PaperQueryDTO paperQueryDTO) {
         // 查询
         PaperQueryVO result = questionPaperService.queryPapers(paperQueryDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS(result);

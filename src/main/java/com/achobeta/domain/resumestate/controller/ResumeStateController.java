@@ -16,6 +16,7 @@ import com.achobeta.domain.resumestate.service.ResumeStateService;
 import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.service.StuResumeService;
 import com.achobeta.domain.users.context.BaseContext;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +47,7 @@ public class ResumeStateController {
     @PostMapping("/execute/{resumeId}")
     public SystemJsonResponse executeEvent(@PathVariable("resumeId") @NotNull Long resumeId,
                                            @RequestParam("event") @NotNull Integer event,
-                                           @RequestBody(required = false) ResumeExecuteDTO resumeExecuteDTO) {
+                                           @Valid @RequestBody(required = false) ResumeExecuteDTO resumeExecuteDTO) {
         // 检查
         StuResume currentResume = stuResumeService.checkAndGetResume(resumeId);
         ResumeEvent resumeEvent = ResumeEvent.get(event);

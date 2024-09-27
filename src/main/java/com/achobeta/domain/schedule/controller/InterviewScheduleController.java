@@ -14,7 +14,7 @@ import com.achobeta.domain.schedule.model.vo.UserSituationVO;
 import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.domain.users.context.BaseContext;
-import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,9 +47,8 @@ public class InterviewScheduleController {
     private final RecruitmentActivityService recruitmentActivityService;
 
     @PostMapping("/create")
-    public SystemJsonResponse createInterviewSchedule(@RequestBody ScheduleDTO scheduleDTO) {
+    public SystemJsonResponse createInterviewSchedule(@Valid @RequestBody ScheduleDTO scheduleDTO) {
         // 校验
-        ValidatorUtils.validate(scheduleDTO);
         Long managerId = BaseContext.getCurrentUser().getUserId();
         Long participationId = scheduleDTO.getParticipationId();
         activityParticipationService.checkParticipationExists(participationId);
@@ -71,9 +70,8 @@ public class InterviewScheduleController {
     }
 
     @PostMapping("/update")
-    public SystemJsonResponse updateInterviewSchedule(@RequestBody ScheduleUpdateDTO scheduleUpdateDTO) {
+    public SystemJsonResponse updateInterviewSchedule(@Valid @RequestBody ScheduleUpdateDTO scheduleUpdateDTO) {
         // 检测
-        ValidatorUtils.validate(scheduleUpdateDTO);
         Long managerId = BaseContext.getCurrentUser().getUserId();
         Long scheduleId = scheduleUpdateDTO.getScheduleId();
         interviewScheduleService.checkInterviewScheduleExists(scheduleId);

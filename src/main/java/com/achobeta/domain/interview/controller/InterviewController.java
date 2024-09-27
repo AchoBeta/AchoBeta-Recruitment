@@ -22,6 +22,7 @@ import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -60,9 +61,7 @@ public class InterviewController {
     private final ResourceService resourceService;
 
     @PostMapping("/create")
-    public SystemJsonResponse createInterview(@RequestBody InterviewCreateDTO interviewCreateDTO) {
-        // 检查
-        ValidatorUtils.validate(interviewCreateDTO);
+    public SystemJsonResponse createInterview(@Valid @RequestBody InterviewCreateDTO interviewCreateDTO) {
         // 获取当前管理员 id
         Long managerId = BaseContext.getCurrentUser().getUserId();
         interviewScheduleService.checkInterviewScheduleExists(interviewCreateDTO.getScheduleId());
@@ -72,9 +71,7 @@ public class InterviewController {
     }
 
     @PostMapping("/update")
-    public SystemJsonResponse updateInterview(@RequestBody InterviewUpdateDTO interviewUpdateDTO) {
-        // 检查
-        ValidatorUtils.validate(interviewUpdateDTO);
+    public SystemJsonResponse updateInterview(@Valid @RequestBody InterviewUpdateDTO interviewUpdateDTO) {
         // 未开始才能修改
         interviewService.checkInterviewStatus(interviewUpdateDTO.getInterviewId(), List.of(NOT_STARTED, ENDED));
         // 更新
@@ -113,7 +110,7 @@ public class InterviewController {
     @PostMapping("/execute/{interviewId}")
     public SystemJsonResponse executeInterviewStateEvent(@PathVariable("interviewId") @NotNull Long interviewId,
                                                          @RequestParam("event") @NotNull Integer event,
-                                                         @RequestBody(required = false) InterviewExecuteDTO interviewExecuteDTO) {
+                                                         @Valid @RequestBody(required = false) InterviewExecuteDTO interviewExecuteDTO) {
         // 检查
         Interview currentInterview = interviewService.checkAndGetInterviewExists(interviewId);
         InterviewEvent interviewEvent = InterviewEvent.get(event);
@@ -131,9 +128,8 @@ public class InterviewController {
     }
 
     @PostMapping("/set/paper")
-    public SystemJsonResponse setPaperForInterview(@RequestBody InterviewPaperDTO interviewPaperDTO) {
+    public SystemJsonResponse setPaperForInterview(@Valid @RequestBody InterviewPaperDTO interviewPaperDTO) {
         // 检查
-        ValidatorUtils.validate(interviewPaperDTO);
         Long interviewId = interviewPaperDTO.getInterviewId();
         Interview interview = interviewService.checkAndGetInterviewExists(interviewId);
         // 检查面试是否未开始
@@ -149,7 +145,7 @@ public class InterviewController {
     }
 
     @PostMapping("/list/manager/all")
-    public SystemJsonResponse managerGetAllInterviewList(@RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
+    public SystemJsonResponse managerGetAllInterviewList(@Valid @RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 查询
         List<InterviewVO> interviewVOList = interviewService.managerGetInterviewList(null, InterviewConditionDTO.of(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewVOList);
@@ -158,7 +154,7 @@ public class InterviewController {
     @PostMapping("/print/all")
     public SystemJsonResponse printAllInterviewList(HttpServletRequest request,
                                                     @RequestParam(name = "level", required = false) Integer level,
-                                                    @RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
+                                                    @Valid @RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 获取当前管理员 id
         Long managerId = BaseContext.getCurrentUser().getUserId();
         ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(InterviewConstants.DEFAULT_EXCEL_ACCESS_LEVEL);
@@ -169,7 +165,7 @@ public class InterviewController {
     }
 
     @PostMapping("/list/manager/own")
-    public SystemJsonResponse managerGetOwnInterviewList(@RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
+    public SystemJsonResponse managerGetOwnInterviewList(@Valid @RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 获取当前管理员 id
         Long managerId = BaseContext.getCurrentUser().getUserId();
         // 查询
@@ -179,7 +175,7 @@ public class InterviewController {
 
     @PostMapping("/list/user")
     @Intercept(permit = {UserTypeEnum.USER})
-    public SystemJsonResponse userGetOwnInterviewList(@RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
+    public SystemJsonResponse userGetOwnInterviewList(@Valid @RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 获取当前用户 id
         Long userId = BaseContext.getCurrentUser().getUserId();
         // 查询

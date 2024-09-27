@@ -71,11 +71,10 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     @Transactional
     public void submitResume(StuResumeDTO stuResumeDTO, Long userId) {
 
-        // 使用锁防止确保唯一性
+        // 使用锁确保唯一性
         redisLock.tryLockDoSomething(StuResumeConstants.RESUME_SUBMIT_LOCK + userId, () -> {
             //检查简历提交否超过最大次数
-            StuResume stuResume = checkResumeSubmitCount(stuResumeDTO.getStuSimpleResumeDTO(),userId);
-            stuResume.setUserId(userId);
+            StuResume stuResume = checkResumeSubmitCount(stuResumeDTO.getStuSimpleResumeDTO(), userId);
 
             //简历表信息
             StuSimpleResumeDTO resumeDTO = stuResumeDTO.getStuSimpleResumeDTO();
@@ -210,7 +209,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         }
 
         if (!CollectionUtils.isEmpty(oldAttachmentHash)) {
-             // 这些都是最新的附件里面没有的，挨个枪毙（删除必然只能删除自己的）
+            // 这些都是最新的附件里面没有的，挨个枪毙（删除必然只能删除自己的）
             oldAttachmentHash.forEach(resourceService::removeKindly);
         }
 
@@ -219,12 +218,13 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     @Override
     public StuResume checkResumeSubmitCount(StuSimpleResumeDTO resumeDTO, Long userId) {
 
-        StuResume stuResume = getStuResume(resumeDTO.getBatchId(), Long.valueOf(userId)).orElse(new StuResume());
+        StuResume stuResume = getStuResume(resumeDTO.getBatchId(), userId).orElseGet(StuResume::new);
         Integer maxSubmitCount = StuResumeConstants.MAX_SUBMIT_COUNT;
         if (stuResume.getId() != null && maxSubmitCount.compareTo(stuResume.getSubmitCount()) <= 0) {
             String message = "提交失败，简历最大提交次数为" + maxSubmitCount;
             throw new GlobalServiceException(message, GlobalServiceStatusCode.USER_RESUME_SUBMIT_OVER_COUNT);
         }
+        stuResume.setUserId(userId);
         return stuResume;
     }
 }

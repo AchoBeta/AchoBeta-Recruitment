@@ -69,7 +69,7 @@ public class InterviewQuestionScoreServiceImpl extends ServiceImpl<InterviewQues
     public List<InterviewQuestionAverageVO> getAverageQuestions(List<Long> questionIds) {
         return Optional.ofNullable(questionIds)
                 .map(ids -> interviewQuestionScoreMapper.getAverageQuestions(questionIds))
-                .orElse(new ArrayList<>());
+                .orElseGet(ArrayList::new);
     }
 
     @Override

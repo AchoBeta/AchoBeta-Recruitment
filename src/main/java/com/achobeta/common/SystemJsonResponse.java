@@ -104,6 +104,6 @@ public class SystemJsonResponse extends LinkedHashMap<String, Object> implements
      * @return code对应的错误信息
      */
     public static SystemJsonResponse CUSTOMIZE_MSG_ERROR(GlobalServiceStatusCode code, String msg) {
-        return new SystemJsonResponse(code.getCode(), Optional.ofNullable(msg).orElse(code.getMessage()));
+        return new SystemJsonResponse(code.getCode(), Optional.ofNullable(msg).orElseGet(code::getMessage));
     }
 }

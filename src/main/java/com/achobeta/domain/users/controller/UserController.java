@@ -10,7 +10,7 @@ import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.domain.users.model.vo.UserTypeVO;
 import com.achobeta.domain.users.model.vo.UserVO;
 import com.achobeta.domain.users.service.UserService;
-import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -53,9 +53,7 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public SystemJsonResponse updateCurrentInfo(@RequestBody UserDTO userDTO) {
-        // 检测
-        ValidatorUtils.validate(userDTO);
+    public SystemJsonResponse updateCurrentInfo(@Valid @RequestBody UserDTO userDTO) {
         UserHelper currentUser = BaseContext.getCurrentUser();
         // 更新
         userService.updateUser(currentUser.getUserId(), userDTO);

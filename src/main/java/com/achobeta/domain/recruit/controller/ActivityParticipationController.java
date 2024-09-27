@@ -11,7 +11,7 @@ import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,9 +60,7 @@ public class ActivityParticipationController {
      * @return
      */
     @PostMapping("/submit")
-    public SystemJsonResponse userParticipateInActivity(@RequestBody ActivityParticipationDTO activityParticipationDTO) {
-        // 检测
-        ValidatorUtils.validate(activityParticipationDTO);
+    public SystemJsonResponse userParticipateInActivity(@Valid @RequestBody ActivityParticipationDTO activityParticipationDTO) {
         // 当前用户
         Long stuId = BaseContext.getCurrentUser().getUserId();
         Long participationId = activityParticipationDTO.getParticipationId();

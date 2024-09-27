@@ -1,6 +1,7 @@
 package com.achobeta.domain.login.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,18 +33,21 @@ public class LoginDTO implements Serializable {
      * 邮箱登录
      */
     @JsonProperty("email_params")
+    @Valid
     private EmailLoginDTO emailParams;
 
     /**
      * 密码登录
      */
     @JsonProperty("password_params")
+    @Valid
     private PasswordLoginDTO passwordParams;
 
     /**
      * 短信登录
      */
     @JsonProperty("sms_params")
+    @Valid
     private SmsLoginDTO smsParams;
 
 }

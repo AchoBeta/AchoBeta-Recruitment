@@ -44,7 +44,6 @@ public class EmailLoginStrategy implements LoginStrategy {
             throw new GlobalServiceException(message, SYSTEM_SERVICE_FAIL);
         }
         EmailLoginDTO loginBody = body.getEmailParams();
-        ValidatorUtils.validate(loginBody);
 
         String email = loginBody.getEmail();
         String emailCode = loginBody.getEmailCode();
@@ -56,8 +55,7 @@ public class EmailLoginStrategy implements LoginStrategy {
         loginService.checkLogin(LoginTypeEnum.EMAIL, user.getUsername(),
                 () -> !validateEmailCode(email, emailCode));
 
-        // TODO
-//        // 自定义分配，不同用户有不同 token 授权时间，不设置默认走全局
+        // TODO 自定义分配，不同用户有不同 token 授权时间，不设置默认走全局
 //        LoginModel loginModel = new LoginModel();
 //        loginModel.setTimeout();
 

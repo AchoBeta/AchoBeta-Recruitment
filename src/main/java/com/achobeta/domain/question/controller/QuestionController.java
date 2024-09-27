@@ -10,6 +10,7 @@ import com.achobeta.domain.question.model.vo.QuestionDetailVO;
 import com.achobeta.domain.question.model.vo.QuestionQueryVO;
 import com.achobeta.domain.question.service.QuestionService;
 import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,9 +37,7 @@ public class QuestionController {
     private final RemoveQuestionHandlerChain removeQuestionHandlerChain;
 
     @PostMapping("/add")
-    public SystemJsonResponse addQuestion(@RequestBody QuestionDTO questionDTO) {
-        // 检查
-        ValidatorUtils.validate(questionDTO);
+    public SystemJsonResponse addQuestion(@Valid @RequestBody QuestionDTO questionDTO) {
         // 添加
         Long questionId = questionService.addQuestion(questionDTO.getLibIds(), questionDTO.getTitle(), questionDTO.getStandard());
         return SystemJsonResponse.SYSTEM_SUCCESS(questionId);
@@ -46,9 +45,8 @@ public class QuestionController {
 
     @PostMapping("/update/{questionId}")
     public SystemJsonResponse updateQuestion(@PathVariable("questionId") @NotNull Long questionId,
-                                             @RequestBody QuestionDTO questionDTO){
+                                             @Valid @RequestBody QuestionDTO questionDTO){
         // 检查
-        ValidatorUtils.validate(questionDTO);
         questionService.checkQuestionExists(questionId);
         // 更新
         questionService.updateQuestion(questionId, questionDTO.getLibIds(),
@@ -68,7 +66,7 @@ public class QuestionController {
     }
 
     @PostMapping("/query")
-    public SystemJsonResponse queryQuestions(@RequestBody(required = false) QuestionQueryDTO questionQueryDTO) {
+    public SystemJsonResponse queryQuestions(@Valid @RequestBody(required = false) QuestionQueryDTO questionQueryDTO) {
         // 查询
         QuestionQueryVO result = questionService.queryQuestions(questionQueryDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS(result);

@@ -9,6 +9,7 @@ import com.achobeta.domain.shortlink.model.vo.ShortLinkQueryVO;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
 import com.achobeta.util.HttpServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +61,7 @@ public class ShortLinkController {
     }
 
     @PostMapping("/query")
-    public SystemJsonResponse queryShortLinkList(@RequestBody(required = false) ShortLinkQueryDTO shortLinkQueryDTO) {
+    public SystemJsonResponse queryShortLinkList(@Valid @RequestBody(required = false) ShortLinkQueryDTO shortLinkQueryDTO) {
         ShortLinkQueryVO shortLinkQueryVO = shortLinkService.queryShortLinkList(shortLinkQueryDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS(shortLinkQueryVO);
     }

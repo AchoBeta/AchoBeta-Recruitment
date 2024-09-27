@@ -21,6 +21,6 @@ public class InterviewConditionDTO {
     private Long actId;
 
     public static InterviewConditionDTO of(InterviewConditionDTO interviewConditionDTO) {
-        return Optional.ofNullable(interviewConditionDTO).orElse(new InterviewConditionDTO());
+        return Optional.ofNullable(interviewConditionDTO).orElseGet(InterviewConditionDTO::new);
     }
 }

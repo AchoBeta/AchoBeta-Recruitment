@@ -19,7 +19,7 @@ import com.achobeta.domain.recruit.service.RecruitmentBatchService;
 import com.achobeta.domain.recruit.service.TimePeriodService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.model.po.UserHelper;
-import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,9 +51,8 @@ public class RecruitmentActivityController {
     private final RecruitmentActivityService recruitmentActivityService;
 
     @PostMapping("/create")
-    public SystemJsonResponse createRecruitmentActivity(@RequestBody RecruitmentActivityDTO recruitmentActivityDTO) {
+    public SystemJsonResponse createRecruitmentActivity(@Valid @RequestBody RecruitmentActivityDTO recruitmentActivityDTO) {
         // 检测
-        ValidatorUtils.validate(recruitmentActivityDTO);
         StudentGroup target = recruitmentActivityDTO.getTarget();
         Long batchId = recruitmentActivityDTO.getBatchId();
         recruitmentBatchService.checkAndGetRecruitmentBatchIsRun(batchId, Boolean.TRUE);
@@ -76,9 +75,7 @@ public class RecruitmentActivityController {
     }
 
     @PostMapping("/update")
-    public SystemJsonResponse updateRecruitmentActivity(@RequestBody RecruitmentActivityUpdateDTO recruitmentActivityUpdateDTO) {
-        // 检测
-        ValidatorUtils.validate(recruitmentActivityUpdateDTO);
+    public SystemJsonResponse updateRecruitmentActivity(@Valid @RequestBody RecruitmentActivityUpdateDTO recruitmentActivityUpdateDTO) {
         //更新
         recruitmentActivityService.updateRecruitmentActivity(
                 recruitmentActivityUpdateDTO.getActId(),
@@ -91,9 +88,7 @@ public class RecruitmentActivityController {
     }
 
     @PostMapping("/set/paper")
-    public SystemJsonResponse setRecruitmentQuestionPaper(@RequestBody ActivityPaperDTO activityPaperDTO) {
-        // 检查
-        ValidatorUtils.validate(activityPaperDTO);
+    public SystemJsonResponse setRecruitmentQuestionPaper(@Valid @RequestBody ActivityPaperDTO activityPaperDTO) {
         // 设置
         recruitmentActivityService.setPaperForActivity(
                 activityPaperDTO.getActId(),
@@ -103,9 +98,7 @@ public class RecruitmentActivityController {
     }
 
     @PostMapping("/period/add")
-    public SystemJsonResponse addTimePeriod(@RequestBody TimePeriodDTO timePeriodDTO) {
-        // 校验
-        ValidatorUtils.validate(timePeriodDTO);
+    public SystemJsonResponse addTimePeriod(@Valid @RequestBody TimePeriodDTO timePeriodDTO) {
         // 添加
         timePeriodService.setPeriodForActivity(
                 timePeriodDTO.getActId(),

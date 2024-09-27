@@ -9,14 +9,12 @@ import com.achobeta.domain.student.model.dto.StuResumeDTO;
 import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.achobeta.domain.student.service.StuResumeService;
 import com.achobeta.domain.users.context.BaseContext;
-import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 /**
  * Created With Intellij IDEA
@@ -41,15 +39,11 @@ public class StuResumeController {
      */
     @PostMapping("/submit")
     @Intercept(permit = {UserTypeEnum.USER})
-    public SystemJsonResponse submitResume(@RequestBody StuResumeDTO stuResumeDTO) {
-        //校验
-        ValidatorUtils.validate(stuResumeDTO);
+    public SystemJsonResponse submitResume(@Valid @RequestBody StuResumeDTO stuResumeDTO) {
         //当前用户id
         Long userId = BaseContext.getCurrentUser().getUserId();
-
         //提交简历
         stuResumeService.submitResume(stuResumeDTO, userId);
-
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
@@ -60,16 +54,11 @@ public class StuResumeController {
      */
     @PostMapping("/query")
     @Intercept(permit = {UserTypeEnum.ADMIN})
-    public SystemJsonResponse queryResumeInfo(@RequestBody QueryResumeDTO queryResumeDTO) {
-        //校验
-        Optional.ofNullable(queryResumeDTO.getQueryResumeOfUserDTO())
-                .ifPresent(data->ValidatorUtils.validate(data));
+    public SystemJsonResponse queryResumeInfo(@Valid @RequestBody QueryResumeDTO queryResumeDTO) {
         //获取简历信息
         StuResumeVO stuResumeVO= stuResumeService.getResumeInfo(queryResumeDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS(stuResumeVO);
     }
-
-    // todo: 资源上传的接口，最好限制上传的文件格式以及文件大小，并且检查真实的文件内容与文件后缀是否符合（可以用责任链审核）
 
     @GetMapping("/query/{batchId}")
     @Intercept(permit = {UserTypeEnum.USER})

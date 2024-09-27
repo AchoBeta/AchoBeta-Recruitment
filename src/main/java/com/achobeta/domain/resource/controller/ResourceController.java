@@ -18,6 +18,7 @@ import com.achobeta.util.MediaUtil;
 import com.achobeta.util.ResourceUtil;
 import com.achobeta.util.TimeUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +71,7 @@ public class ResourceController {
 
     @PostMapping("/query")
     @Intercept(permit = {UserTypeEnum.ADMIN})
-    public SystemJsonResponse getResourceList(@RequestBody(required = false) ResourceQueryDTO resourceQueryDTO) {
+    public SystemJsonResponse getResourceList(@Valid @RequestBody(required = false) ResourceQueryDTO resourceQueryDTO) {
         ResourceQueryVO resourceQueryVO = digitalResourceService.queryResources(resourceQueryDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS(resourceQueryVO);
     }

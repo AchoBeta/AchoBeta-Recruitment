@@ -10,7 +10,7 @@ import com.achobeta.domain.recruit.model.entity.RecruitmentBatch;
 import com.achobeta.domain.recruit.model.vo.RecruitmentBatchVO;
 import com.achobeta.domain.recruit.service.RecruitmentBatchService;
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
-import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +38,7 @@ public class RecruitmentBatchController {
     private final RecruitmentBatchService recruitmentBatchService;
 
     @PostMapping("/create")
-    public SystemJsonResponse createRecruitmentBatch(@RequestBody RecruitmentBatchDTO recruitmentBatchDTO) {
-        // 检测
-        ValidatorUtils.validate(recruitmentBatchDTO);
+    public SystemJsonResponse createRecruitmentBatch(@Valid @RequestBody RecruitmentBatchDTO recruitmentBatchDTO) {
         // 调用服务创建一次招新活动
         Integer batch = recruitmentBatchDTO.getBatch();
         String title = recruitmentBatchDTO.getTitle();
@@ -50,9 +48,8 @@ public class RecruitmentBatchController {
     }
 
     @PostMapping("/update")
-    public SystemJsonResponse updateRecruitmentBatch(@RequestBody RecruitmentBatchUpdateDTO recruitmentBatchUpdateDTO) {
+    public SystemJsonResponse updateRecruitmentBatch(@Valid @RequestBody RecruitmentBatchUpdateDTO recruitmentBatchUpdateDTO) {
         // 检测
-        ValidatorUtils.validate(recruitmentBatchUpdateDTO);
         Long batchId = recruitmentBatchUpdateDTO.getBatchId();
         recruitmentBatchService.checkAndGetRecruitmentBatchIsRun(batchId, Boolean.FALSE);
         String title = recruitmentBatchUpdateDTO.getTitle();
@@ -85,7 +82,7 @@ public class RecruitmentBatchController {
 
     @GetMapping("/shift/{batchId}")
     public SystemJsonResponse shiftRecruitmentBatch(@PathVariable("batchId") @NotNull Long batchId,
-                                               @RequestParam(name = "isRun") @NotNull Boolean isRun) {
+                                                    @RequestParam(name = "isRun") @NotNull Boolean isRun) {
         // 检测
         recruitmentBatchService.checkRecruitmentBatchExists(batchId);
         // 修改

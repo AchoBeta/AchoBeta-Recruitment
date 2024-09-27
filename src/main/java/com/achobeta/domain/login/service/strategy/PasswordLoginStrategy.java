@@ -41,7 +41,6 @@ public class PasswordLoginStrategy implements LoginStrategy {
             throw new GlobalServiceException(message, SYSTEM_SERVICE_FAIL);
         }
         PasswordLoginDTO loginBody = body.getPasswordParams();
-        ValidatorUtils.validate(loginBody);
 
         String username = loginBody.getUsername();
         String password = loginBody.getPassword();
