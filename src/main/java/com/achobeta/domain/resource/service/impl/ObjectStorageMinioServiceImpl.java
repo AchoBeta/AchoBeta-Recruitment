@@ -13,10 +13,15 @@ import com.achobeta.monio.template.DefaultPolicyTemplate;
 import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.template.engine.TextEngine;
 import com.achobeta.util.ResourceUtil;
+import com.achobeta.util.TimeUtil;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Date;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created With Intellij IDEA
@@ -47,19 +52,26 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService, Init
 
     @Override
     public String upload(Long userId, String originalName, byte[] bytes) {
+        // 查询是否被封禁
+        String blockKey = ResourceConstants.REDIS_USER_UPLOAD_BLOCK + userId;
+        redisCache.getCacheObject(blockKey).ifPresent(date -> {
+            String message = String.format("用户当前无法上传资源，将于 %s 解封，如有异议请联系管理员！", TimeUtil.getDateTime((long) date));
+            throw new GlobalServiceException(message, GlobalServiceStatusCode.RESOURCE_UPLOAD_BLOCKED);
+        });
+
+        String redisKey = ResourceConstants.REDIS_USER_UPLOAD_LIMIT + userId;
+        // 获得已上传的次数
+        Integer times = (Integer) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+            redisCache.setCacheObject(redisKey, 0, uploadLimitProperties.getCycle(), uploadLimitProperties.getUnit());
+            return 0;
+        });
+        // 判断次数是否达到上限
+        if(uploadLimitProperties.getFrequency().compareTo(times) <= 0) {
+            throw new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_UPLOAD_TOO_FREQUENT);
+        }
+        // 自增
+        redisCache.incrementCacheNumber(redisKey);
         try {
-            String redisKey = ResourceConstants.REDIS_USER_UPLOAD_LIMIT + userId;
-            // 获得已上传的次数
-            Integer times = (Integer) redisCache.getCacheObject(redisKey).orElseGet(() -> {
-                redisCache.setCacheObject(redisKey, 0, uploadLimitProperties.getCycle(), uploadLimitProperties.getUnit());
-                return 0;
-            });
-            // 判断次数是否达到上限
-            if(uploadLimitProperties.getFrequency().compareTo(times) <= 0) {
-                throw new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_UPLOAD_TOO_FREQUENT);
-            }
-            // 自增
-            redisCache.incrementCacheNumber(redisKey);
             // 上传
             return minioEngine.upload(originalName, bytes);
         } catch (Exception e) {
@@ -118,6 +130,18 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService, Init
             minioEngine.remove(fileName);
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_REMOVE_FAILED);
+        }
+    }
+
+    @Override
+    public void blockUser(Long userId, Long date) {
+        String blockKey = ResourceConstants.REDIS_USER_UPLOAD_BLOCK + userId;
+        long timeout = date - System.currentTimeMillis();
+        if(timeout > 0) {
+            redisCache.setCacheObject(blockKey, date, timeout, TimeUnit.MILLISECONDS);
+        } else {
+            // 设置为过去，则接触封禁
+            redisCache.deleteObject(blockKey);
         }
     }
 

@@ -1,13 +1,21 @@
 package com.achobeta.feishu.token;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.achobeta.common.enums.HttpRequestEnum;
+import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.feishu.config.FeishuAppConfig;
 import com.achobeta.feishu.util.FeishuRequestUtil;
+import com.achobeta.util.GsonUtil;
 import com.achobeta.util.TimeUtil;
+import com.lark.oapi.Client;
+import com.lark.oapi.service.auth.v3.model.InternalTenantAccessTokenReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 /**
@@ -20,6 +28,8 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class FeishuTenantAccessToken {
+
+    private final Client feishuClient;
 
     private final FeishuAppConfig feishuAppConfig;
 
@@ -40,6 +50,22 @@ public class FeishuTenantAccessToken {
     }
 
     private void refreshToken() {
+//        try {
+//            InternalTenantAccessTokenReq tenantAccessTokenReq = InternalTenantAccessTokenReq.newBuilder()
+//                    .internalTenantAccessTokenReqBody(feishuAppConfig.getToken())
+//                    .build();
+//            byte[] bytes = feishuClient.auth()
+//                    .tenantAccessToken()
+//                    .internal(tenantAccessTokenReq)
+//                    .getRawResponse()
+//                    .getBody();
+//            FeishuTenantTokenResponse responseBody = GsonUtil.fromBytes(bytes, FeishuTenantTokenResponse.class);
+//            FeishuRequestUtil.checkResponse(responseBody);
+//            this.tenantAccessToken = responseBody.getTenantAccessToken();
+//            this.expire = responseBody.getExpire();
+//        } catch (Exception e) {
+//            throw new GlobalServiceException(e.getMessage());
+//        }
         FeishuTenantTokenResponse responseBody = FeishuRequestUtil.request(
                 HttpRequestEnum.TENANT_ACCESS_TOKEN,
                 feishuAppConfig.getToken(),

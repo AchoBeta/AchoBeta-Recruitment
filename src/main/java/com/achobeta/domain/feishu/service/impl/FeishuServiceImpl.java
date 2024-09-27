@@ -3,18 +3,16 @@ package com.achobeta.domain.feishu.service.impl;
 import cn.hutool.core.util.ArrayUtil;
 import com.achobeta.common.enums.HttpRequestEnum;
 import com.achobeta.domain.feishu.service.FeishuService;
+import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.feishu.config.FeishuAppConfig;
 import com.achobeta.feishu.token.FeishuTenantAccessToken;
 import com.achobeta.feishu.util.FeishuRequestUtil;
 import com.achobeta.util.TimeUtil;
-import com.lark.oapi.service.contact.v3.model.BatchGetIdUserReqBody;
-import com.lark.oapi.service.contact.v3.model.BatchGetIdUserResp;
-import com.lark.oapi.service.contact.v3.model.BatchGetIdUserRespBody;
-import com.lark.oapi.service.contact.v3.model.UserContactInfo;
-import com.lark.oapi.service.vc.v1.model.ApplyReserveReqBody;
-import com.lark.oapi.service.vc.v1.model.ApplyReserveResp;
-import com.lark.oapi.service.vc.v1.model.ApplyReserveRespBody;
-import com.lark.oapi.service.vc.v1.model.ReserveMeetingSetting;
+import com.lark.oapi.Client;
+import com.lark.oapi.service.contact.v3.enums.BatchGetIdUserUserIdTypeEnum;
+import com.lark.oapi.service.contact.v3.model.*;
+import com.lark.oapi.service.vc.v1.enums.ApplyReserveUserIdTypeEnum;
+import com.lark.oapi.service.vc.v1.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
@@ -25,7 +23,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.achobeta.feishu.constants.FeishuConstants.*;
-import static com.lark.oapi.service.contact.v3.enums.BatchGetIdUserUserIdTypeEnum.USER_ID;
 import static com.lark.oapi.service.vc.v1.enums.ReserveMeetingSettingMeetingInitialTypeEnum.GROUP_MEETING;
 
 /**
@@ -38,6 +35,8 @@ import static com.lark.oapi.service.vc.v1.enums.ReserveMeetingSettingMeetingInit
 @Service
 @RequiredArgsConstructor
 public class FeishuServiceImpl implements FeishuService, InitializingBean {
+
+    private final Client feishuClient;
 
     private final FeishuAppConfig feishuAppConfig;
 
@@ -52,13 +51,26 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
     @Override
     public BatchGetIdUserRespBody batchGetUserId(BatchGetIdUserReqBody batchGetIdUserReqBody) {
+//        try {
+//            BatchGetIdUserReq batchGetIdUserReq = BatchGetIdUserReq.newBuilder()
+//                    .userIdType(BatchGetIdUserUserIdTypeEnum.USER_ID)
+//                    .batchGetIdUserReqBody(batchGetIdUserReqBody)
+//                    .build();
+//            BatchGetIdUserResp batchGetIdUserResp = feishuClient.contact()
+//                    .user()
+//                    .batchGetId(batchGetIdUserReq);
+//            FeishuRequestUtil.checkResponse(batchGetIdUserResp);
+//            return batchGetIdUserResp.getData();
+//        } catch (Exception e) {
+//            throw new GlobalServiceException(e.getMessage());
+//        }
         String token = feishuTenantAccessToken.getToken();
         return FeishuRequestUtil.request(
                 HttpRequestEnum.GET_USER_ID,
                 batchGetIdUserReqBody,
                 BatchGetIdUserResp.class,
                 Map.of(AUTHORIZATION_HEADER, getAuthorization(token)),
-                Map.of(USER_ID_TYPE_QUERY_KEY, List.of(USER_ID.getValue()))
+                Map.of(USER_ID_TYPE_QUERY_KEY, List.of(BatchGetIdUserUserIdTypeEnum.USER_ID.getValue()))
         ).getData();
     }
 
@@ -86,13 +98,26 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
     @Override
     public ApplyReserveRespBody reserveApply(ApplyReserveReqBody applyReserveReqBody) {
+//        try {
+//            ApplyReserveReq applyReserveReq = ApplyReserveReq.newBuilder()
+//                    .userIdType(ApplyReserveUserIdTypeEnum.USER_ID)
+//                    .applyReserveReqBody(applyReserveReqBody)
+//                    .build();
+//            ApplyReserveResp applyReserveResp = feishuClient.vc()
+//                    .reserve()
+//                    .apply(applyReserveReq);
+//            FeishuRequestUtil.checkResponse(applyReserveResp);
+//            return applyReserveResp.getData();
+//        } catch (Exception e) {
+//            throw new GlobalServiceException(e.getMessage());
+//        }
         String token = feishuTenantAccessToken.getToken();
         return FeishuRequestUtil.request(
                 HttpRequestEnum.RESERVE_APPLY,
                 applyReserveReqBody,
                 ApplyReserveResp.class,
                 Map.of(AUTHORIZATION_HEADER, getAuthorization(token)),
-                Map.of(USER_ID_TYPE_QUERY_KEY, List.of(USER_ID.getValue()))
+                Map.of(USER_ID_TYPE_QUERY_KEY, List.of(ApplyReserveUserIdTypeEnum.USER_ID.getValue()))
         ).getData();
     }
 

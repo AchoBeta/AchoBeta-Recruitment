@@ -30,15 +30,6 @@ public class HttpRequestUtil {
 
     public final static Map<String, String> JSON_CONTENT_TYPE_HEADER = Map.of("CONTENT_TYPE", "application/json; charset=utf-8");
 
-    private static final Gson GSON;
-
-    static {
-        GSON = new GsonBuilder()
-//                .setPrettyPrinting() // 美化 json
-                .disableHtmlEscaping() // 取消对 html 代码的转义（可能的场景是需要保存 html 代码的字段）
-                .create();
-    }
-
     private static final Pattern HTTP_URL_PATTERN = Pattern.compile("^(?i)(http|https):(//(([^@\\[/?#]*)@)?(\\[[\\p{XDigit}:.]*[%\\p{Alnum}]*]|[^\\[/?#:]*)(:(\\{[^}]+\\}?|[^/?#]*))?)?([^?#]*)(\\?([^#]*))?(#(.*))?");
 
     public static boolean isHttpUrl(String url) {
@@ -84,7 +75,7 @@ public class HttpRequestUtil {
         // 准备参数
         Method requestMethod = Method.valueOf(method.toUpperCase());
         headers = Optional.ofNullable(headers).orElseGet(Map::of);
-        String reqJson = GSON.toJson(requestBody);
+        String reqJson = GsonUtil.toJson(requestBody);
         // 发出请求
         String respJson = HttpUtil.createRequest(requestMethod, url)
                 .headerMap(headers, Boolean.TRUE)
@@ -93,7 +84,7 @@ public class HttpRequestUtil {
                 .execute()
                 .body();
         // 转换并返回
-        return GSON.fromJson(respJson, responseClazz);
+        return GsonUtil.fromJson(respJson, responseClazz);
     }
 
     public static <R, T> R jsonRequest(HttpRequestEnum requestEnum, T requestBody, Class<R> responseClazz, Map<String, String> headers) {

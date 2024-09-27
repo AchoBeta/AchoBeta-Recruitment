@@ -1,6 +1,7 @@
 package com.achobeta.domain.resource.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.resource.access.strategy.ResourceAccessStrategy;
 import com.achobeta.domain.resource.enums.ExcelTemplateEnum;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
@@ -9,6 +10,7 @@ import com.achobeta.domain.resource.model.entity.DigitalResource;
 import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.domain.resource.service.ResourceService;
+import com.achobeta.domain.users.service.UserService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.util.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,7 +44,6 @@ public class ResourceServiceImpl implements ResourceService {
     private final DigitalResourceService digitalResourceService;
 
     private final ObjectStorageService objectStorageService;
-
     @Override
     public DigitalResource checkAndGetResource(Long code, ResourceAccessLevel level) {
         DigitalResource resource = digitalResourceService.getResourceByCode(code);
@@ -185,5 +186,10 @@ public class ResourceServiceImpl implements ResourceService {
         } catch (GlobalServiceException e) {
             log.warn("尝试删除 code： {}，失败：{} {}", code, e.getStatusCode(), e.getMessage());
         }
+    }
+
+    @Override
+    public void blockUser(Long userId, Long date) {
+        objectStorageService.blockUser(userId, date);
     }
 }

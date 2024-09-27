@@ -56,4 +56,5 @@ public interface ResourceService {
      */
     void removeKindly(Long code);
 
+    void blockUser(Long userId, Long date);
 }

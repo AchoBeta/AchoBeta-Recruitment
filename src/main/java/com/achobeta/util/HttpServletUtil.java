@@ -9,6 +9,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,7 +44,7 @@ public class HttpServletUtil {
                 // 设置响应内容类型（用同一个 inputStream 会互相影响）
                 response.setContentType(MediaUtil.getContentType(bytes));
                 // 指定字符集
-                response.setCharacterEncoding("utf-8");
+                response.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
                 outputStream.write(bytes);
                 outputStream.flush();
             }
