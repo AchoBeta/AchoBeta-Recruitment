@@ -3,8 +3,6 @@ package com.achobeta.util;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
 import com.achobeta.common.enums.HttpRequestEnum;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.StringUtils;

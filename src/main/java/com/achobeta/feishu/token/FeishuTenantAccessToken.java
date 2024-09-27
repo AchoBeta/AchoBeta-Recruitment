@@ -1,21 +1,14 @@
 package com.achobeta.feishu.token;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import com.achobeta.common.enums.HttpRequestEnum;
-import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.feishu.config.FeishuAppConfig;
 import com.achobeta.feishu.util.FeishuRequestUtil;
-import com.achobeta.util.GsonUtil;
 import com.achobeta.util.TimeUtil;
 import com.lark.oapi.Client;
-import com.lark.oapi.service.auth.v3.model.InternalTenantAccessTokenReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 /**

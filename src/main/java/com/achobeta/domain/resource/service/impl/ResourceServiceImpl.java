@@ -1,7 +1,6 @@
 package com.achobeta.domain.resource.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.resource.access.strategy.ResourceAccessStrategy;
 import com.achobeta.domain.resource.enums.ExcelTemplateEnum;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
@@ -10,7 +9,6 @@ import com.achobeta.domain.resource.model.entity.DigitalResource;
 import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.domain.resource.service.ResourceService;
-import com.achobeta.domain.users.service.UserService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.util.*;
 import jakarta.servlet.http.HttpServletRequest;
