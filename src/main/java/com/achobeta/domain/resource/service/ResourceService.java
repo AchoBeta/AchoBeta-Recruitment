@@ -36,11 +36,11 @@ public interface ResourceService {
 
     String gerObjectUrl(Long code, Boolean hidden);
 
-    Long upload(Long userId, MultipartFile file);
+    Long upload(Long userId, String originalName, byte[] data, ResourceAccessLevel level);
 
     Long upload(Long userId, MultipartFile file, ResourceAccessLevel level);
 
-    Long upload(Long userId, String originalName, byte[] data, ResourceAccessLevel level);
+    Long upload(Long userId, MultipartFile file);
 
     <T, E> Long uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<T> clazz, List<E> data, ResourceAccessLevel level);
 
@@ -56,5 +56,7 @@ public interface ResourceService {
      */
     void removeKindly(Long code);
 
-    void blockUser(Long userId, Long date);
+    void checkBlockUser(Long userId);
+
+    void blockUser(Long userId, Long blockDDL);
 }

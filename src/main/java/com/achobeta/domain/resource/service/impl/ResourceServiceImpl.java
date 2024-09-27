@@ -2,6 +2,8 @@ package com.achobeta.domain.resource.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.resource.access.strategy.ResourceAccessStrategy;
+import com.achobeta.domain.resource.config.UploadLimitProperties;
+import com.achobeta.domain.resource.constants.ResourceConstants;
 import com.achobeta.domain.resource.enums.ExcelTemplateEnum;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.factory.AccessStrategyFactory;
@@ -10,6 +12,7 @@ import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.util.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,8 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static com.achobeta.domain.resource.constants.ResourceConstants.DEFAULT_RESOURCE_ACCESS_LEVEL;
 
@@ -37,11 +42,16 @@ import static com.achobeta.domain.resource.constants.ResourceConstants.DEFAULT_R
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class ResourceServiceImpl implements ResourceService {
 
+    private final UploadLimitProperties uploadLimitProperties;
+
     private final AccessStrategyFactory accessStrategyFactory;
 
     private final DigitalResourceService digitalResourceService;
 
     private final ObjectStorageService objectStorageService;
+
+    private final RedisCache redisCache;
+
     @Override
     public DigitalResource checkAndGetResource(Long code, ResourceAccessLevel level) {
         DigitalResource resource = digitalResourceService.getResourceByCode(code);
@@ -110,53 +120,42 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public Long upload(Long userId, MultipartFile file) {
-        return upload(userId, file, DEFAULT_RESOURCE_ACCESS_LEVEL);
-    }
-
-    @Override
-    public Long upload(Long userId, MultipartFile file, ResourceAccessLevel level) {
-        DigitalResource resource = new DigitalResource();
-        resource.setUserId(userId);
-        resource.setOriginalName(ResourceUtil.getOriginalName(file));
-        resource.setFileName(objectStorageService.upload(userId, file));
-        resource.setAccessLevel(level);
-        return digitalResourceService.createResource(resource);
-    }
-
-    @Override
     public Long upload(Long userId, String originalName, byte[] data, ResourceAccessLevel level) {
+        checkBlockUser(userId);
         DigitalResource resource = new DigitalResource();
         resource.setUserId(userId);
         resource.setOriginalName(originalName);
         resource.setFileName(objectStorageService.upload(userId, originalName, data));
         resource.setAccessLevel(level);
-        return digitalResourceService.createResource(resource);
+        return digitalResourceService.createResource(resource).getCode();
+    }
+
+    @Override
+    public Long upload(Long userId, MultipartFile file, ResourceAccessLevel level) {
+        try {
+            return upload(userId, ResourceUtil.getOriginalName(file), file.getBytes(), level);
+        } catch (IOException e) {
+            throw new GlobalServiceException(e.getMessage());
+        }
+    }
+
+    @Override
+    public Long upload(Long userId, MultipartFile file) {
+        return upload(userId, file, DEFAULT_RESOURCE_ACCESS_LEVEL);
     }
 
     @Override
     public <T, E> Long uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<T> clazz, List<E> data, ResourceAccessLevel level) {
         // 获取数据
         byte[] bytes = ExcelUtil.exportXlsxFile(excelTemplateEnum.getTitle(), excelTemplateEnum.getSheetName(), clazz, data);
-        // 上传对象存储服务器
+        // 上传
         return upload(managerId, excelTemplateEnum.getOriginalName(), bytes, level);
     }
 
     @Override
     @Transactional
     public List<Long> uploadList(Long userId, List<MultipartFile> fileList) {
-        ObjectStorageService storageService = objectStorageService;
-        List<DigitalResource> resourceList = fileList.stream()
-                .map(file -> {
-                    DigitalResource resource = new DigitalResource();
-                    resource.setUserId(userId);
-                    resource.setAccessLevel(DEFAULT_RESOURCE_ACCESS_LEVEL);
-                    resource.setOriginalName(ResourceUtil.getOriginalName(file));
-                    resource.setFileName(storageService.upload(userId, file));
-                    return resource;
-                })
-                .toList();
-        return digitalResourceService.createResourceBatch(resourceList);
+        return fileList.stream().map(file -> upload(userId, file)).toList();
     }
 
     @Override
@@ -187,7 +186,44 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public void blockUser(Long userId, Long date) {
-        objectStorageService.blockUser(userId, date);
+    public void checkBlockUser(Long userId) {
+        // 查询是否被封禁
+        String blockKey = ResourceConstants.REDIS_USER_UPLOAD_BLOCK + userId;
+        redisCache.getCacheObject(blockKey).ifPresent(date -> {
+            long blockDDL = (long) date;
+            // 理论上 blockDDL 是肯定小于等于当前时间的，因为大于的时候 redisKey 应该到期了
+            // （但还是进行判断，如果出现大于的情况，则把本该过期的 key 删了）
+            if(blockDDL <= System.currentTimeMillis()) {
+                String message = String.format("用户当前无法上传资源，将于 %s 解封，如有异议请联系管理员！", TimeUtil.getDateTime(blockDDL));
+                throw new GlobalServiceException(message, GlobalServiceStatusCode.RESOURCE_UPLOAD_BLOCKED);
+            }else {
+                redisCache.deleteObject(blockKey);
+            }
+        });
+        // 进行上传的检测
+        String redisKey = ResourceConstants.REDIS_USER_UPLOAD_LIMIT + userId;
+        // 获得已上传的次数
+        Integer times = (Integer) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+            redisCache.setCacheObject(redisKey, 0, uploadLimitProperties.getCycle(), uploadLimitProperties.getUnit());
+            return 0;
+        });
+        // 判断次数是否达到上限
+        if(uploadLimitProperties.getFrequency().compareTo(times) <= 0) {
+            throw new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_UPLOAD_TOO_FREQUENT);
+        }
+        // 自增
+        redisCache.incrementCacheNumber(redisKey);
+    }
+
+    @Override
+    public void blockUser(Long userId, Long blockDDL) {
+        String blockKey = ResourceConstants.REDIS_USER_UPLOAD_BLOCK + userId;
+        long timeout = blockDDL - System.currentTimeMillis(); // 现在距离解封时间的时长
+        if(timeout > 0) {
+            redisCache.setCacheObject(blockKey, blockDDL, timeout, TimeUnit.MILLISECONDS);
+        } else {
+            // 若为过去时，则直接封禁
+            redisCache.deleteObject(blockKey);
+        }
     }
 }

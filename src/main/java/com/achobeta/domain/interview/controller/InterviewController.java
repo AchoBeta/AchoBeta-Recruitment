@@ -4,6 +4,7 @@ import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.interview.constants.InterviewConstants;
 import com.achobeta.domain.interview.enums.InterviewEvent;
 import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
@@ -160,7 +161,7 @@ public class InterviewController {
                                                     @RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 获取当前管理员 id
         Long managerId = BaseContext.getCurrentUser().getUserId();
-        ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(ResourceAccessLevel.FREE_ACCESS);
+        ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(InterviewConstants.DEFAULT_EXCEL_ACCESS_LEVEL);
         // 打印成表格
         Long code = interviewService.printAllInterviewList(managerId, InterviewConditionDTO.of(interviewConditionDTO), accessLevel);
         // 构造 url 并返回
