@@ -109,16 +109,14 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
     @Override
     public void setAccessLevel(Long id, ResourceAccessLevel level) {
         DigitalResource digitalResource = new DigitalResource();
+        digitalResource.setId(id);
         digitalResource.setAccessLevel(level);
-        this.lambdaUpdate()
-                .eq(DigitalResource::getId, id)
-                .update(digitalResource)
-        ;
+        this.updateById(digitalResource);
     }
 
     @Override
     public void removeDigitalResource(Long id) {
-        lambdaUpdate()
+        this.lambdaUpdate()
                 .eq(DigitalResource::getId, id)
                 .remove();
     }

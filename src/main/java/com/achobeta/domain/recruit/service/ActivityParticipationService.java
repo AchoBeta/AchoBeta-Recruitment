@@ -5,7 +5,6 @@ import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
 import com.achobeta.domain.recruit.model.vo.ParticipationPeriodVO;
 import com.achobeta.domain.recruit.model.vo.ParticipationVO;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +38,6 @@ public interface ActivityParticipationService extends IService<ActivityParticipa
 
     ParticipationVO createActivityParticipation(Long stuId, Long actId);
 
-    @Transactional
     void participateInActivity(ActivityParticipation activityParticipation,
                                List<QuestionAnswerDTO> questionAnswerVOS, List<Long> periodIds);
 

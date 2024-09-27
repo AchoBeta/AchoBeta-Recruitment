@@ -2,6 +2,7 @@ package com.achobeta.domain.student.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.resource.service.ResourceService;
+import com.achobeta.domain.resumestate.constants.ResumeStateConstants;
 import com.achobeta.domain.resumestate.enums.ResumeEvent;
 import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import com.achobeta.domain.resumestate.service.ResumeStatusProcessService;
@@ -24,6 +25,8 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.achobeta.domain.resumestate.constants.ResumeStateConstants.DEFAULT_RESUME_EVENT;
 
 /**
  * @author 马拉圈
@@ -149,7 +152,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
             resumeStatusProcessService.createResumeStatusProcess(
                     stuResume.getId(),
                     ResumeStatus.PENDING_SELECTION,
-                    ResumeEvent.NEXT
+                    DEFAULT_RESUME_EVENT
             );
         }
 
@@ -174,7 +177,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         resumeStatusProcessService.createResumeStatusProcess(
                 stuResume.getId(),
                 ResumeStatus.PENDING_SELECTION,
-                ResumeEvent.NEXT
+                DEFAULT_RESUME_EVENT
         );
     }
 

@@ -20,13 +20,13 @@ public class ResumeStatusProcessServiceImpl extends ServiceImpl<ResumeStatusProc
     implements ResumeStatusProcessService{
 
     @Override
-    public Long createResumeStatusProcess(Long resumeId, ResumeStatus resumeStatus, ResumeEvent resumeEvent) {
+    public ResumeStatusProcess createResumeStatusProcess(Long resumeId, ResumeStatus resumeStatus, ResumeEvent resumeEvent) {
         ResumeStatusProcess resumeStatusProcess = new ResumeStatusProcess();
         resumeStatusProcess.setResumeId(resumeId);
         resumeStatusProcess.setResumeStatus(resumeStatus);
         resumeStatusProcess.setResumeEvent(resumeEvent);
         this.save(resumeStatusProcess);
-        return resumeStatusProcess.getId();
+        return resumeStatusProcess;
     }
 
     @Override

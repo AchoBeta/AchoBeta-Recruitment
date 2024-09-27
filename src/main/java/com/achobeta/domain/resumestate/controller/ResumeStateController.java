@@ -3,6 +3,7 @@ package com.achobeta.domain.resumestate.controller;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.resumestate.constants.ResumeStateConstants;
 import com.achobeta.domain.resumestate.enums.ResumeEvent;
 import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import com.achobeta.domain.resumestate.machine.context.ResumeContext;
@@ -13,7 +14,6 @@ import com.achobeta.domain.resumestate.model.vo.ResumeEventVO;
 import com.achobeta.domain.resumestate.model.vo.ResumeStatusProcessVO;
 import com.achobeta.domain.resumestate.model.vo.ResumeStatusVO;
 import com.achobeta.domain.resumestate.service.ResumeStateService;
-import com.achobeta.domain.resumestate.service.ResumeStatusProcessService;
 import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.service.StuResumeService;
 import com.achobeta.domain.users.context.BaseContext;
@@ -44,8 +44,6 @@ public class ResumeStateController {
 
     private final ResumeStateService resumeStateService;
 
-    private final ResumeStatusProcessService resumeStatusProcessService;
-
     @PostMapping("/execute/{resumeId}")
     public SystemJsonResponse executeEvent(@PathVariable("resumeId") @NotNull Long resumeId,
                                            @RequestParam("event") @NotNull Integer event,
@@ -64,6 +62,22 @@ public class ResumeStateController {
         // 转变
         ResumeStatus state = resumeStateService.executeResumeEvent(resumeEvent, resumeContext);
         return SystemJsonResponse.SYSTEM_SUCCESS(state);
+    }
+
+    @PostMapping("/switch/{resumeId}")
+    public SystemJsonResponse executeEvent(@PathVariable("resumeId") @NotNull Long resumeId,
+                                           @RequestParam("status") @NotNull Integer status) {
+        // 检查
+        ResumeStatus currentStatus = stuResumeService.checkAndGetResume(resumeId).getStatus();
+        ResumeStatus resumeStatus = ResumeStatus.get(status);
+        // 当前管理员
+        Long managerId = BaseContext.getCurrentUser().getUserId();
+        log.warn("管理员更新简历 {} 为 {} 状态", managerId, resumeStatus);
+        // 不相等则更新
+        if(!currentStatus.equals(resumeStatus)) {
+            resumeStateService.switchResumeState(resumeId, resumeStatus, ResumeStateConstants.DEFAULT_RESUME_EVENT);
+        }
+        return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
     @GetMapping("/list/status")
@@ -88,15 +102,15 @@ public class ResumeStateController {
     public SystemJsonResponse getProcesses(@PathVariable("batchId") @NotNull Long batchId) {
         long userId = BaseContext.getCurrentUser().getUserId();
         StuResume currentResume = stuResumeService.checkAndGetStuResumeByBatchIdAndStuId(batchId, userId);
-        List<ResumeStatusProcess> processes = resumeStatusProcessService.getProcessByResumeId(currentResume.getId());
+        List<ResumeStatusProcess> processes = resumeStateService.getProcessByResumeId(currentResume);
         List<ResumeStatusProcessVO> resumeStatusProcessVOList = ResumeStateConverter.INSTANCE.processesToProcessVOList(processes);
         return SystemJsonResponse.SYSTEM_SUCCESS(resumeStatusProcessVOList);
     }
 
     @GetMapping("/process/manager/{resumeId}")
     public SystemJsonResponse getProcessesByResumeId(@PathVariable("resumeId") @NotNull Long resumeId) {
-        stuResumeService.checkAndGetResume(resumeId);
-        List<ResumeStatusProcess> processes = resumeStatusProcessService.getProcessByResumeId(resumeId);
+        StuResume currentResume = stuResumeService.checkAndGetResume(resumeId);
+        List<ResumeStatusProcess> processes = resumeStateService.getProcessByResumeId(currentResume);
         List<ResumeStatusProcessVO> resumeStatusProcessVOList = ResumeStateConverter.INSTANCE.processesToProcessVOList(processes);
         return SystemJsonResponse.SYSTEM_SUCCESS(resumeStatusProcessVOList);
     }

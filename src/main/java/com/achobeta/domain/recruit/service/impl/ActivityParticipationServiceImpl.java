@@ -20,6 +20,7 @@ import com.achobeta.redis.lock.strategy.ReadLockStrategy;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -120,6 +121,7 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
     }
 
     @Override
+    @Transactional
     public void participateInActivity(ActivityParticipation activityParticipation, List<QuestionAnswerDTO> questionAnswerVOS, List<Long> periodIds) {
         Long actId = activityParticipation.getActId();
         // 读锁保证读到的数据在过程中准确

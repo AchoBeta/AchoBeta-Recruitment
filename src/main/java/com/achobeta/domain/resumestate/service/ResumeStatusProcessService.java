@@ -15,7 +15,7 @@ import java.util.List;
 public interface ResumeStatusProcessService extends IService<ResumeStatusProcess> {
 
 
-    Long createResumeStatusProcess(Long resumeId, ResumeStatus resumeStatus, ResumeEvent resumeEvent);
+    ResumeStatusProcess createResumeStatusProcess(Long resumeId, ResumeStatus resumeStatus, ResumeEvent resumeEvent);
 
     List<ResumeStatusProcess> getProcessByResumeId(Long resumeId);
 
