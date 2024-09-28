@@ -4,7 +4,6 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
 import com.achobeta.common.enums.HttpRequestEnum;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -31,6 +30,8 @@ public class HttpRequestUtil {
 
     public final static Map<String, String> JSON_CONTENT_TYPE_HEADER = Map.of("CONTENT_TYPE", "application/json; charset=utf-8");
 
+    public final static Map<String, String> MULTIPART_CONTENT_TYPE_HEADER = Map.of("CONTENT_TYPE", "multipart/form-data; boundary=---7MA4YWxkTrZu0gW");
+
     private static final Pattern HTTP_URL_PATTERN = Pattern.compile("^(?i)(http|https):(//(([^@\\[/?#]*)@)?(\\[[\\p{XDigit}:.]*[%\\p{Alnum}]*]|[^\\[/?#:]*)(:(\\{[^}]+\\}?|[^/?#]*))?)?([^?#]*)(\\?([^#]*))?(#(.*))?");
 
     public static boolean isHttpUrl(String url) {
@@ -45,7 +46,6 @@ public class HttpRequestUtil {
         return isAccessible(openConnection(url));
     }
 
-    @Nullable
     public static HttpURLConnection openConnection(String url) throws IOException {
         HttpURLConnection connection = isHttpUrl(url) ? (HttpURLConnection) new URL(url).openConnection() : null;
         if(Objects.nonNull(connection) && connection.getResponseCode() / 100 == 3) {

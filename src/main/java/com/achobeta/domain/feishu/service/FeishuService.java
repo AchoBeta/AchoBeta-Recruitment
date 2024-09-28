@@ -7,6 +7,8 @@ import com.lark.oapi.service.drive.v1.model.*;
 import com.lark.oapi.service.vc.v1.model.ApplyReserveReqBody;
 import com.lark.oapi.service.vc.v1.model.ApplyReserveRespBody;
 
+import java.io.File;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -28,20 +30,28 @@ public interface FeishuService {
 
     ApplyReserveRespBody reserveApplyBriefly(String ownerId, Long endTime, String topic);
 
+    /**
+     * 上传资源
+     */
     UploadAllMediaRespBody uploadMedia(UploadAllMediaReqBody uploadAllMediaReqBody);
 
-    // 这个的资源可能是加密的
     UploadAllMediaRespBody uploadMediaBriefly(String originalName, byte[] bytes, ObjectType objectType);
 
     UploadAllFileRespBody uploadFile(UploadAllFileReqBody uploadAllFileReqBody);
 
     UploadAllFileRespBody uploadFileBriefly(String originalName, byte[] bytes, ObjectType objectType);
 
+    /**
+     * 创建导入任务
+     */
     CreateImportTaskRespBody importTask(ImportTask importTask);
 
     CreateImportTaskRespBody importTaskBriefly(String originalName, byte[] bytes, ObjectType objectType);
 
+    /**
+     * 查询导入结果
+     */
     GetImportTaskRespBody getImportTask(String ticket);
 
-    GetImportTaskRespBody getImportTaskBriefly(String originalName, byte[] bytes, ObjectType objectType);
+    ImportTask getImportTaskPolling(String ticket);
 }

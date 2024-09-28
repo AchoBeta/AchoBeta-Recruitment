@@ -113,6 +113,27 @@ public class ResourceController {
         }
     }
 
+
+    @PostMapping("/upload/excel")
+    @Intercept(permit = {UserTypeEnum.ADMIN})
+    public SystemJsonResponse uploadExcel(@RequestPart("file") MultipartFile file) {
+        Long userId = BaseContext.getCurrentUser().getUserId();
+        System.out.println(file.getContentType());
+        try {
+            OnlineResourceVO onlineResourceVO = resourceService.synchronousUpload(
+                    userId,
+                    ResourceUtil.getOriginalName(file),
+                    file.getBytes(),
+                    ResourceAccessLevel.FREE_ACCESS,
+                    ObjectType.XLSX,
+                    Boolean.TRUE
+            );
+            return SystemJsonResponse.SYSTEM_SUCCESS(onlineResourceVO);
+        } catch (IOException e) {
+            throw new GlobalServiceException(e.getMessage());
+        }
+    }
+
     @PostMapping("/upload/image")
     public SystemJsonResponse uploadImage(@RequestPart("file") MultipartFile file) {
         // 检查

@@ -24,6 +24,7 @@ import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.util.HttpRequestUtil;
 import com.achobeta.util.HttpServletUtil;
 import com.achobeta.util.TimeUtil;
+import com.lark.oapi.service.drive.v1.enums.JobStatusEnum;
 import com.lark.oapi.service.drive.v1.model.ImportTask;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -186,16 +188,7 @@ public class ResourceServiceImpl implements ResourceService {
             if(Boolean.TRUE.equals(synchronous)) {
                 String ticket = feishuService.importTaskBriefly(originalName, bytes, objectType).getTicket();
                 FeishuResource resource = feishuResourceService.createAndGetFeishuResource(ticket, originalName);
-                ImportTask importTask = feishuService.getImportTask(ticket).getResult();
-                while (importTask.getJobStatus() != 0) {
-                    log.warn("{} {}", importTask.getJobStatus(), importTask.getJobErrorMsg());
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        log.warn(e.getMessage());
-                    }
-                    importTask = feishuService.getImportTask(ticket).getResult();
-                }
+                ImportTask importTask = feishuService.getImportTaskPolling(ticket);
                 feishuResourceService.updateFeishuResource(resource.getId(), importTask);
                 onlineResourceVO.setFeishuUrl(feishuResourceService.getSystemUrl(request, ticket));
             }
@@ -208,7 +201,6 @@ public class ResourceServiceImpl implements ResourceService {
     public <E> OnlineResourceVO uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<E> clazz, List<E> data, ResourceAccessLevel level, Boolean synchronous) {
         // 获取数据
         byte[] bytes = ExcelUtil.exportXlsxFile(excelTemplateEnum.getTitle(), excelTemplateEnum.getSheetName(), clazz, data);
-        // 上传
         return synchronousUpload(managerId, excelTemplateEnum.getOriginalName(), bytes, level, ObjectType.XLSX, synchronous);
     }
 

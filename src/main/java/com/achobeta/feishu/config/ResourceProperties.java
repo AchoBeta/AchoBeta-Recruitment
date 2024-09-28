@@ -3,6 +3,8 @@ package com.achobeta.feishu.config;
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -13,7 +15,12 @@ import lombok.Data;
 @Data
 public class ResourceProperties {
 
-    @SerializedName("parent_node")
     private String parentNode;
+
+    private Long tryAgain;
+
+    private TimeUnit tryAgainUnit;
+
+    private Integer maxCount;
 
 }

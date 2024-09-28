@@ -6,7 +6,6 @@ import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.util.HttpRequestUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -27,13 +26,11 @@ public class MediaUtil {
 
     private final static Tika TIKA = new Tika();
 
-    @Nullable
     public static InputStream getInputStream(String url) throws IOException {
         HttpURLConnection connection = HttpRequestUtil.openConnection(url);
         return HttpRequestUtil.isAccessible(connection) ? connection.getInputStream() : null;
     }
 
-    @Nullable
     public static InputStream getInputStream(byte[] bytes) {
         return Objects.nonNull(bytes) ? new ByteArrayInputStream(bytes) : null;
     }
@@ -48,6 +45,14 @@ public class MediaUtil {
         } catch (IOException e) {
             log.warn(e.getMessage());
             return null;
+        }
+    }
+
+    public static byte[] getBytes(File file) {
+        try (FileInputStream inputStream = new FileInputStream(file)) {
+            return getBytes(inputStream);
+        }  catch (IOException e) {
+            throw new GlobalServiceException(e.getMessage());
         }
     }
 
@@ -71,6 +76,15 @@ public class MediaUtil {
         }
     }
 
+    public static String getTempFilePath(String suffix) {
+        String tempResourcePath = ResourceConstants.TEMP_RESOURCE_PATH;
+        File tempDir = new File(tempResourcePath);
+        if(!tempDir.exists()) {
+            tempDir.mkdir();
+        }
+        return tempResourcePath + ResourceUtil.getSimpleFileName(suffix);
+    }
+
     private static FileOutputStream createAndGetFileOutputStream(File file) throws IOException {
         if (!file.exists()) {
             file.createNewFile();
@@ -85,14 +99,9 @@ public class MediaUtil {
     }
 
     public static <T> T createTempFileGetSomething(String originalName, byte[] data, Function<File, T> converter) {
-        String tempResourcePath = ResourceConstants.TEMP_RESOURCE_PATH;
-        File tempDir = new File(tempResourcePath);
-        if(!tempDir.exists()) {
-            tempDir.mkdir();
-        }
         String fileNameSuffix = ResourceUtil.getFileNameSuffix(originalName);
-        String tempFileName = ResourceUtil.getSimpleFileName(fileNameSuffix);
-        File tempFile = new File(tempResourcePath + tempFileName);
+        String tempFilePath = getTempFilePath(fileNameSuffix);
+        File tempFile = new File(tempFilePath);
         try (FileOutputStream outputStream = createAndGetFileOutputStream(tempFile)) {
             outputStream.write(data);
             outputStream.flush();

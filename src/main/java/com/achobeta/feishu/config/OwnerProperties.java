@@ -13,7 +13,6 @@ import lombok.Data;
 @Data
 public class OwnerProperties {
 
-    @SerializedName("mobile")
     private String mobile;
 
 }

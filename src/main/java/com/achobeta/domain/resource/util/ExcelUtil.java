@@ -2,13 +2,17 @@ package com.achobeta.domain.resource.util;
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import com.achobeta.domain.resource.constants.ResourceConstants;
 import com.achobeta.exception.GlobalServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Function;
 
 @Slf4j
 public class ExcelUtil {
@@ -23,10 +27,7 @@ public class ExcelUtil {
      */
     public static <E> byte[] exportXlsxFile(String  title, String sheetName, Class<E> clazz, List<E> data) {
         // 导出
-        ExportParams params = new ExportParams();
-        params.setTitle(title);//表格 标题
-        params.setSheetName(sheetName);// 表格左下角sheet名称
-
+        ExportParams params = new ExportParams(title, sheetName);
         try (Workbook workbook = ExcelExportUtil.exportExcel(params, clazz, data);
              ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
             // 输出流写入(覆盖)

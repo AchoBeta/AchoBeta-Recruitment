@@ -5,6 +5,7 @@ import com.achobeta.domain.feishu.service.FeishuService;
 import com.achobeta.domain.resource.util.MediaUtil;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.feishu.config.FeishuAppConfig;
+import com.achobeta.feishu.config.ResourceProperties;
 import com.achobeta.feishu.constants.ObjectType;
 import com.achobeta.feishu.token.FeishuTenantAccessToken;
 import com.achobeta.feishu.util.FeishuRequestUtil;
@@ -17,6 +18,7 @@ import com.lark.oapi.service.contact.v3.model.BatchGetIdUserResp;
 import com.lark.oapi.service.contact.v3.model.BatchGetIdUserRespBody;
 import com.lark.oapi.service.contact.v3.model.UserContactInfo;
 import com.lark.oapi.service.drive.v1.enums.ImportTaskMountPointMountTypeEnum;
+import com.lark.oapi.service.drive.v1.enums.JobStatusEnum;
 import com.lark.oapi.service.drive.v1.enums.UploadAllFileParentTypeEnum;
 import com.lark.oapi.service.drive.v1.enums.UploadAllMediaParentTypeEnum;
 import com.lark.oapi.service.drive.v1.model.*;
@@ -26,10 +28,12 @@ import com.lark.oapi.service.vc.v1.model.ApplyReserveResp;
 import com.lark.oapi.service.vc.v1.model.ApplyReserveRespBody;
 import com.lark.oapi.service.vc.v1.model.ReserveMeetingSetting;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,6 +51,7 @@ import static com.lark.oapi.service.vc.v1.enums.ReserveMeetingSettingMeetingInit
  * Time: 23:51
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
@@ -58,12 +63,9 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
     private String defaultOwnerId;
 
-    private String defaultParentNode;
-
     @Override
     public void afterPropertiesSet() throws Exception {
         this.defaultOwnerId = getUserIdByMobile(feishuAppConfig.getOwner().getMobile());
-        this.defaultParentNode = feishuAppConfig.getResource().getParentNode();
     }
 
     @Override
@@ -193,7 +195,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
             UploadAllFileReqBody uploadAllFileReqBody = UploadAllFileReqBody.newBuilder()
                     .fileName(originalName)
                     .parentType(UploadAllFileParentTypeEnum.EXPLORER)
-                    .parentNode(defaultParentNode)
+                    .parentNode(feishuAppConfig.getResource().getParentNode())
                     .size(bytes.length)
                     .checksum(MediaUtil.getAdler32(bytes))
                     .file(file)
@@ -204,24 +206,24 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
     @Override
     public CreateImportTaskRespBody importTask(ImportTask importTask) {
-        CreateImportTaskReq createImportTaskReq = CreateImportTaskReq.newBuilder()
-                .importTask(importTask)
-                .build();
-        try {
-            CreateImportTaskResp createImportTaskResp = feishuClient.drive().importTask().create(createImportTaskReq);
-            FeishuRequestUtil.checkResponse(createImportTaskResp);
-            return createImportTaskResp.getData();
-        } catch (Exception e) {
-            throw new GlobalServiceException(e.getMessage());
-        }
-//        String token = feishuTenantAccessToken.getToken();
-//        return FeishuRequestUtil.request(
-//                IMPORT_TASK,
-//                importTask,
-//                CreateImportTaskResp.class,
-//                Map.of(AUTHORIZATION_HEADER, getAuthorization(token)),
-//                null
-//        ).getData();
+//        CreateImportTaskReq createImportTaskReq = CreateImportTaskReq.newBuilder()
+//                .importTask(importTask)
+//                .build();
+//        try {
+//            CreateImportTaskResp createImportTaskResp = feishuClient.drive().importTask().create(createImportTaskReq);
+//            FeishuRequestUtil.checkResponse(createImportTaskResp);
+//            return createImportTaskResp.getData();
+//        } catch (Exception e) {
+//            throw new GlobalServiceException(e.getMessage());
+//        }
+        String token = feishuTenantAccessToken.getToken();
+        return FeishuRequestUtil.request(
+                IMPORT_TASK,
+                importTask,
+                CreateImportTaskResp.class,
+                Map.of(AUTHORIZATION_HEADER, getAuthorization(token)),
+                null
+        ).getData();
     }
 
     @Override
@@ -234,7 +236,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
                 .type(objectType.getObjType())
                 .point(ImportTaskMountPoint.newBuilder()
                         .mountType(ImportTaskMountPointMountTypeEnum.SPACE)
-                        .mountKey(defaultParentNode)
+                        .mountKey(feishuAppConfig.getResource().getParentNode())
                         .build())
                 .build();
         return importTask(importTask);
@@ -242,30 +244,49 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
     @Override
     public GetImportTaskRespBody getImportTask(String ticket) {
-        GetImportTaskReq getImportTaskReq = GetImportTaskReq.newBuilder().ticket(ticket).build();
-        try {
-            GetImportTaskResp getImportTaskResp = feishuClient.drive().importTask().get(getImportTaskReq);
-            FeishuRequestUtil.checkResponse(getImportTaskResp);
-            return getImportTaskResp.getData();
-        } catch (Exception e) {
-            throw new GlobalServiceException(e.getMessage());
-        }
-//        String token = feishuTenantAccessToken.getToken();
-//        return FeishuRequestUtil.request(
-//                GET_IMPORT_TASK,
-//                null,
-//                GetImportTaskResp.class,
-//                Map.of(AUTHORIZATION_HEADER, getAuthorization(token)),
-//                null,
-//                Map.of(MEDIA_TICKET_QUERY_KEY, ticket)
-//        ).getData();
+//        GetImportTaskReq getImportTaskReq = GetImportTaskReq.newBuilder().ticket(ticket).build();
+//        try {
+//            GetImportTaskResp getImportTaskResp = feishuClient.drive().importTask().get(getImportTaskReq);
+//            FeishuRequestUtil.checkResponse(getImportTaskResp);
+//            return getImportTaskResp.getData();
+//        } catch (Exception e) {
+//            throw new GlobalServiceException(e.getMessage());
+//        }
+        String token = feishuTenantAccessToken.getToken();
+        GetImportTaskRespBody importTaskRespBody = FeishuRequestUtil.request(
+                GET_IMPORT_TASK,
+                null,
+                GetImportTaskResp.class,
+                Map.of(AUTHORIZATION_HEADER, getAuthorization(token)),
+                null,
+                Map.of(MEDIA_TICKET_QUERY_KEY, ticket)
+        ).getData();
+
+        return importTaskRespBody;
     }
 
     @Override
-    public GetImportTaskRespBody getImportTaskBriefly(String originalName, byte[] bytes, ObjectType objectType) {
-        // 这个办法大概率获取不到，一般是正在处理中
-        String ticket = importTaskBriefly(originalName, bytes, objectType).getTicket();
-        return getImportTask(ticket);
+    public ImportTask getImportTaskPolling(String ticket) {
+        try {
+            // 参数信息
+            ResourceProperties resource = feishuAppConfig.getResource();
+            Integer maxCount = resource.getMaxCount();
+            long sleepTime = resource.getTryAgainUnit().toMillis(resource.getTryAgain());
+            // 第一次尝试
+            int count = 1;
+            ImportTask importTask = getImportTask(ticket).getResult();
+            // 轮询直到处理完为止（最多 maxAgainCount）
+            while (JobStatusEnum.PROCESSING.getValue().equals(importTask.getJobStatus()) && maxCount.compareTo(count) > 0) {
+                log.warn("{} {}", importTask.getJobStatus(), importTask.getJobErrorMsg());
+                Thread.sleep(sleepTime);
+                importTask = getImportTask(ticket).getResult();
+                count++;
+            }
+            // 循环结束直接返回
+            return importTask;
+        } catch (InterruptedException e) {
+            throw new GlobalServiceException(e.getMessage());
+        }
     }
 
 }

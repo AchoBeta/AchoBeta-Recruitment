@@ -19,7 +19,7 @@ public interface FeishuResourceConstants {
 
     String FEISHU_RESOURCE_CREATE_LOCK = "feishuResourceCreateLock:";
 
-    String DEFAULT_URL = "https://j16c0vnbedn.feishu.cn/drive/home/";
+    String DEFAULT_URL = "https://j16c0vnbedn.feishu.cn/drive/folder/";
 
     String DEFAULT_NAME = "achoBeta-recruitment-resource";
 

@@ -49,6 +49,8 @@ public class FeishuResourceServiceImpl extends ServiceImpl<FeishuResourceMapper,
 
     private final SimpleLockStrategy simpleLockStrategy;
 
+    private final FeishuAppConfig feishuAppConfig;
+
     @Override
     public FeishuResource createAndGetFeishuResource(String ticket, String originalName) {
         return redisLock.tryLockGetSomething(FEISHU_RESOURCE_CREATE_LOCK + ticket, () -> {
@@ -82,7 +84,7 @@ public class FeishuResourceServiceImpl extends ServiceImpl<FeishuResourceMapper,
             FeishuResource feishuResource = createAndGetFeishuResource(ticket, DEFAULT_NAME);
             String url = feishuResource.getUrl();
             if(!StringUtils.hasText(url)) {
-                // 尝试通过 ticket 获取
+                // 尝试通过 ticket 获取（只尝试一次）
                 ImportTask result = feishuService.getImportTask(ticket).getResult();
                 updateFeishuResource(feishuResource.getId(), result);
                 url = result.getUrl();
@@ -91,7 +93,8 @@ public class FeishuResourceServiceImpl extends ServiceImpl<FeishuResourceMapper,
                 redisCache.setCacheObject(redisKey, url, FEISHU_RESOURCE_REDIRECT_TIMEOUT, FEISHU_RESOURCE_REDIRECT_UNIT);
                 return url;
             }else {
-                return DEFAULT_URL; // 只返回不落库
+                // 只返回不落库
+                return DEFAULT_URL + feishuAppConfig.getResource().getParentNode();
             }
         });
     }
