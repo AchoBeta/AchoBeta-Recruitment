@@ -3,8 +3,11 @@ package com.achobeta.domain.schedule.controller;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.interview.constants.InterviewConstants;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
+import com.achobeta.domain.resource.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.schedule.model.dto.ScheduleDTO;
 import com.achobeta.domain.schedule.model.dto.ScheduleUpdateDTO;
 import com.achobeta.domain.schedule.model.vo.ParticipationDetailVO;
@@ -14,6 +17,7 @@ import com.achobeta.domain.schedule.model.vo.UserSituationVO;
 import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.domain.users.context.BaseContext;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +26,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created With Intellij IDEA
@@ -45,6 +50,8 @@ public class InterviewScheduleController {
     private final InterviewerService interviewerService;
 
     private final RecruitmentActivityService recruitmentActivityService;
+
+    private final ResourceService resourceService;
 
     @PostMapping("/create")
     public SystemJsonResponse createInterviewSchedule(@Valid @RequestBody ScheduleDTO scheduleDTO) {
@@ -124,6 +131,19 @@ public class InterviewScheduleController {
         // 获取参与本次招新活动的所有用户参与和预约情况
         UserSituationVO situations = interviewScheduleService.getSituationsByActId(actId);
         return SystemJsonResponse.SYSTEM_SUCCESS(situations);
+    }
+
+    @GetMapping("/print/situations/{actId}")
+    public SystemJsonResponse getUserParticipationSituationByActId(HttpServletRequest request,
+                                                                   @PathVariable("actId") @NotNull Long actId,
+                                                                   @RequestParam(name = "level", required = false) Integer level) {
+        // 检测
+        recruitmentActivityService.checkRecruitmentActivityExists(actId);
+        ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(InterviewConstants.DEFAULT_EXCEL_ACCESS_LEVEL);
+        // 打印表格
+        Long managerId = BaseContext.getCurrentUser().getUserId();
+        Long code = interviewScheduleService.printSituations(managerId, actId, accessLevel);
+        return SystemJsonResponse.SYSTEM_SUCCESS(resourceService.getSystemUrl(request, code));
     }
 
     @GetMapping("/detail/{scheduleId}")

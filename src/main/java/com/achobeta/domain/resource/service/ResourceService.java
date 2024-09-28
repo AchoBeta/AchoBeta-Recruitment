@@ -42,7 +42,7 @@ public interface ResourceService {
 
     Long upload(Long userId, MultipartFile file);
 
-    <T, E> Long uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<T> clazz, List<E> data, ResourceAccessLevel level);
+    <E> Long uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<E> clazz, List<E> data, ResourceAccessLevel level);
 
     List<Long> uploadList(Long userId, List<MultipartFile> fileList);
 

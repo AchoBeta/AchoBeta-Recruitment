@@ -21,6 +21,11 @@
         <collection property="timePeriodVOS" columnPrefix="t_" resultMap="PeriodMap"/>
     </resultMap>
 
+    <resultMap id="ParticipationQuestionMap" type="com.achobeta.domain.recruit.model.vo.ParticipationQuestionVO">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <collection property="questionAnswerVOS" columnPrefix="q_" resultMap="QuestionAnswerMap"/>
+    </resultMap>
+
     <select id="getQuestions" parameterType="java.lang.Long" resultMap="QuestionAnswerMap">
         select
             q.id, q.title, pq.answer
@@ -48,6 +53,19 @@
             activity_participation ap
             left join participation_period_link pp on ap.id = pp.participation_id and ap.is_deleted = 0 and pp.is_deleted = 0
             left join time_period t on pp.period_id = t.id and pp.is_deleted = 0 and t.is_deleted = 0
+        where ap.is_deleted = 0 and ap.id
+        <foreach collection="participationIds" open="in (" close=")" item="participationId" separator=",">
+            #{participationId,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
+    <select id="getParticipationQuestions" resultMap="ParticipationQuestionMap">
+        select
+            ap.id, q.id q_id, q.title q_title, pq.answer q_answer
+        from
+            activity_participation ap
+            left join participation_question_link pq on ap.id = pq.participation_id and ap.is_deleted = 0 and pq.is_deleted = 0
+            left join question q on pq.question_id = q.id and pq.is_deleted = 0 and q.is_deleted = 0
         where ap.is_deleted = 0 and ap.id
         <foreach collection="participationIds" open="in (" close=")" item="participationId" separator=",">
             #{participationId,jdbcType=BIGINT}

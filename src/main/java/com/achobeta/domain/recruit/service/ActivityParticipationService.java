@@ -3,6 +3,7 @@ package com.achobeta.domain.recruit.service;
 import com.achobeta.domain.recruit.model.dto.QuestionAnswerDTO;
 import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
 import com.achobeta.domain.recruit.model.vo.ParticipationPeriodVO;
+import com.achobeta.domain.recruit.model.vo.ParticipationQuestionVO;
 import com.achobeta.domain.recruit.model.vo.ParticipationVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -33,6 +34,8 @@ public interface ActivityParticipationService extends IService<ActivityParticipa
     List<Long> getParticipationIdsByPaperId(Long paperId);
 
     List<ParticipationPeriodVO> getParticipationPeriods(List<Long> participationIds);
+
+    List<ParticipationQuestionVO> getParticipationQuestions(List<Long> participationIds);
 
     // 写入 ------------------------------------------
 

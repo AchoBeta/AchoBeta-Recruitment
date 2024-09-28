@@ -86,7 +86,13 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     public Long printAllInterviewList(Long managerId, InterviewConditionDTO condition, ResourceAccessLevel level) {
         List<InterviewVO> interviewVOList = managerGetInterviewList(null, condition);
         // 上传表格到对象存储服务器
-        return resourceService.uploadExcel(managerId, ExcelTemplateEnum.ACHOBETA_INTERVIEW_ALL, InterviewExcelTemplate.class, interviewVOList, level);
+        return resourceService.uploadExcel(
+                managerId,
+                ExcelTemplateEnum.ACHOBETA_INTERVIEW_ALL,
+                InterviewExcelTemplate.class,
+                InterviewConverter.INSTANCE.interviewVOListToInterviewExcelTemplateList(interviewVOList),
+                level
+        );
     }
 
     @Override

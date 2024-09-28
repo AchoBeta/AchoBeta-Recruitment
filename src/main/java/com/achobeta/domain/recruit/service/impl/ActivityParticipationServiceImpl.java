@@ -5,10 +5,7 @@ import com.achobeta.domain.recruit.model.converter.ParticipationConverter;
 import com.achobeta.domain.recruit.model.dao.mapper.ActivityParticipationMapper;
 import com.achobeta.domain.recruit.model.dto.QuestionAnswerDTO;
 import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
-import com.achobeta.domain.recruit.model.vo.ParticipationPeriodVO;
-import com.achobeta.domain.recruit.model.vo.ParticipationVO;
-import com.achobeta.domain.recruit.model.vo.QuestionAnswerVO;
-import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
+import com.achobeta.domain.recruit.model.vo.*;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.ParticipationPeriodLinkService;
 import com.achobeta.domain.recruit.service.ParticipationQuestionLinkService;
@@ -21,6 +18,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -105,10 +103,18 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
 
     @Override
     public List<ParticipationPeriodVO> getParticipationPeriods(List<Long> participationIds) {
-        if(participationIds.isEmpty()) {
+        if(CollectionUtils.isEmpty(participationIds)) {
             return new ArrayList<>();
         }
         return activityParticipationMapper.getParticipationPeriods(participationIds);
+    }
+
+    @Override
+    public List<ParticipationQuestionVO> getParticipationQuestions(List<Long> participationIds) {
+        if(CollectionUtils.isEmpty(participationIds)) {
+            return new ArrayList<>();
+        }
+        return activityParticipationMapper.getParticipationQuestions(participationIds);
     }
 
     @Override

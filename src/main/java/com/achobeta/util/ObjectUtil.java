@@ -1,10 +1,12 @@
 package com.achobeta.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
@@ -67,6 +69,10 @@ public class ObjectUtil {
         // object.getClass() 会获取实例的实现类的类型
         return Arrays.stream(object.getClass().getDeclaredFields())
                 .map(field -> read(object, field, fieldClazz));
+    }
+
+    public static <T> Stream<T> stream(Collection<T> collection) {
+        return Optional.ofNullable(collection).stream().flatMap(Collection::stream);
     }
 
     public static <C, F, T> T reduce(C object, Class<F> fieldClazz, Function<F, T> mapper,

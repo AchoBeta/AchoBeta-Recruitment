@@ -5,6 +5,7 @@ import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.exception.GlobalServiceException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.ByteArrayOutputStream;
@@ -20,17 +21,15 @@ public class ExcelUtil {
      * @param sheetName 图纸名称
      * @param clazz 每一行的类型（字节码）
      * @param data 数据集合
-     * @param <T> 表格行类型
      * @param <E> 数据类型
      */
-    public static <T, E> byte[] exportXlsxFile(String  title, String sheetName, Class<T> clazz, List<E> data) {
-        List<T> list = BeanUtil.copyToList(data, clazz);
+    public static <E> byte[] exportXlsxFile(String  title, String sheetName, Class<E> clazz, List<E> data) {
         // 导出
         ExportParams params = new ExportParams();
         params.setTitle(title);//表格 标题
         params.setSheetName(sheetName);// 表格左下角sheet名称
 
-        try (Workbook workbook = ExcelExportUtil.exportExcel(params, clazz, list);
+        try (Workbook workbook = ExcelExportUtil.exportExcel(params, clazz, data);
              ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
             // 输出流写入(覆盖)
             workbook.write(outputStream);

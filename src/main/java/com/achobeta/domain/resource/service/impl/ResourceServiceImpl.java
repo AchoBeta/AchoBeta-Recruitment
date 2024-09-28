@@ -1,5 +1,6 @@
 package com.achobeta.domain.resource.service.impl;
 
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.resource.access.strategy.ResourceAccessStrategy;
 import com.achobeta.domain.resource.config.UploadLimitProperties;
@@ -145,7 +146,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public <T, E> Long uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<T> clazz, List<E> data, ResourceAccessLevel level) {
+    public <E> Long uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<E> clazz, List<E> data, ResourceAccessLevel level) {
         // 获取数据
         byte[] bytes = ExcelUtil.exportXlsxFile(excelTemplateEnum.getTitle(), excelTemplateEnum.getSheetName(), clazz, data);
         // 上传

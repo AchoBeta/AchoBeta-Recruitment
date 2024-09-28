@@ -2,6 +2,7 @@ package com.achobeta.domain.recruit.model.dao.mapper;
 
 import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
 import com.achobeta.domain.recruit.model.vo.ParticipationPeriodVO;
+import com.achobeta.domain.recruit.model.vo.ParticipationQuestionVO;
 import com.achobeta.domain.recruit.model.vo.QuestionAnswerVO;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -23,6 +24,7 @@ public interface ActivityParticipationMapper extends BaseMapper<ActivityParticip
 
     List<ParticipationPeriodVO> getParticipationPeriods(@Param("participationIds") List<Long> participationIds);
 
+    List<ParticipationQuestionVO> getParticipationQuestions(@Param("participationIds") List<Long> participationIds);
 }
 
 

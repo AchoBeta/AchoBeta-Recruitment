@@ -1,5 +1,6 @@
 package com.achobeta.domain.schedule.service;
 
+import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.schedule.model.entity.InterviewSchedule;
 import com.achobeta.domain.schedule.model.vo.ParticipationDetailVO;
 import com.achobeta.domain.schedule.model.vo.ScheduleDetailVO;
@@ -36,6 +37,8 @@ public interface InterviewScheduleService extends IService<InterviewSchedule> {
     ScheduleDetailVO getInterviewScheduleDetail(Long scheduleId);
 
     ParticipationDetailVO getDetailActivityParticipation(Long participationId);
+
+    Long printSituations(Long managerId, Long actId, ResourceAccessLevel level);
 
     // 写入 ------------------------------------------
 

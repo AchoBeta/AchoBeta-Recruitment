@@ -10,6 +10,9 @@ import com.achobeta.domain.recruit.model.vo.TimePeriodCountVO;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.TimePeriodService;
+import com.achobeta.domain.resource.enums.ExcelTemplateEnum;
+import com.achobeta.domain.resource.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.schedule.model.converter.SituationConverter;
 import com.achobeta.domain.schedule.model.dao.mapper.InterviewScheduleMapper;
 import com.achobeta.domain.schedule.model.entity.InterviewSchedule;
@@ -56,6 +59,8 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
     private final InterviewService interviewService;
 
     private final TimePeriodService timePeriodService;
+
+    private final ResourceService resourceService;
 
     private void timePeriodValidate(Long startTime, Long endTime) {
         long gap = endTime - startTime;
@@ -162,6 +167,33 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
             participationDetailVO.setScheduleVOS(situations.getScheduleVOS());
             return participationDetailVO;
         }).orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.ACTIVITY_PARTICIPATION_NOT_EXISTS));
+    }
+
+    @Override
+    public Long printSituations(Long managerId, Long actId, ResourceAccessLevel level) {
+        // 构造数据
+        Map<Long, ActivitySituationExcelTemplate> resultMap = new LinkedHashMap<>();
+        getSituationsByActId(actId).getUserParticipationVOS().forEach(situation -> {
+            ActivitySituationExcelTemplate activitySituationExcelTemplate = SituationConverter.INSTANCE
+                    .userParticipationVOToSituationExcelTemplate(situation.getSimpleStudentVO());
+            activitySituationExcelTemplate.setTimePeriodVOS(situation.getTimePeriodVOS());
+            activitySituationExcelTemplate.setScheduleVOS(situation.getScheduleVOS());
+            resultMap.put(situation.getParticipationId(), activitySituationExcelTemplate);
+        });
+        List<Long> participationIds = new ArrayList<>(resultMap.keySet());
+        activityParticipationService.getParticipationQuestions(participationIds).stream()
+                .filter(question -> resultMap.containsKey(question.getId()))
+                .forEach(question -> {
+                    resultMap.get(question.getId()).setQuestionAnswerVOS(question.getQuestionAnswerVOS());
+                });
+        // 获取表格
+        return resourceService.uploadExcel(
+                managerId,
+                ExcelTemplateEnum.ACHOBETA_ACTIVITY_SITUATIONS,
+                ActivitySituationExcelTemplate.class,
+                new ArrayList<>(resultMap.values()),
+                level
+        );
     }
 
     @Override

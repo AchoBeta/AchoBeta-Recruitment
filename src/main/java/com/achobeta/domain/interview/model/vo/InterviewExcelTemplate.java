@@ -1,6 +1,7 @@
 package com.achobeta.domain.interview.model.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.afterturn.easypoi.excel.annotation.ExcelEntity;
 import cn.afterturn.easypoi.excel.annotation.ExcelTarget;
 import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.schedule.model.vo.ScheduleVO;
@@ -17,25 +18,15 @@ import java.util.Optional;
  * Time: 10:10
  */
 @Data
-@ExcelTarget("AchoBeta 面试日程")
 public class InterviewExcelTemplate {
 
-    @Excel(name = "标题", width = 50)//列名、宽度
+    @Excel(name = "标题", width = 50)
     private String title;
 
-    @Excel(name = "状态", width = 20)//列名、宽度
+    @Excel(name = "状态", width = 20)
     private InterviewStatus status;
 
-    @Excel(name = "时间", width = 100)//列名、宽度
+    @ExcelEntity(name = "面试预约")
     private ScheduleVO scheduleVO;
 
-    public String getScheduleVO() {
-        return Optional.ofNullable(scheduleVO).map(schedule -> {
-            return String.format(
-                    "%s —— %s",
-                    TimeUtil.getDateTime(schedule.getStartTime()),
-                    TimeUtil.getDateTime(schedule.getEndTime())
-            );
-        }).orElse(null);
-    }
 }
