@@ -2,11 +2,9 @@ package com.achobeta.domain.schedule.model.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import cn.afterturn.easypoi.excel.annotation.ExcelCollection;
-import cn.afterturn.easypoi.excel.annotation.ExcelTarget;
 import com.achobeta.domain.recruit.model.vo.QuestionAnswerVO;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
 import com.achobeta.domain.resumestate.enums.ResumeStatus;
-import com.achobeta.util.ObjectUtil;
 import lombok.Data;
 
 import java.util.List;
