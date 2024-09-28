@@ -1,7 +1,6 @@
 package com.achobeta.feishu.constants;
 
 import com.google.gson.annotations.SerializedName;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**

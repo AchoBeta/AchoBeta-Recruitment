@@ -5,12 +5,8 @@ import com.achobeta.common.base.BasePageResult;
 import com.achobeta.domain.feishu.model.dto.FeishuResourceQueryDTO;
 import com.achobeta.domain.feishu.model.entity.FeishuResource;
 import com.achobeta.domain.feishu.model.vo.FeishuResourceQueryVO;
-import com.achobeta.domain.resource.model.dto.ResourceQueryDTO;
-import com.achobeta.domain.resource.model.entity.DigitalResource;
-import com.achobeta.domain.resource.model.vo.ResourceQueryVO;
 import com.lark.oapi.service.drive.v1.model.ImportTask;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 /**

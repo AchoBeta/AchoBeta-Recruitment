@@ -7,7 +7,6 @@ import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.shortlink.model.dto.ShortLinkQueryDTO;
 import com.achobeta.domain.shortlink.model.vo.ShortLinkQueryVO;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
-import com.achobeta.util.HttpServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

@@ -1,7 +1,6 @@
 package com.achobeta.domain.feishu.service.impl;
 
 import cn.hutool.core.util.ArrayUtil;
-import com.achobeta.domain.feishu.constants.FeishuResourceConstants;
 import com.achobeta.domain.feishu.service.FeishuService;
 import com.achobeta.domain.resource.util.MediaUtil;
 import com.achobeta.exception.GlobalServiceException;

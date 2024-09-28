@@ -20,7 +20,7 @@ public class StuSimpleResumeDTO implements Serializable {
     private Long batchId;
 
     @NotBlank(message = "学号不能为空")
-    @Pattern(regexp = "^20\\d{8,11}$", message = "学号非法")
+    @Pattern(regexp = "^20\\d{9,11}$", message = "学号非法")
     private String studentId;
 
     @NotBlank(message = "名字不能为空")
