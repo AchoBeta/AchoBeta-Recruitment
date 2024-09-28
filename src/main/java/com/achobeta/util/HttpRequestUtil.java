@@ -12,6 +12,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -55,6 +57,10 @@ public class HttpRequestUtil {
 
     public static String hiddenQueryString(String url) {
         return StringUtils.hasText(url) && url.contains("?") ? url.substring(0, url.indexOf("?")) : url;
+    }
+
+    public static String encodeString(String str) {
+        return URLEncoder.encode(str, StandardCharsets.UTF_8);
     }
 
     public static String buildUrl(String baseUrl, Map<String, List<String>> queryParams, Object... uriVariableValues) {

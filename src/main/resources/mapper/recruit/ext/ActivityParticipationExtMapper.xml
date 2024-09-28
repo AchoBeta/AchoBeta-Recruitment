@@ -23,6 +23,7 @@
 
     <resultMap id="ParticipationQuestionMap" type="com.achobeta.domain.recruit.model.vo.ParticipationQuestionVO">
         <id property="id" column="id" jdbcType="BIGINT"/>
+        <association property="stuSimpleResumeVO" columnPrefix="r_" resultMap="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.StuSimpleResumeMap"/>
         <collection property="questionAnswerVOS" columnPrefix="q_" resultMap="QuestionAnswerMap"/>
     </resultMap>
 
@@ -61,9 +62,13 @@
 
     <select id="getParticipationQuestions" resultMap="ParticipationQuestionMap">
         select
-            ap.id, q.id q_id, q.title q_title, pq.answer q_answer
+            ap.id, q.id q_id, q.title q_title, pq.answer q_answer,
+            <include refid="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.Stu_Simple_Column_List"/>
         from
-            activity_participation ap
+        activity_participation ap
+            left join recruitment_activity a on a.id = ap.act_id and a.is_deleted = 0 and ap.is_deleted = 0
+            left join recruitment_batch b on b.id = a.batch_id and b.is_deleted = 0 and a.is_deleted = 0
+            left join stu_resume r on r.batch_id = b.id and r.user_id = ap.stu_id and b.is_deleted = 0 and r.is_deleted = 0
             left join participation_question_link pq on ap.id = pq.participation_id and ap.is_deleted = 0 and pq.is_deleted = 0
             left join question q on pq.question_id = q.id and pq.is_deleted = 0 and q.is_deleted = 0
         where ap.is_deleted = 0 and ap.id

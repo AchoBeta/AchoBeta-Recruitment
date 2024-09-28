@@ -13,6 +13,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.zip.Adler32;
 
 /**
  * Created With Intellij IDEA
@@ -75,6 +76,12 @@ public class MediaUtil {
             file.createNewFile();
         }
         return new FileOutputStream(file);
+    }
+
+    public static String getAdler32(byte[] bytes) {
+        Adler32 adler32 = new Adler32();
+        adler32.update(bytes);
+        return String.valueOf(adler32.getValue());
     }
 
     public static <T> T createTempFileGetSomething(String originalName, byte[] data, Function<File, T> converter) {

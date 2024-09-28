@@ -25,16 +25,7 @@ public class ActivitySituationExcelTemplate {
     @Excel(name = "姓名", width = 20, needMerge = true)
     private String name;
 
-    @Excel(name = "用户名", width = 20, needMerge = true)
-    private String username;
-
-    @Excel(name = "邮箱", width = 20, needMerge = true)
-    private String email;
-
-    @Excel(name = "性别", width = 20, replace = {"男_0", "女_1"}, needMerge = true)
-    private Integer gender;
-
-    @Excel(name = "年纪", width = 20, needMerge = true)
+    @Excel(name = "年级", width = 20, needMerge = true)
     private Integer grade;
 
     @Excel(name = "专业", width = 20, needMerge = true)
@@ -43,8 +34,35 @@ public class ActivitySituationExcelTemplate {
     @Excel(name = "班级", width = 20, needMerge = true)
     private String className;
 
+    @Excel(name = "性别", width = 20, replace = {"男_0", "女_1"}, needMerge = true)
+    private Integer gender;
+
+    @Excel(name = "邮箱", width = 20, needMerge = true)
+    private String email;
+
+    @Excel(name = "手机号码", width = 20, needMerge = true)
+    private String phoneNumber;
+
+    @Excel(name = "加入 AchoBeta 的理由", width = 50, needMerge = true)
+    private String reason;
+
+    @Excel(name = "个人介绍（自我认知）", width = 50, needMerge = true)
+    private String introduce;
+
+    @Excel(name = "个人经历 （项目经历、 职业规划等）", width = 50, needMerge = true)
+    private String experience;
+
+    @Excel(name = "获奖经历", width = 50, needMerge = true)
+    private String awards;
+
+    @Excel(name = "备注", width = 50, needMerge = true)
+    private String remark;
+
     @Excel(name = "简历状态", width = 20, needMerge = true)
     private ResumeStatus status;
+
+    @Excel(name = "已提交次数", width = 20, needMerge = true)
+    private Integer submitCount;
 
     @ExcelCollection(name = "Q&A")
     private List<QuestionAnswerVO> questionAnswerVOS;

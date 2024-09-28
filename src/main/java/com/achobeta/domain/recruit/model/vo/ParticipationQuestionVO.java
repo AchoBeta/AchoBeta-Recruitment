@@ -1,5 +1,6 @@
 package com.achobeta.domain.recruit.model.vo;
 
+import com.achobeta.domain.student.model.vo.StuSimpleResumeVO;
 import lombok.Data;
 
 import java.util.List;
@@ -16,6 +17,8 @@ import java.util.List;
 public class ParticipationQuestionVO {
 
     private Long id;
+
+    private StuSimpleResumeVO stuSimpleResumeVO;
 
     private List<QuestionAnswerVO> questionAnswerVOS;
 }

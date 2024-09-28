@@ -175,17 +175,19 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
         // 构造数据
         Map<Long, ActivitySituationExcelTemplate> resultMap = new LinkedHashMap<>();
         getSituationsByActId(actId).getUserParticipationVOS().forEach(situation -> {
-            ActivitySituationExcelTemplate activitySituationExcelTemplate = SituationConverter.INSTANCE
-                    .userParticipationVOToSituationExcelTemplate(situation.getSimpleStudentVO());
+            ActivitySituationExcelTemplate activitySituationExcelTemplate = new ActivitySituationExcelTemplate();
             activitySituationExcelTemplate.setTimePeriodVOS(situation.getTimePeriodVOS());
             activitySituationExcelTemplate.setScheduleVOS(situation.getScheduleVOS());
             resultMap.put(situation.getParticipationId(), activitySituationExcelTemplate);
         });
+        // 获取详尽的问答与简历
         List<Long> participationIds = new ArrayList<>(resultMap.keySet());
         activityParticipationService.getParticipationQuestions(participationIds).stream()
-                .filter(question -> resultMap.containsKey(question.getId()))
-                .forEach(question -> {
-                    resultMap.get(question.getId()).setQuestionAnswerVOS(question.getQuestionAnswerVOS());
+                .filter(participationQuestionVO -> resultMap.containsKey(participationQuestionVO.getId()))
+                .forEach(participationQuestionVO -> {
+                    ActivitySituationExcelTemplate activitySituationExcelTemplate = resultMap.get(participationQuestionVO.getId());
+                    SituationConverter.INSTANCE.stuSimpleResumeVOMapToSituationExcelTemplate(activitySituationExcelTemplate, participationQuestionVO.getStuSimpleResumeVO());
+                    activitySituationExcelTemplate.setQuestionAnswerVOS(participationQuestionVO.getQuestionAnswerVOS());
                 });
         // 获取表格
         return resourceService.uploadExcel(

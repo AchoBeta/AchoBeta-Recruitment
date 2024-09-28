@@ -9,6 +9,7 @@ import com.achobeta.domain.feishu.model.entity.FeishuResource;
 import com.achobeta.domain.feishu.model.vo.FeishuResourceQueryVO;
 import com.achobeta.domain.feishu.service.FeishuResourceService;
 import com.achobeta.domain.feishu.service.FeishuService;
+import com.achobeta.feishu.config.FeishuAppConfig;
 import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.redis.lock.RedisLock;
 import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
@@ -65,6 +66,11 @@ public class FeishuResourceServiceImpl extends ServiceImpl<FeishuResourceMapper,
     @Override
     public void updateFeishuResource(Long id, ImportTask importTask) {
         FeishuResource feishuResource = FeishuResourceConverter.INSTANCE.importTaskToFeishuResource(importTask);
+        log.warn("任务状态 {}，额外提示 {}, 任务若失败，失败的原因 {}，参考 {}", (
+                        importTask.getJobStatus()), Arrays.toString(importTask.getExtra()), importTask.getJobErrorMsg(),
+                "https://open.feishu.cn/document/server-docs/docs/drive-v1/import_task/get?appId=cli_a67eb2cebcf99013"
+        );
+        log.warn("飞书资源 {}，更新为 {}", id, feishuResource);
         this.lambdaUpdate().eq(FeishuResource::getId, id).update(feishuResource);
     }
 
@@ -75,23 +81,17 @@ public class FeishuResourceServiceImpl extends ServiceImpl<FeishuResourceMapper,
         return (String) redisCache.getCacheObject(redisKey).orElseGet(() -> {
             FeishuResource feishuResource = createAndGetFeishuResource(ticket, DEFAULT_NAME);
             String url = feishuResource.getUrl();
+            if(!StringUtils.hasText(url)) {
+                // 尝试通过 ticket 获取
+                ImportTask result = feishuService.getImportTask(ticket).getResult();
+                updateFeishuResource(feishuResource.getId(), result);
+                url = result.getUrl();
+            }
             if(StringUtils.hasText(url)) {
                 redisCache.setCacheObject(redisKey, url, FEISHU_RESOURCE_REDIRECT_TIMEOUT, FEISHU_RESOURCE_REDIRECT_UNIT);
                 return url;
             }else {
-                // 尝试通过 ticket 获取
-                ImportTask result = feishuService.getImportTask(ticket).getResult();
-                log.warn("任务状态 {}，额外提示 {}, 任务若失败，失败的原因 {}，参考 {}", (
-                        result.getJobStatus()), Arrays.toString(result.getExtra()), result.getJobErrorMsg(),
-                        "https://open.feishu.cn/document/server-docs/docs/drive-v1/import_task/get?appId=cli_a67eb2cebcf99013"
-                );
-                url = result.getUrl();
-                if(StringUtils.hasText(url)) {
-                    updateFeishuResource(feishuResource.getId(), result);
-                    return url;
-                }else {
-                    return DEFAULT_URL; // 只返回不落库
-                }
+                return DEFAULT_URL; // 只返回不落库
             }
         });
     }

@@ -12,7 +12,6 @@ import java.io.Serializable;
 @Data
 public class StuSimpleResumeVO implements Serializable {
 
-
     private Long batchId;
 
     private String studentId;

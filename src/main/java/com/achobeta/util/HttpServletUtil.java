@@ -10,6 +10,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
@@ -55,7 +56,7 @@ public class HttpServletUtil {
 
     public static void returnBytes(String downloadName, byte[] bytes, HttpServletResponse response) {
         // 在设置内容类型之前设置下载的文件名称
-        response.addHeader("Content-Disposition", "attachment;fileName=" + downloadName);
+        response.addHeader("Content-Disposition", "attachment; fileName=" + HttpRequestUtil.encodeString(downloadName));
         returnBytes(bytes, response);
     }
 

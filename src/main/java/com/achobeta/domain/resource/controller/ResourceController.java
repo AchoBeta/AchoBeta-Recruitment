@@ -7,6 +7,7 @@ import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.converter.DigitalResourceConverter;
 import com.achobeta.domain.resource.model.dto.ResourceQueryDTO;
+import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
 import com.achobeta.domain.resource.model.vo.ResourceAccessLevelVO;
 import com.achobeta.domain.resource.model.vo.ResourceQueryVO;
 import com.achobeta.domain.resource.service.DigitalResourceService;
@@ -16,6 +17,7 @@ import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.service.UserService;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.feishu.constants.ObjectType;
 import com.achobeta.util.TimeUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -26,6 +28,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -89,6 +92,25 @@ public class ResourceController {
         Long userId = BaseContext.getCurrentUser().getUserId();
         Long code = resourceService.upload(userId, file);
         return SystemJsonResponse.SYSTEM_SUCCESS(code);
+    }
+
+    @PostMapping("/upload/markdown")
+    @Intercept(permit = {UserTypeEnum.ADMIN})
+    public SystemJsonResponse uploadMarkdown(@RequestPart("file") MultipartFile file) {
+        Long userId = BaseContext.getCurrentUser().getUserId();
+        try {
+            OnlineResourceVO onlineResourceVO = resourceService.synchronousUpload(
+                    userId,
+                    ResourceUtil.getOriginalName(file),
+                    file.getBytes(),
+                    ResourceAccessLevel.FREE_ACCESS,
+                    ObjectType.MD,
+                    Boolean.TRUE
+            );
+            return SystemJsonResponse.SYSTEM_SUCCESS(onlineResourceVO);
+        } catch (IOException e) {
+            throw new GlobalServiceException(e.getMessage());
+        }
     }
 
     @PostMapping("/upload/image")

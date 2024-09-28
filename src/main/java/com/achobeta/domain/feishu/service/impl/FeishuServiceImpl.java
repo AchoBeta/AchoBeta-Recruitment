@@ -33,6 +33,7 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.zip.Adler32;
 
 import static com.achobeta.common.enums.HttpRequestEnum.*;
 import static com.achobeta.feishu.constants.FeishuConstants.*;
@@ -167,6 +168,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
                     .parentType(UploadAllMediaParentTypeEnum.CCM_IMPORT_OPEN)
                     .size(bytes.length)
                     .extra(GsonUtil.toJson(objectType))
+                    .checksum(MediaUtil.getAdler32(bytes))
                     .file(file)
                     .build();
             return uploadMedia(uploadAllMediaReqBody);
@@ -186,13 +188,14 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
     }
 
     @Override
-    public UploadAllFileRespBody uploadFile(String originalName, byte[] bytes, ObjectType objectType) {
+    public UploadAllFileRespBody uploadFileBriefly(String originalName, byte[] bytes, ObjectType objectType) {
         return MediaUtil.createTempFileGetSomething(originalName, bytes, file -> {
             UploadAllFileReqBody uploadAllFileReqBody = UploadAllFileReqBody.newBuilder()
                     .fileName(originalName)
                     .parentType(UploadAllFileParentTypeEnum.EXPLORER)
                     .parentNode(defaultParentNode)
                     .size(bytes.length)
+                    .checksum(MediaUtil.getAdler32(bytes))
                     .file(file)
                     .build();
             return uploadFile(uploadAllFileReqBody);
@@ -201,20 +204,31 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
     @Override
     public CreateImportTaskRespBody importTask(ImportTask importTask) {
-        String token = feishuTenantAccessToken.getToken();
-        return FeishuRequestUtil.request(
-                IMPORT_TASK,
-                importTask,
-                CreateImportTaskResp.class,
-                Map.of(AUTHORIZATION_HEADER, getAuthorization(token)),
-                null
-        ).getData();
+        CreateImportTaskReq createImportTaskReq = CreateImportTaskReq.newBuilder()
+                .importTask(importTask)
+                .build();
+        try {
+            CreateImportTaskResp createImportTaskResp = feishuClient.drive().importTask().create(createImportTaskReq);
+            FeishuRequestUtil.checkResponse(createImportTaskResp);
+            return createImportTaskResp.getData();
+        } catch (Exception e) {
+            throw new GlobalServiceException(e.getMessage());
+        }
+//        String token = feishuTenantAccessToken.getToken();
+//        return FeishuRequestUtil.request(
+//                IMPORT_TASK,
+//                importTask,
+//                CreateImportTaskResp.class,
+//                Map.of(AUTHORIZATION_HEADER, getAuthorization(token)),
+//                null
+//        ).getData();
     }
 
     @Override
     public CreateImportTaskRespBody importTaskBriefly(String originalName, byte[] bytes, ObjectType objectType) {
-        String fileToken = uploadMediaBriefly(originalName, bytes, objectType).getFileToken();
+        String fileToken = uploadFileBriefly(originalName, bytes, objectType).getFileToken();
         ImportTask importTask = ImportTask.newBuilder()
+                .fileName(originalName)
                 .fileExtension(objectType.getFileExtension())
                 .fileToken(fileToken)
                 .type(objectType.getObjType())
@@ -228,15 +242,23 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
     @Override
     public GetImportTaskRespBody getImportTask(String ticket) {
-        String token = feishuTenantAccessToken.getToken();
-        return FeishuRequestUtil.request(
-                GET_IMPORT_TASK,
-                null,
-                GetImportTaskResp.class,
-                Map.of(AUTHORIZATION_HEADER, getAuthorization(token)),
-                null,
-                Map.of(MEDIA_TICKET_QUERY_KEY, ticket)
-        ).getData();
+        GetImportTaskReq getImportTaskReq = GetImportTaskReq.newBuilder().ticket(ticket).build();
+        try {
+            GetImportTaskResp getImportTaskResp = feishuClient.drive().importTask().get(getImportTaskReq);
+            FeishuRequestUtil.checkResponse(getImportTaskResp);
+            return getImportTaskResp.getData();
+        } catch (Exception e) {
+            throw new GlobalServiceException(e.getMessage());
+        }
+//        String token = feishuTenantAccessToken.getToken();
+//        return FeishuRequestUtil.request(
+//                GET_IMPORT_TASK,
+//                null,
+//                GetImportTaskResp.class,
+//                Map.of(AUTHORIZATION_HEADER, getAuthorization(token)),
+//                null,
+//                Map.of(MEDIA_TICKET_QUERY_KEY, ticket)
+//        ).getData();
     }
 
     @Override

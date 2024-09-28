@@ -35,7 +35,7 @@ public interface FeishuService {
 
     UploadAllFileRespBody uploadFile(UploadAllFileReqBody uploadAllFileReqBody);
 
-    UploadAllFileRespBody uploadFile(String originalName, byte[] bytes, ObjectType objectType);
+    UploadAllFileRespBody uploadFileBriefly(String originalName, byte[] bytes, ObjectType objectType);
 
     CreateImportTaskRespBody importTask(ImportTask importTask);
 

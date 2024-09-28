@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -155,7 +156,7 @@ public class ResourceServiceImpl implements ResourceService {
         resource.setAccessLevel(level);
         Long code = digitalResourceService.createResource(resource).getCode();
         // 自增
-        redisCache.incrementCacheNumber( ResourceConstants.REDIS_USER_UPLOAD_BLOCK + userId);
+        redisCache.incrementCacheNumber(redisKey);
         return code;
     }
 
@@ -177,15 +178,24 @@ public class ResourceServiceImpl implements ResourceService {
     @Transactional
     public OnlineResourceVO synchronousUpload(Long managerId, String originalName, byte[] bytes, ResourceAccessLevel level, ObjectType objectType, Boolean synchronous) {
         OnlineResourceVO onlineResourceVO = new OnlineResourceVO();
+        // 上传对象存储系统
+        Long code = upload(managerId, originalName, bytes, level);
         HttpServletUtil.getRequest().ifPresent(request -> {
-            // 上传对象存储系统
-            Long code = upload(managerId, originalName, bytes, level);
             onlineResourceVO.setDownloadUrl(getSystemUrl(request, code));
             // 是否同步飞书文档
             if(Boolean.TRUE.equals(synchronous)) {
                 String ticket = feishuService.importTaskBriefly(originalName, bytes, objectType).getTicket();
                 FeishuResource resource = feishuResourceService.createAndGetFeishuResource(ticket, originalName);
                 ImportTask importTask = feishuService.getImportTask(ticket).getResult();
+                while (importTask.getJobStatus() != 0) {
+                    log.warn("{} {}", importTask.getJobStatus(), importTask.getJobErrorMsg());
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        log.warn(e.getMessage());
+                    }
+                    importTask = feishuService.getImportTask(ticket).getResult();
+                }
                 feishuResourceService.updateFeishuResource(resource.getId(), importTask);
                 onlineResourceVO.setFeishuUrl(feishuResourceService.getSystemUrl(request, ticket));
             }
