@@ -1,6 +1,7 @@
 package com.achobeta.domain.resource.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.feishu.model.entity.FeishuResource;
 import com.achobeta.domain.feishu.service.FeishuResourceService;
 import com.achobeta.domain.feishu.service.FeishuService;
 import com.achobeta.domain.resource.access.strategy.ResourceAccessStrategy;
@@ -23,6 +24,7 @@ import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.util.HttpRequestUtil;
 import com.achobeta.util.HttpServletUtil;
 import com.achobeta.util.TimeUtil;
+import com.lark.oapi.service.drive.v1.model.ImportTask;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -135,12 +137,26 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Long upload(Long userId, String originalName, byte[] data, ResourceAccessLevel level) {
         checkBlockUser(userId);
+        // 进行上传次数的检测
+        String redisKey = ResourceConstants.REDIS_USER_UPLOAD_LIMIT + userId;
+        // 获得已上传的次数
+        Integer times = (Integer) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+            redisCache.setCacheObject(redisKey, 0, uploadLimitProperties.getCycle(), uploadLimitProperties.getUnit());
+            return 0;
+        });
+        // 判断次数是否达到上限
+        if(uploadLimitProperties.getFrequency().compareTo(times) <= 0) {
+            throw new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_UPLOAD_TOO_FREQUENT);
+        }
         DigitalResource resource = new DigitalResource();
         resource.setUserId(userId);
         resource.setOriginalName(originalName);
         resource.setFileName(objectStorageService.upload(userId, originalName, data));
         resource.setAccessLevel(level);
-        return digitalResourceService.createResource(resource).getCode();
+        Long code = digitalResourceService.createResource(resource).getCode();
+        // 自增
+        redisCache.incrementCacheNumber( ResourceConstants.REDIS_USER_UPLOAD_BLOCK + userId);
+        return code;
     }
 
     @Override
@@ -158,6 +174,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    @Transactional
     public OnlineResourceVO synchronousUpload(Long managerId, String originalName, byte[] bytes, ResourceAccessLevel level, ObjectType objectType, Boolean synchronous) {
         OnlineResourceVO onlineResourceVO = new OnlineResourceVO();
         HttpServletUtil.getRequest().ifPresent(request -> {
@@ -167,6 +184,9 @@ public class ResourceServiceImpl implements ResourceService {
             // 是否同步飞书文档
             if(Boolean.TRUE.equals(synchronous)) {
                 String ticket = feishuService.importTaskBriefly(originalName, bytes, objectType).getTicket();
+                FeishuResource resource = feishuResourceService.createAndGetFeishuResource(ticket, originalName);
+                ImportTask importTask = feishuService.getImportTask(ticket).getResult();
+                feishuResourceService.updateFeishuResource(resource.getId(), importTask);
                 onlineResourceVO.setFeishuUrl(feishuResourceService.getSystemUrl(request, ticket));
             }
         });
@@ -174,6 +194,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    @Transactional
     public <E> OnlineResourceVO uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<E> clazz, List<E> data, ResourceAccessLevel level, Boolean synchronous) {
         // 获取数据
         byte[] bytes = ExcelUtil.exportXlsxFile(excelTemplateEnum.getTitle(), excelTemplateEnum.getSheetName(), clazz, data);
@@ -228,19 +249,6 @@ public class ResourceServiceImpl implements ResourceService {
                 redisCache.deleteObject(blockKey);
             }
         });
-        // 进行上传的检测
-        String redisKey = ResourceConstants.REDIS_USER_UPLOAD_LIMIT + userId;
-        // 获得已上传的次数
-        Integer times = (Integer) redisCache.getCacheObject(redisKey).orElseGet(() -> {
-            redisCache.setCacheObject(redisKey, 0, uploadLimitProperties.getCycle(), uploadLimitProperties.getUnit());
-            return 0;
-        });
-        // 判断次数是否达到上限
-        if(uploadLimitProperties.getFrequency().compareTo(times) <= 0) {
-            throw new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_UPLOAD_TOO_FREQUENT);
-        }
-        // 自增
-        redisCache.incrementCacheNumber(redisKey);
     }
 
     @Override

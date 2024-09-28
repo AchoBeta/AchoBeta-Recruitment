@@ -30,6 +30,7 @@ public interface FeishuService {
 
     UploadAllMediaRespBody uploadMedia(UploadAllMediaReqBody uploadAllMediaReqBody);
 
+    // 这个的资源可能是加密的
     UploadAllMediaRespBody uploadMediaBriefly(String originalName, byte[] bytes, ObjectType objectType);
 
     UploadAllFileRespBody uploadFile(UploadAllFileReqBody uploadAllFileReqBody);

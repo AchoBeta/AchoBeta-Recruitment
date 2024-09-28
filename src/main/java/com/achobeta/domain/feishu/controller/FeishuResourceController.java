@@ -26,12 +26,13 @@ import org.springframework.web.servlet.view.RedirectView;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/feishu/resource")
-@Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER})
+@Intercept(permit = {UserTypeEnum.ADMIN})
 public class FeishuResourceController {
 
     private final FeishuResourceService feishuResourceService;
 
     @GetMapping("/{ticket}")
+    @Intercept(ignore = true)
     public RedirectView redirectByTicket(@PathVariable("ticket") @NotBlank String ticket) {
         String url = feishuResourceService.redirectByTicket(ticket);
         return new RedirectView(url);

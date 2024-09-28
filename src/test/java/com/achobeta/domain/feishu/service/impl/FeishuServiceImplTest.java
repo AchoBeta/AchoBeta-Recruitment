@@ -29,6 +29,6 @@ class FeishuServiceImplTest {
 //        System.out.println(feishuService.getUserIdByMobile("15362558972"));
 //        ApplyReserveRespBody body = feishuService.reserveApplyBriefly(feishuService.getDefaultOwnerId(), 1727625600000L, "马大帅的面试");
 //        System.out.println(JSONUtil.parse(body.getReserve()).toStringPretty());
-        System.out.println(feishuService.sheetResult("7419519182875820060"));
+//        System.out.println(feishuService.sheetResult("7419519182875820060"));
     }
 }

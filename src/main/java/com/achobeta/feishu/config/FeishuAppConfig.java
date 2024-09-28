@@ -14,11 +14,11 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "ab.feishu")
 public class FeishuAppConfig {
 
-    private OwnerProperties owner;
+    private InternalTenantAccessTokenReqBody credentials;
 
     private ResourceProperties resource;
 
-    private InternalTenantAccessTokenReqBody credentials;
+    private OwnerProperties owner;
 
     @Bean
     public Client feishuClient() {

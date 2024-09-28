@@ -213,7 +213,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
     @Override
     public CreateImportTaskRespBody importTaskBriefly(String originalName, byte[] bytes, ObjectType objectType) {
-        String fileToken = uploadFile(originalName, bytes, objectType).getFileToken();
+        String fileToken = uploadMediaBriefly(originalName, bytes, objectType).getFileToken();
         ImportTask importTask = ImportTask.newBuilder()
                 .fileExtension(objectType.getFileExtension())
                 .fileToken(fileToken)
