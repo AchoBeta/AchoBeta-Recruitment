@@ -1,5 +1,6 @@
 package com.achobeta.util;
 
+import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
 import com.achobeta.common.enums.HttpRequestEnum;
@@ -32,6 +33,14 @@ public class HttpRequestUtil {
 
     public static boolean isHttpUrl(String url) {
         return StringUtils.hasText(url) && HTTP_URL_PATTERN.matcher(url).matches();
+    }
+
+    public static boolean isAccessible(HttpURLConnection connection) throws IOException {
+        return Objects.nonNull(connection) && connection.getResponseCode() / 100 == 2;
+    }
+
+    public static boolean isAccessible(String url) throws IOException {
+        return isAccessible(openConnection(url));
     }
 
     @Nullable
@@ -73,14 +82,15 @@ public class HttpRequestUtil {
         // 准备参数
         Method requestMethod = Method.valueOf(method.toUpperCase());
         headers = Optional.ofNullable(headers).orElseGet(Map::of);
-        String reqJson = GsonUtil.toJson(requestBody);
         // 发出请求
-        String respJson = HttpUtil.createRequest(requestMethod, url)
+        HttpRequest httpRequest = HttpUtil.createRequest(requestMethod, url)
                 .headerMap(headers, Boolean.TRUE)
-                .headerMap(JSON_CONTENT_TYPE_HEADER, Boolean.TRUE)
-                .body(reqJson)
-                .execute()
-                .body();
+                .headerMap(JSON_CONTENT_TYPE_HEADER, Boolean.TRUE);
+        if(Objects.nonNull(requestBody)) {
+            String reqJson = GsonUtil.toJson(requestBody);
+            httpRequest = httpRequest.body(reqJson);
+        }
+        String respJson = httpRequest.execute().body();
         // 转换并返回
         return GsonUtil.fromJson(respJson, responseClazz);
     }

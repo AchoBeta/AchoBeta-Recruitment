@@ -1,17 +1,19 @@
-package com.achobeta.util;
+package com.achobeta.domain.resource.util;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.resource.constants.ResourceConstants;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.util.HttpRequestUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.tika.Tika;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Created With Intellij IDEA
@@ -25,18 +27,10 @@ public class MediaUtil {
 
     private final static Tika TIKA = new Tika();
 
-    public static boolean isAccessible(HttpURLConnection connection) throws IOException {
-        return Objects.nonNull(connection) && connection.getResponseCode() / 100 == 2;
-    }
-
-    public static boolean isAccessible(String url) throws IOException {
-        return isAccessible(HttpRequestUtil.openConnection(url));
-    }
-
     @Nullable
     public static InputStream getInputStream(String url) throws IOException {
         HttpURLConnection connection = HttpRequestUtil.openConnection(url);
-        return isAccessible(connection) ? connection.getInputStream() : null;
+        return HttpRequestUtil.isAccessible(connection) ? connection.getInputStream() : null;
     }
 
     @Nullable
@@ -74,6 +68,33 @@ public class MediaUtil {
             return getContentType(inputStream);
         } catch (IOException e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_NOT_VALID);
+        }
+    }
+
+    private static FileOutputStream createAndGetFileOutputStream(File file) throws IOException {
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        return new FileOutputStream(file);
+    }
+
+    public static <T> T createTempFileGetSomething(String originalName, byte[] data, Function<File, T> converter) {
+        String tempResourcePath = ResourceConstants.TEMP_RESOURCE_PATH;
+        File tempDir = new File(tempResourcePath);
+        if(!tempDir.exists()) {
+            tempDir.mkdir();
+        }
+        String fileNameSuffix = ResourceUtil.getFileNameSuffix(originalName);
+        String tempFileName = ResourceUtil.getSimpleFileName(fileNameSuffix);
+        File tempFile = new File(tempResourcePath + tempFileName);
+        try (FileOutputStream outputStream = createAndGetFileOutputStream(tempFile)) {
+            outputStream.write(data);
+            outputStream.flush();
+            return converter.apply(tempFile);
+        }  catch (IOException e) {
+            throw new GlobalServiceException(e.getMessage());
+        } finally {
+            tempFile.delete();
         }
     }
 

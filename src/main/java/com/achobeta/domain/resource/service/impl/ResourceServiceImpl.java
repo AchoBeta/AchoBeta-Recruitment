@@ -1,6 +1,7 @@
 package com.achobeta.domain.resource.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.feishu.service.FeishuService;
 import com.achobeta.domain.resource.access.strategy.ResourceAccessStrategy;
 import com.achobeta.domain.resource.config.UploadLimitProperties;
 import com.achobeta.domain.resource.constants.ResourceConstants;
@@ -11,9 +12,14 @@ import com.achobeta.domain.resource.model.entity.DigitalResource;
 import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.domain.resource.service.ResourceService;
+import com.achobeta.domain.resource.util.ExcelUtil;
+import com.achobeta.domain.resource.util.MediaUtil;
+import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.feishu.constants.ObjectType;
 import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.util.*;
+import com.lark.oapi.service.drive.v1.model.GetImportTaskRespBody;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +55,8 @@ public class ResourceServiceImpl implements ResourceService {
     private final DigitalResourceService digitalResourceService;
 
     private final ObjectStorageService objectStorageService;
+
+    private final FeishuService feishuService;
 
     private final RedisCache redisCache;
 
@@ -148,6 +156,11 @@ public class ResourceServiceImpl implements ResourceService {
     public <E> Long uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<E> clazz, List<E> data, ResourceAccessLevel level) {
         // 获取数据
         byte[] bytes = ExcelUtil.exportXlsxFile(excelTemplateEnum.getTitle(), excelTemplateEnum.getSheetName(), clazz, data);
+        GetImportTaskRespBody importTaskBriefly = feishuService.getImportTaskBriefly(
+                excelTemplateEnum.getOriginalName(),
+                bytes, ObjectType.XLSX
+        );
+        System.out.println(GsonUtil.toJson(importTaskBriefly.getResult()));
         // 上传
         return upload(managerId, excelTemplateEnum.getOriginalName(), bytes, level);
     }

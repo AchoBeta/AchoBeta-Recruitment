@@ -1,7 +1,7 @@
 package com.achobeta.common.annotation.handler;
 
 import com.achobeta.common.annotation.IsAccessible;
-import com.achobeta.util.MediaUtil;
+import com.achobeta.util.HttpRequestUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ public class IsAccessibleValidator implements ConstraintValidator<IsAccessible, 
         return Optional.ofNullable(s)
                 .map(url -> {
                     try {
-                        return MediaUtil.isAccessible(url);
+                        return HttpRequestUtil.isAccessible(url);
                     } catch (IOException e) {
                         // 重定向次数过多也判定为无法访问
                         log.warn(e.getMessage());

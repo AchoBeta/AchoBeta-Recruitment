@@ -1,4 +1,4 @@
-package com.achobeta.util;
+package com.achobeta.domain.resource.util;
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;

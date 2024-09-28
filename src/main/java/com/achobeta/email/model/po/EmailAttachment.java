@@ -1,6 +1,6 @@
 package com.achobeta.email.model.po;
 
-import com.achobeta.util.MediaUtil;
+import com.achobeta.domain.resource.util.MediaUtil;
 import jakarta.activation.DataSource;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -134,7 +134,7 @@ public class InterviewScheduleController {
     }
 
     @GetMapping("/print/situations/{actId}")
-    public SystemJsonResponse getUserParticipationSituationByActId(HttpServletRequest request,
+    public SystemJsonResponse printUserParticipationSituationByActId(HttpServletRequest request,
                                                                    @PathVariable("actId") @NotNull Long actId,
                                                                    @RequestParam(name = "level", required = false) Integer level) {
         // 检测

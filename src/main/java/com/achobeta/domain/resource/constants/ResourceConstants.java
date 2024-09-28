@@ -17,4 +17,6 @@ public interface ResourceConstants {
 
     String REDIS_USER_UPLOAD_BLOCK = "userUploadBlock:";
 
+    String TEMP_RESOURCE_PATH = "./temp/";
+
 }

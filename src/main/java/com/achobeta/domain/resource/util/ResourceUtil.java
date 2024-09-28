@@ -1,7 +1,8 @@
-package com.achobeta.util;
+package com.achobeta.domain.resource.util;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.util.TimeUtil;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,12 +54,20 @@ public class ResourceUtil {
         return originalName.substring(originalName.lastIndexOf("."));
     }
 
+    public static String getFileNameExtension(String originalName) {
+        checkOriginalName(originalName);
+        return originalName.substring(originalName.lastIndexOf(".") + 1);
+    }
+
+    public static String getSimpleFileName(String suffix) {
+        return UUID.randomUUID().toString().replace("-", "") + suffix;
+    }
+
     public static String getUniqueFileName(String suffix) {
         return String.format(
-                "%s/%s/%s%s",
+                "%s/%s/%s",
                 TimeUtil.getDate(new Date()), suffix,
-                UUID.randomUUID().toString().replace("-", ""),
-                suffix
+                getSimpleFileName(suffix)
         );
     }
 

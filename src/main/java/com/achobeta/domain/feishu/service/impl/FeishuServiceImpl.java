@@ -1,11 +1,14 @@
 package com.achobeta.domain.feishu.service.impl;
 
 import cn.hutool.core.util.ArrayUtil;
-import com.achobeta.common.enums.HttpRequestEnum;
 import com.achobeta.domain.feishu.service.FeishuService;
+import com.achobeta.domain.resource.util.MediaUtil;
+import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.feishu.config.FeishuAppConfig;
+import com.achobeta.feishu.constants.ObjectType;
 import com.achobeta.feishu.token.FeishuTenantAccessToken;
 import com.achobeta.feishu.util.FeishuRequestUtil;
+import com.achobeta.util.GsonUtil;
 import com.achobeta.util.TimeUtil;
 import com.lark.oapi.Client;
 import com.lark.oapi.service.contact.v3.enums.BatchGetIdUserUserIdTypeEnum;
@@ -13,6 +16,10 @@ import com.lark.oapi.service.contact.v3.model.BatchGetIdUserReqBody;
 import com.lark.oapi.service.contact.v3.model.BatchGetIdUserResp;
 import com.lark.oapi.service.contact.v3.model.BatchGetIdUserRespBody;
 import com.lark.oapi.service.contact.v3.model.UserContactInfo;
+import com.lark.oapi.service.drive.v1.enums.ImportTaskMountPointMountTypeEnum;
+import com.lark.oapi.service.drive.v1.enums.UploadAllFileParentTypeEnum;
+import com.lark.oapi.service.drive.v1.enums.UploadAllMediaParentTypeEnum;
+import com.lark.oapi.service.drive.v1.model.*;
 import com.lark.oapi.service.vc.v1.enums.ApplyReserveUserIdTypeEnum;
 import com.lark.oapi.service.vc.v1.model.ApplyReserveReqBody;
 import com.lark.oapi.service.vc.v1.model.ApplyReserveResp;
@@ -27,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.achobeta.common.enums.HttpRequestEnum.*;
 import static com.achobeta.feishu.constants.FeishuConstants.*;
 import static com.lark.oapi.service.vc.v1.enums.ReserveMeetingSettingMeetingInitialTypeEnum.GROUP_MEETING;
 
@@ -71,7 +79,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //        }
         String token = feishuTenantAccessToken.getToken();
         return FeishuRequestUtil.request(
-                HttpRequestEnum.GET_USER_ID,
+                GET_USER_ID,
                 batchGetIdUserReqBody,
                 BatchGetIdUserResp.class,
                 Map.of(AUTHORIZATION_HEADER, getAuthorization(token)),
@@ -118,7 +126,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //        }
         String token = feishuTenantAccessToken.getToken();
         return FeishuRequestUtil.request(
-                HttpRequestEnum.RESERVE_APPLY,
+                RESERVE_APPLY,
                 applyReserveReqBody,
                 ApplyReserveResp.class,
                 Map.of(AUTHORIZATION_HEADER, getAuthorization(token)),
@@ -135,4 +143,103 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
                 .build();
         return reserveApply(reserveReqBody);
     }
+
+    @Override
+    public UploadAllMediaRespBody uploadMedia(UploadAllMediaReqBody uploadAllMediaReqBody) {
+        UploadAllMediaReq uploadAllMediaReq = UploadAllMediaReq.newBuilder().uploadAllMediaReqBody(uploadAllMediaReqBody).build();
+        try {
+            UploadAllMediaResp uploadAllMediaResp = feishuClient.drive().media().uploadAll(uploadAllMediaReq);
+            FeishuRequestUtil.checkResponse(uploadAllMediaResp);
+            return uploadAllMediaResp.getData();
+        } catch (Exception e) {
+            throw new GlobalServiceException(e.getMessage());
+        }
+    }
+
+    @Override
+    public UploadAllMediaRespBody uploadMediaBriefly(String originalName, byte[] bytes, ObjectType objectType) {
+        return MediaUtil.createTempFileGetSomething(originalName, bytes, file -> {
+            UploadAllMediaReqBody uploadAllMediaReqBody = UploadAllMediaReqBody.newBuilder()
+                    .fileName(originalName)
+                    .parentType(UploadAllMediaParentTypeEnum.CCM_IMPORT_OPEN)
+                    .size(bytes.length)
+                    .extra(GsonUtil.toJson(objectType))
+                    .file(file)
+                    .build();
+            return uploadMedia(uploadAllMediaReqBody);
+        });
+    }
+
+    @Override
+    public UploadAllFileRespBody uploadFile(UploadAllFileReqBody uploadAllFileReqBody) {
+        UploadAllFileReq uploadAllFileRespBody = UploadAllFileReq.newBuilder().uploadAllFileReqBody(uploadAllFileReqBody).build();
+        try {
+            UploadAllFileResp uploadAllFileResp = feishuClient.drive().file().uploadAll(uploadAllFileRespBody);
+            FeishuRequestUtil.checkResponse(uploadAllFileResp);
+            return uploadAllFileResp.getData();
+        } catch (Exception e) {
+            throw new GlobalServiceException(e.getMessage());
+        }
+    }
+
+    @Override
+    public UploadAllFileRespBody uploadFile(String originalName, byte[] bytes, ObjectType objectType) {
+        return MediaUtil.createTempFileGetSomething(originalName, bytes, file -> {
+            UploadAllFileReqBody uploadAllFileReqBody = UploadAllFileReqBody.newBuilder()
+                    .fileName(originalName)
+                    .parentType(UploadAllFileParentTypeEnum.EXPLORER)
+                    .parentNode("Sx9KfdvAzlY0YudYhEMcziRznpe")
+                    .size(bytes.length)
+                    .file(file)
+                    .build();
+            return uploadFile(uploadAllFileReqBody);
+        });
+    }
+
+    @Override
+    public CreateImportTaskRespBody importTask(ImportTask importTask) {
+        String token = feishuTenantAccessToken.getToken();
+        return FeishuRequestUtil.request(
+                IMPORT_TASK,
+                importTask,
+                CreateImportTaskResp.class,
+                Map.of(AUTHORIZATION_HEADER, getAuthorization(token)),
+                null
+        ).getData();
+    }
+
+    @Override
+    public CreateImportTaskRespBody importTaskBriefly(String originalName, byte[] bytes, ObjectType objectType) {
+        String fileToken = uploadFile(originalName, bytes, objectType).getFileToken();
+        ImportTask importTask = ImportTask.newBuilder()
+                .fileExtension(objectType.getFileExtension())
+                .fileToken(fileToken)
+                .type(objectType.getObjType())
+                .point(ImportTaskMountPoint.newBuilder()
+                        .mountType(ImportTaskMountPointMountTypeEnum.SPACE)
+                        .mountKey("Sx9KfdvAzlY0YudYhEMcziRznpe")
+                        .build())
+                .build();
+        return importTask(importTask);
+    }
+
+    @Override
+    public GetImportTaskRespBody getImportTask(String ticket) {
+        String token = feishuTenantAccessToken.getToken();
+        return FeishuRequestUtil.request(
+                GET_IMPORT_TASK,
+                null,
+                GetImportTaskResp.class,
+                Map.of(AUTHORIZATION_HEADER, getAuthorization(token)),
+                null,
+                Map.of(MEDIA_TICKET_QUERY_KEY, ticket)
+        ).getData();
+    }
+
+    @Override
+    public GetImportTaskRespBody getImportTaskBriefly(String originalName, byte[] bytes, ObjectType objectType) {
+        String ticket = importTaskBriefly(originalName, bytes, objectType).getTicket();
+        return getImportTask(ticket);
+    }
+
 }
