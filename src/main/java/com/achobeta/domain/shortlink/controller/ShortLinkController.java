@@ -53,10 +53,8 @@ public class ShortLinkController {
     @PostMapping("/trans")
     public SystemJsonResponse transferAndSaveShortLink(HttpServletRequest request,
                                                        @RequestParam("url") @NotBlank @IsAccessible(message = "链接不可访问") String url) {
-        // 拼接出基础的url
-        String baseUrl = HttpServletUtil.getBaseUrl(request, "/api/v1/shortlink", "/{code}");
         // 转化
-        String shortLinkURL = shortLinkService.transShortLinkURL(baseUrl, url);
+        String shortLinkURL = shortLinkService.transShortLinkURL(request, url);
         log.info("原链接:{} -> 短链接:{}", url, shortLinkURL);
         return SystemJsonResponse.SYSTEM_SUCCESS(shortLinkURL);
     }

@@ -15,6 +15,7 @@ import com.achobeta.domain.interview.model.vo.*;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.users.context.BaseContext;
@@ -153,14 +154,15 @@ public class InterviewController {
     @PostMapping("/print/all")
     public SystemJsonResponse printAllInterviewList(HttpServletRequest request,
                                                     @RequestParam(name = "level", required = false) Integer level,
+                                                    @RequestParam(name = "synchronous", required = false) Boolean synchronous,
                                                     @Valid @RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 获取当前管理员 id
         Long managerId = BaseContext.getCurrentUser().getUserId();
         ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(InterviewConstants.DEFAULT_EXCEL_ACCESS_LEVEL);
         // 打印成表格
-        Long code = interviewService.printAllInterviewList(managerId, InterviewConditionDTO.of(interviewConditionDTO), accessLevel);
+        OnlineResourceVO onlineResourceVO = interviewService.printAllInterviewList(managerId, InterviewConditionDTO.of(interviewConditionDTO), accessLevel, synchronous);
         // 构造 url 并返回
-        return SystemJsonResponse.SYSTEM_SUCCESS(resourceService.getSystemUrl(request, code));
+        return SystemJsonResponse.SYSTEM_SUCCESS(onlineResourceVO);
     }
 
     @PostMapping("/list/manager/own")

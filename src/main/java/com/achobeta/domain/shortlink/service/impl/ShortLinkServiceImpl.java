@@ -14,8 +14,10 @@ import com.achobeta.domain.shortlink.util.ShortLinkUtils;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.util.HttpRequestUtil;
+import com.achobeta.util.HttpServletUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -54,9 +56,15 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 .oneOpt();
     }
 
+    @Override
+    public String getSystemUrl(HttpServletRequest request, String code) {
+        String baseUrl = HttpServletUtil.getBaseUrl(request, "/api/v1/shortlink", "/{code}");
+        return HttpRequestUtil.buildUrl(baseUrl, null, code);
+    }
+
 
     @Override
-    public String transShortLinkURL(String baseUrl, String url) {
+    public String transShortLinkURL(HttpServletRequest request, String url) {
         //获取短链接code
         String code = url;
         String redisKey = null;
@@ -75,7 +83,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         redisCache.setCacheObject(redisKey, url, SHORT_LINK_TIMEOUT, SHORT_LINK_UNIT);
         shortLinkBloomFilter.add(redisKey);
         // 返回完整的短链接
-        return HttpRequestUtil.buildUrl(baseUrl,null, code);
+        return getSystemUrl(request, code);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.achobeta.domain.resource.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.feishu.service.FeishuResourceService;
 import com.achobeta.domain.feishu.service.FeishuService;
 import com.achobeta.domain.resource.access.strategy.ResourceAccessStrategy;
 import com.achobeta.domain.resource.config.UploadLimitProperties;
@@ -9,6 +10,7 @@ import com.achobeta.domain.resource.enums.ExcelTemplateEnum;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.factory.AccessStrategyFactory;
 import com.achobeta.domain.resource.model.entity.DigitalResource;
+import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
 import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.domain.resource.service.ResourceService;
@@ -16,6 +18,7 @@ import com.achobeta.domain.resource.util.ExcelUtil;
 import com.achobeta.domain.resource.util.MediaUtil;
 import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.feishu.config.FeishuAppConfig;
 import com.achobeta.feishu.constants.ObjectType;
 import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.util.*;
@@ -24,6 +27,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,6 +61,8 @@ public class ResourceServiceImpl implements ResourceService {
     private final ObjectStorageService objectStorageService;
 
     private final FeishuService feishuService;
+
+    private final FeishuResourceService feishuResourceService;
 
     private final RedisCache redisCache;
 
@@ -153,16 +159,27 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public <E> Long uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<E> clazz, List<E> data, ResourceAccessLevel level) {
+    public OnlineResourceVO synchronousUpload(Long managerId, String originalName, byte[] bytes, ResourceAccessLevel level, ObjectType objectType, Boolean synchronous) {
+        OnlineResourceVO onlineResourceVO = new OnlineResourceVO();
+        HttpServletUtil.getRequest().ifPresent(request -> {
+            // 上传对象存储系统
+            Long code = upload(managerId, originalName, bytes, level);
+            onlineResourceVO.setDownloadUrl(getSystemUrl(request, code));
+            // 是否同步飞书文档
+            if(Boolean.TRUE.equals(synchronous)) {
+                String ticket = feishuService.importTaskBriefly(originalName, bytes, objectType).getTicket();
+                onlineResourceVO.setFeishuUrl(feishuResourceService.getSystemUrl(request, ticket));
+            }
+        });
+        return onlineResourceVO;
+    }
+
+    @Override
+    public <E> OnlineResourceVO uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<E> clazz, List<E> data, ResourceAccessLevel level, Boolean synchronous) {
         // 获取数据
         byte[] bytes = ExcelUtil.exportXlsxFile(excelTemplateEnum.getTitle(), excelTemplateEnum.getSheetName(), clazz, data);
-        GetImportTaskRespBody importTaskBriefly = feishuService.getImportTaskBriefly(
-                excelTemplateEnum.getOriginalName(),
-                bytes, ObjectType.XLSX
-        );
-        System.out.println(GsonUtil.toJson(importTaskBriefly.getResult()));
         // 上传
-        return upload(managerId, excelTemplateEnum.getOriginalName(), bytes, level);
+        return synchronousUpload(managerId, excelTemplateEnum.getOriginalName(), bytes, level, ObjectType.XLSX, synchronous);
     }
 
     @Override
@@ -238,4 +255,5 @@ public class ResourceServiceImpl implements ResourceService {
             redisCache.deleteObject(blockKey);
         }
     }
+
 }

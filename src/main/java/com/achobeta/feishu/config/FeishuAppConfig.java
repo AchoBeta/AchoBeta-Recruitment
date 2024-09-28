@@ -16,6 +16,8 @@ public class FeishuAppConfig {
 
     private OwnerProperties owner;
 
+    private ResourceProperties resource;
+
     private InternalTenantAccessTokenReqBody credentials;
 
     @Bean

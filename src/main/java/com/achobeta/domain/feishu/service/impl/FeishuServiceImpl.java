@@ -1,6 +1,7 @@
 package com.achobeta.domain.feishu.service.impl;
 
 import cn.hutool.core.util.ArrayUtil;
+import com.achobeta.domain.feishu.constants.FeishuResourceConstants;
 import com.achobeta.domain.feishu.service.FeishuService;
 import com.achobeta.domain.resource.util.MediaUtil;
 import com.achobeta.exception.GlobalServiceException;
@@ -57,9 +58,12 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
     private String defaultOwnerId;
 
+    private String defaultParentNode;
+
     @Override
     public void afterPropertiesSet() throws Exception {
-        defaultOwnerId = getUserIdByMobile(feishuAppConfig.getOwner().getMobile());
+        this.defaultOwnerId = getUserIdByMobile(feishuAppConfig.getOwner().getMobile());
+        this.defaultParentNode = feishuAppConfig.getResource().getParentNode();
     }
 
     @Override
@@ -188,7 +192,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
             UploadAllFileReqBody uploadAllFileReqBody = UploadAllFileReqBody.newBuilder()
                     .fileName(originalName)
                     .parentType(UploadAllFileParentTypeEnum.EXPLORER)
-                    .parentNode("Sx9KfdvAzlY0YudYhEMcziRznpe")
+                    .parentNode(defaultParentNode)
                     .size(bytes.length)
                     .file(file)
                     .build();
@@ -217,7 +221,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
                 .type(objectType.getObjType())
                 .point(ImportTaskMountPoint.newBuilder()
                         .mountType(ImportTaskMountPointMountTypeEnum.SPACE)
-                        .mountKey("Sx9KfdvAzlY0YudYhEMcziRznpe")
+                        .mountKey(defaultParentNode)
                         .build())
                 .build();
         return importTask(importTask);
@@ -238,6 +242,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
     @Override
     public GetImportTaskRespBody getImportTaskBriefly(String originalName, byte[] bytes, ObjectType objectType) {
+        // 这个办法大概率获取不到，一般是正在处理中
         String ticket = importTaskBriefly(originalName, bytes, objectType).getTicket();
         return getImportTask(ticket);
     }

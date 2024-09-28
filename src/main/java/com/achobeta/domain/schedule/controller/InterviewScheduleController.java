@@ -7,6 +7,7 @@ import com.achobeta.domain.interview.constants.InterviewConstants;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.schedule.model.dto.ScheduleDTO;
 import com.achobeta.domain.schedule.model.dto.ScheduleUpdateDTO;
@@ -136,14 +137,15 @@ public class InterviewScheduleController {
     @GetMapping("/print/situations/{actId}")
     public SystemJsonResponse printUserParticipationSituationByActId(HttpServletRequest request,
                                                                    @PathVariable("actId") @NotNull Long actId,
-                                                                   @RequestParam(name = "level", required = false) Integer level) {
+                                                                   @RequestParam(name = "level", required = false) Integer level,
+                                                                   @RequestParam(name = "synchronous", required = false) Boolean synchronous) {
         // 检测
         recruitmentActivityService.checkRecruitmentActivityExists(actId);
         ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(InterviewConstants.DEFAULT_EXCEL_ACCESS_LEVEL);
         // 打印表格
         Long managerId = BaseContext.getCurrentUser().getUserId();
-        Long code = interviewScheduleService.printSituations(managerId, actId, accessLevel);
-        return SystemJsonResponse.SYSTEM_SUCCESS(resourceService.getSystemUrl(request, code));
+        OnlineResourceVO onlineResourceVO = interviewScheduleService.printSituations(managerId, actId, accessLevel, synchronous);
+        return SystemJsonResponse.SYSTEM_SUCCESS(onlineResourceVO);
     }
 
     @GetMapping("/detail/{scheduleId}")

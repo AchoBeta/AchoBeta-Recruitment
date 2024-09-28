@@ -3,6 +3,8 @@ package com.achobeta.domain.resource.service;
 import com.achobeta.domain.resource.enums.ExcelTemplateEnum;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.entity.DigitalResource;
+import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
+import com.achobeta.feishu.constants.ObjectType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,7 +44,9 @@ public interface ResourceService {
 
     Long upload(Long userId, MultipartFile file);
 
-    <E> Long uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<E> clazz, List<E> data, ResourceAccessLevel level);
+    OnlineResourceVO synchronousUpload(Long managerId, String originalName, byte[] bytes, ResourceAccessLevel level, ObjectType objectType, Boolean synchronous);
+
+    <E> OnlineResourceVO uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<E> clazz, List<E> data, ResourceAccessLevel level, Boolean synchronous);
 
     List<Long> uploadList(Long userId, List<MultipartFile> fileList);
 

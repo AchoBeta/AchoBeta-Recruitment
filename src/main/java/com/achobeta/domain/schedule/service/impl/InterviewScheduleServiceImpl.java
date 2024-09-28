@@ -12,6 +12,7 @@ import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.TimePeriodService;
 import com.achobeta.domain.resource.enums.ExcelTemplateEnum;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.schedule.model.converter.SituationConverter;
 import com.achobeta.domain.schedule.model.dao.mapper.InterviewScheduleMapper;
@@ -170,7 +171,7 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
     }
 
     @Override
-    public Long printSituations(Long managerId, Long actId, ResourceAccessLevel level) {
+    public OnlineResourceVO printSituations(Long managerId, Long actId, ResourceAccessLevel level, Boolean synchronous) {
         // 构造数据
         Map<Long, ActivitySituationExcelTemplate> resultMap = new LinkedHashMap<>();
         getSituationsByActId(actId).getUserParticipationVOS().forEach(situation -> {
@@ -192,8 +193,8 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
                 ExcelTemplateEnum.ACHOBETA_ACTIVITY_SITUATIONS,
                 ActivitySituationExcelTemplate.class,
                 new ArrayList<>(resultMap.values()),
-                level
-        );
+                level,
+                synchronous);
     }
 
     @Override

@@ -22,6 +22,7 @@ import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.service.PaperQuestionLinkService;
 import com.achobeta.domain.resource.enums.ExcelTemplateEnum;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.exception.GlobalServiceException;
@@ -83,7 +84,7 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     }
 
     @Override
-    public Long printAllInterviewList(Long managerId, InterviewConditionDTO condition, ResourceAccessLevel level) {
+    public OnlineResourceVO printAllInterviewList(Long managerId, InterviewConditionDTO condition, ResourceAccessLevel level, Boolean synchronous) {
         List<InterviewVO> interviewVOList = managerGetInterviewList(null, condition);
         // 上传表格到对象存储服务器
         return resourceService.uploadExcel(
@@ -91,8 +92,8 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
                 ExcelTemplateEnum.ACHOBETA_INTERVIEW_ALL,
                 InterviewExcelTemplate.class,
                 InterviewConverter.INSTANCE.interviewVOListToInterviewExcelTemplateList(interviewVOList),
-                level
-        );
+                level,
+                synchronous);
     }
 
     @Override
