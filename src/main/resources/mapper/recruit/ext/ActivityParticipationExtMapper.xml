@@ -21,6 +21,12 @@
         <collection property="timePeriodVOS" columnPrefix="t_" resultMap="PeriodMap"/>
     </resultMap>
 
+    <resultMap id="ParticipationQuestionMap" type="com.achobeta.domain.recruit.model.vo.ParticipationQuestionVO">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <association property="stuSimpleResumeVO" columnPrefix="r_" resultMap="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.StuSimpleResumeMap"/>
+        <collection property="questionAnswerVOS" columnPrefix="q_" resultMap="QuestionAnswerMap"/>
+    </resultMap>
+
     <select id="getQuestions" parameterType="java.lang.Long" resultMap="QuestionAnswerMap">
         select
             q.id, q.title, pq.answer
@@ -48,6 +54,23 @@
             activity_participation ap
             left join participation_period_link pp on ap.id = pp.participation_id and ap.is_deleted = 0 and pp.is_deleted = 0
             left join time_period t on pp.period_id = t.id and pp.is_deleted = 0 and t.is_deleted = 0
+        where ap.is_deleted = 0 and ap.id
+        <foreach collection="participationIds" open="in (" close=")" item="participationId" separator=",">
+            #{participationId,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
+    <select id="getParticipationQuestions" resultMap="ParticipationQuestionMap">
+        select
+            ap.id, q.id q_id, q.title q_title, pq.answer q_answer,
+            <include refid="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.Stu_Simple_Column_List"/>
+        from
+        activity_participation ap
+            left join recruitment_activity a on a.id = ap.act_id and a.is_deleted = 0 and ap.is_deleted = 0
+            left join recruitment_batch b on b.id = a.batch_id and b.is_deleted = 0 and a.is_deleted = 0
+            left join stu_resume r on r.batch_id = b.id and r.user_id = ap.stu_id and b.is_deleted = 0 and r.is_deleted = 0
+            left join participation_question_link pq on ap.id = pq.participation_id and ap.is_deleted = 0 and pq.is_deleted = 0
+            left join question q on pq.question_id = q.id and pq.is_deleted = 0 and q.is_deleted = 0
         where ap.is_deleted = 0 and ap.id
         <foreach collection="participationIds" open="in (" close=")" item="participationId" separator=",">
             #{participationId,jdbcType=BIGINT}

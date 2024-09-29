@@ -4,6 +4,7 @@ import com.achobeta.common.enums.HttpRequestEnum;
 import com.achobeta.feishu.config.FeishuAppConfig;
 import com.achobeta.feishu.util.FeishuRequestUtil;
 import com.achobeta.util.TimeUtil;
+import com.lark.oapi.Client;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -20,6 +21,8 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class FeishuTenantAccessToken {
+
+    private final Client feishuClient;
 
     private final FeishuAppConfig feishuAppConfig;
 
@@ -40,9 +43,25 @@ public class FeishuTenantAccessToken {
     }
 
     private void refreshToken() {
+//        try {
+//            InternalTenantAccessTokenReq tenantAccessTokenReq = InternalTenantAccessTokenReq.newBuilder()
+//                    .internalTenantAccessTokenReqBody(feishuAppConfig.getToken())
+//                    .build();
+//            byte[] bytes = feishuClient.auth()
+//                    .tenantAccessToken()
+//                    .internal(tenantAccessTokenReq)
+//                    .getRawResponse()
+//                    .getBody();
+//            FeishuTenantTokenResponse responseBody = GsonUtil.fromBytes(bytes, FeishuTenantTokenResponse.class);
+//            FeishuRequestUtil.checkResponse(responseBody);
+//            this.tenantAccessToken = responseBody.getTenantAccessToken();
+//            this.expire = responseBody.getExpire();
+//        } catch (Exception e) {
+//            throw new GlobalServiceException(e.getMessage());
+//        }
         FeishuTenantTokenResponse responseBody = FeishuRequestUtil.request(
                 HttpRequestEnum.TENANT_ACCESS_TOKEN,
-                feishuAppConfig.getToken(),
+                feishuAppConfig.getCredentials(),
                 FeishuTenantTokenResponse.class,
                 null
         );

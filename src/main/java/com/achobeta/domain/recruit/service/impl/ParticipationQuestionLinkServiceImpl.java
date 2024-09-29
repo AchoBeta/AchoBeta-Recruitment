@@ -1,6 +1,7 @@
 package com.achobeta.domain.recruit.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.recruit.constants.ActivityParticipationConstants;
 import com.achobeta.domain.recruit.model.dao.mapper.ParticipationQuestionLinkMapper;
 import com.achobeta.domain.recruit.model.dto.QuestionAnswerDTO;
 import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
@@ -28,8 +29,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ParticipationQuestionLinkServiceImpl extends ServiceImpl<ParticipationQuestionLinkMapper, ParticipationQuestionLink>
     implements ParticipationQuestionLinkService{
-
-    private final static String DEFAULT_ANSWER = "";
 
     private final RecruitmentActivityService recruitmentActivityService;
 
@@ -80,7 +79,7 @@ public class ParticipationQuestionLinkServiceImpl extends ServiceImpl<Participat
         Map<Long, String> hash = new HashMap<>();
         // 获取答题模板
         recruitmentActivityService.getQuestionsByActId(recId).forEach(questionVO -> {
-            hash.put(questionVO.getId(), DEFAULT_ANSWER);
+            hash.put(questionVO.getId(), ActivityParticipationConstants.DEFAULT_ANSWER);
         });
         // 将答案填入模板，这样还不会重复，如果是恶意数据，按照顺序后来的值会覆盖前面的~
         questionAnswerDTOS.stream()

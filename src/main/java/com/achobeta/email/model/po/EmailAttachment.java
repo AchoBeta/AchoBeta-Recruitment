@@ -1,6 +1,6 @@
 package com.achobeta.email.model.po;
 
-import com.achobeta.util.MediaUtil;
+import com.achobeta.domain.resource.util.MediaUtil;
 import jakarta.activation.DataSource;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,8 +27,8 @@ public class EmailAttachment implements DataSource {
 
     private byte[] bytes;
 
-    public static EmailAttachment of(MultipartFile multipartFile) throws IOException {
-        return new EmailAttachment(multipartFile.getOriginalFilename(), multipartFile.getBytes());
+    public static EmailAttachment of(MultipartFile multipartFile){
+        return new EmailAttachment(multipartFile.getOriginalFilename(), MediaUtil.getBytes(multipartFile));
     }
 
     @Override

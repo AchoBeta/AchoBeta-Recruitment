@@ -11,6 +11,7 @@ import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.model.vo.InterviewReserveVO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public interface InterviewService extends IService<Interview> {
 
     List<InterviewVO> managerGetInterviewList(Long managerId, InterviewConditionDTO condition);
 
-    Long printAllInterviewList(Long managerId, InterviewConditionDTO condition, ResourceAccessLevel level);
+    OnlineResourceVO printAllInterviewList(Long managerId, InterviewConditionDTO condition, ResourceAccessLevel level, Boolean synchronous);
 
     List<InterviewVO> userGetInterviewList(Long userId, InterviewConditionDTO condition);
 

@@ -18,6 +18,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -70,6 +71,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     }
 
     @Override
+    @Transactional
     public Long addQuestion(List<Long> libIds, String title, String standard) {
         Question question = new Question();
         question.setTitle(title);
@@ -81,6 +83,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     }
 
     @Override
+    @Transactional
     public void updateQuestion(Long questionId, List<Long> libIds, String title, String standard) {
         this.lambdaUpdate()
                 .eq(Question::getId, questionId)

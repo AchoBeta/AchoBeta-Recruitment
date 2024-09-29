@@ -10,7 +10,6 @@ import com.achobeta.domain.login.model.entity.LoginUser;
 import com.achobeta.domain.login.model.vo.LoginVO;
 import com.achobeta.domain.login.service.LoginService;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.util.ValidatorUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,12 +35,10 @@ public class PasswordLoginStrategy implements LoginStrategy {
 
     @Override
     public LoginVO doLogin(LoginDTO body) {
-        if (LoginTypeEnum.PASSWORD.getMessage().equals(body.getLoginType()) && body.getPasswordParams() == null) {
-            String message = String.format("'%s'参数为空，原请求参数为:'%s'", body.getLoginType(), body);
-            throw new GlobalServiceException(message, SYSTEM_SERVICE_FAIL);
-        }
-        PasswordLoginDTO loginBody = body.getPasswordParams();
-        ValidatorUtils.validate(loginBody);
+        PasswordLoginDTO loginBody = Optional.ofNullable(body.getPasswordParams()).orElseThrow(() -> {
+            String message = String.format("'%s'参数为空，原请求参数为:'%s'", LoginTypeEnum.PASSWORD, body);
+            return new GlobalServiceException(message, SYSTEM_SERVICE_FAIL);
+        });
 
         String username = loginBody.getUsername();
         String password = loginBody.getPassword();

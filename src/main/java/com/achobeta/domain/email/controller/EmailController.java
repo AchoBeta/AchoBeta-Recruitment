@@ -4,6 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.domain.email.service.EmailService;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -30,7 +31,7 @@ public class EmailController {
      * @return
      */
     @PostMapping("/code")
-    public SystemJsonResponse emailIdentityCheck(@RequestParam("email") @Email String email) {
+    public SystemJsonResponse emailIdentityCheck(@RequestParam("email") @NotBlank @Email String email) {
         // 生成 6位数 随机验证码
         String code = RandomUtil.randomNumbers(6);
         emailService.sendIdentifyingCode(email, code);

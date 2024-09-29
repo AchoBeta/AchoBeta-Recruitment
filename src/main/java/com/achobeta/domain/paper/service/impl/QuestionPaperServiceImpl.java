@@ -16,6 +16,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -65,6 +66,7 @@ public class QuestionPaperServiceImpl extends ServiceImpl<QuestionPaperMapper, Q
     }
 
     @Override
+    @Transactional
     public Long addQuestionPaper(List<Long> libIds, String title, String description) {
         QuestionPaper questionPaper = new QuestionPaper();
         questionPaper.setTitle(title);
@@ -76,6 +78,7 @@ public class QuestionPaperServiceImpl extends ServiceImpl<QuestionPaperMapper, Q
     }
 
     @Override
+    @Transactional
     public void updateQuestionPaper(Long paperId, List<Long> libIds, String title, String description) {
         this.lambdaUpdate()
                 .eq(QuestionPaper::getId, paperId)
@@ -108,6 +111,7 @@ public class QuestionPaperServiceImpl extends ServiceImpl<QuestionPaperMapper, Q
     }
 
     @Override
+    @Transactional
     public void removeQuestionPaper(Long paperId) {
         this.lambdaUpdate()
                 .eq(QuestionPaper::getId, paperId)

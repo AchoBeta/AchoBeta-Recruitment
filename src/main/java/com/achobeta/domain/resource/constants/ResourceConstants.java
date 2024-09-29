@@ -13,4 +13,10 @@ public interface ResourceConstants {
 
     ResourceAccessLevel DEFAULT_RESOURCE_ACCESS_LEVEL = ResourceAccessLevel.USER_ACCESS;
 
+    String REDIS_USER_UPLOAD_LIMIT = "userUploadLimit:";
+
+    String REDIS_USER_UPLOAD_BLOCK = "userUploadBlock:";
+
+    String TEMP_RESOURCE_PATH = "./temp/";
+
 }

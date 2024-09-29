@@ -1,6 +1,5 @@
 package com.achobeta.util;
 
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.util.ClassUtils;
 
 import java.beans.Introspector;
@@ -16,12 +15,6 @@ public class SpringBeanUtil {
 
     public static <T> String getBeanName(T bean) {
         return Introspector.decapitalize(ClassUtils.getShortName(bean.getClass()));
-    }
-
-    public static <S> void registerBean(ConfigurableListableBeanFactory beanFactory, S service) {
-        String beanName = getBeanName(service);
-        beanFactory.autowireBean(service);
-        beanFactory.registerSingleton(beanName, service);
     }
 
 }

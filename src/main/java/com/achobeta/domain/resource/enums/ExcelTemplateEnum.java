@@ -16,6 +16,8 @@ public enum ExcelTemplateEnum {
 
     ACHOBETA_INTERVIEW_ALL("AchoBeta 招新面试", "全部面试日程", "achobeta-interview-all.xlsx"),
 
+    ACHOBETA_ACTIVITY_SITUATIONS("AchoBeta 招新活动参与情况", "所有参与者的参与情况", "achobeta-activity-situations.xlsx"),
+
     ;
 
     private final String title;

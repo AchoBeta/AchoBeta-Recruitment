@@ -1,6 +1,7 @@
 package com.achobeta.domain.recruit.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.recruit.constants.ActivityParticipationConstants;
 import com.achobeta.domain.recruit.model.converter.TimePeriodConverter;
 import com.achobeta.domain.recruit.model.dao.mapper.TimePeriodMapper;
 import com.achobeta.domain.recruit.model.entity.TimePeriod;
@@ -16,8 +17,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
+import static com.achobeta.domain.recruit.constants.ActivityParticipationConstants.GAP_UNIT;
+import static com.achobeta.domain.recruit.constants.ActivityParticipationConstants.MAX_GAP;
 import static com.achobeta.domain.recruit.constants.RecruitmentActivityConstants.RECRUITMENT_ACTIVITY_QUESTIONNAIRE_LOCK;
 
 /**
@@ -30,12 +32,6 @@ import static com.achobeta.domain.recruit.constants.RecruitmentActivityConstants
 public class TimePeriodServiceImpl extends ServiceImpl<TimePeriodMapper, TimePeriod>
     implements TimePeriodService{
 
-    private final static Integer MIN_GAP = 1;
-
-    private final static Integer MAX_GAP = 2;
-
-    private final static TimeUnit GAP_UNIT = TimeUnit.HOURS;
-
     private final RecruitmentActivityService recruitmentActivityService;
 
     private final RedisLock redisLock;
@@ -45,7 +41,7 @@ public class TimePeriodServiceImpl extends ServiceImpl<TimePeriodMapper, TimePer
     private void timePeriodValidate(Long startTime, Long endTime) {
         long gap = endTime - startTime;
         if(startTime.compareTo(System.currentTimeMillis()) < 0 ||
-                gap > GAP_UNIT.toMillis(MAX_GAP) || gap < GAP_UNIT.toMillis(MIN_GAP)) {
+                gap > GAP_UNIT.toMillis(MAX_GAP) || gap < GAP_UNIT.toMillis(ActivityParticipationConstants.MIN_GAP)) {
             throw new GlobalServiceException("时间段非法", GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
         }
     }

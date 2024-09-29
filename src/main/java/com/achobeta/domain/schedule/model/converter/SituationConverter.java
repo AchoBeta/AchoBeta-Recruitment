@@ -1,10 +1,13 @@
 package com.achobeta.domain.schedule.model.converter;
 
 import com.achobeta.domain.recruit.model.entity.ActivityParticipation;
+import com.achobeta.domain.schedule.model.vo.ActivitySituationExcelTemplate;
 import com.achobeta.domain.schedule.model.vo.ParticipationDetailVO;
 import com.achobeta.domain.schedule.model.vo.ParticipationScheduleVO;
 import com.achobeta.domain.schedule.model.vo.UserParticipationVO;
+import com.achobeta.domain.student.model.vo.StuSimpleResumeVO;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -22,4 +25,6 @@ public interface SituationConverter {
     UserParticipationVO participationScheduleVOToUserParticipationVO(ParticipationScheduleVO participationScheduleVO);
 
     ParticipationDetailVO activityParticipationToParticipationDetailVO(ActivityParticipation activityParticipation);
+
+    ActivitySituationExcelTemplate stuSimpleResumeVOMapToSituationExcelTemplate(@MappingTarget ActivitySituationExcelTemplate activitySituationExcelTemplate, StuSimpleResumeVO stuSimpleResumeVO);
 }

@@ -7,6 +7,7 @@ import com.achobeta.domain.login.service.LoginService;
 import com.achobeta.domain.student.model.dto.QueryResumeDTO;
 import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.achobeta.domain.student.service.StuResumeService;
+import com.achobeta.domain.users.constants.MemberConstants;
 import com.achobeta.domain.users.model.converter.MemberConverter;
 import com.achobeta.domain.users.model.converter.UserConverter;
 import com.achobeta.domain.users.model.dao.mapper.MemberMapper;
@@ -40,8 +41,6 @@ import java.util.Optional;
 @Slf4j
 public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
     implements MemberService{
-
-    private final static String MEMBER_RESUME_LOCK = "memberResumeLock:";
 
     private final RedisLock redisLock;
 
@@ -100,13 +99,13 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
     @Override
     @Transactional
     public Member createMember(Long resumeId, Long parentId, MemberDTO memberDTO) {
-        return redisLock.tryLockGetSomething(MEMBER_RESUME_LOCK + resumeId, () -> {
+        return redisLock.tryLockGetSomething(MemberConstants.MEMBER_RESUME_LOCK + resumeId, () -> {
             getMemberByResumeId(resumeId).ifPresent(member -> {
                 throw new GlobalServiceException(GlobalServiceStatusCode.USER_RESUME_CONFIRMED);
             });
             // 注册一个用户
             RegisterDTO registerDTO = MemberConverter.INSTANCE.memberDTOToRegisterDTO(memberDTO);
-            UserEntity newManager = loginService.register(registerDTO);
+            UserEntity newManager = loginService.register(registerDTO); // 内部会进行唯一性检测
             Long managerId = newManager.getId();
             log.warn("管理员 {} 注册了一个新管理员 initial username: {} initial password: {}", parentId, registerDTO.getUsername(), registerDTO.getPassword());
             // 普通用户省级为管理员

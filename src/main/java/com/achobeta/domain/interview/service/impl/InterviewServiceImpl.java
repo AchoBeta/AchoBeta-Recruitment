@@ -3,6 +3,7 @@ package com.achobeta.domain.interview.service.impl;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.evaluate.model.entity.InterviewQuestionScore;
 import com.achobeta.domain.feishu.service.FeishuService;
+import com.achobeta.domain.interview.constants.InterviewConstants;
 import com.achobeta.domain.interview.enums.InterviewEvent;
 import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.constants.InterviewStateMachineConstants;
@@ -21,6 +22,7 @@ import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.service.PaperQuestionLinkService;
 import com.achobeta.domain.resource.enums.ExcelTemplateEnum;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.exception.GlobalServiceException;
@@ -46,8 +48,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview>
     implements InterviewService{
-
-    private final static String EXECUTE_INTERVIEW_EVENT_LOCK = "executeInterviewEventLock:";
 
     private final InterviewMapper interviewMapper;
 
@@ -84,10 +84,16 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     }
 
     @Override
-    public Long printAllInterviewList(Long managerId, InterviewConditionDTO condition, ResourceAccessLevel level) {
+    public OnlineResourceVO printAllInterviewList(Long managerId, InterviewConditionDTO condition, ResourceAccessLevel level, Boolean synchronous) {
         List<InterviewVO> interviewVOList = managerGetInterviewList(null, condition);
         // 上传表格到对象存储服务器
-        return resourceService.uploadExcel(managerId, ExcelTemplateEnum.ACHOBETA_INTERVIEW_ALL, InterviewExcelTemplate.class, interviewVOList, level);
+        return resourceService.uploadExcel(
+                managerId,
+                ExcelTemplateEnum.ACHOBETA_INTERVIEW_ALL,
+                InterviewExcelTemplate.class,
+                InterviewConverter.INSTANCE.interviewVOListToInterviewExcelTemplateList(interviewVOList),
+                level,
+                synchronous);
     }
 
     @Override
@@ -150,7 +156,7 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     public InterviewStatus executeInterviewStateEvent(InterviewEvent interviewEvent, InterviewContext interviewContext) {
         Interview currentInterview = interviewContext.getInterview();
         Long interviewId = currentInterview.getId();
-        return redisLock.tryLockGetSomething(EXECUTE_INTERVIEW_EVENT_LOCK + interviewId, () -> {
+        return redisLock.tryLockGetSomething(InterviewConstants.EXECUTE_INTERVIEW_EVENT_LOCK + interviewId, () -> {
             // 获取当前状态
             InterviewStatus fromState = currentInterview.getStatus();
             // 执行状态机

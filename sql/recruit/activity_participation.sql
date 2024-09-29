@@ -13,4 +13,3 @@ create table `activity_participation`
     index `idx_stu_id`(`stu_id` asc) using btree,
     index `idx_act_id`(`act_id` asc) using btree
 ) comment '“活动参与”表';
--- todo: 分表优化

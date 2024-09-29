@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -20,7 +21,7 @@ public class JwtUtil {
     /**
      * 过期时间小于该值就刷新token
      */
-    private static final long REFRESH_TIME = 1000 * 60 * 20;
+    public static final long REFRESH_TIME = TimeUnit.MINUTES.toMillis(20);
 
     /**
      * 生成jwt

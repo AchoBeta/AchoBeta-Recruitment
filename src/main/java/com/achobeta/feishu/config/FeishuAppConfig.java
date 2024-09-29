@@ -14,14 +14,16 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "ab.feishu")
 public class FeishuAppConfig {
 
-    private OwnerProperties owner;
+    private InternalTenantAccessTokenReqBody credentials;
 
-    private InternalTenantAccessTokenReqBody token;
+    private ResourceProperties resource;
+
+    private OwnerProperties owner;
 
     @Bean
     public Client feishuClient() {
         // 如果不会用 client，可以直接发请求访问
-        return Client.newBuilder(token.getAppId(), token.getAppSecret()).build();
+        return Client.newBuilder(credentials.getAppId(), credentials.getAppSecret()).build();
     }
 
 }

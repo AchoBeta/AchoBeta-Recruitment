@@ -11,7 +11,7 @@ import com.achobeta.domain.evaluate.service.InterviewCommentService;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,9 +40,7 @@ public class InterviewCommentController {
     private final InterviewCommentService interviewCommentService;
 
     @PostMapping("/create")
-    public SystemJsonResponse commentInterview(@RequestBody InterviewCommentDTO interviewCommentDTO) {
-        // 检查
-        ValidatorUtils.validate(interviewCommentDTO);
+    public SystemJsonResponse commentInterview(@Valid @RequestBody InterviewCommentDTO interviewCommentDTO) {
         Long interviewId = interviewCommentDTO.getInterviewId();
         interviewService.checkInterviewExists(interviewId);
         Long managerId = BaseContext.getCurrentUser().getUserId();
@@ -52,9 +50,7 @@ public class InterviewCommentController {
     }
 
     @PostMapping("/update")
-    public SystemJsonResponse updateComment(@RequestBody InterviewCommentUpdateDTO interviewCommentUpdateDTO) {
-        // 检查
-        ValidatorUtils.validate(interviewCommentUpdateDTO);
+    public SystemJsonResponse updateComment(@Valid @RequestBody InterviewCommentUpdateDTO interviewCommentUpdateDTO) {
         Long commentId = interviewCommentUpdateDTO.getCommentId();
         Long managerId = interviewCommentService.checkAndGetInterviewCommentExists(commentId).getManagerId();
         if(!managerId.equals(BaseContext.getCurrentUser().getUserId())) {

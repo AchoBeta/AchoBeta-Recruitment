@@ -7,7 +7,7 @@ import com.achobeta.domain.paper.model.converter.LibraryConverter;
 import com.achobeta.domain.question.model.dto.QuestionLibraryDTO;
 import com.achobeta.domain.question.model.entity.QuestionLibrary;
 import com.achobeta.domain.question.service.QuestionLibraryService;
-import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,9 +40,8 @@ public class QuestionLibraryController {
     }
 
     @PostMapping("/rename")
-    public SystemJsonResponse renameQuestionLibrary(@RequestBody QuestionLibraryDTO questionLibraryDTO) {
+    public SystemJsonResponse renameQuestionLibrary(@Valid @RequestBody QuestionLibraryDTO questionLibraryDTO) {
         // 检查
-        ValidatorUtils.validate(questionLibraryDTO);
         Long libId = questionLibraryDTO.getLibId();
         questionLibraryService.checkQuestionLibraryExists(libId);
         // 重命名

@@ -15,34 +15,26 @@ public interface ObjectStorageService {
     /**
      * 文件上传
      *
-     * @param file 文件
-     * @return code
      */
-    String upload(MultipartFile file);
+    String upload(Long userId, String originalName, byte[] bytes);
 
-    String upload(String originalName, byte[] bytes);
+    String upload(Long userId, MultipartFile file);
 
     /**
      * 预览图片
      *
-     * @param fileName
-     * @param hidden
-     * @return 资源 url
      */
     String getObjectUrl(String fileName, Boolean hidden);
 
     /**
      * 加载图片
      *
-     * @param fileName
      */
     byte[] load(String fileName);
 
     /**
      * 预览图片
      *
-     * @param fileName
-     * @param response
      */
     void preview(String fileName, HttpServletResponse response);
 
@@ -57,7 +49,6 @@ public interface ObjectStorageService {
     /**
      * 删除
      *
-     * @param fileName
      */
     void remove(String fileName);
 

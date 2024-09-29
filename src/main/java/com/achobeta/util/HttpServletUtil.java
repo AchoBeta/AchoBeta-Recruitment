@@ -1,5 +1,6 @@
 package com.achobeta.util;
 
+import com.achobeta.domain.resource.util.MediaUtil;
 import com.achobeta.exception.GlobalServiceException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,7 +44,7 @@ public class HttpServletUtil {
                 // 设置响应内容类型（用同一个 inputStream 会互相影响）
                 response.setContentType(MediaUtil.getContentType(bytes));
                 // 指定字符集
-                response.setCharacterEncoding("utf-8");
+                response.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
                 outputStream.write(bytes);
                 outputStream.flush();
             }
@@ -53,17 +55,13 @@ public class HttpServletUtil {
 
     public static void returnBytes(String downloadName, byte[] bytes, HttpServletResponse response) {
         // 在设置内容类型之前设置下载的文件名称
-        response.addHeader("Content-Disposition", "attachment;fileName=" + downloadName);
+        response.addHeader("Content-Disposition", "attachment; fileName=" + HttpRequestUtil.encodeString(downloadName));
         returnBytes(bytes, response);
     }
 
     public static String getBaseUrl(HttpServletRequest request, String... uris) {
         String uri = Arrays.stream(uris).filter(StringUtils::hasText).collect(Collectors.joining());
         return String.format("%s://%s%s", request.getScheme(), request.getHeader("host"), uri);
-    }
-
-    public static String hiddenQueryString(String url) {
-        return StringUtils.hasText(url) && url.contains("?") ? url.substring(0, url.indexOf("?")) : null;
     }
 
 }

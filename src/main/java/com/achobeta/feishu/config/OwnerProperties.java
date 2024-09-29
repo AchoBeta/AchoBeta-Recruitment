@@ -1,6 +1,5 @@
 package com.achobeta.feishu.config;
 
-import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
 /**
@@ -13,7 +12,6 @@ import lombok.Data;
 @Data
 public class OwnerProperties {
 
-    @SerializedName("mobile")
     private String mobile;
 
 }

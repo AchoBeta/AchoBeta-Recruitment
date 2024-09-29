@@ -1,5 +1,7 @@
 package com.achobeta.domain.recruit.model.vo;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.afterturn.easypoi.excel.annotation.ExcelIgnore;
 import lombok.Data;
 
 /**
@@ -12,9 +14,12 @@ import lombok.Data;
 @Data
 public class QuestionAnswerVO {
 
+    @ExcelIgnore
     private Long id;
 
+    @Excel(name = "标题", width = 50, needMerge = true)
     private String title;
 
+    @Excel(name = "回答", width = 50, needMerge = true)
     private String answer;
 }
