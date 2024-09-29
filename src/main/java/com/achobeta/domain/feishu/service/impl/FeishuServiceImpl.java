@@ -61,9 +61,12 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
     private String defaultOwnerId;
 
+    private Boolean backup;
+
     @Override
     public void afterPropertiesSet() throws Exception {
         this.defaultOwnerId = getUserIdByMobile(feishuAppConfig.getOwner().getMobile());
+        this.backup = Optional.ofNullable(feishuAppConfig.getResource().getBackup()).orElse(Boolean.FALSE);
     }
 
     @Override
@@ -203,6 +206,15 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
     }
 
     @Override
+    public String getFileTokenBriefly(String originalName, byte[] bytes, ObjectType objectType) {
+        if(Boolean.TRUE.equals(backup)) {
+            return uploadFileBriefly(originalName, bytes, objectType).getFileToken();
+        }else {
+            return uploadMediaBriefly(originalName, bytes, objectType).getFileToken();
+        }
+    }
+
+    @Override
     public CreateImportTaskRespBody importTask(ImportTask importTask) {
 //        CreateImportTaskReq createImportTaskReq = CreateImportTaskReq.newBuilder()
 //                .importTask(importTask)
@@ -226,7 +238,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
     @Override
     public CreateImportTaskRespBody importTaskBriefly(String originalName, byte[] bytes, ObjectType objectType) {
-        String fileToken = uploadFileBriefly(originalName, bytes, objectType).getFileToken();
+        String fileToken = getFileTokenBriefly(originalName, bytes, objectType);
         ImportTask importTask = ImportTask.newBuilder()
                 .fileName(originalName)
                 .fileExtension(objectType.getFileExtension())
@@ -234,7 +246,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
                 .type(objectType.getObjType())
                 .point(ImportTaskMountPoint.newBuilder()
                         .mountType(ImportTaskMountPointMountTypeEnum.SPACE)
-                        .mountKey(objectType.getParentNode())
+                        .mountKey(objectType.getMountKey())
                         .build())
                 .build();
         return importTask(importTask);

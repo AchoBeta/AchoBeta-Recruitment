@@ -20,13 +20,15 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ObjectType {
 
-    private final static String ACHOBETA_RECRUITMENT_DOCX_FOLDER = "LpDBf0emllgCc2dKNfKcsqxJnjc";
-    private final static String ACHOBETA_RECRUITMENT_SHEET_FOLDER = "OQbUfIGR9lqdFVdbJCDcQ3CSntd";
+    private final static String ACHOBETA_RECRUITMENT_DOCX_FOLDER_RESOURCE = "LpDBf0emllgCc2dKNfKcsqxJnjc";
+    private final static String ACHOBETA_RECRUITMENT_SHEET_FOLDER_RESOURCE = "OQbUfIGR9lqdFVdbJCDcQ3CSntd";
+    private final static String ACHOBETA_RECRUITMENT_DOCX_FOLDER_COOPERATE = "LpDBf0emllgCc2dKNfKcsqxJnjc";
+    private final static String ACHOBETA_RECRUITMENT_SHEET_FOLDER_COOPERATE = "SyBEf61JglcR5NdCp34cs2tGnMd";
 
-    public final static ObjectType TXT = ObjectType.of("docx", "txt", ACHOBETA_RECRUITMENT_DOCX_FOLDER);
-    public final static ObjectType XLSX = ObjectType.of("sheet", "xlsx", ACHOBETA_RECRUITMENT_SHEET_FOLDER);
-    public final static ObjectType MD = ObjectType.of("docx", "md", ACHOBETA_RECRUITMENT_DOCX_FOLDER);
-    public final static ObjectType MARKDOWN = ObjectType.of("docx", "markdown", ACHOBETA_RECRUITMENT_DOCX_FOLDER);
+    public final static ObjectType TXT = ObjectType.of("docx", "txt", ACHOBETA_RECRUITMENT_DOCX_FOLDER_RESOURCE, ACHOBETA_RECRUITMENT_DOCX_FOLDER_COOPERATE);
+    public final static ObjectType XLSX = ObjectType.of("sheet", "xlsx", ACHOBETA_RECRUITMENT_SHEET_FOLDER_RESOURCE, ACHOBETA_RECRUITMENT_SHEET_FOLDER_COOPERATE);
+    public final static ObjectType MD = ObjectType.of("docx", "md", ACHOBETA_RECRUITMENT_DOCX_FOLDER_RESOURCE, ACHOBETA_RECRUITMENT_DOCX_FOLDER_COOPERATE);
+    public final static ObjectType MARKDOWN = ObjectType.of("docx", "markdown", ACHOBETA_RECRUITMENT_DOCX_FOLDER_RESOURCE, ACHOBETA_RECRUITMENT_DOCX_FOLDER_COOPERATE);
 
     @SerializedName("obj_type")
     private final String objType;
@@ -37,8 +39,11 @@ public class ObjectType {
     @Expose(deserialize = false, serialize = false)
     private final String parentNode;
 
-    private static ObjectType of(String objType, String fileExtension, String parentNode) {
-        return new ObjectType(objType, fileExtension, parentNode);
+    @Expose(deserialize = false, serialize = false)
+    private final String mountKey;
+
+    private static ObjectType of(String objType, String fileExtension, String parentNode, String mountKey) {
+        return new ObjectType(objType, fileExtension, parentNode, mountKey);
     }
 
 }

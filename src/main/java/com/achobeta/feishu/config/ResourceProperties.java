@@ -14,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 @Data
 public class ResourceProperties {
 
+    private Boolean backup;
+
     private String parentNode;
 
     private Long tryAgain;
