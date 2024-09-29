@@ -4,8 +4,6 @@ import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.UserTypeEnum;
-import com.achobeta.domain.interview.constants.InterviewConstants;
-import com.achobeta.domain.resource.constants.ResourceConstants;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.converter.DigitalResourceConverter;
 import com.achobeta.domain.resource.model.dto.ResourceQueryDTO;
@@ -32,8 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
-
-import static com.achobeta.domain.resource.constants.ResourceConstants.DEFAULT_RESOURCE_ACCESS_LEVEL;
 
 /**
  * Created With Intellij IDEA

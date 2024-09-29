@@ -7,8 +7,6 @@ import com.lark.oapi.service.drive.v1.model.*;
 import com.lark.oapi.service.vc.v1.model.ApplyReserveReqBody;
 import com.lark.oapi.service.vc.v1.model.ApplyReserveRespBody;
 
-import java.io.File;
-
 /**
  * Created With Intellij IDEA
  * Description:

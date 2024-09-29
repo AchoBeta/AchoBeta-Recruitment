@@ -1,6 +1,5 @@
 package com.achobeta.feishu.config;
 
-import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
 import java.util.concurrent.TimeUnit;

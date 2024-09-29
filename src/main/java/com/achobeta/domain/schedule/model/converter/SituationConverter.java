@@ -5,7 +5,6 @@ import com.achobeta.domain.schedule.model.vo.ActivitySituationExcelTemplate;
 import com.achobeta.domain.schedule.model.vo.ParticipationDetailVO;
 import com.achobeta.domain.schedule.model.vo.ParticipationScheduleVO;
 import com.achobeta.domain.schedule.model.vo.UserParticipationVO;
-import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import com.achobeta.domain.student.model.vo.StuSimpleResumeVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

@@ -33,11 +33,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.zip.Adler32;
 
 import static com.achobeta.common.enums.HttpRequestEnum.*;
 import static com.achobeta.feishu.constants.FeishuConstants.*;
