@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -45,7 +44,14 @@ public interface ResourceService {
 
     Long upload(Long userId, MultipartFile file);
 
-    OnlineResourceVO synchronousUpload(Long managerId, String originalName, byte[] bytes, ResourceAccessLevel level, ObjectType objectType, Boolean synchronous);
+    /**
+     * ⚠️由于飞书的限制，此接口会强制转扩展名⚠️
+     * 错误的参数，可能会导致乱码、或者表格等文件 encrypt_file 的情况！
+     * 所以务必在此方法之前检测好文件二进制类型与 objectType 适配！
+     */
+    OnlineResourceVO synchronousFeishuUpload(Long managerId, String originalName, byte[] bytes, ResourceAccessLevel level, ObjectType objectType, Boolean synchronous);
+
+    OnlineResourceVO synchronousFeishuUpload(Long managerId, MultipartFile file, ResourceAccessLevel level, ObjectType objectType, Boolean synchronous);
 
     <E> OnlineResourceVO uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<E> clazz, List<E> data, ResourceAccessLevel level, Boolean synchronous);
 

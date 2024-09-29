@@ -2,6 +2,7 @@ package com.achobeta.domain.resource.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.resource.service.ObjectStorageService;
+import com.achobeta.domain.resource.util.MediaUtil;
 import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.monio.config.MinioConfig;
@@ -55,11 +56,9 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService, Init
     @Override
     public String upload(Long userId, MultipartFile file) {
         try {
-            return upload(userId, ResourceUtil.getOriginalName(file), file.getBytes());
+            return upload(userId, ResourceUtil.getOriginalName(file), MediaUtil.getBytes(file));
         } catch (GlobalServiceException e) {
             throw e;
-        } catch (IOException e) {
-            throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_UPLOAD_FAILED);
         }
     }
 

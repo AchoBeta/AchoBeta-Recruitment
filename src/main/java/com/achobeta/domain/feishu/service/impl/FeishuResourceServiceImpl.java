@@ -93,7 +93,7 @@ public class FeishuResourceServiceImpl extends ServiceImpl<FeishuResourceMapper,
                 redisCache.setCacheObject(redisKey, url, FEISHU_RESOURCE_REDIRECT_TIMEOUT, FEISHU_RESOURCE_REDIRECT_UNIT);
                 return url;
             }else {
-                // 只返回不落库
+                // 只返回不落库（默认文件夹路径）
                 return DEFAULT_URL + feishuAppConfig.getResource().getParentNode();
             }
         });

@@ -195,7 +195,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
             UploadAllFileReqBody uploadAllFileReqBody = UploadAllFileReqBody.newBuilder()
                     .fileName(originalName)
                     .parentType(UploadAllFileParentTypeEnum.EXPLORER)
-                    .parentNode(feishuAppConfig.getResource().getParentNode())
+                    .parentNode(objectType.getParentNode())
                     .size(bytes.length)
                     .checksum(MediaUtil.getAdler32(bytes))
                     .file(file)
@@ -236,7 +236,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
                 .type(objectType.getObjType())
                 .point(ImportTaskMountPoint.newBuilder()
                         .mountType(ImportTaskMountPointMountTypeEnum.SPACE)
-                        .mountKey(feishuAppConfig.getResource().getParentNode())
+                        .mountKey(objectType.getParentNode())
                         .build())
                 .build();
         return importTask(importTask);
@@ -277,7 +277,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
             ImportTask importTask = getImportTask(ticket).getResult();
             // 轮询直到处理完为止（最多 maxAgainCount）
             while (JobStatusEnum.PROCESSING.getValue().equals(importTask.getJobStatus()) && maxCount.compareTo(count) > 0) {
-                log.warn("{} {}", importTask.getJobStatus(), importTask.getJobErrorMsg());
+                log.warn("任务状态 {}，错误信息 {}", importTask.getJobStatus(), importTask.getJobErrorMsg());
                 Thread.sleep(sleepTime);
                 importTask = getImportTask(ticket).getResult();
                 count++;

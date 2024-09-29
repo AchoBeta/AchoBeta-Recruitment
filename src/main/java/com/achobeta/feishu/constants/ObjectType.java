@@ -1,6 +1,8 @@
 package com.achobeta.feishu.constants;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -10,13 +12,21 @@ import lombok.Getter;
  * Date: 2024-09-28
  * Time: 12:56
  */
+
+/**
+ * 此类不应该设置为枚举，因为需要序列化为 json
+ */
 @Getter
+@AllArgsConstructor
 public class ObjectType {
 
-    public final static ObjectType TXT = ObjectType.of("docx", "txt");
-    public final static ObjectType XLSX = ObjectType.of("sheet", "xlsx");
-    public final static ObjectType MD = ObjectType.of("docx", "md");
-    public final static ObjectType MARKDOWN = ObjectType.of("docx", "markdown");
+    private final static String ACHOBETA_RECRUITMENT_DOCX_FOLDER = "LpDBf0emllgCc2dKNfKcsqxJnjc";
+    private final static String ACHOBETA_RECRUITMENT_SHEET_FOLDER = "OQbUfIGR9lqdFVdbJCDcQ3CSntd";
+
+    public final static ObjectType TXT = ObjectType.of("docx", "txt", ACHOBETA_RECRUITMENT_DOCX_FOLDER);
+    public final static ObjectType XLSX = ObjectType.of("sheet", "xlsx", ACHOBETA_RECRUITMENT_SHEET_FOLDER);
+    public final static ObjectType MD = ObjectType.of("docx", "md", ACHOBETA_RECRUITMENT_DOCX_FOLDER);
+    public final static ObjectType MARKDOWN = ObjectType.of("docx", "markdown", ACHOBETA_RECRUITMENT_DOCX_FOLDER);
 
     @SerializedName("obj_type")
     private final String objType;
@@ -24,13 +34,11 @@ public class ObjectType {
     @SerializedName("file_extension")
     private final String fileExtension;
 
-    private static ObjectType of(String objType, String fileExtension) {
-        return new ObjectType(objType, fileExtension);
-    }
+    @Expose(deserialize = false, serialize = false)
+    private final String parentNode;
 
-    private ObjectType (String objType, String fileExtension) {
-        this.objType = objType;
-        this.fileExtension = fileExtension;
+    private static ObjectType of(String objType, String fileExtension, String parentNode) {
+        return new ObjectType(objType, fileExtension, parentNode);
     }
 
 }

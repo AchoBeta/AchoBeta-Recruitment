@@ -4,6 +4,8 @@ import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.interview.constants.InterviewConstants;
+import com.achobeta.domain.resource.constants.ResourceConstants;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.converter.DigitalResourceConverter;
 import com.achobeta.domain.resource.model.dto.ResourceQueryDTO;
@@ -28,8 +30,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
+
+import static com.achobeta.domain.resource.constants.ResourceConstants.DEFAULT_RESOURCE_ACCESS_LEVEL;
 
 /**
  * Created With Intellij IDEA
@@ -94,44 +98,30 @@ public class ResourceController {
         return SystemJsonResponse.SYSTEM_SUCCESS(code);
     }
 
-    @PostMapping("/upload/markdown")
+    @PostMapping("/upload/syncfeishu/markdown")
     @Intercept(permit = {UserTypeEnum.ADMIN})
-    public SystemJsonResponse uploadMarkdown(@RequestPart("file") MultipartFile file) {
+    public SystemJsonResponse uploadMarkdown(@RequestPart("file") MultipartFile file,
+                                             @RequestParam(name = "level", required = false) Integer level) {
+        ResourceUtil.checkText(MediaUtil.getContentType(file));
         Long userId = BaseContext.getCurrentUser().getUserId();
-        try {
-            OnlineResourceVO onlineResourceVO = resourceService.synchronousUpload(
-                    userId,
-                    ResourceUtil.getOriginalName(file),
-                    file.getBytes(),
-                    ResourceAccessLevel.FREE_ACCESS,
-                    ObjectType.MD,
-                    Boolean.TRUE
-            );
-            return SystemJsonResponse.SYSTEM_SUCCESS(onlineResourceVO);
-        } catch (IOException e) {
-            throw new GlobalServiceException(e.getMessage());
-        }
+        ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(null);
+        OnlineResourceVO onlineResourceVO = resourceService.synchronousFeishuUpload(
+                userId, file, accessLevel, ObjectType.MD, Boolean.TRUE
+        );
+        return SystemJsonResponse.SYSTEM_SUCCESS(onlineResourceVO);
     }
 
-
-    @PostMapping("/upload/excel")
+    @PostMapping("/upload/syncfeishu/sheet")
     @Intercept(permit = {UserTypeEnum.ADMIN})
-    public SystemJsonResponse uploadExcel(@RequestPart("file") MultipartFile file) {
+    public SystemJsonResponse uploadExcel(@RequestPart("file") MultipartFile file,
+                                          @RequestParam(name = "level", required = false) Integer level) {
+        ResourceUtil.checkSheet(MediaUtil.getBytes(file));
         Long userId = BaseContext.getCurrentUser().getUserId();
-        System.out.println(file.getContentType());
-        try {
-            OnlineResourceVO onlineResourceVO = resourceService.synchronousUpload(
-                    userId,
-                    ResourceUtil.getOriginalName(file),
-                    file.getBytes(),
-                    ResourceAccessLevel.FREE_ACCESS,
-                    ObjectType.XLSX,
-                    Boolean.TRUE
-            );
-            return SystemJsonResponse.SYSTEM_SUCCESS(onlineResourceVO);
-        } catch (IOException e) {
-            throw new GlobalServiceException(e.getMessage());
-        }
+        ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(null);
+        OnlineResourceVO onlineResourceVO = resourceService.synchronousFeishuUpload(
+                userId, file, accessLevel, ObjectType.XLSX, Boolean.TRUE
+        );
+        return SystemJsonResponse.SYSTEM_SUCCESS(onlineResourceVO);
     }
 
     @PostMapping("/upload/image")

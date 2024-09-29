@@ -56,6 +56,14 @@ public class MediaUtil {
         }
     }
 
+    public static byte[] getBytes(MultipartFile file) {
+        try {
+            return file.getBytes();
+        } catch (IOException e) {
+            throw new GlobalServiceException(e.getMessage());
+        }
+    }
+
     public static String getContentType(InputStream inputStream) throws IOException {
         return TIKA.detect(inputStream);
     }

@@ -1,18 +1,16 @@
 package com.achobeta.domain.resource.util;
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
-import com.achobeta.domain.resource.constants.ResourceConstants;
+import cn.afterturn.easypoi.excel.entity.ImportParams;
 import com.achobeta.exception.GlobalServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.function.Function;
 
 @Slf4j
 public class ExcelUtil {
@@ -35,6 +33,16 @@ public class ExcelUtil {
             return outputStream.toByteArray();
         }catch (IOException e){
             throw new GlobalServiceException(e.getMessage());
+        }
+    }
+
+    public static boolean isSheet(byte[] data) {
+        try {
+            ExcelImportUtil.importExcel(MediaUtil.getInputStream(data), Object.class, new ImportParams());
+            return Boolean.TRUE;
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+            return Boolean.FALSE;
         }
     }
 

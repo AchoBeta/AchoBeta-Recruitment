@@ -24,7 +24,6 @@ import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.util.HttpRequestUtil;
 import com.achobeta.util.HttpServletUtil;
 import com.achobeta.util.TimeUtil;
-import com.lark.oapi.service.drive.v1.enums.JobStatusEnum;
 import com.lark.oapi.service.drive.v1.model.ImportTask;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,11 +33,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static com.achobeta.domain.resource.constants.ResourceConstants.DEFAULT_RESOURCE_ACCESS_LEVEL;
@@ -155,7 +152,7 @@ public class ResourceServiceImpl implements ResourceService {
         resource.setUserId(userId);
         resource.setOriginalName(originalName);
         resource.setFileName(objectStorageService.upload(userId, originalName, data));
-        resource.setAccessLevel(level);
+        resource.setAccessLevel(Optional.ofNullable(level).orElse(DEFAULT_RESOURCE_ACCESS_LEVEL));
         Long code = digitalResourceService.createResource(resource).getCode();
         // 自增
         redisCache.incrementCacheNumber(redisKey);
@@ -164,11 +161,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public Long upload(Long userId, MultipartFile file, ResourceAccessLevel level) {
-        try {
-            return upload(userId, ResourceUtil.getOriginalName(file), file.getBytes(), level);
-        } catch (IOException e) {
-            throw new GlobalServiceException(e.getMessage());
-        }
+        return upload(userId, ResourceUtil.getOriginalName(file), MediaUtil.getBytes(file), level);
     }
 
     @Override
@@ -178,22 +171,34 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     @Transactional
-    public OnlineResourceVO synchronousUpload(Long managerId, String originalName, byte[] bytes, ResourceAccessLevel level, ObjectType objectType, Boolean synchronous) {
+    public OnlineResourceVO synchronousFeishuUpload(Long managerId, String originalName, byte[] bytes, ResourceAccessLevel level, ObjectType objectType, Boolean synchronous) {
+        String fileName = ResourceUtil.forceChangeExtension(originalName, objectType.getFileExtension());
         OnlineResourceVO onlineResourceVO = new OnlineResourceVO();
         // 上传对象存储系统
-        Long code = upload(managerId, originalName, bytes, level);
+        Long code = upload(managerId, fileName, bytes, level);
         HttpServletUtil.getRequest().ifPresent(request -> {
             onlineResourceVO.setDownloadUrl(getSystemUrl(request, code));
             // 是否同步飞书文档
             if(Boolean.TRUE.equals(synchronous)) {
-                String ticket = feishuService.importTaskBriefly(originalName, bytes, objectType).getTicket();
-                FeishuResource resource = feishuResourceService.createAndGetFeishuResource(ticket, originalName);
-                ImportTask importTask = feishuService.getImportTaskPolling(ticket);
-                feishuResourceService.updateFeishuResource(resource.getId(), importTask);
-                onlineResourceVO.setFeishuUrl(feishuResourceService.getSystemUrl(request, ticket));
+                try {
+                    String ticket = feishuService.importTaskBriefly(fileName, bytes, objectType).getTicket();
+                    FeishuResource resource = feishuResourceService.createAndGetFeishuResource(ticket, fileName);
+                    ImportTask importTask = feishuService.getImportTaskPolling(ticket);
+                    feishuResourceService.updateFeishuResource(resource.getId(), importTask);
+                    onlineResourceVO.setFeishuUrl(feishuResourceService.getSystemUrl(request, ticket));
+                } catch (GlobalServiceException e) {
+                    log.warn("{} {}", e.getStatusCode(), e.getMessage());
+                }
             }
+
         });
         return onlineResourceVO;
+    }
+
+    @Override
+    @Transactional
+    public OnlineResourceVO synchronousFeishuUpload(Long managerId, MultipartFile file, ResourceAccessLevel level, ObjectType objectType, Boolean synchronous) {
+        return synchronousFeishuUpload(managerId, ResourceUtil.getOriginalName(file), MediaUtil.getBytes(file), level, objectType, synchronous);
     }
 
     @Override
@@ -201,7 +206,7 @@ public class ResourceServiceImpl implements ResourceService {
     public <E> OnlineResourceVO uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<E> clazz, List<E> data, ResourceAccessLevel level, Boolean synchronous) {
         // 获取数据
         byte[] bytes = ExcelUtil.exportXlsxFile(excelTemplateEnum.getTitle(), excelTemplateEnum.getSheetName(), clazz, data);
-        return synchronousUpload(managerId, excelTemplateEnum.getOriginalName(), bytes, level, ObjectType.XLSX, synchronous);
+        return synchronousFeishuUpload(managerId, excelTemplateEnum.getOriginalName(), bytes, level, ObjectType.XLSX, synchronous);
     }
 
     @Override
