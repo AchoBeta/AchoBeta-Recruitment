@@ -190,7 +190,6 @@ public class ResourceServiceImpl implements ResourceService {
                     log.warn("{} {}", e.getStatusCode(), e.getMessage());
                 }
             }
-
         });
         return onlineResourceVO;
     }
