@@ -1,7 +1,6 @@
 package com.achobeta.util;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.domain.resource.constants.ResourceConstants;
 import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.exception.GlobalServiceException;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +22,8 @@ import java.util.zip.Adler32;
  */
 @Slf4j
 public class MediaUtil {
+
+    public final static String TEMP_RESOURCE_PATH = "./temp/"; // 临时文件夹的文件都是用完就删的，所以我就觉得这个变量没必要写在配置文件里了
 
     private final static Tika TIKA = new Tika();
 
@@ -85,7 +86,7 @@ public class MediaUtil {
     }
 
     public static String getTempFilePath(String suffix) {
-        String tempResourcePath = ResourceConstants.TEMP_RESOURCE_PATH;
+        String tempResourcePath = TEMP_RESOURCE_PATH;
         File tempDir = new File(tempResourcePath);
         if(!tempDir.exists()) {
             tempDir.mkdir();
