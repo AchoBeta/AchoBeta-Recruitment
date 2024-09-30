@@ -12,7 +12,6 @@ import com.achobeta.domain.feedback.model.vo.UserFeedbackVO;
 import com.achobeta.domain.feedback.model.vo.UserPersonalFeedBackVO;
 import com.achobeta.domain.feedback.service.UserFeedbackService;
 import com.achobeta.domain.message.model.entity.Message;
-import com.achobeta.domain.message.model.vo.MessageContentVO;
 import com.achobeta.util.ValidatorUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;

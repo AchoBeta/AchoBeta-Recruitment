@@ -1,7 +1,6 @@
 package com.achobeta.domain.feedback.model.vo;
 
 import com.achobeta.domain.feedback.model.entity.StuBaseInfo;
-import com.achobeta.domain.message.model.vo.MessageContentVO;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 

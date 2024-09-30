@@ -2,10 +2,10 @@ package com.achobeta.domain.feedback.converter;
 
 
 import com.achobeta.domain.feedback.model.dto.UserFeedbackDTO;
+import com.achobeta.domain.feedback.model.entity.UserFeedback;
 import com.achobeta.domain.feedback.model.vo.FeedbackMessageVO;
 import com.achobeta.domain.feedback.model.vo.UserFeedbackVO;
 import com.achobeta.domain.feedback.model.vo.UserPersonalFeedBackVO;
-import com.achobeta.domain.feedback.model.entity.UserFeedback;
 import com.achobeta.domain.message.model.entity.Message;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

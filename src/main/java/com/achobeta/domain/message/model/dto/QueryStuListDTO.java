@@ -1,7 +1,6 @@
 package com.achobeta.domain.message.model.dto;
 
 import com.achobeta.common.base.BasePageQueryEntity;
-import com.achobeta.common.base.BasePageResultEntity;
 import lombok.Getter;
 import lombok.Setter;
 

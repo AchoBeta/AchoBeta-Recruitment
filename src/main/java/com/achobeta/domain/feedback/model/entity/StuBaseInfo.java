@@ -3,7 +3,6 @@ package com.achobeta.domain.feedback.model.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.crypto.SecretKey;
 import java.io.Serializable;
 
 /**
