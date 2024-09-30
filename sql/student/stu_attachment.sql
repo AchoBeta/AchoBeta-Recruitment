@@ -35,8 +35,8 @@ CREATE TABLE `stu_attachment`
     INDEX `idx_resume_id` (`resume_id` ASC) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  CHARACTER SET = utf8
-  COLLATE = utf8_bin COMMENT = '学生附件表'
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_bin COMMENT = '学生附件表'
   ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
