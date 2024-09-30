@@ -1,6 +1,5 @@
 package com.achobeta.feishu.config;
 
-import com.achobeta.util.HttpRequestUtil;
 import lombok.Data;
 
 /**
