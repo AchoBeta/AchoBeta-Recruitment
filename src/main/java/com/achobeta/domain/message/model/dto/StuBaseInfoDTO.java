@@ -1,5 +1,6 @@
 package com.achobeta.domain.message.model.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,9 +15,12 @@ import java.io.Serializable;
 @Setter
 public class StuBaseInfoDTO implements Serializable {
     /*发送用户id*/
+    @NotNull(message = "用户 id 不能为空")
     private Long userId;
     /*用户姓名*/
+    @NotNull(message = "学生名称不能为空")
     private String stuName;
     /*用户邮箱*/
+    @NotNull(message = "学生邮箱不能为空")
     private String email;
 }

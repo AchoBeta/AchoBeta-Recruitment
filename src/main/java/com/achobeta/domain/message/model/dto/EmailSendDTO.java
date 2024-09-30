@@ -1,5 +1,6 @@
 package com.achobeta.domain.message.model.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class EmailSendDTO implements Serializable {
     /**
      * 消息发送用户对象列表
      */
+    @Valid
     @NotEmpty(message = "消息发送用户对象列表不能为空")
     List<StuBaseInfoDTO> stuInfoSendList;
 
