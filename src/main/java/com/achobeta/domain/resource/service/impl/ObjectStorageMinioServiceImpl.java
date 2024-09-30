@@ -2,7 +2,7 @@ package com.achobeta.domain.resource.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.resource.service.ObjectStorageService;
-import com.achobeta.domain.resource.util.MediaUtil;
+import com.achobeta.util.MediaUtil;
 import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.monio.config.MinioConfig;

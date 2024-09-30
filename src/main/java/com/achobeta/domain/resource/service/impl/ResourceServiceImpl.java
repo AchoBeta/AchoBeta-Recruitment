@@ -16,7 +16,7 @@ import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.resource.util.ExcelUtil;
-import com.achobeta.domain.resource.util.MediaUtil;
+import com.achobeta.util.MediaUtil;
 import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.feishu.constants.ObjectType;

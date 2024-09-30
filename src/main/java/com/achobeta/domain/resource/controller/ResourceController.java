@@ -12,7 +12,7 @@ import com.achobeta.domain.resource.model.vo.ResourceAccessLevelVO;
 import com.achobeta.domain.resource.model.vo.ResourceQueryVO;
 import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ResourceService;
-import com.achobeta.domain.resource.util.MediaUtil;
+import com.achobeta.util.MediaUtil;
 import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.service.UserService;

@@ -1,6 +1,6 @@
 package com.achobeta.monio.engine;
 
-import com.achobeta.domain.resource.util.MediaUtil;
+import com.achobeta.util.MediaUtil;
 import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.monio.config.MinioConfig;
 import com.achobeta.util.HttpRequestUtil;
