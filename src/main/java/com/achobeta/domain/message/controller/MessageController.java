@@ -35,27 +35,21 @@ public class MessageController {
     public SystemJsonResponse queryStuList(@Valid @RequestBody QueryStuListDTO queryStuDTO) {
         //查找消息发送同学列表
         BasePageResultEntity<StuOfMessageVO> stuListPageResult = messageService.queryStuListByCondition(queryStuDTO);
-
         return SystemJsonResponse.SYSTEM_SUCCESS(stuListPageResult);
     }
-
 
     @GetMapping("/info/query")
     @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER})
     public SystemJsonResponse queryMessageListofUser() {
-
         List<MessageContentVO> messageContentVOList = messageService.getMessageListofUser();
-
         return SystemJsonResponse.SYSTEM_SUCCESS(messageContentVOList);
     }
 
     @PostMapping("/email/send")
     @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER})
     public SystemJsonResponse sendMessageByEmail(@Valid EmailSendDTO emailSendDTO, @RequestPart(value = "attachment", required = false) List<MultipartFile> attachmentList) {
-
         //发送邮箱
         messageService.sendMessageByEmail(emailSendDTO, attachmentList);
-
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 }

@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
     public SystemJsonResponse handleDataIntegrityViolationException(DataIntegrityViolationException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         String message = e.getCause() instanceof MysqlDataTruncation ? "文本长度超出限制" : "数据异常";
-        log.error("请求地址'{}', '{}'", requestURI, message);
+        log.error("请求地址'{}', '{}', '{}'", requestURI, message, e.getMessage());
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_ERROR, message);
     }
 
@@ -74,7 +74,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public SystemJsonResponse ValidationHandler(MethodArgumentNotValidException e, HttpServletRequest request) {
-        log.error("数据校验出现问题，异常类型:{}", e.getMessage());
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}', 自定义验证异常'{}'", requestURI, e.getMessage());
         String message = e.getBindingResult().getFieldErrors().stream()
                 .map(FieldError::getDefaultMessage)
                 .filter(Objects::nonNull)
