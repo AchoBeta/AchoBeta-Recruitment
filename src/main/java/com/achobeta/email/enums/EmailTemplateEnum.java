@@ -12,6 +12,7 @@ import lombok.Getter;
 public enum EmailTemplateEnum {
 
     CAPTCHA("邮箱验证码：验证用户身份", "identifying-code-model.html"),
+    MESSAGE("用户面试消息通知", "identifying-code-model.html"),
 
     INTERVIEW_NOTICE("面试通知", "interview-notice-model.html"),
 
@@ -24,6 +25,8 @@ public enum EmailTemplateEnum {
     RESUME_NOTICE("简历状态轮转通知", "resume-notice-model.html"),
 
     MEMBER_NOTICE("转正通知", "confirmation-notice-model.html"),
+
+    MESSAGE_EMAIL_NOTICE("Achobeta消息通知", "message-email-notice.html"),
 
     ;
 
