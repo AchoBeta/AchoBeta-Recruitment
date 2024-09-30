@@ -45,9 +45,7 @@ public class Message extends BaseIncrIDEntity implements Serializable {
     /**
      * 附件url
      */
-    private long attachment;
-
-
+    private Long attachment;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

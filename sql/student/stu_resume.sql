@@ -75,8 +75,8 @@ CREATE TABLE `stu_resume`
     INDEX `idx_name` (`name` ASC) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  CHARACTER SET = utf8
-  COLLATE = utf8_bin COMMENT = '学生简历表'
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_bin COMMENT = '学生简历表'
   ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
