@@ -4,7 +4,6 @@ package com.achobeta.config;
 import com.achobeta.handler.HttpRequestLogHandler;
 import com.achobeta.interpretor.UserInterpretor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
