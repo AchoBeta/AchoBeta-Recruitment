@@ -1,7 +1,5 @@
 package com.achobeta.domain.feishu.constants;
 
-import com.achobeta.feishu.constants.FeishuConstants;
-
 import java.util.concurrent.TimeUnit;
 
 /**
