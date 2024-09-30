@@ -124,11 +124,7 @@ public class MessageSendWithEmailHandler extends MessageSendHandler {
         if(multipartFileList!=null&&!multipartFileList.isEmpty()){
             //构造邮箱附件列表
             emailAttachmentList = multipartFileList.stream().map(file -> {
-                try {
                     return EmailAttachment.of(file);
-                } catch (IOException e) {
-                    throw new GlobalServiceException(GlobalServiceStatusCode.EMAIL_ATTACH_SEND_FAIL);
-                }
             }).toList();
         }
 
