@@ -1,5 +1,8 @@
 package com.achobeta.feishu.constants;
 
+import cn.hutool.extra.spring.SpringUtil;
+import com.achobeta.feishu.config.FeishuAppConfig;
+import com.achobeta.feishu.config.FolderProperties;
 import com.achobeta.util.HttpRequestUtil;
 
 import java.util.Optional;
@@ -13,12 +16,14 @@ import java.util.Optional;
  */
 public interface FeishuConstants {
 
-    String ACHOBETA_RECRUITMENT_ROOT_FOLDER = "Sx9KfdvAzlY0YudYhEMcziRznpe";
+    FolderProperties ACHOBETA_RESOURCE_FOLDER = SpringUtil.getBean(FeishuAppConfig.class).getResource().getFolder();
+
+    String ACHOBETA_RECRUITMENT_ROOT_FOLDER = ACHOBETA_RESOURCE_FOLDER.getRoot();
     String ACHOBETA_RECRUITMENT_ROOT_URL = HttpRequestUtil.buildUrl("https://j16c0vnbedn.feishu.cn/drive/folder/{folderToken}", null, ACHOBETA_RECRUITMENT_ROOT_FOLDER);
-    String ACHOBETA_RECRUITMENT_DOCX_FOLDER_RESOURCE = "LpDBf0emllgCc2dKNfKcsqxJnjc";
-    String ACHOBETA_RECRUITMENT_SHEET_FOLDER_RESOURCE = "OQbUfIGR9lqdFVdbJCDcQ3CSntd";
-    String ACHOBETA_RECRUITMENT_DOCX_FOLDER_COOPERATE = "LpDBf0emllgCc2dKNfKcsqxJnjc";
-    String ACHOBETA_RECRUITMENT_SHEET_FOLDER_COOPERATE = "SyBEf61JglcR5NdCp34cs2tGnMd";
+    String ACHOBETA_RECRUITMENT_DOCX_FOLDER_RESOURCE = ACHOBETA_RESOURCE_FOLDER.getDocxResource();
+    String ACHOBETA_RECRUITMENT_SHEET_FOLDER_RESOURCE = ACHOBETA_RESOURCE_FOLDER.getSheetResource();
+    String ACHOBETA_RECRUITMENT_DOCX_FOLDER_COOPERATE = ACHOBETA_RESOURCE_FOLDER.getDocxCooperate();
+    String ACHOBETA_RECRUITMENT_SHEET_FOLDER_COOPERATE = ACHOBETA_RESOURCE_FOLDER.getSheetCooperate();
 
     String AUTHORIZATION_HEADER = "Authorization";
 
