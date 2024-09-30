@@ -18,10 +18,6 @@ public class TimeUtil {
         return DateTimeConfig.DATE_FORMAT.format(date);
     }
 
-    public static String getDate(long date) {
-        return DateTimeConfig.DATE_FORMAT.format(new Date(date));
-    }
-
     public static String getDateTime(Date date) {
         return DateTimeConfig.DATE_TIME_FORMAT.format(date);
     }
