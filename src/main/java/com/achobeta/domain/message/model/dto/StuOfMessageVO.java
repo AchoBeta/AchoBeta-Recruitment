@@ -1,7 +1,7 @@
 package com.achobeta.domain.message.model.dto;
 
-import com.achobeta.common.enums.ResumeStatus;
-import com.baomidou.mybatisplus.annotation.TableField;
+
+import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import lombok.Getter;
 import lombok.Setter;
 

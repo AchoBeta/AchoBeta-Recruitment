@@ -36,10 +36,4 @@ public class EmailSendDTO implements Serializable {
     @NotBlank(message = "消息内容不能为空")
     private String content;
 
-    /**
-     * 附件url
-     */
-    private long attachment;
-
-
 }

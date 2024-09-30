@@ -33,8 +33,7 @@ public class MessageHandlerListener {
     exchange = @Exchange(name = MESSAGE_SEND_DEAD_EXCHANGE,durable = "true"),
     key = {MESSAGE_SEND_DEAD_KEY})*/
     @RabbitListener(queues = MESSAGE_SEND_DEAD_QUEUE)
-    public void handleMessage(String messageText) {
-        DelayMessage delayMessage= JSON.parseObject(messageText,DelayMessage.class);
+    public void handleMessage(DelayMessage delayMessage) {
         //时间校验
         if(checkTimeIfRight(delayMessage.getMessageSendBody().getMessageContent().getSendTime())){
             String message=String.format("无效的延迟消息->%s",delayMessage.getMessageSendBody().getMessageContent().getContent());

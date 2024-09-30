@@ -5,26 +5,29 @@ import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.message.converter.MessageConverter;
 import com.achobeta.domain.message.handler.ext.MessageSendWithEmailHandler;
 import com.achobeta.domain.message.handler.websocket.MessageReceiveServer;
-import com.achobeta.domain.message.model.dto.EmailSendDTO;
-import com.achobeta.domain.message.model.dto.MessageContentDTO;
-import com.achobeta.domain.message.model.dto.QueryStuListDTO;
-import com.achobeta.domain.message.model.dto.StuOfMessageVO;
+import com.achobeta.domain.message.model.dto.*;
+import com.achobeta.domain.message.model.entity.AttachmentFile;
 import com.achobeta.domain.message.model.vo.MessageContentVO;
+import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.student.model.converter.StuResumeConverter;
 import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.service.StuResumeService;
 
 import com.achobeta.domain.users.context.BaseContext;
 
+import com.achobeta.util.HttpServletUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.achobeta.domain.message.model.entity.Message;
 import com.achobeta.domain.message.service.MessageService;
 import com.achobeta.domain.message.model.dao.mapper.MessageMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
@@ -46,8 +49,9 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
     private final StuResumeService stuResumeService;
     private final StuResumeConverter stuResumeConverter;
     private final MessageConverter messageConverter;
+    private final ResourceService resourceService;
+    private final HttpServletRequest request;
     private final MessageSendWithEmailHandler messageSendWithEmailHandler;
-
 
 
     @Override
@@ -72,7 +76,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
                 .filter(server -> !messageContentBody.getStuInfoSendList().stream().map(data -> data.getUserId()).toList().contains(server.getUserId()))
                 .forEach(messageReceiveServer -> {
                     *//*姓名替换*//*
-                    *//*messageContentVO.getContent().replace("$", )*//*
+     *//*messageContentVO.getContent().replace("$", )*//*
 
                     //消息内容
                     String messageText = JSON.toJSONString(messageContentVO);
@@ -169,9 +173,34 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
     }
 
     @Override
-    public void sendMessageByEmail(EmailSendDTO emailSendDTO) {
-        emailSendDTO.getStuInfoSendList().stream().forEach(stu-> messageSendWithEmailHandler.buildEmailAndSend(stu.getEmail(),emailSendDTO.getTittle(),emailSendDTO.getContent(),stu.getStuName()));
+    public void sendMessageByEmail(EmailSendDTO emailSendDTO, List<MultipartFile> attachmentList) {
+
+        emailSendDTO.getStuInfoSendList().stream().forEach(stu -> {
+            List<AttachmentFile> attachmentInfoList = getAttachUrlList(attachmentList, stu);
+            messageSendWithEmailHandler.sendEmail(stu.getEmail(),emailSendDTO.getTittle(),emailSendDTO.getContent(),stu.getStuName(),attachmentInfoList,attachmentList);
+        });
         log.info("邮箱发送成功!");
+    }
+
+
+    private List<AttachmentFile> getAttachUrlList(List<MultipartFile> attachmentList, StuBaseInfoDTO stu) {
+        if(Objects.isNull(attachmentList)||attachmentList.isEmpty())
+            return null;
+
+
+        List<AttachmentFile> attachmentFileList = attachmentList.stream().map(attach -> {
+            AttachmentFile attachmentFile = new AttachmentFile();
+
+            Long code = resourceService.upload(stu.getUserId(), attach);
+            String baseUrl = HttpServletUtil.getBaseUrl(request, "/api/v1/resource/download/");
+            String attachUrl = baseUrl + code;
+
+            attachmentFile.setAttachmentUrl(attachUrl);
+            attachmentFile.setFileName(attach.getOriginalFilename());
+            return attachmentFile;
+        }).toList();
+
+        return attachmentFileList;
     }
 
 

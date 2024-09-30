@@ -43,9 +43,9 @@ public class MessageSendDelayChain extends MessageSendHandlerChain {
         MessageSendHandler messageSendHandler = initHandlerChain();
         //构建延时消息体
         DelayMessage delayMessage = buildDelayMessage(messageSendBody, webSocketSet, messageSendHandler);
-        String jsonString = JSON.toJSONString(delayMessage);
+
         //延时发送消息
-        rabbitTemplate.convertAndSend(MESSAGE_SEND_QUEUE,MESSAGE_SEND_KEY,jsonString,message -> {
+        rabbitTemplate.convertAndSend(MESSAGE_SEND_QUEUE,MESSAGE_SEND_KEY,delayMessage,message -> {
             message.getMessageProperties().setDelay(countDelayTime(messageSendBody));
             return message;
         });

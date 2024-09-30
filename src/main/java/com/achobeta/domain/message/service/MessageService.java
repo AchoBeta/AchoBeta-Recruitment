@@ -9,6 +9,7 @@ import com.achobeta.domain.message.model.dto.StuOfMessageVO;
 import com.achobeta.domain.message.model.entity.Message;
 import com.achobeta.domain.message.model.vo.MessageContentVO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -37,6 +38,6 @@ public interface MessageService extends IService<Message> {
 
     List<MessageContentVO> getMessageListofUser();
 
-    void sendMessageByEmail(EmailSendDTO emailSendDTO);
+    void sendMessageByEmail(EmailSendDTO emailSendDTO, List<MultipartFile> attachmentList);
 
 }

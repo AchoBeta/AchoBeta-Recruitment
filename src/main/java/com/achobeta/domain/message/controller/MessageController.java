@@ -20,7 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.achobeta.domain.message.service.strategy.MessageSendStrategy.SEND_BASE_NAME;
@@ -61,12 +63,12 @@ public class MessageController {
 
     @PostMapping("/email/send")
     @Intercept(permit = {UserTypeEnum.ADMIN,UserTypeEnum.USER})
-    public SystemJsonResponse sendMessageByEmail(@RequestBody EmailSendDTO emailSendDTO){
+    public SystemJsonResponse sendMessageByEmail(EmailSendDTO emailSendDTO, @RequestPart(value = "attachment",required = false)List<MultipartFile> attachmentList){
 
         //校验
         ValidatorUtils.validate(emailSendDTO);
         //发送邮箱
-        messageService.sendMessageByEmail(emailSendDTO);
+        messageService.sendMessageByEmail(emailSendDTO,attachmentList);
 
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }

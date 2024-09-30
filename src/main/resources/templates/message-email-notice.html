@@ -22,24 +22,33 @@
     <p><span class="theme"></span>
         <br />
         <span >Welcome to participate in this Achobeta recruitment activity, I look forward to your ability to show, even if you have a pity not to join us in the end,
-            I hope you can continue to work hard</span>
+            I hope you can continue to work hard.</span>
     </p>
     <p>
         <br />
-        <span class="theme"><strong> Tittle </strong></span>
+        <span class="theme"><strong> Tittle: </strong></span>
         <br />
         <span th:text="${tittle}"></span>
     </p>
-    <p><span class="theme"><strong> Message Content </strong></span>
+
+    <p><span class="theme"><strong> Message Content: </strong></span>
         <br />
         Dear student <strong th:text="${stuName}"></strong>:
         <br />
         &nbsp;&nbsp;&nbsp;&nbsp;<span th:text="${content}"></span>
         <br />
+        <span class="theme" th:if="${not #lists.isEmpty(attachmentInfoList)}"><strong>Attachment:</strong></span>
         <br />
-    <span class="theme" th:text="${sendTime}"></span>
+        <span th:if="${not #lists.isEmpty(attachmentInfoList)}" th:each="attachment : ${attachmentInfoList}">
+        <span class="theme" th:text="${attachment.fileName}"></span>
+        <span class="theme" th:text="${attachment.attachmentUrl}"></span>
+        </span>
+
+        <span class="theme" th:text="${sendTime}"></span>
     </p>
-    </p>
+
+
+
 
 
 
