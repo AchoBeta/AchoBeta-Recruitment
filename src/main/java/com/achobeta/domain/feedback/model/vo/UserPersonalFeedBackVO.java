@@ -1,9 +1,6 @@
 package com.achobeta.domain.feedback.model.vo;
 
-import com.achobeta.domain.message.model.vo.MessageContentVO;
 import com.baomidou.mybatisplus.annotation.TableField;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 

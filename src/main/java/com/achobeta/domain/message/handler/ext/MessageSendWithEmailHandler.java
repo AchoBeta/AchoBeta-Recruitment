@@ -1,30 +1,21 @@
 package com.achobeta.domain.message.handler.ext;
 
-import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.domain.email.model.vo.VerificationCodeTemplate;
-import com.achobeta.domain.message.handler.websocket.MessageReceiveServer;
 import com.achobeta.domain.message.handler.MessageSendHandler;
-import com.achobeta.domain.message.model.dto.EmailSendDTO;
+import com.achobeta.domain.message.handler.websocket.MessageReceiveServer;
 import com.achobeta.domain.message.model.dto.MessageSendDTO;
 import com.achobeta.domain.message.model.entity.AttachmentFile;
 import com.achobeta.domain.message.model.vo.EmailMessageSendTemplate;
 import com.achobeta.domain.resource.service.ResourceService;
-import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.email.model.po.EmailAttachment;
 import com.achobeta.email.model.po.EmailMessage;
 import com.achobeta.email.sender.EmailSender;
-import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.template.engine.HtmlEngine;
-import com.achobeta.util.HttpServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;

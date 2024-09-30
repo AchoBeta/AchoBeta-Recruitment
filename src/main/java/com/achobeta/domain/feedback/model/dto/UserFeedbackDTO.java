@@ -1,11 +1,8 @@
 package com.achobeta.domain.feedback.model.dto;
 
-import com.achobeta.domain.feedback.model.entity.StuBaseInfo;
-import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * @author cattleYuan

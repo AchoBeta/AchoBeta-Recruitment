@@ -2,7 +2,6 @@ package com.achobeta.domain.message.handler.ext;
 
 import com.achobeta.domain.message.handler.websocket.MessageReceiveServer;
 import com.achobeta.domain.message.model.dto.MessageSendDTO;
-import com.achobeta.domain.message.model.vo.MessageContentVO;
 import com.achobeta.domain.message.service.MessageService;
 import com.achobeta.util.ValidatorUtils;
 import lombok.RequiredArgsConstructor;

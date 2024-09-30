@@ -1,37 +1,32 @@
 package com.achobeta.domain.message.service.impl;
 
 import com.achobeta.common.base.BasePageResultEntity;
-import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.message.converter.MessageConverter;
 import com.achobeta.domain.message.handler.ext.MessageSendWithEmailHandler;
 import com.achobeta.domain.message.handler.websocket.MessageReceiveServer;
+import com.achobeta.domain.message.model.dao.mapper.MessageMapper;
 import com.achobeta.domain.message.model.dto.*;
 import com.achobeta.domain.message.model.entity.AttachmentFile;
+import com.achobeta.domain.message.model.entity.Message;
 import com.achobeta.domain.message.model.vo.MessageContentVO;
+import com.achobeta.domain.message.service.MessageService;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.student.model.converter.StuResumeConverter;
 import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.service.StuResumeService;
-
 import com.achobeta.domain.users.context.BaseContext;
-
 import com.achobeta.util.HttpServletUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.achobeta.domain.message.model.entity.Message;
-import com.achobeta.domain.message.service.MessageService;
-import com.achobeta.domain.message.model.dao.mapper.MessageMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.socket.WebSocketSession;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
