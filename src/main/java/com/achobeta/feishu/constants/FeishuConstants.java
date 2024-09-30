@@ -1,5 +1,7 @@
 package com.achobeta.feishu.constants;
 
+import com.achobeta.util.HttpRequestUtil;
+
 import java.util.Optional;
 
 /**
@@ -12,6 +14,7 @@ import java.util.Optional;
 public interface FeishuConstants {
 
     String ACHOBETA_RECRUITMENT_ROOT_FOLDER = "Sx9KfdvAzlY0YudYhEMcziRznpe";
+    String ACHOBETA_RECRUITMENT_ROOT_URL = HttpRequestUtil.buildUrl("https://j16c0vnbedn.feishu.cn/drive/folder/{folderToken}", null, ACHOBETA_RECRUITMENT_ROOT_FOLDER);
     String ACHOBETA_RECRUITMENT_DOCX_FOLDER_RESOURCE = "LpDBf0emllgCc2dKNfKcsqxJnjc";
     String ACHOBETA_RECRUITMENT_SHEET_FOLDER_RESOURCE = "OQbUfIGR9lqdFVdbJCDcQ3CSntd";
     String ACHOBETA_RECRUITMENT_DOCX_FOLDER_COOPERATE = "LpDBf0emllgCc2dKNfKcsqxJnjc";
