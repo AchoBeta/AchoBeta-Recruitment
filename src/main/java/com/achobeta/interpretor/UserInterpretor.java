@@ -6,12 +6,14 @@ import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.annotation.handler.InterceptHelper;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.config.RequestIdConfig;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.jwt.propertities.JwtProperties;
 import com.achobeta.jwt.util.JwtUtil;
 import com.achobeta.util.HttpServletUtil;
+import com.achobeta.util.SnowflakeIdGenerator;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,7 +37,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserInterpretor implements HandlerInterceptor {
 
+    private final RequestIdConfig requestIdConfig;
+
     private final JwtProperties jwtProperties;
+
+    private final SnowflakeIdGenerator requestIdGenerator;
 
     public static final String USER_ID = "user_id";
     public static final String USER_ROLE_NAME = "user";
@@ -69,7 +75,8 @@ public class UserInterpretor implements HandlerInterceptor {
             // todo: 例如通过本服务，但不是通过目标方法获取资源的请求，而这些请求需要进行其他的处理！
             return true;
         }
-
+        // 设置请求 id
+        response.setHeader(requestIdConfig.getHeader(), String.valueOf(requestIdGenerator.nextId()));
         // 获取目标方法
         Method targetMethod = ((HandlerMethod) handler).getMethod();
         // 获取 intercept 注解实例

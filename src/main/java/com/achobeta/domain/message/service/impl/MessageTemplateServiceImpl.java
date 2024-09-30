@@ -1,7 +1,7 @@
 package com.achobeta.domain.message.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.message.converter.MessageTemplateConverter;
 import com.achobeta.domain.message.model.dao.mapper.MessageTemplateMapper;
 import com.achobeta.domain.message.model.dto.AddMessageTemplateDTO;
 import com.achobeta.domain.message.model.dto.UpdateMessageTemplateDTO;
@@ -10,9 +10,11 @@ import com.achobeta.domain.message.model.vo.MessageTemplateVO;
 import com.achobeta.domain.message.service.MessageTemplateService;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author cattleyuan
@@ -20,39 +22,39 @@ import java.util.List;
  * @createDate 2024-07-10 16:57:24
  */
 @Service
+@RequiredArgsConstructor
 public class MessageTemplateServiceImpl extends ServiceImpl<MessageTemplateMapper, MessageTemplate>
         implements MessageTemplateService {
+
+    private final MessageTemplateConverter messageTemplateConverter;
+
+    @Override
+    public void checkMessageTemplateIfExist(Long messageTemplateId) {
+        Optional.ofNullable(getById(messageTemplateId)).
+                orElseThrow(()-> new GlobalServiceException(GlobalServiceStatusCode.MESSAGE_TEMPLATE_NOT_EXIST));
+    }
 
     @Override
     public void addMessageTemplate(AddMessageTemplateDTO addMessageTemplateDTO) {
         //构建消息模板
-        MessageTemplate messageTemplate = new MessageTemplate();
-        BeanUtil.copyProperties(addMessageTemplateDTO, messageTemplate);
+        MessageTemplate messageTemplate = messageTemplateConverter.addMessageTemplateDTOToPo(addMessageTemplateDTO);
         //保存模板
-        boolean isSuccess = save(messageTemplate);
-        if (!isSuccess) {
-            throw new GlobalServiceException("添加失败",GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL);
-        }
+        save(messageTemplate);
     }
 
     @Override
     public void removeMessageTemplate(Long templateId) {
-        boolean isSuccess = removeById(templateId);
-        if(!isSuccess){
-            throw new GlobalServiceException("删除失败",GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL);
-        }
+        removeById(templateId);
     }
 
     @Override
     public void updateMessageTemplate(UpdateMessageTemplateDTO updateMessageTemplateDTO) {
+
         //构建消息模板
-        MessageTemplate messageTemplate = new MessageTemplate();
-        BeanUtil.copyProperties(updateMessageTemplateDTO,messageTemplate);
+        MessageTemplate messageTemplate=messageTemplateConverter.updateMessageTemplateDTOToPo(updateMessageTemplateDTO);
         //更新消息模板
-        boolean isSuccess = updateById(messageTemplate);
-        if(!isSuccess){
-            throw new GlobalServiceException("修改失败",GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL);
-        }
+        updateById(messageTemplate);
+
 
     }
 
@@ -61,7 +63,7 @@ public class MessageTemplateServiceImpl extends ServiceImpl<MessageTemplateMappe
         //查询消息模板列表
         List<MessageTemplate> messageTemplateList = lambdaQuery().list();
         //封装返回结果
-        List<MessageTemplateVO> messageTemplateVOList = BeanUtil.copyToList(messageTemplateList, MessageTemplateVO.class);
+        List<MessageTemplateVO> messageTemplateVOList = messageTemplateConverter.messageTemplatesToVOList(messageTemplateList);
 
         return messageTemplateVOList;
     }

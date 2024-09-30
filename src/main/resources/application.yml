@@ -27,9 +27,15 @@ mybatis-plus:
       insert-strategy: not_null #插入策略:为空走默认值
   db-type: MYSQL # 分页时指定数据库类型
 
+ab:
+  request:
+    id:
+      workerId: 1
+      header: Request-ID
+
 resource:
   code:
-    workerId: 1
+    workerId: 2
   upload:
     maxFileSize: 20
     maxRequestSize: 100

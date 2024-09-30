@@ -53,6 +53,7 @@ public enum GlobalServiceStatusCode {
      /* 邮箱错误 3001-4000 */
     EMAIL_PATTERN_ERROR(3001, "邮箱格式错误"),
     EMAIL_SEND_FAIL(3002, "邮箱发送失败"),
+    EMAIL_ATTACH_SEND_FAIL(3003, "邮箱附件发送失败"),
 
     EMAIL_NOT_EXIST_RECORD(3101, "邮箱不存在记录"),
     EMAIL_CAPTCHA_CODE_COUNT_EXHAUST(3103, "申请次数达到上限"),
@@ -94,6 +95,10 @@ public enum GlobalServiceStatusCode {
 
     INTERVIEW_COMMENT_NOT_EXISTS(6201, "面试评论不存在"),
     INTERVIEW_NOT_SUMMARIZED(6202, "面试还未总结"),
+    /*消息错误 7001-8000*/
+    MESSAGE_TEMPLATE_NOT_EXIST(7001,"消息模板不存在"),
+    MESSAGE_NOT_EXIST(7002,"反馈消息不存在"),
+    MESSAGE_HANDLER_NOT_EXIST(7003,"反馈处理员不存在"),
 
     /* 资源错误 7001-8000 */
     RESOURCE_LEVEL_NOT_EXISTS(7001, "资源权限不存在"),

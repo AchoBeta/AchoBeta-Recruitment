@@ -58,9 +58,13 @@ public class HttpServletUtil {
         returnBytes(bytes, response);
     }
 
+    public static String getHost(HttpServletRequest request) {
+        return String.format("%s://%s", request.getScheme(), request.getHeader("host"));
+    }
+
     public static String getBaseUrl(HttpServletRequest request, String... uris) {
         String uri = Arrays.stream(uris).filter(StringUtils::hasText).collect(Collectors.joining());
-        return String.format("%s://%s%s", request.getScheme(), request.getHeader("host"), uri);
+        return getHost(request) + uri;
     }
 
 }
