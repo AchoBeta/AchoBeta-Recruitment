@@ -1,5 +1,7 @@
 package com.achobeta.domain.feishu.constants;
 
+import com.achobeta.feishu.constants.FeishuConstants;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -19,7 +21,7 @@ public interface FeishuResourceConstants {
 
     String FEISHU_RESOURCE_CREATE_LOCK = "feishuResourceCreateLock:";
 
-    String DEFAULT_URL = "https://j16c0vnbedn.feishu.cn/drive/folder/";
+    String DEFAULT_URL = "https://j16c0vnbedn.feishu.cn/drive/folder/Sx9KfdvAzlY0YudYhEMcziRznpe";
 
     String DEFAULT_NAME = "achoBeta-recruitment-resource";
 

@@ -11,6 +11,12 @@ import java.util.Optional;
  */
 public interface FeishuConstants {
 
+    String ACHOBETA_RECRUITMENT_ROOT_FOLDER = "Sx9KfdvAzlY0YudYhEMcziRznpe";
+    String ACHOBETA_RECRUITMENT_DOCX_FOLDER_RESOURCE = "LpDBf0emllgCc2dKNfKcsqxJnjc";
+    String ACHOBETA_RECRUITMENT_SHEET_FOLDER_RESOURCE = "OQbUfIGR9lqdFVdbJCDcQ3CSntd";
+    String ACHOBETA_RECRUITMENT_DOCX_FOLDER_COOPERATE = "LpDBf0emllgCc2dKNfKcsqxJnjc";
+    String ACHOBETA_RECRUITMENT_SHEET_FOLDER_COOPERATE = "SyBEf61JglcR5NdCp34cs2tGnMd";
+
     String AUTHORIZATION_HEADER = "Authorization";
 
     String AUTHORIZATION_PREFIX = "Bearer ";

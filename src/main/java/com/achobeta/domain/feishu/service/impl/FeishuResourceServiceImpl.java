@@ -9,7 +9,7 @@ import com.achobeta.domain.feishu.model.entity.FeishuResource;
 import com.achobeta.domain.feishu.model.vo.FeishuResourceQueryVO;
 import com.achobeta.domain.feishu.service.FeishuResourceService;
 import com.achobeta.domain.feishu.service.FeishuService;
-import com.achobeta.feishu.config.FeishuAppConfig;
+import com.achobeta.feishu.constants.FeishuConstants;
 import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.redis.lock.RedisLock;
 import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
@@ -48,8 +48,6 @@ public class FeishuResourceServiceImpl extends ServiceImpl<FeishuResourceMapper,
     private final RedisLock redisLock;
 
     private final SimpleLockStrategy simpleLockStrategy;
-
-    private final FeishuAppConfig feishuAppConfig;
 
     @Override
     public FeishuResource createAndGetFeishuResource(String ticket, String originalName) {
@@ -94,7 +92,7 @@ public class FeishuResourceServiceImpl extends ServiceImpl<FeishuResourceMapper,
                 return url;
             }else {
                 // 只返回不落库（默认文件夹路径）
-                return DEFAULT_URL + feishuAppConfig.getResource().getParentNode();
+                return DEFAULT_URL;
             }
         });
     }
