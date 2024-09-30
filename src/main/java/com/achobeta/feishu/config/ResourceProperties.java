@@ -22,4 +22,6 @@ public class ResourceProperties {
 
     private Integer maxCount;
 
+    private FolderProperties folder;
+
 }
