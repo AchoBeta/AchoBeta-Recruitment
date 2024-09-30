@@ -2,6 +2,7 @@ package com.achobeta.domain.login.service;
 
 import cn.hutool.crypto.digest.BCrypt;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.login.constants.LoginConstants;
 import com.achobeta.domain.login.enums.LoginTypeEnum;
 import com.achobeta.domain.login.model.dao.UserEntity;
 import com.achobeta.domain.login.model.dao.mapper.UserMapper;
@@ -13,6 +14,8 @@ import com.achobeta.interpretor.UserInterpretor;
 import com.achobeta.jwt.propertities.JwtProperties;
 import com.achobeta.jwt.util.JwtUtil;
 import com.achobeta.redis.cache.RedisCache;
+import com.achobeta.redis.lock.RedisLock;
+import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static com.achobeta.common.enums.GlobalServiceStatusCode.USER_ACCOUNT_ALREADY_EXIST;
-import static com.achobeta.domain.email.constants.EmailConstants.LOGIN_FAIL_CNT_KEY;
 
 /**
  * @author BanTanger 半糖
@@ -44,36 +46,36 @@ public class LoginServiceImpl implements LoginService {
     @Value("${ab.user.password.lockTime:10}")
     private Integer lockTime;
 
-    private final static Integer DEFAULT_ROLE = 1; // 非管理员
-
     private final RedisCache redisCache;
     private final UserMapper userMapper;
     private final JwtProperties jwtProperties;
+    private final RedisLock redisLock;
+    private final SimpleLockStrategy simpleLockStrategy;
 
     @Override
     public UserEntity register(RegisterDTO registerBody) {
         String username = registerBody.getUsername();
 
-        // TODO 验证码校验
+        return redisLock.tryLockGetSomething(LoginConstants.REGISTER_LOCK + username, () -> {
+            // 校验数据库中是否存在
+            boolean exists = userMapper.exists(new LambdaQueryWrapper<UserEntity>()
+                    .eq(UserEntity::getUsername, username));
 
-        // 校验数据库中是否存在
-        boolean exists = userMapper.exists(new LambdaQueryWrapper<UserEntity>()
-                .eq(UserEntity::getUsername, username));
+            if (exists) {
+                String message = String.format("账号名称:'%s'已存在", username);
+                throw new GlobalServiceException(message, USER_ACCOUNT_ALREADY_EXIST);
+            }
 
-        if (exists) {
-            String message = String.format("账号名称:'%s'已存在", username);
-            throw new GlobalServiceException(message, USER_ACCOUNT_ALREADY_EXIST);
-        }
-
-        // 注册
-        UserEntity user = registerUser(registerBody);
-        log.info("账号名称:'{}'注册成功!", username);
-        return user;
+            // 注册
+            UserEntity user = registerUser(registerBody);
+            log.info("账号名称:'{}'注册成功!", username);
+            return user;
+        }, () -> null, simpleLockStrategy);
     }
 
     private UserEntity registerUser(RegisterDTO registerBody) {
         UserEntity user = new UserEntity();
-        user.setUserType(DEFAULT_ROLE);
+        user.setUserType(UserTypeEnum.USER.getCode());
         user.setUsername(registerBody.getUsername());
         user.setNickname(registerBody.getUsername());
         String password = registerBody.getPassword();
@@ -87,12 +89,14 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public LoginVO login(LoginUser loginUser) {
+        Long userId = loginUser.getUserId();
+
         HashMap<String, Object> claims = new HashMap<>();
         SecretKey secretKey = JwtUtil.generalKey(jwtProperties.getSecretKey());
 
         //将id存入claims
-        if (Optional.ofNullable(loginUser.getUserId()).isPresent()) {
-            claims.put(UserInterpretor.USER_ID, loginUser.getUserId());
+        if (Optional.ofNullable(userId).isPresent()) {
+            claims.put(UserInterpretor.USER_ID, userId);
             claims.put(UserTypeEnum.USER.getName(), loginUser.getUserType());
         }
 
@@ -107,7 +111,7 @@ public class LoginServiceImpl implements LoginService {
     public void checkLogin(LoginTypeEnum loginTypeEnum, String username, Supplier<Boolean> supplier) {
         // 登录错误统一处理
         // 设置失败 key 为 key + username，限制，也可以是 key + username + ip 自定义限制
-        String failKey = LOGIN_FAIL_CNT_KEY + username;
+        String failKey = LoginConstants.LOGIN_FAIL_CNT_KEY + username;
 
         // 获取用户登录失败次数
         int failCount = (int) redisCache.getCacheObject(failKey).orElse(0);

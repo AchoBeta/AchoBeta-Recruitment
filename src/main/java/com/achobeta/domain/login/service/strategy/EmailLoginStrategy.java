@@ -12,7 +12,6 @@ import com.achobeta.domain.login.model.vo.LoginVO;
 import com.achobeta.domain.login.service.LoginService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.cache.RedisCache;
-import com.achobeta.util.ValidatorUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,12 +38,10 @@ public class EmailLoginStrategy implements LoginStrategy {
 
     @Override
     public LoginVO doLogin(LoginDTO body) {
-        if (LoginTypeEnum.EMAIL.getMessage().equals(body.getLoginType()) && body.getEmailParams() == null) {
-            String message = String.format("'%s'参数为空，原请求参数为:'%s'", body.getLoginType(), body);
-            throw new GlobalServiceException(message, SYSTEM_SERVICE_FAIL);
-        }
-        EmailLoginDTO loginBody = body.getEmailParams();
-        ValidatorUtils.validate(loginBody);
+        EmailLoginDTO loginBody = Optional.ofNullable(body.getEmailParams()).orElseThrow(() -> {
+            String message = String.format("'%s'参数为空，原请求参数为:'%s'", LoginTypeEnum.EMAIL, body);
+            return new GlobalServiceException(message, SYSTEM_SERVICE_FAIL);
+        });
 
         String email = loginBody.getEmail();
         String emailCode = loginBody.getEmailCode();
@@ -56,8 +53,7 @@ public class EmailLoginStrategy implements LoginStrategy {
         loginService.checkLogin(LoginTypeEnum.EMAIL, user.getUsername(),
                 () -> !validateEmailCode(email, emailCode));
 
-        // TODO
-//        // 自定义分配，不同用户有不同 token 授权时间，不设置默认走全局
+//  TODO 自定义分配，不同用户有不同 token 授权时间，不设置默认走全局
 //        LoginModel loginModel = new LoginModel();
 //        loginModel.setTimeout();
 
@@ -83,7 +79,7 @@ public class EmailLoginStrategy implements LoginStrategy {
         UserEntity user = userMapper.selectOne(new LambdaQueryWrapper<UserEntity>()
                 .eq(UserEntity::getEmail, email));
         return Optional.ofNullable(user).orElseGet(() -> {
-            // 不存在邮箱走注册逻辑
+            // 不存在邮箱走注册逻辑（用户名设置为邮箱，注册时也会对用户名进行唯一性校验）
             RegisterDTO registerDTO = new RegisterDTO();
             registerDTO.setEmail(email);
             registerDTO.setUsername(email);

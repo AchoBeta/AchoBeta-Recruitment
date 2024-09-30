@@ -27,8 +27,8 @@ public class EmailAttachment implements DataSource {
 
     private byte[] bytes;
 
-    public static EmailAttachment of(MultipartFile multipartFile) throws IOException {
-        return new EmailAttachment(multipartFile.getOriginalFilename(), multipartFile.getBytes());
+    public static EmailAttachment of(MultipartFile multipartFile){
+        return new EmailAttachment(multipartFile.getOriginalFilename(), MediaUtil.getBytes(multipartFile));
     }
 
     @Override

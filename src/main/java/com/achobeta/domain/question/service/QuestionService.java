@@ -5,7 +5,6 @@ import com.achobeta.domain.question.model.entity.Question;
 import com.achobeta.domain.question.model.vo.QuestionDetailVO;
 import com.achobeta.domain.question.model.vo.QuestionQueryVO;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,13 +20,10 @@ public interface QuestionService extends IService<Question> {
 
     Optional<Question> getQuestion(Long questionId);
 
-    @Transactional
     Long addQuestion(List<Long> libIds, String title, String standard);
 
-    @Transactional
     void updateQuestion(Long questionId, List<Long> libIds, String title, String standard);
 
-    @Transactional
     void removeQuestion(Long questionId);
 
     void checkQuestionExists(Long questionId);

@@ -17,11 +17,6 @@ public interface EmailConstants {
     String CAPTCHA_CODE_KEY = "captcha_code";
 
     /**
-     * 登录失败次数
-     */
-    String LOGIN_FAIL_CNT_KEY = "login_fail_cnt:";
-
-    /**
      * 验证码生成次数
      */
     String CAPTCHA_CODE_CNT_KEY = "captcha_code_cnt:";

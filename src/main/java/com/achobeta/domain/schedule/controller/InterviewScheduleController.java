@@ -3,8 +3,12 @@ package com.achobeta.domain.schedule.controller;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.interview.constants.InterviewConstants;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
+import com.achobeta.domain.resource.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
+import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.schedule.model.dto.ScheduleDTO;
 import com.achobeta.domain.schedule.model.dto.ScheduleUpdateDTO;
 import com.achobeta.domain.schedule.model.vo.ParticipationDetailVO;
@@ -14,7 +18,8 @@ import com.achobeta.domain.schedule.model.vo.UserSituationVO;
 import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.domain.users.context.BaseContext;
-import com.achobeta.util.ValidatorUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +27,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created With Intellij IDEA
@@ -46,10 +52,11 @@ public class InterviewScheduleController {
 
     private final RecruitmentActivityService recruitmentActivityService;
 
+    private final ResourceService resourceService;
+
     @PostMapping("/create")
-    public SystemJsonResponse createInterviewSchedule(@RequestBody ScheduleDTO scheduleDTO) {
+    public SystemJsonResponse createInterviewSchedule(@Valid @RequestBody ScheduleDTO scheduleDTO) {
         // 校验
-        ValidatorUtils.validate(scheduleDTO);
         Long managerId = BaseContext.getCurrentUser().getUserId();
         Long participationId = scheduleDTO.getParticipationId();
         activityParticipationService.checkParticipationExists(participationId);
@@ -71,9 +78,8 @@ public class InterviewScheduleController {
     }
 
     @PostMapping("/update")
-    public SystemJsonResponse updateInterviewSchedule(@RequestBody ScheduleUpdateDTO scheduleUpdateDTO) {
+    public SystemJsonResponse updateInterviewSchedule(@Valid @RequestBody ScheduleUpdateDTO scheduleUpdateDTO) {
         // 检测
-        ValidatorUtils.validate(scheduleUpdateDTO);
         Long managerId = BaseContext.getCurrentUser().getUserId();
         Long scheduleId = scheduleUpdateDTO.getScheduleId();
         interviewScheduleService.checkInterviewScheduleExists(scheduleId);
@@ -126,6 +132,20 @@ public class InterviewScheduleController {
         // 获取参与本次招新活动的所有用户参与和预约情况
         UserSituationVO situations = interviewScheduleService.getSituationsByActId(actId);
         return SystemJsonResponse.SYSTEM_SUCCESS(situations);
+    }
+
+    @GetMapping("/print/situations/{actId}")
+    public SystemJsonResponse printUserParticipationSituationByActId(HttpServletRequest request,
+                                                                   @PathVariable("actId") @NotNull Long actId,
+                                                                   @RequestParam(name = "level", required = false) Integer level,
+                                                                   @RequestParam(name = "synchronous", required = false) Boolean synchronous) {
+        // 检测
+        recruitmentActivityService.checkRecruitmentActivityExists(actId);
+        ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(InterviewConstants.DEFAULT_EXCEL_ACCESS_LEVEL);
+        // 打印表格
+        Long managerId = BaseContext.getCurrentUser().getUserId();
+        OnlineResourceVO onlineResourceVO = interviewScheduleService.printSituations(managerId, actId, accessLevel, synchronous);
+        return SystemJsonResponse.SYSTEM_SUCCESS(onlineResourceVO);
     }
 
     @GetMapping("/detail/{scheduleId}")

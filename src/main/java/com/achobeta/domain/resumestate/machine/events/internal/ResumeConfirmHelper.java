@@ -67,16 +67,13 @@ ResumeConfirmHelper implements ResumeStateInternalTransitionHelper{
 
     @Override
     public Condition<ResumeContext> getWhenCondition() {
-        return resumeContext -> {
-            return Optional.ofNullable(resumeContext)
-                    .map(ResumeContext::getExecuteDTO)
-                    .map(ResumeExecuteDTO::getMemberDTO)
-                    .map(memberDTO -> {
-                        ValidatorUtils.validate(memberDTO);
-                        return Boolean.TRUE;
-                    })
-                    .orElse(Boolean.FALSE);
-        };
+        return resumeContext -> Optional.ofNullable(resumeContext)
+                .map(ResumeContext::getExecuteDTO)
+                .map(ResumeExecuteDTO::getMemberDTO)
+                .map(memberDTO -> {
+                    ValidatorUtils.validate(memberDTO);
+                    return Boolean.TRUE;
+                }).orElse(Boolean.FALSE);
     }
 
     @Override

@@ -14,15 +14,18 @@ import com.achobeta.domain.shortlink.util.ShortLinkUtils;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.util.HttpRequestUtil;
+import com.achobeta.util.HttpServletUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+
+import static com.achobeta.domain.shortlink.constants.ShortLinkConstants.*;
 
 /**
  * @author 马拉圈
@@ -34,10 +37,6 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink>
         implements ShortLinkService {
-
-    private static final long SHORT_LINK_TIMEOUT = 7; // 超时时间 (默认七天)
-
-    private static final TimeUnit SHORT_LINK_UNIT = TimeUnit.DAYS;
 
     private final RedisCache redisCache;
 
@@ -57,16 +56,22 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 .oneOpt();
     }
 
+    @Override
+    public String getSystemUrl(HttpServletRequest request, String code) {
+        String baseUrl = HttpServletUtil.getBaseUrl(request, "/api/v1/shortlink", "/{code}");
+        return HttpRequestUtil.buildUrl(baseUrl, null, code);
+    }
+
 
     @Override
-    public String transShortLinkURL(String baseUrl, String url) {
+    public String transShortLinkURL(HttpServletRequest request, String url) {
         //获取短链接code
         String code = url;
         String redisKey = null;
         // 生成唯一的code
         do {
             code = ShortLinkUtils.getShortCodeByURL(code);
-            redisKey = ShortLinkUtils.REDIS_SHORT_LINK + code;
+            redisKey = REDIS_SHORT_LINK + code;
         } while (shortLinkBloomFilter.contains(redisKey));//误判为存在也无所谓，无非就是再重新生成一个
         // 保存
         ShortLink shortLink = new ShortLink();
@@ -78,12 +83,12 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         redisCache.setCacheObject(redisKey, url, SHORT_LINK_TIMEOUT, SHORT_LINK_UNIT);
         shortLinkBloomFilter.add(redisKey);
         // 返回完整的短链接
-        return HttpRequestUtil.buildUrl(baseUrl,null, code);
+        return getSystemUrl(request, code);
     }
 
     @Override
     public String getOriginUrl(String code) {
-        String redisKey = ShortLinkUtils.REDIS_SHORT_LINK + code;
+        String redisKey = REDIS_SHORT_LINK + code;
         // 更新为已使用
         this.lambdaUpdate()
                 .eq(ShortLink::getShortCode, code)
@@ -125,7 +130,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .eq(ShortLink::getId, id)
                     .remove();
             // 删除缓存（哪怕出现并发问题，影响也不大，也就在缓存期间短链仍有效罢了）
-            redisCache.deleteObject(ShortLinkUtils.REDIS_SHORT_LINK + shortLink.getShortCode());
+            redisCache.deleteObject(REDIS_SHORT_LINK + shortLink.getShortCode());
         });
 
     }

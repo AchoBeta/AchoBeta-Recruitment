@@ -1,18 +1,17 @@
 package com.achobeta.monio.engine;
 
+import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.monio.config.MinioConfig;
+import com.achobeta.util.HttpRequestUtil;
 import com.achobeta.util.HttpServletUtil;
 import com.achobeta.util.MediaUtil;
-import com.achobeta.util.ResourceUtil;
 import io.minio.*;
 import io.minio.http.Method;
 import io.minio.messages.Item;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +23,9 @@ public class MinioEngine {
 
     private final MinioClient minioClient;
 
+    /**
+     * 文件上传
+     */
     public String upload(String originalName, byte[] bytes) throws Exception {
         String suffix = ResourceUtil.getFileNameSuffix(originalName);
         String uniqueFileName = ResourceUtil.getUniqueFileName(suffix);
@@ -36,15 +38,6 @@ public class MinioEngine {
         //文件名称相同会覆盖
         minioClient.putObject(objectArgs);
         return uniqueFileName;
-    }
-
-    /**
-     * 文件上传
-     */
-    public String upload(MultipartFile file) throws Exception {
-        try (InputStream inputStream = file.getInputStream()){
-            return upload(ResourceUtil.getOriginalName(file), MediaUtil.getBytes(inputStream));
-        }
     }
 
     /**
@@ -69,7 +62,7 @@ public class MinioEngine {
         // 查看文件地址
         String objectUrl = getObjectUrl(fileName);
         // 判断是否隐藏
-        return Boolean.TRUE.equals(hidden) ? HttpServletUtil.hiddenQueryString(objectUrl) : objectUrl;
+        return Boolean.TRUE.equals(hidden) ? HttpRequestUtil.hiddenQueryString(objectUrl) : objectUrl;
     }
 
     /**

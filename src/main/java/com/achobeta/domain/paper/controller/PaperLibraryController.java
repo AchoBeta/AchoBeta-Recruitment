@@ -7,7 +7,7 @@ import com.achobeta.domain.paper.model.converter.LibraryConverter;
 import com.achobeta.domain.paper.model.dto.PaperLibraryDTO;
 import com.achobeta.domain.paper.model.entity.QuestionPaperLibrary;
 import com.achobeta.domain.paper.service.QuestionPaperLibraryService;
-import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,9 +40,8 @@ public class PaperLibraryController {
     }
 
     @PostMapping("/rename")
-    public SystemJsonResponse renamePaperLibrary(@RequestBody PaperLibraryDTO paperLibraryDTO) {
+    public SystemJsonResponse renamePaperLibrary(@Valid @RequestBody PaperLibraryDTO paperLibraryDTO) {
         // 检查
-        ValidatorUtils.validate(paperLibraryDTO);
         Long libId = paperLibraryDTO.getLibId();
         questionPaperLibraryService.checkPaperLibraryExists(libId);
         // 重命名

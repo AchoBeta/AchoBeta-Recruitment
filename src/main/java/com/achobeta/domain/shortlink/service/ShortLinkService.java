@@ -5,6 +5,7 @@ import com.achobeta.domain.shortlink.model.dao.po.ShortLink;
 import com.achobeta.domain.shortlink.model.dto.ShortLinkQueryDTO;
 import com.achobeta.domain.shortlink.model.vo.ShortLinkQueryVO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Optional;
 
@@ -19,17 +20,18 @@ public interface ShortLinkService extends IService<ShortLink> {
 
     Optional<ShortLink> getShortLinkByCode(String code);
 
+    String getSystemUrl(HttpServletRequest request, String code);
+
     /**
      * url生成唯一的code
      * 1. 将code和源链接的关系保存到数据库里
      * 2. 将code对应的key和源链接作为键值对保存到redis里
      * 3. 将code对应的key加入到redis布隆过滤器中
      *
-     * @param baseUrl 基础路径
      * @param url     原链接
      * @return 短链接
      */
-    String transShortLinkURL(String baseUrl, String url);
+    String transShortLinkURL(HttpServletRequest request, String url);
 
     /**
      * 通过code获取原链接

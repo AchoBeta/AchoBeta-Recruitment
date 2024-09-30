@@ -8,7 +8,7 @@ import com.achobeta.domain.evaluate.model.vo.InterviewPaperDetailVO;
 import com.achobeta.domain.evaluate.service.InterviewQuestionScoreService;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.service.PaperQuestionLinkService;
-import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +38,7 @@ public class InterviewQuestionScoreController {
     private final PaperQuestionLinkService paperQuestionLinkService;
 
     @PostMapping("/mark")
-    public SystemJsonResponse markInterviewQuestion(@RequestBody QuestionScoreDTO questionScoreDTO) {
-        // 检查
-        ValidatorUtils.validate(questionScoreDTO);
+    public SystemJsonResponse markInterviewQuestion(@Valid @RequestBody QuestionScoreDTO questionScoreDTO) {
         Long interviewId = questionScoreDTO.getInterviewId();
         Long paperId = interviewService.getInterviewPaperId(interviewId);
         Long questionId = questionScoreDTO.getQuestionId();

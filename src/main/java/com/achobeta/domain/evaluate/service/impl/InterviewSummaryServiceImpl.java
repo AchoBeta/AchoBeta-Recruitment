@@ -1,6 +1,7 @@
 package com.achobeta.domain.evaluate.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.evaluate.constants.InterviewEvaluateConstants;
 import com.achobeta.domain.evaluate.model.converter.InterviewSummaryConverter;
 import com.achobeta.domain.evaluate.model.dao.mapper.InterviewSummaryMapper;
 import com.achobeta.domain.evaluate.model.dto.InterviewSummaryDTO;
@@ -28,8 +29,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class InterviewSummaryServiceImpl extends ServiceImpl<InterviewSummaryMapper, InterviewSummary>
     implements InterviewSummaryService{
-
-    private final static String INTERVIEW_SUMMARY_LOCK = "interviewSummaryLock:";
 
     private final RedisLock redisLock;
 
@@ -60,7 +59,7 @@ public class InterviewSummaryServiceImpl extends ServiceImpl<InterviewSummaryMap
     public void summaryInterview(InterviewSummaryDTO interviewSummaryDTO) {
         // 转化
         Long interviewId = interviewSummaryDTO.getInterviewId();
-        redisLock.tryLockDoSomething(INTERVIEW_SUMMARY_LOCK + interviewId, () -> {
+        redisLock.tryLockDoSomething(InterviewEvaluateConstants.INTERVIEW_SUMMARY_LOCK + interviewId, () -> {
             InterviewSummary interviewSummary =
                     InterviewSummaryConverter.INSTANCE.interviewSummaryDTOToInterviewSummary(interviewSummaryDTO);
             getInterviewSummaryByInterviewId(interviewId).map(InterviewSummary::getId).ifPresentOrElse(summaryId -> {

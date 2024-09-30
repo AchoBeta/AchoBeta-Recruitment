@@ -10,6 +10,10 @@ import com.achobeta.domain.recruit.model.vo.TimePeriodCountVO;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.TimePeriodService;
+import com.achobeta.domain.resource.enums.ExcelTemplateEnum;
+import com.achobeta.domain.resource.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
+import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.schedule.model.converter.SituationConverter;
 import com.achobeta.domain.schedule.model.dao.mapper.InterviewScheduleMapper;
 import com.achobeta.domain.schedule.model.entity.InterviewSchedule;
@@ -27,8 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static com.achobeta.domain.schedule.constants.InterviewScheduleConstants.*;
 
 /**
 * @author 马拉圈
@@ -39,14 +44,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleMapper, InterviewSchedule>
     implements InterviewScheduleService{
-
-    private final static Integer MIN_GAP = 30;
-
-    private final static Integer MAX_GAP = 120;
-
-    private final static TimeUnit GAP_UNIT = TimeUnit.MINUTES;
-
-    private final static String SCHEDULE_EXIT_LOCK = "scheduleExitLock:";
 
     private final RedisLock redisLock;
 
@@ -63,6 +60,8 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
     private final InterviewService interviewService;
 
     private final TimePeriodService timePeriodService;
+
+    private final ResourceService resourceService;
 
     private void timePeriodValidate(Long startTime, Long endTime) {
         long gap = endTime - startTime;
@@ -169,6 +168,35 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
             participationDetailVO.setScheduleVOS(situations.getScheduleVOS());
             return participationDetailVO;
         }).orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.ACTIVITY_PARTICIPATION_NOT_EXISTS));
+    }
+
+    @Override
+    public OnlineResourceVO printSituations(Long managerId, Long actId, ResourceAccessLevel level, Boolean synchronous) {
+        // 构造数据
+        Map<Long, ActivitySituationExcelTemplate> resultMap = new LinkedHashMap<>();
+        getSituationsByActId(actId).getUserParticipationVOS().forEach(situation -> {
+            ActivitySituationExcelTemplate activitySituationExcelTemplate = new ActivitySituationExcelTemplate();
+            activitySituationExcelTemplate.setTimePeriodVOS(situation.getTimePeriodVOS());
+            activitySituationExcelTemplate.setScheduleVOS(situation.getScheduleVOS());
+            resultMap.put(situation.getParticipationId(), activitySituationExcelTemplate);
+        });
+        // 获取详尽的问答与简历
+        List<Long> participationIds = new ArrayList<>(resultMap.keySet());
+        activityParticipationService.getParticipationQuestions(participationIds).stream()
+                .filter(participationQuestionVO -> resultMap.containsKey(participationQuestionVO.getId()))
+                .forEach(participationQuestionVO -> {
+                    ActivitySituationExcelTemplate activitySituationExcelTemplate = resultMap.get(participationQuestionVO.getId());
+                    SituationConverter.INSTANCE.stuSimpleResumeVOMapToSituationExcelTemplate(activitySituationExcelTemplate, participationQuestionVO.getStuSimpleResumeVO());
+                    activitySituationExcelTemplate.setQuestionAnswerVOS(participationQuestionVO.getQuestionAnswerVOS());
+                });
+        // 获取表格
+        return resourceService.uploadExcel(
+                managerId,
+                ExcelTemplateEnum.ACHOBETA_ACTIVITY_SITUATIONS,
+                ActivitySituationExcelTemplate.class,
+                new ArrayList<>(resultMap.values()),
+                level,
+                synchronous);
     }
 
     @Override

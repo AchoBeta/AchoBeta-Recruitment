@@ -2,10 +2,10 @@ package com.achobeta.util;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
@@ -70,6 +70,10 @@ public class ObjectUtil {
                 .map(field -> read(object, field, fieldClazz));
     }
 
+    public static <T> Stream<T> stream(Collection<T> collection) {
+        return Optional.ofNullable(collection).stream().flatMap(Collection::stream);
+    }
+
     public static <C, F, T> T reduce(C object, Class<F> fieldClazz, Function<F, T> mapper,
                                      T identity, BinaryOperator<T> accumulator) {
         return stream(object, fieldClazz)
@@ -82,11 +86,6 @@ public class ObjectUtil {
         stream(object, fieldClazz)
                 .filter(Objects::nonNull)
                 .forEach(consumer);
-    }
-
-    public static <T> String getBeanName(T bean) {
-//        return Introspector.decapitalize(ClassUtils.getShortName(bean.getClass()));
-        return Introspector.decapitalize(bean.getClass().getSimpleName());
     }
 
 }

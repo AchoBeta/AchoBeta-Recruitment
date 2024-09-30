@@ -5,10 +5,7 @@ import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
 import com.achobeta.domain.interview.model.entity.Interview;
-import com.achobeta.domain.interview.model.vo.InterviewEventVO;
-import com.achobeta.domain.interview.model.vo.InterviewReserveVO;
-import com.achobeta.domain.interview.model.vo.InterviewStatusVO;
-import com.achobeta.domain.interview.model.vo.InterviewVO;
+import com.achobeta.domain.interview.model.vo.*;
 import com.lark.oapi.service.vc.v1.model.Reserve;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -41,5 +38,7 @@ public interface InterviewConverter {
     List<InterviewEventVO> interviewEventListToInterviewEventVOList(List<InterviewEvent> interviewEventList);
 
     InterviewReserveVO feishuReserveToInterviewReserveVO(Reserve reserve);
+
+    List<InterviewExcelTemplate> interviewVOListToInterviewExcelTemplateList(List<InterviewVO> interviewVOList);
 
 }

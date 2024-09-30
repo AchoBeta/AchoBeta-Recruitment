@@ -1,11 +1,9 @@
 package com.achobeta.util;
 
+import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
 import com.achobeta.common.enums.HttpRequestEnum;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -13,6 +11,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -30,22 +30,20 @@ public class HttpRequestUtil {
 
     public final static Map<String, String> JSON_CONTENT_TYPE_HEADER = Map.of("CONTENT_TYPE", "application/json; charset=utf-8");
 
-    private static final Gson GSON;
-
-    static {
-        GSON = new GsonBuilder()
-//                .setPrettyPrinting() // 美化 json
-                .disableHtmlEscaping() // 取消对 html 代码的转义（可能的场景是需要保存 html 代码的字段）
-                .create();
-    }
-
     private static final Pattern HTTP_URL_PATTERN = Pattern.compile("^(?i)(http|https):(//(([^@\\[/?#]*)@)?(\\[[\\p{XDigit}:.]*[%\\p{Alnum}]*]|[^\\[/?#:]*)(:(\\{[^}]+\\}?|[^/?#]*))?)?([^?#]*)(\\?([^#]*))?(#(.*))?");
 
     public static boolean isHttpUrl(String url) {
         return StringUtils.hasText(url) && HTTP_URL_PATTERN.matcher(url).matches();
     }
 
-    @Nullable
+    public static boolean isAccessible(HttpURLConnection connection) throws IOException {
+        return Objects.nonNull(connection) && connection.getResponseCode() / 100 == 2;
+    }
+
+    public static boolean isAccessible(String url) throws IOException {
+        return isAccessible(openConnection(url));
+    }
+
     public static HttpURLConnection openConnection(String url) throws IOException {
         HttpURLConnection connection = isHttpUrl(url) ? (HttpURLConnection) new URL(url).openConnection() : null;
         if(Objects.nonNull(connection) && connection.getResponseCode() / 100 == 3) {
@@ -55,7 +53,15 @@ public class HttpRequestUtil {
         }
     }
 
-    public static <V> String buildUrl(String baseUrl, Map<String, List<String>> queryParams, V... uriVariableValues) {
+    public static String hiddenQueryString(String url) {
+        return StringUtils.hasText(url) && url.contains("?") ? url.substring(0, url.indexOf("?")) : url;
+    }
+
+    public static String encodeString(String str) {
+        return URLEncoder.encode(str, StandardCharsets.UTF_8);
+    }
+
+    public static String buildUrl(String baseUrl, Map<String, List<String>> queryParams, Object... uriVariableValues) {
         queryParams = Optional.ofNullable(queryParams).orElseGet(Map::of);
         return UriComponentsBuilder
                 .fromHttpUrl(baseUrl)
@@ -80,16 +86,21 @@ public class HttpRequestUtil {
         // 准备参数
         Method requestMethod = Method.valueOf(method.toUpperCase());
         headers = Optional.ofNullable(headers).orElseGet(Map::of);
-        String reqJson = GSON.toJson(requestBody);
         // 发出请求
-        String respJson = HttpUtil.createRequest(requestMethod, url)
+        HttpRequest httpRequest = HttpUtil.createRequest(requestMethod, url)
                 .headerMap(headers, Boolean.TRUE)
-                .headerMap(JSON_CONTENT_TYPE_HEADER, Boolean.TRUE)
-                .body(reqJson)
-                .execute()
-                .body();
+                .headerMap(JSON_CONTENT_TYPE_HEADER, Boolean.TRUE);
+        if(Objects.nonNull(requestBody)) {
+            String reqJson = GsonUtil.toJson(requestBody);
+            httpRequest = httpRequest.body(reqJson);
+        }
+        String respJson = httpRequest.execute().body();
         // 转换并返回
-        return GSON.fromJson(respJson, responseClazz);
+        return GsonUtil.fromJson(respJson, responseClazz);
+    }
+
+    public static <R, T> R jsonRequest(HttpRequestEnum requestEnum, T requestBody, Class<R> responseClazz, Map<String, String> headers) {
+        return jsonRequest(requestEnum.getUrl(), requestEnum.getMethod(), requestBody, responseClazz, headers);
     }
 
     public static <R, T, P> R jsonRequest(HttpRequestEnum requestEnum, T requestBody, Class<R> responseClazz,
@@ -98,8 +109,8 @@ public class HttpRequestUtil {
         return jsonRequest(url, requestEnum.getMethod(), requestBody, responseClazz, headers);
     }
 
-    public static <R, T, V> R jsonRequest(HttpRequestEnum requestEnum, T requestBody, Class<R> responseClazz,
-                                       Map<String, String> headers, Map<String, List<String>> queryParams, V... uriVariableValues) {
+    public static <R, T> R jsonRequest(HttpRequestEnum requestEnum, T requestBody, Class<R> responseClazz,
+                                       Map<String, String> headers, Map<String, List<String>> queryParams, Object... uriVariableValues) {
         String url = buildUrl(requestEnum.getUrl(), queryParams, uriVariableValues);
         return jsonRequest(url, requestEnum.getMethod(), requestBody, responseClazz, headers);
     }

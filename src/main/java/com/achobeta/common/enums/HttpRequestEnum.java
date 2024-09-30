@@ -20,6 +20,13 @@ public enum HttpRequestEnum {
 
     RESERVE_APPLY("https://open.feishu.cn/open-apis/vc/v1/reserves/apply", "POST"),
 
+    SHEET_IMPORT("https://open.feishu.cn/open-apis/sheets/v2/import", "POST"),
+
+    SHEET_RESULT("https://open.feishu.cn/open-apis/sheets/v2/import/result", "GET"),
+
+    IMPORT_TASK("https://open.feishu.cn/open-apis/drive/v1/import_tasks", "POST"),
+
+    GET_IMPORT_TASK("https://open.feishu.cn/open-apis/drive/v1/import_tasks/{ticket}", "GET"),
 
     ;
 

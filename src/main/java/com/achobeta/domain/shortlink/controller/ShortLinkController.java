@@ -7,8 +7,9 @@ import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.shortlink.model.dto.ShortLinkQueryDTO;
 import com.achobeta.domain.shortlink.model.vo.ShortLinkQueryVO;
 import com.achobeta.domain.shortlink.service.ShortLinkService;
-import com.achobeta.util.HttpServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ public class ShortLinkController {
      */
     @GetMapping("/{code}")
     @Intercept(ignore = true)
-    public RedirectView getShortLink(@PathVariable("code") String code) {
+    public RedirectView getShortLink(@PathVariable("code") @NotBlank String code) {
         String originUrl = shortLinkService.getOriginUrl(code);
         log.info("短链code:{} -> 原链接:{}", code, originUrl);
         return new RedirectView(originUrl);
@@ -50,17 +51,15 @@ public class ShortLinkController {
      */
     @PostMapping("/trans")
     public SystemJsonResponse transferAndSaveShortLink(HttpServletRequest request,
-                                                       @RequestParam("url") @NotNull @IsAccessible(message = "链接不可访问") String url) {
-        // 拼接出基础的url
-        String baseUrl = HttpServletUtil.getBaseUrl(request, "/api/v1/shortlink", "/{code}");
+                                                       @RequestParam("url") @NotBlank @IsAccessible(message = "链接不可访问") String url) {
         // 转化
-        String shortLinkURL = shortLinkService.transShortLinkURL(baseUrl, url);
+        String shortLinkURL = shortLinkService.transShortLinkURL(request, url);
         log.info("原链接:{} -> 短链接:{}", url, shortLinkURL);
         return SystemJsonResponse.SYSTEM_SUCCESS(shortLinkURL);
     }
 
     @PostMapping("/query")
-    public SystemJsonResponse queryShortLinkList(@RequestBody(required = false) ShortLinkQueryDTO shortLinkQueryDTO) {
+    public SystemJsonResponse queryShortLinkList(@Valid @RequestBody(required = false) ShortLinkQueryDTO shortLinkQueryDTO) {
         ShortLinkQueryVO shortLinkQueryVO = shortLinkService.queryShortLinkList(shortLinkQueryDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS(shortLinkQueryVO);
     }

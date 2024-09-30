@@ -18,10 +18,41 @@
         <result property="status" column="status" jdbcType="INTEGER"/>
     </resultMap>
 
+    <resultMap id="StuSimpleResumeMap" type="com.achobeta.domain.student.model.vo.StuSimpleResumeVO">
+        <result property="batchId" column="batch_id" jdbcType="BIGINT"/>
+        <result property="studentId" column="student_id" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="gender" column="gender" jdbcType="TINYINT"/>
+        <result property="grade" column="grade" jdbcType="INTEGER"/>
+        <result property="major" column="major" jdbcType="VARCHAR"/>
+        <result property="className" column="class" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="phoneNumber" column="phone_number" jdbcType="VARCHAR"/>
+        <result property="reason" column="reason" jdbcType="VARCHAR"/>
+        <result property="introduce" column="introduce" jdbcType="VARCHAR"/>
+        <result property="experience" column="experience" jdbcType="VARCHAR"/>
+        <result property="awards" column="awards" jdbcType="VARCHAR"/>
+        <result property="image" column="image" jdbcType="BIGINT"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="submitCount" column="submit_count" jdbcType="INTEGER"/>
+    </resultMap>
+
     <sql id="Simple_Column_List">
         r.id r_id, r.user_id r_user_id, r.student_id r_student_id, r.name r_name,
         stu.username r_username, r.email r_email, r.gender r_gender, r.grade r_grade, r.major r_major,
         r.class r_class, r.status r_status
+    </sql>
+
+    <sql id="Stu_Simple_Column_List">
+        r.id r_id,r.user_id r_user_id,r.batch_id r_batchId,
+        r.student_id r_student_id,r.name r_name,r.gender r_gender,
+        r.grade r_grade,r.major r_major,r.class r_class,
+        r.email r_email,r.phone_number r_phone_number,r.reason r_reason,
+        r.introduce r_introduce,r.experience r_experience,r.awards r_awards,
+        r.image r_image,r.remark r_remark,r.status r_status,
+        r.submit_count r_submit_count,r.create_time r_create_time,r.update_time r_update_time,
+        r.version r_version,r.is_deleted r_is_deleted
     </sql>
 
 </mapper>

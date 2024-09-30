@@ -4,7 +4,6 @@ import com.achobeta.domain.paper.model.dto.PaperQueryDTO;
 import com.achobeta.domain.paper.model.entity.QuestionPaper;
 import com.achobeta.domain.paper.model.vo.PaperQueryVO;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,10 +19,8 @@ public interface QuestionPaperService extends IService<QuestionPaper> {
 
     Optional<QuestionPaper> getQuestionPaper(Long paperId);
 
-    @Transactional
     Long addQuestionPaper(List<Long> libIds, String title, String description);
 
-    @Transactional
     void updateQuestionPaper(Long paperId, List<Long> libIds, String title, String description);
 
     /**
@@ -33,7 +30,6 @@ public interface QuestionPaperService extends IService<QuestionPaper> {
      * 在 controller 层调用责任链的入口方法，这样就不挑使用组卷系统的其他模块的事件处理类
      * @param paperId
      */
-    @Transactional
     void removeQuestionPaper(Long paperId);
 
     void checkPaperExists(Long paperId);

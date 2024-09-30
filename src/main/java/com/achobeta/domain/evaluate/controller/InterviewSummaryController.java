@@ -13,7 +13,7 @@ import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,9 +43,7 @@ public class InterviewSummaryController {
     private final InterviewSummaryService interviewSummaryService;
 
     @PostMapping("/mark")
-    public SystemJsonResponse summaryInterview(@RequestBody InterviewSummaryDTO interviewSummaryDTO) {
-        // 检查
-        ValidatorUtils.validate(interviewSummaryDTO);
+    public SystemJsonResponse summaryInterview(@Valid @RequestBody InterviewSummaryDTO interviewSummaryDTO) {
         // 总结
         interviewSummaryService.summaryInterview(interviewSummaryDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS();
@@ -72,7 +70,7 @@ public class InterviewSummaryController {
     }
 
     @PostMapping("/rank")
-    public SystemJsonResponse rankInterview(@RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
+    public SystemJsonResponse rankInterview(@Valid @RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 查询
         List<InterviewRankVO> interviewRankList = interviewSummaryService.getInterviewRankList(InterviewConditionDTO.of(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewRankList);

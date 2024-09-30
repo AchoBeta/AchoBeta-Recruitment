@@ -2,9 +2,9 @@ package com.achobeta.domain.student.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.resource.service.ResourceService;
-import com.achobeta.domain.resumestate.enums.ResumeEvent;
 import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import com.achobeta.domain.resumestate.service.ResumeStatusProcessService;
+import com.achobeta.domain.student.constants.StuResumeConstants;
 import com.achobeta.domain.student.model.converter.StuResumeConverter;
 import com.achobeta.domain.student.model.dao.mapper.StuResumeMapper;
 import com.achobeta.domain.student.model.dto.*;
@@ -16,6 +16,8 @@ import com.achobeta.domain.student.model.vo.StuSimpleResumeVO;
 import com.achobeta.domain.student.service.StuAttachmentService;
 import com.achobeta.domain.student.service.StuResumeService;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.redis.lock.RedisLock;
+import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,12 +36,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume>
         implements StuResumeService {
+
     private final StuAttachmentService stuAttachmentService;
     private final StuResumeConverter stuResumeConverter;
     private final ResumeStatusProcessService resumeStatusProcessService;
     private final ResourceService resourceService;
-    //简历最大提交数
-    private final Integer MAX_SUBMIT_COUNT = 3;
+    private final RedisLock redisLock;
+    private final SimpleLockStrategy simpleLockStrategy;
 
     @Override
     public Optional<StuResume> getStuResume(Long batchId, Long stuId) {
@@ -66,22 +69,29 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
 
     @Override
     @Transactional
-    public void submitResume(StuResumeDTO stuResumeDTO, StuResume stuResume) {
-        //简历表信息
-        StuSimpleResumeDTO resumeDTO = stuResumeDTO.getStuSimpleResumeDTO();
+    public void submitResume(StuResumeDTO stuResumeDTO, Long userId) {
 
-        // 检测
-        resourceService.checkAndRemoveImage(resumeDTO.getImage(), stuResume.getImage());
+        // 使用锁确保唯一性
+        redisLock.tryLockDoSomething(StuResumeConstants.RESUME_SUBMIT_LOCK + userId, () -> {
+            //检查简历提交否超过最大次数
+            StuResume stuResume = checkResumeSubmitCount(stuResumeDTO.getStuSimpleResumeDTO(), userId);
 
-        //附件列表
-        List<StuAttachmentDTO> stuAttachmentDTOList = stuResumeDTO.getStuAttachmentDTOList();
+            //简历表信息
+            StuSimpleResumeDTO resumeDTO = stuResumeDTO.getStuSimpleResumeDTO();
 
-        //是否存在已有简历信息
-        Optional.ofNullable(stuResume.getId())
-                .ifPresentOrElse(id -> updateResumeInfo(stuResume, resumeDTO), () -> saveResumeInfo(stuResume, resumeDTO));
+            // 检测
+            resourceService.checkAndRemoveImage(resumeDTO.getImage(), stuResume.getImage());
 
-        //保存附件信息
-        saveStuAttachment(stuAttachmentDTOList, stuResume.getId());
+            //附件列表
+            List<StuAttachmentDTO> stuAttachmentDTOList = stuResumeDTO.getStuAttachmentDTOList();
+
+            //是否存在已有简历信息
+            Optional.ofNullable(stuResume.getId())
+                    .ifPresentOrElse(id -> updateResumeInfo(stuResume, resumeDTO), () -> saveResumeInfo(stuResume, resumeDTO));
+
+            //保存附件信息
+            saveStuAttachment(stuAttachmentDTOList, stuResume.getId());
+        }, () -> {}, simpleLockStrategy);
     }
 
     @Override
@@ -146,11 +156,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
             //简历状态若为草稿则更新为待筛选
             stuResume.setStatus(ResumeStatus.PENDING_SELECTION);
             // 添加一个简历过程节点
-            resumeStatusProcessService.createResumeStatusProcess(
-                    stuResume.getId(),
-                    ResumeStatus.PENDING_SELECTION,
-                    ResumeEvent.NEXT
-            );
+            resumeStatusProcessService.createResumeStatusProcess(stuResume.getId(), ResumeStatus.PENDING_SELECTION, null);
         }
 
         stuResumeConverter.updatePoWithStuSimpleResumeDTO(resumeDTO, stuResume);
@@ -171,11 +177,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         save(stuResume);
 
         // 创建初始的简历状态过程节点
-        resumeStatusProcessService.createResumeStatusProcess(
-                stuResume.getId(),
-                ResumeStatus.PENDING_SELECTION,
-                ResumeEvent.NEXT
-        );
+        resumeStatusProcessService.createResumeStatusProcess(stuResume.getId(), ResumeStatus.PENDING_SELECTION, null);
     }
 
     @Transactional
@@ -207,7 +209,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         }
 
         if (!CollectionUtils.isEmpty(oldAttachmentHash)) {
-             // 这些都是最新的附件里面没有的，挨个枪毙（删除必然只能删除自己的）
+            // 这些都是最新的附件里面没有的，挨个枪毙（删除必然只能删除自己的）
             oldAttachmentHash.forEach(resourceService::removeKindly);
         }
 
@@ -216,11 +218,13 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     @Override
     public StuResume checkResumeSubmitCount(StuSimpleResumeDTO resumeDTO, Long userId) {
 
-        StuResume stuResume = getStuResume(resumeDTO.getBatchId(), Long.valueOf(userId)).orElse(new StuResume());
-        if (stuResume.getId() != null && MAX_SUBMIT_COUNT.compareTo(stuResume.getSubmitCount()) <= 0) {
-            String message = "提交失败，简历最大提交次数为" + MAX_SUBMIT_COUNT;
+        StuResume stuResume = getStuResume(resumeDTO.getBatchId(), userId).orElseGet(StuResume::new);
+        Integer maxSubmitCount = StuResumeConstants.MAX_SUBMIT_COUNT;
+        if (stuResume.getId() != null && maxSubmitCount.compareTo(stuResume.getSubmitCount()) <= 0) {
+            String message = "提交失败，简历最大提交次数为" + maxSubmitCount;
             throw new GlobalServiceException(message, GlobalServiceStatusCode.USER_RESUME_SUBMIT_OVER_COUNT);
         }
+        stuResume.setUserId(userId);
         return stuResume;
     }
 }

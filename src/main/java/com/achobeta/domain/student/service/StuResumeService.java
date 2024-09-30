@@ -22,7 +22,7 @@ public interface StuResumeService extends IService<StuResume> {
 
     StuResume checkAndGetStuResumeByBatchIdAndStuId(Long batchId, Long stuId);
 
-    void submitResume(StuResumeDTO stuResumeDTO,StuResume stuResume);
+    void submitResume(StuResumeDTO stuResumeDTO, Long userId);
 
     StuResumeVO getResumeInfo(QueryResumeDTO queryResumeDTO);
 

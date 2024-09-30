@@ -2,6 +2,7 @@ package com.achobeta.domain.resource.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.resource.service.ObjectStorageService;
+import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.monio.config.MinioConfig;
 import com.achobeta.monio.engine.MinioBucketEngine;
@@ -9,6 +10,7 @@ import com.achobeta.monio.engine.MinioEngine;
 import com.achobeta.monio.enums.MinioPolicyTemplateEnum;
 import com.achobeta.monio.template.DefaultPolicyTemplate;
 import com.achobeta.template.engine.TextEngine;
+import com.achobeta.util.MediaUtil;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.InitializingBean;
@@ -20,6 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
  * User: 马拉圈
  * Date: 2024-09-23
  * Time: 10:32
+ */
+
+/**
+ * 本服务由 SPI 加载，故必须提供无参构造方法
  */
 public class ObjectStorageMinioServiceImpl implements ObjectStorageService, InitializingBean {
 
@@ -36,20 +42,21 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService, Init
     private MinioEngine minioEngine;
 
     @Override
-    public String upload(MultipartFile file) {
+    public String upload(Long userId, String originalName, byte[] bytes) {
         try {
-            return minioEngine.upload(file);
+            // 上传资源
+            return minioEngine.upload(originalName, bytes);
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_UPLOAD_FAILED);
         }
     }
 
     @Override
-    public String upload(String originalName, byte[] bytes) {
+    public String upload(Long userId, MultipartFile file) {
         try {
-            return minioEngine.upload(originalName, bytes);
-        } catch (Exception e) {
-            throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_UPLOAD_FAILED);
+            return upload(userId, ResourceUtil.getOriginalName(file), MediaUtil.getBytes(file));
+        } catch (GlobalServiceException e) {
+            throw e;
         }
     }
 

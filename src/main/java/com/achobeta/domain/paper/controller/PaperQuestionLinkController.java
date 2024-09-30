@@ -8,7 +8,7 @@ import com.achobeta.domain.paper.model.dto.PaperQuestionLinkDTO;
 import com.achobeta.domain.paper.model.vo.QuestionPaperDetailVO;
 import com.achobeta.domain.paper.service.PaperQuestionLinkService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
-import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,9 +40,8 @@ public class PaperQuestionLinkController {
     private final RemoveQuestionFromPaperHandlerChain removeQuestionFromPaperHandlerChain;
 
     @PostMapping("/add")
-    SystemJsonResponse addQuestionForPaper(@RequestBody PaperQuestionLinkDTO paperQuestionLinkDTO) {
+    SystemJsonResponse addQuestionForPaper(@Valid @RequestBody PaperQuestionLinkDTO paperQuestionLinkDTO) {
         // 检查
-        ValidatorUtils.validate(paperQuestionLinkDTO);
         Long paperId = paperQuestionLinkDTO.getPaperId();
         questionPaperService.checkPaperExists(paperId);
         // 为题单添加若干题
@@ -51,9 +50,8 @@ public class PaperQuestionLinkController {
     }
 
     @PostMapping("/remove")
-    SystemJsonResponse removeQuestionFromPaper(@RequestBody PaperQuestionLinkDTO paperQuestionLinkDTO) {
+    SystemJsonResponse removeQuestionFromPaper(@Valid @RequestBody PaperQuestionLinkDTO paperQuestionLinkDTO) {
         // 检查
-        ValidatorUtils.validate(paperQuestionLinkDTO);
         Long paperId = paperQuestionLinkDTO.getPaperId();
         questionPaperService.checkPaperExists(paperId);
         // 从题单里移除一道题

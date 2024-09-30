@@ -16,12 +16,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -80,45 +76,25 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
     }
 
     @Override
-    public Long createResource(DigitalResource digitalResource) {
+    public DigitalResource createResource(DigitalResource digitalResource) {
         // 生成一个雪花数字
         Long code = resourceCodeGenerator.nextId();
         digitalResource.setCode(code);
         this.save(digitalResource);
-        return digitalResource.getCode();
+        return digitalResource;
     }
 
     @Override
-    @Transactional
-    public List<Long> createResourceBatch(List<DigitalResource> resourceList) {
-        if(CollectionUtils.isEmpty(resourceList)) {
-            return new ArrayList<>();
-        }
-        List<Long> codeList = new ArrayList<>();
-        resourceList.stream()
-                .filter(Objects::nonNull)
-                .forEach(resource -> {
-                    Long code = resourceCodeGenerator.nextId();
-                    codeList.add(code);
-                    resource.setCode(code);
-                });
-        this.saveBatch(resourceList);
-        return codeList;
-    }
-
-    @Override
-    public void setAccessLevel(Long id, ResourceAccessLevel level) {
+    public void setAccessLevel(Long resourceId, ResourceAccessLevel level) {
         DigitalResource digitalResource = new DigitalResource();
+        digitalResource.setId(resourceId);
         digitalResource.setAccessLevel(level);
-        this.lambdaUpdate()
-                .eq(DigitalResource::getId, id)
-                .update(digitalResource)
-        ;
+        this.updateById(digitalResource);
     }
 
     @Override
     public void removeDigitalResource(Long id) {
-        lambdaUpdate()
+        this.lambdaUpdate()
                 .eq(DigitalResource::getId, id)
                 .remove();
     }

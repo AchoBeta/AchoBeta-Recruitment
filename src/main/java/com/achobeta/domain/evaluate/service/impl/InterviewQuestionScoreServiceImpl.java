@@ -1,5 +1,6 @@
 package com.achobeta.domain.evaluate.service.impl;
 
+import com.achobeta.domain.evaluate.constants.InterviewEvaluateConstants;
 import com.achobeta.domain.evaluate.model.converter.InterviewScoreConverter;
 import com.achobeta.domain.evaluate.model.dao.mapper.InterviewQuestionScoreMapper;
 import com.achobeta.domain.evaluate.model.entity.InterviewQuestionScore;
@@ -33,8 +34,6 @@ import java.util.stream.Collectors;
 public class InterviewQuestionScoreServiceImpl extends ServiceImpl<InterviewQuestionScoreMapper, InterviewQuestionScore>
     implements InterviewQuestionScoreService{
 
-    private final static String QUESTION_SCORE_LOCK = "questionScoreLock:%d:%d";
-
     private final RedisLock redisLock;
 
     private final SimpleLockStrategy simpleLockStrategy;
@@ -48,7 +47,7 @@ public class InterviewQuestionScoreServiceImpl extends ServiceImpl<InterviewQues
     private final PaperQuestionLinkService paperQuestionLinkService;
 
     private String getQuestionScoreLock(Long interviewId, Long questionId) {
-        return String.format(QUESTION_SCORE_LOCK, interviewId, questionId);
+        return String.format(InterviewEvaluateConstants.QUESTION_SCORE_LOCK, interviewId, questionId);
     }
 
     @Override
@@ -70,7 +69,7 @@ public class InterviewQuestionScoreServiceImpl extends ServiceImpl<InterviewQues
     public List<InterviewQuestionAverageVO> getAverageQuestions(List<Long> questionIds) {
         return Optional.ofNullable(questionIds)
                 .map(ids -> interviewQuestionScoreMapper.getAverageQuestions(questionIds))
-                .orElse(new ArrayList<>());
+                .orElseGet(ArrayList::new);
     }
 
     @Override

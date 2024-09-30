@@ -30,7 +30,6 @@ mybatis-plus:
 resource:
   code:
     workerId: 1
-    datacenterId: 1
   upload:
     maxFileSize: 20
     maxRequestSize: 100
