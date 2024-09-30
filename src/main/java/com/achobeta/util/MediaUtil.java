@@ -1,9 +1,9 @@
-package com.achobeta.domain.resource.util;
+package com.achobeta.util;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.resource.constants.ResourceConstants;
+import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.util.HttpRequestUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
 import org.springframework.web.multipart.MultipartFile;

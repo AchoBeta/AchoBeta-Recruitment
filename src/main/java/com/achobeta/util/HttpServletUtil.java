@@ -1,6 +1,5 @@
 package com.achobeta.util;
 
-import com.achobeta.domain.resource.util.MediaUtil;
 import com.achobeta.exception.GlobalServiceException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;

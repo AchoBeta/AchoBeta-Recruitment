@@ -5,6 +5,7 @@ import com.achobeta.domain.resource.access.strategy.ResourceAccessStrategy;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.factory.AccessStrategyFactory;
 import com.achobeta.exception.GlobalServiceException;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.stereotype.Component;
@@ -45,7 +46,7 @@ public class AccessServiceLocatorFactoryBean extends ServiceLocatorFactoryBean {
     }
 
     @Override
-    protected Exception createServiceLocatorException(Constructor<Exception> exceptionConstructor, BeansException cause) {
+    protected @NotNull Exception createServiceLocatorException(@NotNull Constructor<Exception> exceptionConstructor, BeansException cause) {
         return new GlobalServiceException(GlobalServiceStatusCode.REQUEST_NOT_VALID);
     }
 }

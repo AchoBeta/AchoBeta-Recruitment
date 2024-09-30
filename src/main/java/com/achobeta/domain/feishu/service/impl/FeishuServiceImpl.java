@@ -2,7 +2,6 @@ package com.achobeta.domain.feishu.service.impl;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.achobeta.domain.feishu.service.FeishuService;
-import com.achobeta.domain.resource.util.MediaUtil;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.feishu.config.FeishuAppConfig;
 import com.achobeta.feishu.config.ResourceProperties;
@@ -10,6 +9,7 @@ import com.achobeta.feishu.constants.ObjectType;
 import com.achobeta.feishu.token.FeishuTenantAccessToken;
 import com.achobeta.feishu.util.FeishuRequestUtil;
 import com.achobeta.util.GsonUtil;
+import com.achobeta.util.MediaUtil;
 import com.achobeta.util.TimeUtil;
 import com.lark.oapi.Client;
 import com.lark.oapi.service.contact.v3.enums.BatchGetIdUserUserIdTypeEnum;

@@ -16,8 +16,6 @@ public class ResourceProperties {
 
     private Boolean backup;
 
-    private String parentNode;
-
     private Long tryAgain;
 
     private TimeUnit tryAgainUnit;

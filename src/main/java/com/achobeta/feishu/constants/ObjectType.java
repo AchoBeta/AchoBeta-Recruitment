@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import static com.achobeta.feishu.constants.FeishuConstants.*;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -19,11 +21,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ObjectType {
-
-    private final static String ACHOBETA_RECRUITMENT_DOCX_FOLDER_RESOURCE = "LpDBf0emllgCc2dKNfKcsqxJnjc";
-    private final static String ACHOBETA_RECRUITMENT_SHEET_FOLDER_RESOURCE = "OQbUfIGR9lqdFVdbJCDcQ3CSntd";
-    private final static String ACHOBETA_RECRUITMENT_DOCX_FOLDER_COOPERATE = "LpDBf0emllgCc2dKNfKcsqxJnjc";
-    private final static String ACHOBETA_RECRUITMENT_SHEET_FOLDER_COOPERATE = "SyBEf61JglcR5NdCp34cs2tGnMd";
 
     public final static ObjectType TXT = ObjectType.of("docx", "txt", ACHOBETA_RECRUITMENT_DOCX_FOLDER_RESOURCE, ACHOBETA_RECRUITMENT_DOCX_FOLDER_COOPERATE);
     public final static ObjectType XLSX = ObjectType.of("sheet", "xlsx", ACHOBETA_RECRUITMENT_SHEET_FOLDER_RESOURCE, ACHOBETA_RECRUITMENT_SHEET_FOLDER_COOPERATE);
