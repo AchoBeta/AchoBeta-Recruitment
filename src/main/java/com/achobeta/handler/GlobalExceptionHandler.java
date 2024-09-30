@@ -3,6 +3,7 @@ package com.achobeta.handler;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.exception.GlobalServiceException;
+import com.mysql.cj.jdbc.exceptions.MysqlDataTruncation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -52,7 +53,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({DataIntegrityViolationException.class})
     public SystemJsonResponse handleDataIntegrityViolationException(DataIntegrityViolationException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-        String message = "文本长度超出限制";
+        String message = e.getCause() instanceof MysqlDataTruncation ? "文本长度超出限制" : "数据异常";
         log.error("请求地址'{}', '{}'", requestURI, message);
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_ERROR, message);
     }
