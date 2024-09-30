@@ -1,5 +1,4 @@
--- Table structure for student
--- 简历状态comment说明
+-- 简历状态 comment 说明
 -- 范围：0~16，简历状态{
 --       0-草稿
 --       1-待筛选
