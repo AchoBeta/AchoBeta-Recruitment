@@ -98,10 +98,10 @@ public class ResourceUtil {
         return UUID.randomUUID().toString().replace("-", "") + suffix;
     }
 
-    public static String getUniqueFileName(String suffix) {
+    public static String getUniqueFileName(Long userId, String suffix) {
         return String.format(
-                "%s/%s/%s",
-                TimeUtil.getDate(new Date()), suffix,
+                "%s/%d/%s/%s",
+                TimeUtil.getDate(new Date()), userId, suffix,
                 getSimpleFileName(suffix)
         );
     }
