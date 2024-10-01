@@ -1,5 +1,6 @@
 package com.achobeta.domain.message.model.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -21,10 +22,12 @@ public class UpdateMessageTemplateDTO implements Serializable {
     /**
      * 模板消息标题
      */
+    @NotBlank(message = "模板标题不能为空")
     private String templateTitle;
 
     /**
      * 模板消息内容
      */
+    @NotBlank(message = "模板内容不能为空")
     private String templateContent;
 }

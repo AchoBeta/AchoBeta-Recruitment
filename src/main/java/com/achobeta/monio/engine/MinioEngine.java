@@ -1,6 +1,5 @@
 package com.achobeta.monio.engine;
 
-import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.monio.config.MinioConfig;
 import com.achobeta.util.HttpRequestUtil;
 import com.achobeta.util.HttpServletUtil;
@@ -26,18 +25,15 @@ public class MinioEngine {
     /**
      * 文件上传
      */
-    public String upload(String originalName, byte[] bytes) throws Exception {
-        String suffix = ResourceUtil.getFileNameSuffix(originalName);
-        String uniqueFileName = ResourceUtil.getUniqueFileName(suffix);
+    public void upload(String fileName, byte[] bytes) throws Exception {
         PutObjectArgs objectArgs = PutObjectArgs.builder()
                 .bucket(minioConfig.getBucketName())
-                .object(uniqueFileName)
+                .object(fileName)
                 .stream(MediaUtil.getInputStream(bytes), bytes.length, -1) // 不分块
                 .contentType(MediaUtil.getContentType(bytes))
                 .build();
         //文件名称相同会覆盖
         minioClient.putObject(objectArgs);
-        return uniqueFileName;
     }
 
     /**

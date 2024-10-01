@@ -3,22 +3,23 @@ package com.achobeta.handler;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.exception.GlobalServiceException;
+import com.mysql.jdbc.MysqlDataTruncation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
-import org.springframework.validation.BindingResult;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.SQLException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.achobeta.common.enums.GlobalServiceStatusCode.PARAM_FAILED_VALIDATE;
+import static com.achobeta.common.enums.GlobalServiceStatusCode.*;
 
 /**
  * 全局异常处理器，减少 try-catch 语句
@@ -46,9 +47,24 @@ public class GlobalExceptionHandler {
     public SystemJsonResponse handleFileUploadException(FileUploadException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         String message = e.getMessage();
-        GlobalServiceStatusCode statusCode = GlobalServiceStatusCode.RESOURCE_OUT_SIZE;
-        log.error("请求地址'{}', {}: '{}'", requestURI, statusCode, message);
-        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(statusCode, message);
+        log.error("请求地址'{}', '{}'", requestURI, message);
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(RESOURCE_OUT_SIZE, message);
+    }
+
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public SystemJsonResponse handleDataIntegrityViolationException(DataIntegrityViolationException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        String message = e.getCause() instanceof MysqlDataTruncation ? "文本长度超出限制" : "数据异常";
+        log.error("请求地址'{}', '{}', '{}'", requestURI, message, e.getMessage());
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_ERROR, message);
+    }
+
+    @ExceptionHandler({SQLException.class})
+    public SystemJsonResponse handleSQLException(SQLException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        String message = "数据异常";
+        log.error("请求地址'{}', '{}', '{}'", requestURI, message, e.getMessage());
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_ERROR, message);
     }
 
     /**
@@ -57,7 +73,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public SystemJsonResponse constraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-
         log.error("请求地址'{}', 自定义验证异常'{}'", requestURI, e.getMessage());
         String message = e.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
@@ -67,17 +82,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public SystemJsonResponse ValidationHandler(MethodArgumentNotValidException e, HttpServletRequest request){
-        log.error("数据校验出现问题，异常类型:{}",e.getMessage(),e.getClass());
-        BindingResult bindingResult = e.getBindingResult();
-        Map<String,String> map = new HashMap<>();
-        bindingResult.getFieldErrors().forEach((item)->{
-            String message = item.getDefaultMessage();
-            // 获取错误的属性字段名
-            String field = item.getField();
-            map.put(field,message);
-        });
-
-        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(PARAM_FAILED_VALIDATE,map.toString());
+    public SystemJsonResponse ValidationHandler(MethodArgumentNotValidException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}', 自定义验证异常'{}'", requestURI, e.getMessage());
+        String message = e.getBindingResult().getFieldErrors().stream()
+                .map(FieldError::getDefaultMessage)
+                .filter(Objects::nonNull)
+                .collect(Collectors.joining("\n"));
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(PARAM_FAILED_VALIDATE, message);
     }
 }

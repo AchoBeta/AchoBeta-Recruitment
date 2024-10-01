@@ -31,7 +31,7 @@ public class EmailController {
      * @return
      */
     @PostMapping("/code")
-    public SystemJsonResponse emailIdentityCheck(@RequestParam("email") @NotBlank @Email String email) {
+    public SystemJsonResponse emailIdentityCheck(@RequestParam("email") @NotBlank @Email(message = "邮箱非法") String email) {
         // 生成 6位数 随机验证码
         String code = RandomUtil.randomNumbers(6);
         emailService.sendIdentifyingCode(email, code);

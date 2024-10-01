@@ -12,7 +12,7 @@ import com.achobeta.domain.feedback.model.vo.UserFeedbackVO;
 import com.achobeta.domain.feedback.model.vo.UserPersonalFeedBackVO;
 import com.achobeta.domain.feedback.service.UserFeedbackService;
 import com.achobeta.domain.message.model.entity.Message;
-import com.achobeta.util.ValidatorUtils;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,18 +43,16 @@ public class UserFeedbackController {
      **/
     @GetMapping("/query")
     @Intercept(permit = UserTypeEnum.USER)
-    public SystemJsonResponse queryPersonalFeedbackList(){
+    public SystemJsonResponse queryPersonalFeedbackList() {
         //查询用户个人反馈列表
-        List<UserPersonalFeedBackVO> userPersonalFeedBackVOList =userFeedbackService.getUserFeedbackList();
+        List<UserPersonalFeedBackVO> userPersonalFeedBackVOList = userFeedbackService.getUserFeedbackList();
 
         return SystemJsonResponse.SYSTEM_SUCCESS(userPersonalFeedBackVOList);
     }
 
     @PostMapping("/submit")
     @Intercept(permit = UserTypeEnum.USER)
-    public SystemJsonResponse submitFeedback(@RequestBody UserFeedbackDTO userFeedbackDTO){
-        //校验
-        ValidatorUtils.validate(userFeedbackDTO);
+    public SystemJsonResponse submitFeedback(@Valid @RequestBody UserFeedbackDTO userFeedbackDTO) {
         //提交反馈
         userFeedbackService.submitUserFeedback(userFeedbackDTO);
 
@@ -64,34 +62,30 @@ public class UserFeedbackController {
     //管理端查询用户反馈列表
     @PostMapping("/query")
     @Intercept(permit = UserTypeEnum.ADMIN)
-    public SystemJsonResponse queryFeedbackofUserList(@RequestBody QueryUserOfFeedbackDTO queryUserOfFeedbackDTO){
-        //校验
-        ValidatorUtils.validate(queryUserOfFeedbackDTO);
+    public SystemJsonResponse queryFeedbackofUserList(@Valid @RequestBody QueryUserOfFeedbackDTO queryUserOfFeedbackDTO) {
         //条件分页查询列表
-        BasePageResultEntity<UserFeedbackVO> userFeedbackVOPageResult=userFeedbackService.queryUserOfFeedbackList(queryUserOfFeedbackDTO);
+        BasePageResultEntity<UserFeedbackVO> userFeedbackVOPageResult = userFeedbackService.queryUserOfFeedbackList(queryUserOfFeedbackDTO);
 
         return SystemJsonResponse.SYSTEM_SUCCESS(userFeedbackVOPageResult);
     }
 
     @PostMapping("/handle")
     @Intercept(permit = UserTypeEnum.ADMIN)
-    public SystemJsonResponse handleFeedbackofUser(@RequestBody HandleFeedbackDTO handleFeedbackDTO){
-        //校验
-        ValidatorUtils.validate(handleFeedbackDTO);
+    public SystemJsonResponse handleFeedbackofUser(@Valid @RequestBody HandleFeedbackDTO handleFeedbackDTO) {
         //处理反馈结果
-        Long feedBackId=userFeedbackService.handleFeedbackOfUser(handleFeedbackDTO);
+        Long feedBackId = userFeedbackService.handleFeedbackOfUser(handleFeedbackDTO);
 
         return SystemJsonResponse.SYSTEM_SUCCESS(feedBackId);
     }
 
     @GetMapping("/get")
-    @Intercept(permit ={UserTypeEnum.ADMIN,UserTypeEnum.USER})
-    public SystemJsonResponse queryHandleMessage(@RequestParam @NotNull Long messageId){
+    @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER})
+    public SystemJsonResponse queryHandleMessage(@RequestParam @NotNull Long messageId) {
 
         //检查消息是否存在
         Message message = userFeedbackService.judgeMessageOfFeedbackIfExist(messageId);
         //处理反馈结果
-        FeedbackMessageVO feedbackMessageVO =userFeedbackService.queryMessageOfFeedback(message);
+        FeedbackMessageVO feedbackMessageVO = userFeedbackService.queryMessageOfFeedback(message);
 
         return SystemJsonResponse.SYSTEM_SUCCESS(feedbackMessageVO);
     }
