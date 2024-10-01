@@ -26,9 +26,9 @@ public class FeishuTenantAccessToken {
 
     private final FeishuAppConfig feishuAppConfig;
 
-    private String tenantAccessToken;
+    private volatile String tenantAccessToken;
 
-    private Integer expire;
+    private volatile Integer expire;
 
 
     private long compareToNow(int tokenExpire) {

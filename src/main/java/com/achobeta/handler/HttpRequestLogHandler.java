@@ -2,6 +2,7 @@ package com.achobeta.handler;
 
 import com.achobeta.common.annotation.handler.InterceptHelper;
 import com.achobeta.config.RequestIdConfig;
+import com.achobeta.domain.users.context.BaseContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,16 +32,20 @@ public class HttpRequestLogHandler implements HandlerInterceptor {
     // 因为请求还没结束，这个方法的处理时间也在请求时间内，会影响响应速度
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        if(handler instanceof HandlerMethod handlerMethod) {
-            // 获取目标方法
-            Method targetMethod = handlerMethod.getMethod();
-            if(InterceptHelper.shouldPrintLog(targetMethod)) {
-                String requestId = response.getHeader(requestIdConfig.getHeader());
-                log.warn("请求 {} 访问 {}，响应 HTTP 状态码 {}，错误信息 {}",
-                        requestId, request.getRequestURI(), response.getStatus(),
-                        Optional.ofNullable(ex).map(Exception::getMessage).orElse(null)
-                );
+        try {
+            if(handler instanceof HandlerMethod handlerMethod) {
+                // 获取目标方法
+                Method targetMethod = handlerMethod.getMethod();
+                if(InterceptHelper.shouldPrintLog(targetMethod)) {
+                    String requestId = response.getHeader(requestIdConfig.getHeader());
+                    log.warn("请求 {} 访问 {}，响应 HTTP 状态码 {}，错误信息 {}",
+                            requestId, request.getRequestURI(), response.getStatus(),
+                            Optional.ofNullable(ex).map(Exception::getMessage).orElse(null)
+                    );
+                }
             }
+        } finally {
+            BaseContext.removeCurrentUser();
         }
     }
 
