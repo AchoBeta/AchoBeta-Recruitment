@@ -15,6 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,14 @@ public class GlobalExceptionHandler {
     public SystemJsonResponse handleDataIntegrityViolationException(DataIntegrityViolationException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         String message = e.getCause() instanceof MysqlDataTruncation ? "文本长度超出限制" : "数据异常";
+        log.error("请求地址'{}', '{}', '{}'", requestURI, message, e.getMessage());
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_ERROR, message);
+    }
+
+    @ExceptionHandler({SQLException.class})
+    public SystemJsonResponse handleSQLException(SQLException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        String message = "数据异常";
         log.error("请求地址'{}', '{}', '{}'", requestURI, message, e.getMessage());
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_ERROR, message);
     }
