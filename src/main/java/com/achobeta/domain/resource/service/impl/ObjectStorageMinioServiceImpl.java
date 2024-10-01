@@ -45,7 +45,10 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService, Init
     public String upload(Long userId, String originalName, byte[] bytes) {
         try {
             // 上传资源
-            return minioEngine.upload(originalName, bytes);
+            String suffix = ResourceUtil.getFileNameSuffix(originalName);
+            String uniqueFileName = ResourceUtil.getUniqueFileName(userId, suffix);
+            minioEngine.upload(uniqueFileName, bytes);
+            return uniqueFileName;
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_UPLOAD_FAILED);
         }
@@ -53,11 +56,7 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService, Init
 
     @Override
     public String upload(Long userId, MultipartFile file) {
-        try {
-            return upload(userId, ResourceUtil.getOriginalName(file), MediaUtil.getBytes(file));
-        } catch (GlobalServiceException e) {
-            throw e;
-        }
+        return upload(userId, ResourceUtil.getOriginalName(file), MediaUtil.getBytes(file));
     }
 
     @Override

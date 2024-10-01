@@ -16,7 +16,6 @@ import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
-import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.model.po.UserHelper;
@@ -57,8 +56,6 @@ public class InterviewController {
     private final QuestionPaperService questionPaperService;
 
     private final InterviewScheduleService interviewScheduleService;
-
-    private final ResourceService resourceService;
 
     @PostMapping("/create")
     public SystemJsonResponse createInterview(@Valid @RequestBody InterviewCreateDTO interviewCreateDTO) {

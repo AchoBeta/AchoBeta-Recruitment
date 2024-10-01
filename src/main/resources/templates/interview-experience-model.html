@@ -30,7 +30,7 @@
         <span th:text="${title}"></span>
     </p>
 
-    <p th:each="inner : ${inners}">
+    <p th:if="${not #lists.isEmpty(inners)}" th:each="inner : ${inners}">
         <strong style="background-color: #ffc832" th:text="${inner.title}"></strong>
         <br />
         <strong th:with="score=${inner.score}">得分（0-10）：

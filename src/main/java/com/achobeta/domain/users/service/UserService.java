@@ -17,6 +17,8 @@ public interface UserService extends IService<UserEntity> {
 
     Optional<UserEntity> getUserById(Long id);
 
+    Optional<UserEntity> getUserByUsername(String username);
+
     void confirmByManagerId(Long managerId);
 
     void updateUser(Long userId, UserDTO userDTO);

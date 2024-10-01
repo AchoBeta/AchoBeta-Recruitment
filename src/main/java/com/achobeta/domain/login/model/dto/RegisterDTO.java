@@ -19,13 +19,13 @@ public class RegisterDTO {
     /**
      * 用户名
      */
-    @NotBlank
+    @NotBlank(message = "用户名不能为空")
     private String username;
 
     /**
      * 用户密码
      */
-    @NotBlank
+    @NotBlank(message = "密码不能为空")
     private String password;
 
     /**
@@ -33,6 +33,7 @@ public class RegisterDTO {
      */
 //    private String userType;
 
+//    @NotBlank(message = "邮箱不能为空")
     private String email;
 
 }
