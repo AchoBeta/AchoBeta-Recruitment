@@ -36,6 +36,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity>
     }
 
     @Override
+    public Optional<UserEntity> getUserByUsername(String username) {
+        return this.lambdaQuery()
+                .eq(UserEntity::getUsername, username)
+                .oneOpt();
+    }
+
+    @Override
     public void confirmByManagerId(Long managerId) {
         this.lambdaUpdate()
                 .eq(UserEntity::getId, managerId)
