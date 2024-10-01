@@ -30,7 +30,7 @@
             </properties>
             <activation>
                 <!--默认环境-->
-                <activeByDefault>true</activeByDefault>
+<!--                <activeByDefault>true</activeByDefault>-->
             </activation>
         </profile>
 
@@ -38,10 +38,10 @@
             <id>prod</id>
             <properties>
                 <profiles.active>prod</profiles.active>
-                <logging.level>warn</logging.level>
+                <logging.level>info</logging.level>
             </properties>
             <activation>
-<!--                <activeByDefault>true</activeByDefault>-->
+                <activeByDefault>true</activeByDefault>
             </activation>
         </profile>
 
