@@ -18,6 +18,7 @@ public interface FeishuService {
 
     BatchGetIdUserRespBody batchGetUserId(BatchGetIdUserReqBody batchGetIdUserReqBody);
 
+    // 此接口若 mobile 不是合作伙伴，则对应的 userId、email、status 都为 null
     BatchGetIdUserRespBody batchGetUserIdByMobiles(String... mobiles);
 
     String getUserIdByMobile(String mobile);
