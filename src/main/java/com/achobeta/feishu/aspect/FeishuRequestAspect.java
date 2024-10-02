@@ -50,7 +50,7 @@ public class FeishuRequestAspect {
                 throw new GlobalServiceException(response.getMsg(), GlobalServiceStatusCode.REQUEST_NOT_VALID);
             }
         }else {
-            throw new GlobalServiceException("飞书响应内容类型不匹配", GlobalServiceStatusCode.REQUEST_NOT_VALID);
+            throw new GlobalServiceException("飞书响应内容为 null 或类型不匹配", GlobalServiceStatusCode.REQUEST_NOT_VALID);
         }
     }
 
