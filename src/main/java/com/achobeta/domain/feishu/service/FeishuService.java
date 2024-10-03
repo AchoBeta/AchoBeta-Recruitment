@@ -56,6 +56,7 @@ public interface FeishuService {
      * 查询导入结果
      * 根据 ticket 查询会创建一个额外的协作链接，这个与原本不同的点就是，原本那个是存储，现在这个是协作文件（一般不会共享存储的文件）
      * 这个额外的协作链接生成具有飞书风格的协作文件（加载也会快点，更适合协作）
+     * 导入任务的文件名不要后缀也是 ok 的
      */
     GetImportTaskRespBody getImportTask(String ticket);
 
