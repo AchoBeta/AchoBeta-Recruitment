@@ -44,7 +44,7 @@ public class FeishuRequestAspect {
                 log.info("飞书请求成功");
             } else {
                 if(code == SHOULD_REFRESH_CODE) {
-                    log.info("token 刷新");
+                    log.info("飞书 token 刷新");
                     feishuTenantAccessToken.refreshToken();
                 }
                 throw new GlobalServiceException(response.getMsg(), GlobalServiceStatusCode.REQUEST_NOT_VALID);
