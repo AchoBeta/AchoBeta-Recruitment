@@ -1,13 +1,12 @@
 package com.achobeta.domain.message.service;
 
-import com.achobeta.common.base.BasePageResultEntity;
 import com.achobeta.domain.message.handler.websocket.MessageReceiveServer;
 import com.achobeta.domain.message.model.dto.EmailSendDTO;
 import com.achobeta.domain.message.model.dto.MessageContentDTO;
 import com.achobeta.domain.message.model.dto.QueryStuListDTO;
-import com.achobeta.domain.message.model.dto.StuOfMessageVO;
 import com.achobeta.domain.message.model.entity.Message;
 import com.achobeta.domain.message.model.vo.MessageContentVO;
+import com.achobeta.domain.message.model.vo.QueryStuListVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,7 +29,7 @@ public interface MessageService extends IService<Message> {
     public static final String MESSAGE_SEND_KEY="message_send";
 
 
-    BasePageResultEntity<StuOfMessageVO> queryStuListByCondition(QueryStuListDTO queryStuDTO);
+    QueryStuListVO queryStuListByCondition(QueryStuListDTO queryStuDTO);
 
     void sendMessage(MessageContentDTO messageContentBody, CopyOnWriteArraySet<MessageReceiveServer> webSocketSet);
 

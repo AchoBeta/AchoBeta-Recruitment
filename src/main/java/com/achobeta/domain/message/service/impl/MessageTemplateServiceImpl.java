@@ -1,7 +1,7 @@
 package com.achobeta.domain.message.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.domain.message.converter.MessageTemplateConverter;
+import com.achobeta.domain.message.model.converter.MessageTemplateConverter;
 import com.achobeta.domain.message.model.dao.mapper.MessageTemplateMapper;
 import com.achobeta.domain.message.model.dto.AddMessageTemplateDTO;
 import com.achobeta.domain.message.model.dto.UpdateMessageTemplateDTO;

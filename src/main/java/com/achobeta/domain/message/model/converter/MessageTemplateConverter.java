@@ -1,4 +1,4 @@
-package com.achobeta.domain.message.converter;
+package com.achobeta.domain.message.model.converter;
 
 
 import com.achobeta.domain.message.model.dto.AddMessageTemplateDTO;

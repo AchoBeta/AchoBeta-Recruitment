@@ -1,6 +1,5 @@
 package com.achobeta.domain.message.model.dto;
 
-import com.achobeta.common.base.BasePageQueryEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +13,12 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-public class QueryStuListDTO extends BasePageQueryEntity implements Serializable {
+public class QueryStuListDTO implements Serializable {
+
+    private Integer current;
+
+    private Integer pageSize;
+
     /*招新批次*/
     @NotNull(message = "招新批次不能为空")
     Integer batchId;

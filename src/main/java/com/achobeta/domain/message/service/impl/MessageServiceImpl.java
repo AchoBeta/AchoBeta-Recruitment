@@ -1,28 +1,32 @@
 package com.achobeta.domain.message.service.impl;
 
-import com.achobeta.common.base.BasePageResultEntity;
-import com.achobeta.domain.message.converter.MessageConverter;
+import com.achobeta.common.base.BasePageResult;
 import com.achobeta.domain.message.handler.ext.MessageSendWithEmailHandler;
 import com.achobeta.domain.message.handler.websocket.MessageReceiveServer;
+import com.achobeta.domain.message.model.converter.MessageConverter;
 import com.achobeta.domain.message.model.dao.mapper.MessageMapper;
-import com.achobeta.domain.message.model.dto.*;
+import com.achobeta.domain.message.model.dto.EmailSendDTO;
+import com.achobeta.domain.message.model.dto.MessageContentDTO;
+import com.achobeta.domain.message.model.dto.QueryStuListDTO;
+import com.achobeta.domain.message.model.dto.StuBaseInfoDTO;
 import com.achobeta.domain.message.model.entity.AttachmentFile;
 import com.achobeta.domain.message.model.entity.Message;
 import com.achobeta.domain.message.model.vo.MessageContentVO;
+import com.achobeta.domain.message.model.vo.QueryStuListVO;
 import com.achobeta.domain.message.service.MessageService;
 import com.achobeta.domain.resource.service.ResourceService;
-import com.achobeta.domain.student.model.converter.StuResumeConverter;
 import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.service.StuResumeService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.util.HttpServletUtil;
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -42,7 +46,6 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
         implements MessageService {
 
     private final StuResumeService stuResumeService;
-    private final StuResumeConverter stuResumeConverter;
     private final MessageConverter messageConverter;
     private final ResourceService resourceService;
     private final HttpServletRequest request;
@@ -50,16 +53,18 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
 
 
     @Override
-    public BasePageResultEntity<StuOfMessageVO> queryStuListByCondition(QueryStuListDTO queryStuDTO) {
-
-
+    public QueryStuListVO queryStuListByCondition(QueryStuListDTO queryStuDTO) {
+        IPage<StuResume> page = messageConverter.queryStuListDTOToBasePageQuery(queryStuDTO).toMpPage();
         //查询分页返回结果
-        Page<StuResume> pageResult = getStuResumePage(queryStuDTO);
-
+        IPage<StuResume> pageResult = stuResumeService.lambdaQuery()
+                .like(StringUtils.hasText(queryStuDTO.getName()), StuResume::getName, queryStuDTO.getName())
+                .eq(Objects.nonNull(queryStuDTO.getBatchId()), StuResume::getBatchId, queryStuDTO.getBatchId())
+                .eq(Objects.nonNull(queryStuDTO.getGrade()), StuResume::getGrade, queryStuDTO.getGrade())
+                .eq(Objects.nonNull(queryStuDTO.getStatus()), StuResume::getStatus, queryStuDTO.getStatus())
+                .page(page);
         //封装返回结果
-        BasePageResultEntity<StuOfMessageVO> PageResultEntity = getStuOfMessagePageResultEntity(pageResult);
-
-        return PageResultEntity;
+        BasePageResult<StuResume> stuResumeBasePageResult = BasePageResult.of(pageResult);
+        return messageConverter.basePageResultToQueryStuListVO(stuResumeBasePageResult);
     }
 
  /*   @Override
@@ -198,34 +203,6 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
         return attachmentFileList;
     }
 
-
-    private BasePageResultEntity<StuOfMessageVO> getStuOfMessagePageResultEntity(Page<StuResume> pageResult) {
-        //定义返回结果对象
-        BasePageResultEntity<StuOfMessageVO> PageResultEntity = new BasePageResultEntity<>();
-
-        //数据处理
-        List<StuResume> stuResumeList = pageResult.getRecords();
-        List<StuOfMessageVO> stuOfMessageVOList = stuResumeConverter.stuResumeListToStuMessageVOList(stuResumeList);
-
-        //封装结果集
-        PageResultEntity.setRecords(stuOfMessageVOList);
-        PageResultEntity.setPages((int) pageResult.getPages());
-        PageResultEntity.setTotal(pageResult.getTotal());
-        return PageResultEntity;
-    }
-
-    private Page<StuResume> getStuResumePage(QueryStuListDTO queryStuDTO) {
-        //封装分页查询条件
-        Page<StuResume> page = Page.of(queryStuDTO.getPageNo(), queryStuDTO.getPageSize());
-        //根据查询条件获取分页数据集
-        Page<StuResume> pageResult = stuResumeService.lambdaQuery()
-                .like(queryStuDTO.getName() != null && !queryStuDTO.getName().isBlank(), StuResume::getName, queryStuDTO.getName())
-                .eq(queryStuDTO.getBatchId() != null, StuResume::getBatchId, queryStuDTO.getBatchId())
-                .eq(queryStuDTO.getGrade() != null, StuResume::getGrade, queryStuDTO.getGrade())
-                .eq(queryStuDTO.getStatus() != null, StuResume::getStatus, queryStuDTO.getStatus())
-                .page(page);
-        return pageResult;
-    }
 }
 
 

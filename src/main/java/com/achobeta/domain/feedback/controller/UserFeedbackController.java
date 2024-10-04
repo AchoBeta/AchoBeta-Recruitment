@@ -2,13 +2,12 @@ package com.achobeta.domain.feedback.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
-import com.achobeta.common.base.BasePageResultEntity;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.feedback.model.dto.HandleFeedbackDTO;
 import com.achobeta.domain.feedback.model.dto.QueryUserOfFeedbackDTO;
 import com.achobeta.domain.feedback.model.dto.UserFeedbackDTO;
 import com.achobeta.domain.feedback.model.vo.FeedbackMessageVO;
-import com.achobeta.domain.feedback.model.vo.UserFeedbackVO;
+import com.achobeta.domain.feedback.model.vo.QueryUserOfFeedbackVO;
 import com.achobeta.domain.feedback.model.vo.UserPersonalFeedBackVO;
 import com.achobeta.domain.feedback.service.UserFeedbackService;
 import com.achobeta.domain.message.model.entity.Message;
@@ -64,9 +63,8 @@ public class UserFeedbackController {
     @Intercept(permit = UserTypeEnum.ADMIN)
     public SystemJsonResponse queryFeedbackofUserList(@Valid @RequestBody QueryUserOfFeedbackDTO queryUserOfFeedbackDTO) {
         //条件分页查询列表
-        BasePageResultEntity<UserFeedbackVO> userFeedbackVOPageResult = userFeedbackService.queryUserOfFeedbackList(queryUserOfFeedbackDTO);
-
-        return SystemJsonResponse.SYSTEM_SUCCESS(userFeedbackVOPageResult);
+        QueryUserOfFeedbackVO queryUserOfFeedbackVO = userFeedbackService.queryUserOfFeedbackList(queryUserOfFeedbackDTO);
+        return SystemJsonResponse.SYSTEM_SUCCESS(queryUserOfFeedbackVO);
     }
 
     @PostMapping("/handle")

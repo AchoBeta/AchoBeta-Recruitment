@@ -1,16 +1,16 @@
 package com.achobeta.domain.feedback.service.impl;
 
-import com.achobeta.common.base.BasePageResultEntity;
+import com.achobeta.common.base.BasePageResult;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.UserTypeEnum;
-import com.achobeta.domain.feedback.converter.FeedbackConverter;
+import com.achobeta.domain.feedback.model.converter.FeedbackConverter;
 import com.achobeta.domain.feedback.model.dao.mapper.UserFeedbackMapper;
 import com.achobeta.domain.feedback.model.dto.HandleFeedbackDTO;
 import com.achobeta.domain.feedback.model.dto.QueryUserOfFeedbackDTO;
 import com.achobeta.domain.feedback.model.dto.UserFeedbackDTO;
 import com.achobeta.domain.feedback.model.entity.UserFeedback;
 import com.achobeta.domain.feedback.model.vo.FeedbackMessageVO;
-import com.achobeta.domain.feedback.model.vo.UserFeedbackVO;
+import com.achobeta.domain.feedback.model.vo.QueryUserOfFeedbackVO;
 import com.achobeta.domain.feedback.model.vo.UserPersonalFeedBackVO;
 import com.achobeta.domain.feedback.service.UserFeedbackService;
 import com.achobeta.domain.login.model.dao.UserEntity;
@@ -19,12 +19,13 @@ import com.achobeta.domain.message.service.MessageService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.service.UserService;
 import com.achobeta.exception.GlobalServiceException;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -35,7 +36,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserFeedbackServiceImpl extends ServiceImpl<UserFeedbackMapper, UserFeedback>
-    implements UserFeedbackService{
+    implements UserFeedbackService {
 
     private final FeedbackConverter feedbackConverter;
     private final UserService userService;
@@ -57,30 +58,31 @@ public class UserFeedbackServiceImpl extends ServiceImpl<UserFeedbackMapper, Use
         //获取用户id
         long userId = BaseContext.getCurrentUser().getUserId();
         //构造反馈实体
-        UserFeedback userFeedback=feedbackConverter.userFeedbackDTOToPo(userFeedbackDTO);
+        UserFeedback userFeedback = feedbackConverter.userFeedbackDTOToPo(userFeedbackDTO);
         userFeedback.setUserId(userId);
         //保存反馈
         save(userFeedback);
     }
 
     @Override
-    public BasePageResultEntity<UserFeedbackVO> queryUserOfFeedbackList(QueryUserOfFeedbackDTO queryUserOfFeedbackDTO) {
+    public QueryUserOfFeedbackVO queryUserOfFeedbackList(QueryUserOfFeedbackDTO queryUserOfFeedbackDTO) {
         //分页查询用户反馈列表
-        Page<UserFeedback> userFeedbackPage = queryUserFeedbackPage(queryUserOfFeedbackDTO);
-        //将反馈列表转为VO对象
-        List<UserFeedback> userFeedbackList = userFeedbackPage.getRecords();
-        List<UserFeedbackVO> userFeedbackVOList=feedbackConverter.userFeedbackPoToVOList(userFeedbackList);
+        IPage<UserFeedback> page = feedbackConverter.queryUserOfFeedbackDTOToBasePageQuery(queryUserOfFeedbackDTO).toMpPage();
+        IPage<UserFeedback> userFeedbackIPage = lambdaQuery()
+                .eq(Objects.nonNull(queryUserOfFeedbackDTO.getIsHandle()), UserFeedback::getIsHandle, queryUserOfFeedbackDTO.getIsHandle())
+                .eq(Objects.nonNull(queryUserOfFeedbackDTO.getBatchId()), UserFeedback::getBatchId, queryUserOfFeedbackDTO.getBatchId())
+                .page(page);
 
         //构建返回分页结果
-        BasePageResultEntity<UserFeedbackVO> userFeedbackVOPageResult = buildUserFeedbackVOPageResult(userFeedbackPage, userFeedbackVOList);
-        return userFeedbackVOPageResult;
+        BasePageResult<UserFeedback> userFeedbackBasePageResult = BasePageResult.of(userFeedbackIPage);
+        return feedbackConverter.basePageResultToQueryUserOfFeedbackVO(userFeedbackBasePageResult);
     }
 
     @Override
     public Long handleFeedbackOfUser(HandleFeedbackDTO handleFeedbackDTO) {
         //查询用户反馈信息
         UserFeedback userFeedback = this.getById(handleFeedbackDTO.getFeedbackId());
-        Optional.ofNullable(userFeedback).orElseThrow(()->new GlobalServiceException("不存在的用户反馈"));
+        Optional.ofNullable(userFeedback).orElseThrow(() -> new GlobalServiceException("不存在的用户反馈"));
         //处理用户反馈
         Long messageId = handleFeedback(handleFeedbackDTO, userFeedback);
 
@@ -93,7 +95,7 @@ public class UserFeedbackServiceImpl extends ServiceImpl<UserFeedbackMapper, Use
         Integer role = BaseContext.getCurrentUser().getRole();
 
         //学生用户只能查自己的反馈消息
-        if (!(role.equals(UserTypeEnum.USER)&&message.getUserId().equals(BaseContext.getCurrentUser().getUserId())))
+        if (!(role.equals(UserTypeEnum.USER) && message.getUserId().equals(BaseContext.getCurrentUser().getUserId())))
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
 
         return getFeedbackMessageVO(message);
@@ -101,9 +103,9 @@ public class UserFeedbackServiceImpl extends ServiceImpl<UserFeedbackMapper, Use
     }
 
     private FeedbackMessageVO getFeedbackMessageVO(Message message) {
-        FeedbackMessageVO feedbackMessageVO=feedbackConverter.MessageOfFeedbackPoToVO(message);
+        FeedbackMessageVO feedbackMessageVO = feedbackConverter.MessageOfFeedbackPoToVO(message);
         Optional<UserEntity> userEntity = userService.getUserById(message.getManagerId());
-        userEntity.orElseThrow(()->new GlobalServiceException(GlobalServiceStatusCode.MESSAGE_HANDLER_NOT_EXIST));
+        userEntity.orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.MESSAGE_HANDLER_NOT_EXIST));
         feedbackMessageVO.setManagerName(userEntity.get().getUsername());
         return feedbackMessageVO;
     }
@@ -111,7 +113,7 @@ public class UserFeedbackServiceImpl extends ServiceImpl<UserFeedbackMapper, Use
     @Override
     public Message judgeMessageOfFeedbackIfExist(Long messageId) {
         Message message = messageService.getById(messageId);
-        Optional.ofNullable(message).orElseThrow(()->new GlobalServiceException(GlobalServiceStatusCode.MESSAGE_NOT_EXIST));
+        Optional.ofNullable(message).orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.MESSAGE_NOT_EXIST));
         return message;
     }
 
@@ -124,24 +126,4 @@ public class UserFeedbackServiceImpl extends ServiceImpl<UserFeedbackMapper, Use
         return messageId;
     }
 
-    private static BasePageResultEntity<UserFeedbackVO> buildUserFeedbackVOPageResult(Page<UserFeedback> userFeedbackPage, List<UserFeedbackVO> userFeedbackVOList) {
-        BasePageResultEntity<UserFeedbackVO> userFeedbackVOPageResult = new BasePageResultEntity<>();
-        userFeedbackVOPageResult.setTotal(userFeedbackPage.getTotal());
-        userFeedbackVOPageResult.setRecords(userFeedbackVOList);
-        userFeedbackVOPageResult.setPages((int) userFeedbackPage.getPages());
-        return userFeedbackVOPageResult;
-    }
-
-    private Page<UserFeedback> queryUserFeedbackPage(QueryUserOfFeedbackDTO queryUserOfFeedbackDTO) {
-        Page<UserFeedback> page = Page.of(queryUserOfFeedbackDTO.getPageNo(), queryUserOfFeedbackDTO.getPageSize());
-        Page<UserFeedback> userFeedbackPage = lambdaQuery()
-                .eq(queryUserOfFeedbackDTO.getIsHandle() != null, UserFeedback::getIsHandle, queryUserOfFeedbackDTO.getIsHandle() ? 1 : 0)
-                .eq(queryUserOfFeedbackDTO.getBatchId() != null, UserFeedback::getBatchId, queryUserOfFeedbackDTO.getBatchId())
-                .page(page);
-        return userFeedbackPage;
-    }
 }
-
-
-
-
