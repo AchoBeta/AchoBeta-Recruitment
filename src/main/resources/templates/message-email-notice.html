@@ -19,33 +19,35 @@
 
 <br /></p></div></td></tr></tbody></table></div></td></tr></tbody></table></div></td></tr><tr class="mktoModule" id="text-m" align="center"><td><div style="margin: 0px auto; max-width: 650px"><table              align="center"              border="0"              cellpadding="0"              cellspacing="0"              role="presentation"              style="width: 100%"            ><tbody><tr><td                    style="                      direction: ltr;                      font-size: 0px;                      padding: 24px 0 24px 0;                      text-align: center;                    "                  ><div                      class="mj-column-px-650 outlook-group-fix"                      style="                        font-size: 0px;                        text-align: left;                        direction: ltr;                        display: inline-block;                        vertical-align: top;                        width: 100%;                      "                    ><table                        border="0"                        cellpadding="0"                        cellspacing="0"                        role="presentation"                        style="vertical-align: top"                        width="100%"                      ><tbody><tr><td                              align="left"                              style="                                font-size: 0px;                                padding: 0px;                                padding-right: 0;                                padding-left: 0;                                word-break: break-word;                              "                            ><div                                class="mktoText font-resize-15 text"                                id="text-m-text"                                style="                                  font-family: 'JetBrains Sans', 'JetBrains Mono', 'Inter',                                    system-ui, -apple-system, BlinkMacSystemFont,                                    'SFProText-Regular', 'Segoe UI',                                    'Helvetica Neue', sans-serif;                                  font-size: 18px;                                  letter-spacing: 0.2px;                                  line-height: 28px;                                  text-align: left;                                  color: #27282c;                                "                              >
 
-    <p><span class="theme"></span>
-        <br />
-        <span >Welcome to participate in this Achobeta recruitment activity, I look forward to your ability to show, even if you have a pity not to join us in the end,
-            I hope you can continue to work hard.</span>
-    </p>
     <p>
-        <br />
-        <span class="theme"><strong> Tittle: </strong></span>
+        Welcome to participate in this Achobeta recruitment activity, I look forward to your ability to show, even if you have a pity not to join us in the end,
+        I hope you can continue to work hard.
+    </p>
+
+    <p><span class="theme"><strong> Tittle: </strong></span>
         <br />
         <span th:text="${tittle}"></span>
     </p>
 
     <p><span class="theme"><strong> Message Content: </strong></span>
         <br />
-        Dear student <strong th:text="${stuName}"></strong>:
+        亲爱的同学，<strong th:text="${stuName}"></strong>：
         <br />
-        &nbsp;&nbsp;&nbsp;&nbsp;<span th:text="${content}"></span>
+        <span th:text="${content}"></span>
         <br />
         <span class="theme" th:if="${not #lists.isEmpty(attachmentInfoList)}"><strong>Attachment:</strong></span>
+        <br />
         <span th:if="${not #lists.isEmpty(attachmentInfoList)}" th:each="attachment : ${attachmentInfoList}">
-            <br />
             <span class="theme" th:text="${attachment.fileName}"></span>
             <br />
             <span class="theme" th:text="${attachment.attachmentUrl}"></span>
+            <br />
         </span>
+    </p>
+
+    <p><span class="theme"><strong> SendTime: </strong></span>
         <br />
-        <strong class="theme" th:text="${sendTime}"></strong>
+        <span th:text="${sendTime}"></span>
     </p>
 
 </div></td></tr></tbody></table></div></td></tr></tbody></table></div></td></tr><tr        class="mktoModule"        id="divider-light28836f00-7833-47cb-8965-1c9a54043080"        align="center"      ><td><div style="margin: 0px auto; max-width: 650px"><table              align="center"              border="0"              cellpadding="0"              cellspacing="0"              role="presentation"              style="width: 100%"            ><tbody><tr><td                    style="                      direction: ltr;                      font-size: 0px;                      padding: 24px 0 24px 0;                      text-align: center;                    "                  ><div                      class="mj-column-per-100 outlook-group-fix"                      style="                        font-size: 0px;                        text-align: left;                        direction: ltr;                        display: inline-block;                        vertical-align: top;                        width: 100%;                      "                    ><table                        border="0"                        cellpadding="0"                        cellspacing="0"                        role="presentation"                        style="vertical-align: top"                        width="100%"                      ><tbody><tr><td                              style="                                font-size: 0px;                                padding: 0;                                word-break: break-word;                              "                            ><p                                style="                                  border-top: solid 1px #d4d4d4;                                  font-size: 1pt;                                  margin: 0px auto;                                  width: 650px;                                "                              ></p></td></tr></tbody></table></div></td></tr></tbody></table></div></td></tr><tr        class="mktoModule"        id="icon-center-72f2149929-bd8b-471b-ba72-ca08ab4e95d8"        align="center"      ><td></table></body></html>

@@ -40,7 +40,7 @@ public class MessageController {
 
     @GetMapping("/info/query")
     @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER})
-    public SystemJsonResponse queryMessageListofUser() {
+    public SystemJsonResponse queryMessageListOfUser() {
         List<MessageContentVO> messageContentVOList = messageService.getMessageListOfUser();
         return SystemJsonResponse.SYSTEM_SUCCESS(messageContentVOList);
     }
