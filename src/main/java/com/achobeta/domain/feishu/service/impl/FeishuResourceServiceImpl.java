@@ -9,7 +9,6 @@ import com.achobeta.domain.feishu.model.entity.FeishuResource;
 import com.achobeta.domain.feishu.model.vo.FeishuResourceQueryVO;
 import com.achobeta.domain.feishu.service.FeishuResourceService;
 import com.achobeta.domain.feishu.service.FeishuService;
-import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.feishu.constants.FeishuConstants;
 import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.redis.lock.RedisLock;
