@@ -5,7 +5,6 @@ import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.entity.DigitalResource;
 import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
 import com.achobeta.feishu.constants.ObjectType;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,7 +33,7 @@ public interface ResourceService {
 
     void checkAndRemoveImage(Long code, Long old);
 
-    String getSystemUrl(HttpServletRequest request, Long code);
+    String getSystemUrl(Long code);
 
     String gerObjectUrl(Long code, Boolean hidden);
 

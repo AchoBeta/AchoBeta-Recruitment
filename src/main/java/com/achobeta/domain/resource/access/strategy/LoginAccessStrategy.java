@@ -1,7 +1,7 @@
 package com.achobeta.domain.resource.access.strategy;
 
 import com.achobeta.domain.resource.model.entity.DigitalResource;
-import com.achobeta.interpretor.UserInterpretor;
+import com.achobeta.interpretor.UserInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +16,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LoginAccessStrategy implements ResourceAccessStrategy {
 
-    private final UserInterpretor userInterpretor;
+    private final UserInterceptor userInterceptor;
 
     @Override
     public boolean isAccessible(DigitalResource resource) {
         try {
-            userInterpretor.getUserHelper();
+            userInterceptor.getUserHelper();
             return Boolean.TRUE;
         } catch (Exception e) {
             return Boolean.FALSE;

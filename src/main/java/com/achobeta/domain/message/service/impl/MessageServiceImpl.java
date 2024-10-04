@@ -1,6 +1,7 @@
 package com.achobeta.domain.message.service.impl;
 
 import com.achobeta.common.base.BasePageResult;
+import com.achobeta.domain.message.constants.AttachmentConstants;
 import com.achobeta.domain.message.handler.ext.MessageSendWithEmailHandler;
 import com.achobeta.domain.message.handler.websocket.MessageReceiveServer;
 import com.achobeta.domain.message.model.converter.MessageConverter;
@@ -8,7 +9,6 @@ import com.achobeta.domain.message.model.dao.mapper.MessageMapper;
 import com.achobeta.domain.message.model.dto.EmailSendDTO;
 import com.achobeta.domain.message.model.dto.MessageContentDTO;
 import com.achobeta.domain.message.model.dto.QueryStuListDTO;
-import com.achobeta.domain.message.model.dto.StuBaseInfoDTO;
 import com.achobeta.domain.message.model.entity.AttachmentFile;
 import com.achobeta.domain.message.model.entity.Message;
 import com.achobeta.domain.message.model.vo.MessageContentVO;
@@ -18,11 +18,9 @@ import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.service.StuResumeService;
 import com.achobeta.domain.users.context.BaseContext;
-import com.achobeta.util.HttpServletUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -48,7 +46,6 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
     private final StuResumeService stuResumeService;
     private final MessageConverter messageConverter;
     private final ResourceService resourceService;
-    private final HttpServletRequest request;
     private final MessageSendWithEmailHandler messageSendWithEmailHandler;
 
 
@@ -158,7 +155,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
     }
 
     @Override
-    public List<MessageContentVO> getMessageListofUser() {
+    public List<MessageContentVO> getMessageListOfUser() {
         Long userId = BaseContext.getCurrentUser().getUserId();
         //缓存消息列表
         /*Optional<List<MessageContentVO>> messageOptional = redisCache.getCacheList(MESSAGE_CACHE_NAME + userId, MessageContentVO.class);
@@ -173,34 +170,30 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
     }
 
     @Override
-    public void sendMessageByEmail(EmailSendDTO emailSendDTO, List<MultipartFile> attachmentList) {
+    public void sendMessageByEmail(Long managerId, EmailSendDTO emailSendDTO, List<MultipartFile> attachmentList) {
 
         emailSendDTO.getStuInfoSendList().stream().forEach(stu -> {
-            List<AttachmentFile> attachmentInfoList = getAttachUrlList(attachmentList, stu);
+            List<AttachmentFile> attachmentInfoList = getAttachUrlList(managerId, attachmentList);
             messageSendWithEmailHandler.sendEmail(stu.getEmail(),emailSendDTO.getTittle(),emailSendDTO.getContent(),stu.getStuName(),attachmentInfoList,attachmentList);
         });
         log.info("邮箱发送成功!");
     }
 
 
-    private List<AttachmentFile> getAttachUrlList(List<MultipartFile> attachmentList, StuBaseInfoDTO stu) {
+    private List<AttachmentFile> getAttachUrlList(Long managerId, List<MultipartFile> attachmentList) {
         if(Objects.isNull(attachmentList)||attachmentList.isEmpty())
             return null;
 
-
-        List<AttachmentFile> attachmentFileList = attachmentList.stream().map(attach -> {
+        return attachmentList.stream().map(attach -> {
             AttachmentFile attachmentFile = new AttachmentFile();
-
-            Long code = resourceService.upload(stu.getUserId(), attach);
-            String baseUrl = HttpServletUtil.getBaseUrl(request, "/api/v1/resource/download/");
-            String attachUrl = baseUrl + code;
-
-            attachmentFile.setAttachmentUrl(attachUrl);
+            // 上传附件
+            Long code = resourceService.upload(managerId, attach, AttachmentConstants.ATTACHMENT_ACCESS_LEVEL);
+            // 获取系统 url
+            String systemUrl = resourceService.getSystemUrl(code);
+            attachmentFile.setAttachmentUrl(systemUrl);
             attachmentFile.setFileName(attach.getOriginalFilename());
             return attachmentFile;
         }).toList();
-
-        return attachmentFileList;
     }
 
 }

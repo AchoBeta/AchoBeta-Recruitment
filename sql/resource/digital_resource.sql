@@ -5,7 +5,7 @@ create table `digital_resource`
     `code` bigint unique not null comment '资源码',
     `user_id` bigint not null comment '上传文件的用户 id',
     -- todo: 设置默认的权限等级
-    `access_level` int not null default 0 comment '访问权限',
+    `access_level` int not null default 2 comment '访问权限',
     `original_name` varchar(100) not null comment '上传时的文件名',
     `file_name` varchar(256) not null comment '在对象存储服务中存储的对象名',
     -- common column

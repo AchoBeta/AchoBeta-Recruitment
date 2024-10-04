@@ -1,7 +1,8 @@
 package com.achobeta.domain.message.model.vo;
 
-import com.achobeta.common.base.BasePageResult;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * Created With Intellij IDEA
@@ -11,5 +12,12 @@ import lombok.Data;
  * Time: 13:26
  */
 @Data
-public class QueryStuListVO extends BasePageResult<StuOfMessageVO> {
+public class QueryStuListVO {
+
+    private Long total;
+
+    private Long pages;
+
+    private List<StuOfMessageVO> records;
+
 }

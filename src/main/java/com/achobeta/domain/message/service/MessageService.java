@@ -19,14 +19,13 @@ import java.util.concurrent.CopyOnWriteArraySet;
 * @createDate 2024-08-11 22:20:17
 */
 public interface MessageService extends IService<Message> {
-    public static final String MESSAGE_CACHE_NAME="ab:message:";
 
-    public static final String MESSAGE_SEND_DEAD_QUEUE="message.send.dead.queue";
-    public static final String MESSAGE_SEND_DEAD_EXCHANGE="message.send.dead.exchange";
-    public static final String MESSAGE_SEND_QUEUE="message.send.queue";
-    public static final String MESSAGE_SEND_EXCHANGE="message.send.exchange";
-    public static final String MESSAGE_SEND_DEAD_KEY="delay_send";
-    public static final String MESSAGE_SEND_KEY="message_send";
+    String MESSAGE_SEND_DEAD_QUEUE = "message.send.dead.queue";
+    String MESSAGE_SEND_DEAD_EXCHANGE = "message.send.dead.exchange";
+    String MESSAGE_SEND_QUEUE = "message.send.queue";
+    String MESSAGE_SEND_EXCHANGE = "message.send.exchange";
+    String MESSAGE_SEND_DEAD_KEY = "delay_send";
+    String MESSAGE_SEND_KEY = "message_send";
 
 
     QueryStuListVO queryStuListByCondition(QueryStuListDTO queryStuDTO);
@@ -35,8 +34,8 @@ public interface MessageService extends IService<Message> {
 
     Long storeMessage(MessageContentDTO messageContent);
 
-    List<MessageContentVO> getMessageListofUser();
+    List<MessageContentVO> getMessageListOfUser();
 
-    void sendMessageByEmail(EmailSendDTO emailSendDTO, List<MultipartFile> attachmentList);
+    void sendMessageByEmail(Long managerId, EmailSendDTO emailSendDTO, List<MultipartFile> attachmentList);
 
 }

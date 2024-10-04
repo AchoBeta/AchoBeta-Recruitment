@@ -9,6 +9,7 @@ import com.achobeta.domain.feishu.model.entity.FeishuResource;
 import com.achobeta.domain.feishu.model.vo.FeishuResourceQueryVO;
 import com.achobeta.domain.feishu.service.FeishuResourceService;
 import com.achobeta.domain.feishu.service.FeishuService;
+import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.feishu.constants.FeishuConstants;
 import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.redis.lock.RedisLock;
@@ -119,7 +120,8 @@ public class FeishuResourceServiceImpl extends ServiceImpl<FeishuResourceMapper,
     }
 
     @Override
-    public String getSystemUrl(HttpServletRequest request, String ticket) {
+    public String getSystemUrl(String ticket) {
+        HttpServletRequest request = HttpServletUtil.getRequest();
         String baseUrl = HttpServletUtil.getBaseUrl(request, "/api/v1/feishu/resource", "/{ticket}");
         return HttpRequestUtil.buildUrl(baseUrl, null, ticket);
     }

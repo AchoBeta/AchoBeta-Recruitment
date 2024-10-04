@@ -1,8 +1,7 @@
 package com.achobeta.config;
 
 
-import com.achobeta.handler.HttpRequestLogHandler;
-import com.achobeta.interpretor.UserInterpretor;
+import com.achobeta.interpretor.UserInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -18,15 +17,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
-    private final UserInterpretor userInterpretor;
-
-    private final HttpRequestLogHandler httpRequestLogHandler;
+    private final UserInterceptor userInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(userInterpretor)
-                .addPathPatterns("/**");
-        registry.addInterceptor(httpRequestLogHandler)
+        registry.addInterceptor(userInterceptor)
                 .addPathPatterns("/**");
     }
 

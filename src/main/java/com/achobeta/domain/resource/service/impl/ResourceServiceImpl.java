@@ -123,7 +123,8 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public String getSystemUrl(HttpServletRequest request, Long code) {
+    public String getSystemUrl(Long code) {
+        HttpServletRequest request = HttpServletUtil.getRequest();
         String baseUrl = HttpServletUtil.getBaseUrl(request, "/api/v1/resource/download", "/{code}");
         return HttpRequestUtil.buildUrl(baseUrl, null, code);
     }
@@ -175,23 +176,21 @@ public class ResourceServiceImpl implements ResourceService {
         // 获取一个文件名
         String originName = ResourceUtil.getFileNameByExtension(fileName, objectType.getFileExtension());
         OnlineResourceVO onlineResourceVO = new OnlineResourceVO();
+        // 是否同步飞书文档
+        if(Boolean.TRUE.equals(synchronous)) {
+            try {
+                String ticket = feishuService.importTaskBriefly(originName, bytes, objectType).getTicket();
+                FeishuResource resource = feishuResourceService.createAndGetFeishuResource(ticket, originName);
+                ImportTask importTask = feishuService.getImportTaskPolling(ticket);
+                feishuResourceService.updateFeishuResource(resource.getId(), importTask);
+                onlineResourceVO.setFeishuUrl(feishuResourceService.getSystemUrl(ticket));
+            } catch (GlobalServiceException e) {
+                log.warn("{} {}", e.getStatusCode(), e.getMessage());
+            }
+        }
         // 上传对象存储系统
         Long code = upload(managerId, originName, bytes, level);
-        HttpServletUtil.getRequest().ifPresent(request -> {
-            onlineResourceVO.setDownloadUrl(getSystemUrl(request, code));
-            // 是否同步飞书文档
-            if(Boolean.TRUE.equals(synchronous)) {
-                try {
-                    String ticket = feishuService.importTaskBriefly(originName, bytes, objectType).getTicket();
-                    FeishuResource resource = feishuResourceService.createAndGetFeishuResource(ticket, originName);
-                    ImportTask importTask = feishuService.getImportTaskPolling(ticket);
-                    feishuResourceService.updateFeishuResource(resource.getId(), importTask);
-                    onlineResourceVO.setFeishuUrl(feishuResourceService.getSystemUrl(request, ticket));
-                } catch (GlobalServiceException e) {
-                    log.warn("{} {}", e.getStatusCode(), e.getMessage());
-                }
-            }
-        });
+        onlineResourceVO.setDownloadUrl(getSystemUrl(code));
         return onlineResourceVO;
     }
 

@@ -20,7 +20,7 @@ public interface ShortLinkService extends IService<ShortLink> {
 
     Optional<ShortLink> getShortLinkByCode(String code);
 
-    String getSystemUrl(HttpServletRequest request, String code);
+    String getSystemUrl(String code);
 
     /**
      * url生成唯一的code

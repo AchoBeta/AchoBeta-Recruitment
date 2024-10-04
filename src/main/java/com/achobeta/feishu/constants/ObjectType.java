@@ -19,7 +19,6 @@ import static com.achobeta.feishu.constants.FeishuConstants.*;
  * 此类不应该设置为枚举，因为需要序列化为 json
  */
 @Getter
-@AllArgsConstructor
 public class ObjectType {
 
     public final static ObjectType TXT = ObjectType.of("docx", "txt", ACHOBETA_RECRUITMENT_DOCX_FOLDER_RESOURCE, ACHOBETA_RECRUITMENT_DOCX_FOLDER_COOPERATE);
@@ -43,4 +42,10 @@ public class ObjectType {
         return new ObjectType(objType, fileExtension, parentNode, mountKey);
     }
 
+    private ObjectType(String objType, String fileExtension, String parentNode, String mountKey) {
+        this.objType = objType;
+        this.fileExtension = fileExtension;
+        this.parentNode = parentNode;
+        this.mountKey = mountKey;
+    }
 }

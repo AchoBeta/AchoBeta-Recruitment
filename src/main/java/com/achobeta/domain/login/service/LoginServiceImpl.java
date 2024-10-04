@@ -11,7 +11,7 @@ import com.achobeta.domain.login.model.entity.LoginUser;
 import com.achobeta.domain.login.model.vo.LoginVO;
 import com.achobeta.domain.users.service.UserService;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.interpretor.UserInterpretor;
+import com.achobeta.interpretor.UserInterceptor;
 import com.achobeta.jwt.propertities.JwtProperties;
 import com.achobeta.jwt.util.JwtUtil;
 import com.achobeta.redis.cache.RedisCache;
@@ -93,7 +93,7 @@ public class LoginServiceImpl implements LoginService {
 
         //将id存入claims
         if (Optional.ofNullable(userId).isPresent()) {
-            claims.put(UserInterpretor.USER_ID, userId);
+            claims.put(UserInterceptor.USER_ID, userId);
             claims.put(UserTypeEnum.USER.getName(), loginUser.getUserType());
         }
 
