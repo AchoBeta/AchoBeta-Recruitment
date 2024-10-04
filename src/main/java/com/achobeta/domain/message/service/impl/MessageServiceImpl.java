@@ -24,9 +24,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -181,9 +183,9 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
 
 
     private List<AttachmentFile> getAttachUrlList(Long managerId, List<MultipartFile> attachmentList) {
-        if(Objects.isNull(attachmentList)||attachmentList.isEmpty())
-            return null;
-
+        if(CollectionUtils.isEmpty(attachmentList)) {
+            return new ArrayList<>();
+        }
         return attachmentList.stream().map(attach -> {
             AttachmentFile attachmentFile = new AttachmentFile();
             // 上传附件
