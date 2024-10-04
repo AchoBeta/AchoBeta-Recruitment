@@ -38,9 +38,10 @@
         &nbsp;&nbsp;&nbsp;&nbsp;<span th:text="${content}"></span>
         <br />
         <span class="theme" th:if="${not #lists.isEmpty(attachmentInfoList)}"><strong>Attachment:</strong></span>
-        <br />
         <span th:if="${not #lists.isEmpty(attachmentInfoList)}" th:each="attachment : ${attachmentInfoList}">
+            <br />
             <span class="theme" th:text="${attachment.fileName}"></span>
+            <br />
             <span class="theme" th:text="${attachment.attachmentUrl}"></span>
         </span>
         <br />
