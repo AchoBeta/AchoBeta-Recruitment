@@ -1,6 +1,5 @@
 package com.achobeta.domain.question.service;
 
-import com.achobeta.domain.question.model.dto.QuestionSaveBatchDTO;
 import com.achobeta.domain.question.model.entity.QuestionLibrary;
 import com.baomidou.mybatisplus.extension.service.IService;
 

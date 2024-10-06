@@ -10,7 +10,6 @@ import com.achobeta.domain.message.model.vo.MessageContentVO;
 import com.achobeta.domain.message.model.vo.QueryStuListVO;
 import com.achobeta.domain.student.model.entity.StuResume;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
