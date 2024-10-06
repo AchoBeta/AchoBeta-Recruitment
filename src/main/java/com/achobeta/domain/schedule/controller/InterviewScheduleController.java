@@ -3,10 +3,10 @@ package com.achobeta.domain.schedule.controller;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
-import com.achobeta.domain.interview.constants.InterviewConstants;
 import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
+import com.achobeta.domain.resource.constants.ResourceConstants;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
 import com.achobeta.domain.resource.service.ResourceService;
@@ -141,7 +141,7 @@ public class InterviewScheduleController {
                                                                      @RequestParam(name = "synchronous", required = false) Boolean synchronous) {
         // 检测
         RecruitmentActivity activity = recruitmentActivityService.checkAndGetRecruitmentActivity(actId);
-        ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(InterviewConstants.DEFAULT_EXCEL_ACCESS_LEVEL);
+        ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(ResourceConstants.DEFAULT_EXCEL_ACCESS_LEVEL);
         // 打印表格
         Long managerId = BaseContext.getCurrentUser().getUserId();
         OnlineResourceVO onlineResourceVO = interviewScheduleService.printSituations(managerId, activity, accessLevel, synchronous);

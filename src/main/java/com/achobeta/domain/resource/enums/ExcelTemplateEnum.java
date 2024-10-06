@@ -3,6 +3,7 @@ package com.achobeta.domain.resource.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+
 /**
  * Created With Intellij IDEA
  * Description:
