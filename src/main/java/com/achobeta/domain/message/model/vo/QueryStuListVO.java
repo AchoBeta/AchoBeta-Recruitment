@@ -18,6 +18,6 @@ public class QueryStuListVO {
 
     private Long pages;
 
-    private List<StuOfMessageVO> records;
+    private List<StuOfMessageVO> list;
 
 }

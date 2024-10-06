@@ -6,6 +6,7 @@ import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.question.handler.chain.RemoveQuestionHandlerChain;
 import com.achobeta.domain.question.model.dto.QuestionDTO;
 import com.achobeta.domain.question.model.dto.QuestionQueryDTO;
+import com.achobeta.domain.question.model.dto.QuestionSaveBatchDTO;
 import com.achobeta.domain.question.model.vo.QuestionDetailVO;
 import com.achobeta.domain.question.model.vo.QuestionQueryVO;
 import com.achobeta.domain.question.service.QuestionService;
@@ -40,6 +41,13 @@ public class QuestionController {
         // 添加
         Long questionId = questionService.addQuestion(questionDTO.getLibIds(), questionDTO.getTitle(), questionDTO.getStandard());
         return SystemJsonResponse.SYSTEM_SUCCESS(questionId);
+    }
+
+    @PostMapping("/save/batch")
+    public SystemJsonResponse saveBatchQuestion(@Valid @RequestBody QuestionSaveBatchDTO questionSaveBatchDTO) {
+        // 批量导入
+        questionService.saveBatchQuestion(questionSaveBatchDTO);
+        return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
     @PostMapping("/update/{questionId}")

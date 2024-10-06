@@ -1,6 +1,7 @@
 package com.achobeta.domain.question.service;
 
 import com.achobeta.domain.question.model.dto.QuestionQueryDTO;
+import com.achobeta.domain.question.model.dto.QuestionSaveBatchDTO;
 import com.achobeta.domain.question.model.entity.Question;
 import com.achobeta.domain.question.model.vo.QuestionDetailVO;
 import com.achobeta.domain.question.model.vo.QuestionQueryVO;
@@ -21,6 +22,8 @@ public interface QuestionService extends IService<Question> {
     Optional<Question> getQuestion(Long questionId);
 
     Long addQuestion(List<Long> libIds, String title, String standard);
+
+    void saveBatchQuestion(QuestionSaveBatchDTO questionSaveBatchDTO);
 
     void updateQuestion(Long questionId, List<Long> libIds, String title, String standard);
 

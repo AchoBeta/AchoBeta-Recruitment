@@ -6,12 +6,17 @@ import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.question.model.converter.QuestionConverter;
 import com.achobeta.domain.question.model.dao.mapper.QuestionLibraryMapper;
 import com.achobeta.domain.question.model.dao.mapper.QuestionMapper;
+import com.achobeta.domain.question.model.dto.QuestionDTO;
+import com.achobeta.domain.question.model.dto.QuestionLibraryDTO;
 import com.achobeta.domain.question.model.dto.QuestionQueryDTO;
+import com.achobeta.domain.question.model.dto.QuestionSaveBatchDTO;
 import com.achobeta.domain.question.model.entity.LibraryQuestionLink;
 import com.achobeta.domain.question.model.entity.Question;
+import com.achobeta.domain.question.model.entity.QuestionLibrary;
 import com.achobeta.domain.question.model.vo.QuestionDetailVO;
 import com.achobeta.domain.question.model.vo.QuestionQueryVO;
 import com.achobeta.domain.question.service.LibraryQuestionLinkService;
+import com.achobeta.domain.question.service.QuestionLibraryService;
 import com.achobeta.domain.question.service.QuestionService;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -19,6 +24,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -37,6 +43,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
 
     private final QuestionLibraryMapper questionLibraryMapper;
 
+    private final QuestionLibraryService questionLibraryService;
+
     private final LibraryQuestionLinkService libraryQuestionLinkService;
 
     /**
@@ -48,15 +56,15 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     public QuestionQueryVO queryQuestions(QuestionQueryDTO questionQueryDTO) {
         // 解析分页参数获取 page
         IPage<Question> page = null;
-        Long libId = null;
+        List<Long> libIds = new ArrayList<>();
         if(Objects.isNull(questionQueryDTO)) {
             page = new BasePageQuery().toMpPage();
         } else {
             page = QuestionConverter.INSTANCE.questionQueryDTOToBasePageQuery(questionQueryDTO).toMpPage();
-            libId = questionQueryDTO.getLibId();
+            libIds = questionQueryDTO.getLibIds();
         }
         // 分页
-        IPage<Question> questionIPage = questionMapper.queryQuestions(page, libId);
+        IPage<Question> questionIPage = questionMapper.queryQuestions(page, libIds);
         // 封装
         BasePageResult<Question> pageResult = BasePageResult.of(questionIPage);
         // 转化
@@ -80,6 +88,37 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         Long questionId = question.getId();
         libraryQuestionLinkService.addLibraryQuestionLinkBatch(libIds, questionId);
         return questionId;
+    }
+
+    @Override
+    @Transactional
+    public void saveBatchQuestion(QuestionSaveBatchDTO questionSaveBatchDTO) {
+        // 批量插入题库
+        List<QuestionLibraryDTO> libraries = questionSaveBatchDTO.getLibraries();
+        if(!CollectionUtils.isEmpty(libraries)) {
+            List<QuestionLibrary> questionLibraries = QuestionConverter.INSTANCE.questionLibraryDTOListToQuestionLibraryList(libraries);
+            questionLibraryService.saveBatch(questionLibraries);
+        }
+        // 批量插入题
+        List<QuestionDTO> questions = questionSaveBatchDTO.getQuestions();
+        if(!CollectionUtils.isEmpty(questions)) {
+            List<Question> questionList = QuestionConverter.INSTANCE.questionDTOListToQuestionList(questions);
+            this.saveBatch(questionList);
+            // 关联题库
+            int size = questionList.size();
+            List<LibraryQuestionLink> libraryQuestionLinks = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                Long questionId = questionList.get(i).getId();
+                List<LibraryQuestionLink> list = questions.get(i).getLibIds().stream().map(libId -> {
+                    LibraryQuestionLink libraryQuestionLink = new LibraryQuestionLink();
+                    libraryQuestionLink.setLibId(libId);
+                    libraryQuestionLink.setQuestionId(questionId);
+                    return libraryQuestionLink;
+                }).toList();
+                libraryQuestionLinks.addAll(list);
+            }
+            libraryQuestionLinkService.saveBatch(libraryQuestionLinks);
+        }
     }
 
     @Override

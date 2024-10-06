@@ -18,7 +18,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")//交给spring管理
 public interface MessageConverter {
-    MessageConverter MESSAGE_CONVERTER=Mappers.getMapper(MessageConverter.class);
+    MessageConverter MESSAGE_CONVERTER = Mappers.getMapper(MessageConverter.class);
 
 
     MessageContentVO messageContentDTOToVO(MessageContentDTO messageContentBody);
@@ -27,9 +27,7 @@ public interface MessageConverter {
 
     List<MessageContentVO> messageContentPoToVOList(List<Message> messageList);
 
-    @Mapping(source = "pageNo", target = "current")
     BasePageQuery queryStuListDTOToBasePageQuery(QueryStuListDTO queryStuListDTO);
 
-    @Mapping(source = "list", target = "records")
     QueryStuListVO basePageResultToQueryStuListVO(BasePageResult<StuResume> basePageResult);
 }

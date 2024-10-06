@@ -22,8 +22,11 @@
             left join question_paper p on p.id = lp.paper_id and p.is_deleted = 0 and lp.is_deleted = 0
         <where>
             p.id is not null and l.is_deleted = 0
-            <if test="libId != null">
-                and l.id = #{libId,jdbcType=BIGINT}
+            <if test="libIds != null">
+                and l.id
+                <foreach collection="libIds" open="in (" close=")" item="libId" separator=",">
+                    #{libId,jdbcType=BIGINT}
+                </foreach>
             </if>
         </where>
     </select>

@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
 * @author 马拉圈
 * @description 针对表【question_paper(试卷表)】的数据库操作Mapper
@@ -14,7 +16,7 @@ import org.apache.ibatis.annotations.Param;
 public interface QuestionPaperMapper extends BaseMapper<QuestionPaper> {
 
     // 并不会将结果集加入 page，而是返回值 IPage 里
-    IPage<QuestionPaper> queryPapers(IPage<QuestionPaper> page, @Param("libId") Long libId);
+    IPage<QuestionPaper> queryPapers(IPage<QuestionPaper> page, @Param("libIds") List<Long> libIds);
 }
 
 

@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Setter
 public class QueryStuListDTO implements Serializable {
 
-    private Integer pageNo;
+    private Integer current;
 
     private Integer pageSize;
 
