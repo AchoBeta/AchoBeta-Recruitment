@@ -1,4 +1,4 @@
-package com.achobeta.domain.message.model.dto;
+package com.achobeta.domain.message.model.vo;
 
 
 import com.achobeta.domain.resumestate.enums.ResumeStatus;

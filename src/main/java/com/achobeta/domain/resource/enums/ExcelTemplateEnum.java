@@ -3,6 +3,7 @@ package com.achobeta.domain.resource.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -14,9 +15,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ExcelTemplateEnum {
 
-    ACHOBETA_INTERVIEW_ALL("AchoBeta 招新面试", "全部面试日程", "achobeta-interview-all.xlsx"),
+    ACHOBETA_INTERVIEW_ALL("AchoBeta 招新面试", "全部面试日程"),
 
-    ACHOBETA_ACTIVITY_SITUATIONS("AchoBeta 招新活动参与情况", "所有参与者的参与情况", "achobeta-activity-situations.xlsx"),
+    ACHOBETA_ACTIVITY_SITUATIONS("AchoBeta 招新活动参与情况", "所有参与者的参与情况"),
 
     ;
 
@@ -24,5 +25,4 @@ public enum ExcelTemplateEnum {
 
     private final String sheetName;
 
-    private final String originalName;
 }

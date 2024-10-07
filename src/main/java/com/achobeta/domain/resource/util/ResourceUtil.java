@@ -75,27 +75,28 @@ public class ResourceUtil {
         return originalName.substring(0, originalName.lastIndexOf("."));
     }
 
-    public static String getFileNameSuffix(String originalName) {
+    public static String getSuffix(String originalName) {
         checkOriginalName(originalName);
         return originalName.substring(originalName.lastIndexOf("."));
     }
 
-    public static String getFileNameExtension(String originalName) {
-        return getFileNameSuffix(originalName).substring(1);
-    }
-
-    public static String forceChangeSuffix(String originName, String suffix) {
-        checkSuffix(suffix);
-        return getFileNameExcludeSuffix(originName) + suffix;
-    }
-
-    public static String forceChangeExtension(String originName, String replaceExtension) {
-        return forceChangeSuffix(originName, "." + replaceExtension);
+    public static String getExtension(String originalName) {
+        return getSuffix(originalName).substring(1);
     }
 
     public static String getSimpleFileName(String suffix) {
         checkSuffix(suffix);
         return UUID.randomUUID().toString().replace("-", "") + suffix;
+    }
+
+    public static String getFileNameBySuffix(String filename, String suffix) {
+        checkSuffix(suffix);
+        return StringUtils.hasText(filename) ? filename + suffix : getSimpleFileName(suffix);
+    }
+
+    public static String getFileNameByExtension(String filename, String extension) {
+        checkExtension(extension);
+        return getFileNameBySuffix(filename, "." + extension);
     }
 
     public static String getUniqueFileName(Long userId, String suffix) {

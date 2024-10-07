@@ -123,7 +123,8 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public String getSystemUrl(HttpServletRequest request, Long code) {
+    public String getSystemUrl(Long code) {
+        HttpServletRequest request = HttpServletUtil.getRequest();
         String baseUrl = HttpServletUtil.getBaseUrl(request, "/api/v1/resource/download", "/{code}");
         return HttpRequestUtil.buildUrl(baseUrl, null, code);
     }
@@ -171,41 +172,40 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     @Transactional
-    public OnlineResourceVO synchronousFeishuUpload(Long managerId, String originalName, byte[] bytes, ResourceAccessLevel level, ObjectType objectType, Boolean synchronous) {
-        String fileName = ResourceUtil.forceChangeExtension(originalName, objectType.getFileExtension());
+    public OnlineResourceVO synchronousFeishuUpload(Long managerId, byte[] bytes, ResourceAccessLevel level, ObjectType objectType, String fileName, Boolean synchronous) {
+        // 获取一个文件名
+        String originName = ResourceUtil.getFileNameByExtension(fileName, objectType.getFileExtension());
         OnlineResourceVO onlineResourceVO = new OnlineResourceVO();
-        // 上传对象存储系统
-        Long code = upload(managerId, fileName, bytes, level);
-        HttpServletUtil.getRequest().ifPresent(request -> {
-            onlineResourceVO.setDownloadUrl(getSystemUrl(request, code));
-            // 是否同步飞书文档
-            if(Boolean.TRUE.equals(synchronous)) {
-                try {
-                    String ticket = feishuService.importTaskBriefly(fileName, bytes, objectType).getTicket();
-                    FeishuResource resource = feishuResourceService.createAndGetFeishuResource(ticket, fileName);
-                    ImportTask importTask = feishuService.getImportTaskPolling(ticket);
-                    feishuResourceService.updateFeishuResource(resource.getId(), importTask);
-                    onlineResourceVO.setFeishuUrl(feishuResourceService.getSystemUrl(request, ticket));
-                } catch (GlobalServiceException e) {
-                    log.warn("{} {}", e.getStatusCode(), e.getMessage());
-                }
+        // 是否同步飞书文档
+        if(Boolean.TRUE.equals(synchronous)) {
+            try {
+                String ticket = feishuService.importTaskBriefly(originName, bytes, objectType).getTicket();
+                FeishuResource resource = feishuResourceService.createAndGetFeishuResource(ticket, originName);
+                ImportTask importTask = feishuService.getImportTaskPolling(ticket);
+                feishuResourceService.updateFeishuResource(resource.getId(), importTask);
+                onlineResourceVO.setFeishuUrl(feishuResourceService.getSystemUrl(ticket));
+            } catch (GlobalServiceException e) {
+                log.warn("{} {}", e.getStatusCode(), e.getMessage());
             }
-        });
+        }
+        // 上传对象存储系统
+        Long code = upload(managerId, originName, bytes, level);
+        onlineResourceVO.setDownloadUrl(getSystemUrl(code));
         return onlineResourceVO;
     }
 
     @Override
     @Transactional
-    public OnlineResourceVO synchronousFeishuUpload(Long managerId, MultipartFile file, ResourceAccessLevel level, ObjectType objectType, Boolean synchronous) {
-        return synchronousFeishuUpload(managerId, ResourceUtil.getOriginalName(file), MediaUtil.getBytes(file), level, objectType, synchronous);
+    public OnlineResourceVO synchronousFeishuUpload(Long managerId, MultipartFile file, ResourceAccessLevel level, ObjectType objectType, String fileName, Boolean synchronous) {
+        return synchronousFeishuUpload(managerId, MediaUtil.getBytes(file), level, objectType, fileName, synchronous);
     }
 
     @Override
     @Transactional
-    public <E> OnlineResourceVO uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<E> clazz, List<E> data, ResourceAccessLevel level, Boolean synchronous) {
+    public <E> OnlineResourceVO uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<E> clazz, List<E> data, ResourceAccessLevel level, String fileName, Boolean synchronous) {
         // 获取数据
         byte[] bytes = ExcelUtil.exportXlsxFile(excelTemplateEnum.getTitle(), excelTemplateEnum.getSheetName(), clazz, data);
-        return synchronousFeishuUpload(managerId, excelTemplateEnum.getOriginalName(), bytes, level, ObjectType.XLSX, synchronous);
+        return synchronousFeishuUpload(managerId, bytes, level, ObjectType.XLSX, fileName, synchronous);
     }
 
     @Override

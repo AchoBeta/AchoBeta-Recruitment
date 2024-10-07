@@ -1,8 +1,8 @@
 package com.achobeta.domain.feedback.model.dto;
 
-import com.achobeta.common.base.BasePageQueryEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
@@ -12,7 +12,13 @@ import java.io.Serializable;
  * @date 2024/9/5
  */
 @Getter
-public class QueryUserOfFeedbackDTO extends BasePageQueryEntity implements Serializable {
+@Setter
+public class QueryUserOfFeedbackDTO implements Serializable {
+
+    private Integer current;
+
+    private Integer pageSize;
+
     /**
      * 招新批次
      */

@@ -108,7 +108,7 @@ public class MediaUtil {
     }
 
     public static <T> T createTempFileGetSomething(String originalName, byte[] data, Function<File, T> converter) {
-        String fileNameSuffix = ResourceUtil.getFileNameSuffix(originalName);
+        String fileNameSuffix = ResourceUtil.getSuffix(originalName);
         String tempFilePath = getTempFilePath(fileNameSuffix);
         File tempFile = new File(tempFilePath);
         try (FileOutputStream outputStream = createAndGetFileOutputStream(tempFile)) {

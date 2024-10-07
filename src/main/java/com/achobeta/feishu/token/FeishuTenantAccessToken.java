@@ -2,7 +2,7 @@ package com.achobeta.feishu.token;
 
 import com.achobeta.common.enums.HttpRequestEnum;
 import com.achobeta.feishu.config.FeishuAppConfig;
-import com.achobeta.feishu.util.FeishuRequestUtil;
+import com.achobeta.feishu.request.FeishuRequestEngine;
 import com.achobeta.util.TimeUtil;
 import com.lark.oapi.Client;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +26,11 @@ public class FeishuTenantAccessToken {
 
     private final FeishuAppConfig feishuAppConfig;
 
-    private String tenantAccessToken;
+    private final FeishuRequestEngine feishuRequestEngine;
 
-    private Integer expire;
+    private volatile String tenantAccessToken;
+
+    private volatile Integer expire;
 
 
     private long compareToNow(int tokenExpire) {
@@ -42,7 +44,7 @@ public class FeishuTenantAccessToken {
                 .isPresent();
     }
 
-    private void refreshToken() {
+    public void refreshToken() {
 //        try {
 //            InternalTenantAccessTokenReq tenantAccessTokenReq = InternalTenantAccessTokenReq.newBuilder()
 //                    .internalTenantAccessTokenReqBody(feishuAppConfig.getToken())
@@ -53,13 +55,13 @@ public class FeishuTenantAccessToken {
 //                    .getRawResponse()
 //                    .getBody();
 //            FeishuTenantTokenResponse responseBody = GsonUtil.fromBytes(bytes, FeishuTenantTokenResponse.class);
-//            FeishuRequestUtil.checkResponse(responseBody);
+//            feishuRequestEngine.checkResponse(responseBody);
 //            this.tenantAccessToken = responseBody.getTenantAccessToken();
 //            this.expire = responseBody.getExpire();
 //        } catch (Exception e) {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
-        FeishuTenantTokenResponse responseBody = FeishuRequestUtil.request(
+        FeishuTenantTokenResponse responseBody = feishuRequestEngine.request(
                 HttpRequestEnum.TENANT_ACCESS_TOKEN,
                 feishuAppConfig.getCredentials(),
                 FeishuTenantTokenResponse.class,
