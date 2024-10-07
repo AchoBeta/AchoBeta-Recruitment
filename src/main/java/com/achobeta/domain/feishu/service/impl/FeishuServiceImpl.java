@@ -6,8 +6,8 @@ import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.feishu.config.FeishuAppConfig;
 import com.achobeta.feishu.config.ResourceProperties;
 import com.achobeta.feishu.constants.ObjectType;
+import com.achobeta.feishu.request.FeishuRequestEngine;
 import com.achobeta.feishu.token.FeishuTenantAccessToken;
-import com.achobeta.feishu.util.FeishuRequestUtil;
 import com.achobeta.util.GsonUtil;
 import com.achobeta.util.MediaUtil;
 import com.achobeta.util.TimeUtil;
@@ -59,6 +59,8 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
     private final FeishuTenantAccessToken feishuTenantAccessToken;
 
+    private final FeishuRequestEngine feishuRequestEngine;
+
     private String defaultOwnerId;
 
     private Boolean backup;
@@ -79,13 +81,13 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //            BatchGetIdUserResp batchGetIdUserResp = feishuClient.contact()
 //                    .user()
 //                    .batchGetId(batchGetIdUserReq);
-//            FeishuRequestUtil.checkResponse(batchGetIdUserResp);
+//            feishuRequestEngine.checkResponse(batchGetIdUserResp);
 //            return batchGetIdUserResp.getData();
 //        } catch (Exception e) {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
         String token = feishuTenantAccessToken.getToken();
-        return FeishuRequestUtil.request(
+        return feishuRequestEngine.request(
                 GET_USER_ID,
                 batchGetIdUserReqBody,
                 BatchGetIdUserResp.class,
@@ -126,13 +128,13 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //            ApplyReserveResp applyReserveResp = feishuClient.vc()
 //                    .reserve()
 //                    .apply(applyReserveReq);
-//            FeishuRequestUtil.checkResponse(applyReserveResp);
+//            feishuRequestEngine.checkResponse(applyReserveResp);
 //            return applyReserveResp.getData();
 //        } catch (Exception e) {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
         String token = feishuTenantAccessToken.getToken();
-        return FeishuRequestUtil.request(
+        return feishuRequestEngine.request(
                 RESERVE_APPLY,
                 applyReserveReqBody,
                 ApplyReserveResp.class,
@@ -156,7 +158,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
         UploadAllMediaReq uploadAllMediaReq = UploadAllMediaReq.newBuilder().uploadAllMediaReqBody(uploadAllMediaReqBody).build();
         try {
             UploadAllMediaResp uploadAllMediaResp = feishuClient.drive().media().uploadAll(uploadAllMediaReq);
-            FeishuRequestUtil.checkResponse(uploadAllMediaResp);
+            feishuRequestEngine.checkResponse(uploadAllMediaResp);
             return uploadAllMediaResp.getData();
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage());
@@ -183,7 +185,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
         UploadAllFileReq uploadAllFileRespBody = UploadAllFileReq.newBuilder().uploadAllFileReqBody(uploadAllFileReqBody).build();
         try {
             UploadAllFileResp uploadAllFileResp = feishuClient.drive().file().uploadAll(uploadAllFileRespBody);
-            FeishuRequestUtil.checkResponse(uploadAllFileResp);
+            feishuRequestEngine.checkResponse(uploadAllFileResp);
             return uploadAllFileResp.getData();
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage());
@@ -221,13 +223,13 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //                .build();
 //        try {
 //            CreateImportTaskResp createImportTaskResp = feishuClient.drive().importTask().create(createImportTaskReq);
-//            FeishuRequestUtil.checkResponse(createImportTaskResp);
+//            feishuRequestEngine.checkResponse(createImportTaskResp);
 //            return createImportTaskResp.getData();
 //        } catch (Exception e) {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
         String token = feishuTenantAccessToken.getToken();
-        return FeishuRequestUtil.request(
+        return feishuRequestEngine.request(
                 IMPORT_TASK,
                 importTask,
                 CreateImportTaskResp.class,
@@ -257,13 +259,13 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //        GetImportTaskReq getImportTaskReq = GetImportTaskReq.newBuilder().ticket(ticket).build();
 //        try {
 //            GetImportTaskResp getImportTaskResp = feishuClient.drive().importTask().get(getImportTaskReq);
-//            FeishuRequestUtil.checkResponse(getImportTaskResp);
+//            feishuRequestEngine.checkResponse(getImportTaskResp);
 //            return getImportTaskResp.getData();
 //        } catch (Exception e) {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
         String token = feishuTenantAccessToken.getToken();
-        GetImportTaskRespBody importTaskRespBody = FeishuRequestUtil.request(
+        return feishuRequestEngine.request(
                 GET_IMPORT_TASK,
                 null,
                 GetImportTaskResp.class,
@@ -271,8 +273,6 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
                 null,
                 Map.of(MEDIA_TICKET_QUERY_KEY, ticket)
         ).getData();
-
-        return importTaskRespBody;
     }
 
     @Override

@@ -43,15 +43,15 @@ public class QuestionPaperServiceImpl extends ServiceImpl<QuestionPaperMapper, Q
     public PaperQueryVO queryPapers(PaperQueryDTO paperQueryDTO) {
         // 解析分页参数获取 page
         IPage<QuestionPaper> page = null;
-        Long libId = null;
+        List<Long> libIds = new ArrayList<>();
         if(Objects.isNull(paperQueryDTO)) {
             page = new BasePageQuery().toMpPage();
         } else {
             page = QuestionPaperConverter.INSTANCE.paperQueryDTOToBasePageQuery(paperQueryDTO).toMpPage();
-            libId = paperQueryDTO.getLibId();
+            libIds = paperQueryDTO.getLibIds();
         }
         // 分页
-        IPage<QuestionPaper> questionIPage = questionPaperMapper.queryPapers(page, libId);
+        IPage<QuestionPaper> questionIPage = questionPaperMapper.queryPapers(page, libIds);
         // 封装
         BasePageResult<QuestionPaper> pageResult = BasePageResult.of(questionIPage);
         // 转化

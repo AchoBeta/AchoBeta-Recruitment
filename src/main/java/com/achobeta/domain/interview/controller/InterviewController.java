@@ -4,7 +4,6 @@ import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.common.enums.UserTypeEnum;
-import com.achobeta.domain.interview.constants.InterviewConstants;
 import com.achobeta.domain.interview.enums.InterviewEvent;
 import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.interview.machine.context.InterviewContext;
@@ -14,13 +13,13 @@ import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.*;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
+import com.achobeta.domain.resource.constants.ResourceConstants;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
 import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.exception.GlobalServiceException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -149,13 +148,12 @@ public class InterviewController {
     }
 
     @PostMapping("/print/all")
-    public SystemJsonResponse printAllInterviewList(HttpServletRequest request,
-                                                    @RequestParam(name = "level", required = false) Integer level,
+    public SystemJsonResponse printAllInterviewList(@RequestParam(name = "level", required = false) Integer level,
                                                     @RequestParam(name = "synchronous", required = false) Boolean synchronous,
                                                     @Valid @RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 获取当前管理员 id
         Long managerId = BaseContext.getCurrentUser().getUserId();
-        ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(InterviewConstants.DEFAULT_EXCEL_ACCESS_LEVEL);
+        ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(ResourceConstants.DEFAULT_EXCEL_ACCESS_LEVEL);
         // 打印成表格
         OnlineResourceVO onlineResourceVO = interviewService.printAllInterviewList(managerId, InterviewConditionDTO.of(interviewConditionDTO), accessLevel, synchronous);
         // 构造 url 并返回

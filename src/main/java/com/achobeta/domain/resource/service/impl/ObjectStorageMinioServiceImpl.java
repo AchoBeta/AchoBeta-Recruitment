@@ -45,7 +45,7 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService, Init
     public String upload(Long userId, String originalName, byte[] bytes) {
         try {
             // 上传资源
-            String suffix = ResourceUtil.getFileNameSuffix(originalName);
+            String suffix = ResourceUtil.getSuffix(originalName);
             String uniqueFileName = ResourceUtil.getUniqueFileName(userId, suffix);
             minioEngine.upload(uniqueFileName, bytes);
             return uniqueFileName;

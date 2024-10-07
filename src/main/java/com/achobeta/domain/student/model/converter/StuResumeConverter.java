@@ -1,7 +1,6 @@
 package com.achobeta.domain.student.model.converter;
 
 
-import com.achobeta.domain.message.model.dto.StuOfMessageVO;
 import com.achobeta.domain.student.model.dto.StuAttachmentDTO;
 import com.achobeta.domain.student.model.dto.StuSimpleResumeDTO;
 import com.achobeta.domain.student.model.entity.StuAttachment;
@@ -29,5 +28,4 @@ public interface StuResumeConverter {
 
     StuAttachment stuAttachmentDTOToPo(StuAttachmentDTO stuAttachmentDTO);
 
-    List<StuOfMessageVO> stuResumeListToStuMessageVOList(List<StuResume> stuResumeList);
 }

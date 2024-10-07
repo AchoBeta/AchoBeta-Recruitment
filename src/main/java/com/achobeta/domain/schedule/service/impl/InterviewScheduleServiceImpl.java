@@ -5,6 +5,7 @@ import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.recruit.model.converter.TimePeriodConverter;
 import com.achobeta.domain.recruit.model.dao.mapper.ActivityParticipationMapper;
+import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
 import com.achobeta.domain.recruit.model.vo.QuestionAnswerVO;
 import com.achobeta.domain.recruit.model.vo.TimePeriodCountVO;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
@@ -171,10 +172,10 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
     }
 
     @Override
-    public OnlineResourceVO printSituations(Long managerId, Long actId, ResourceAccessLevel level, Boolean synchronous) {
+    public OnlineResourceVO printSituations(Long managerId, RecruitmentActivity activity, ResourceAccessLevel level, Boolean synchronous) {
         // 构造数据
         Map<Long, ActivitySituationExcelTemplate> resultMap = new LinkedHashMap<>();
-        getSituationsByActId(actId).getUserParticipationVOS().forEach(situation -> {
+        getSituationsByActId(activity.getId()).getUserParticipationVOS().forEach(situation -> {
             ActivitySituationExcelTemplate activitySituationExcelTemplate = new ActivitySituationExcelTemplate();
             activitySituationExcelTemplate.setTimePeriodVOS(situation.getTimePeriodVOS());
             activitySituationExcelTemplate.setScheduleVOS(situation.getScheduleVOS());
@@ -196,7 +197,9 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
                 ActivitySituationExcelTemplate.class,
                 new ArrayList<>(resultMap.values()),
                 level,
-                synchronous);
+                activity.getTitle(),
+                synchronous
+        );
     }
 
     @Override

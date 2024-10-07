@@ -11,7 +11,10 @@ import com.achobeta.domain.resource.enums.ResourceAccessLevel;
  */
 public interface ResourceConstants {
 
+    // todo: 设置默认的权限等级
     ResourceAccessLevel DEFAULT_RESOURCE_ACCESS_LEVEL = ResourceAccessLevel.USER_ACCESS;
+
+    ResourceAccessLevel DEFAULT_EXCEL_ACCESS_LEVEL = ResourceAccessLevel.FREE_ACCESS;
 
     String REDIS_USER_UPLOAD_LIMIT = "userUploadLimit:";
 

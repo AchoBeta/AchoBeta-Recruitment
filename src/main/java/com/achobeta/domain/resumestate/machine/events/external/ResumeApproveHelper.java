@@ -60,13 +60,6 @@ public class ResumeApproveHelper implements ResumeStateExternalTransitionHelper 
         return defaultResumeCondition;
     }
 
-    /**
-     * 默认尝试转正：
-     * <br />
-     * 若请求没有携带“创建正式成员相关信息”，转正必然不会成功，通过这一事件也不受影响
-     * <br />
-     * 若是携带了，转正执行期间可能会抛异常，从而导致通过这一事件失败
-     */
     @Override
     public Action<ResumeStatus, ResumeEvent, ResumeContext> getPerformAction() {
         return (from, to, event, context) -> {

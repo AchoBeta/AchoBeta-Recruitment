@@ -87,12 +87,14 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     public OnlineResourceVO printAllInterviewList(Long managerId, InterviewConditionDTO condition, ResourceAccessLevel level, Boolean synchronous) {
         List<InterviewVO> interviewVOList = managerGetInterviewList(null, condition);
         // 上传表格到对象存储服务器
+        ExcelTemplateEnum achobetaInterviewAll = ExcelTemplateEnum.ACHOBETA_INTERVIEW_ALL;
         return resourceService.uploadExcel(
                 managerId,
-                ExcelTemplateEnum.ACHOBETA_INTERVIEW_ALL,
+                achobetaInterviewAll,
                 InterviewExcelTemplate.class,
                 InterviewConverter.INSTANCE.interviewVOListToInterviewExcelTemplateList(interviewVOList),
                 level,
+                achobetaInterviewAll.getTitle(),
                 synchronous);
     }
 

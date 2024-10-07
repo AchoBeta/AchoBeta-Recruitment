@@ -28,8 +28,8 @@ public enum ResumeStatus {
 
     SCHEDULE_FINAL_INTERVIEW("待安排终试", 11),
     PENDING_FINAL_INTERVIEW("待终试", 12),
-    FINAL_INTERVIEW_PASSED("终试通过", 13), // 仅当复试为最后一个流程时显示
-    FINAL_INTERVIEW_FAILED("终试不通过", 14), // 仅当复试为最后一个流程时显示
+    FINAL_INTERVIEW_PASSED("终试通过", 13), // 仅当终试为最后一个流程时显示
+    FINAL_INTERVIEW_FAILED("终试不通过", 14), // 仅当终试为最后一个流程时显示
 
     PENDING_HANDLING("待处理", 15),
     SUSPENDED("挂起", 16),

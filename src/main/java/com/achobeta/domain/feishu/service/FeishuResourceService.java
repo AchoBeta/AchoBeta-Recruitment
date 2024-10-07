@@ -5,7 +5,6 @@ import com.achobeta.domain.feishu.model.entity.FeishuResource;
 import com.achobeta.domain.feishu.model.vo.FeishuResourceQueryVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lark.oapi.service.drive.v1.model.ImportTask;
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
 * @author 马拉圈
@@ -22,6 +21,6 @@ public interface FeishuResourceService extends IService<FeishuResource> {
 
     FeishuResourceQueryVO queryResource(FeishuResourceQueryDTO feishuResourceQueryDTO);
 
-    String getSystemUrl(HttpServletRequest request, String ticket);
+    String getSystemUrl(String ticket);
 
 }

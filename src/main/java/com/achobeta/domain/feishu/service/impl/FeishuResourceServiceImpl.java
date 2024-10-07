@@ -119,7 +119,8 @@ public class FeishuResourceServiceImpl extends ServiceImpl<FeishuResourceMapper,
     }
 
     @Override
-    public String getSystemUrl(HttpServletRequest request, String ticket) {
+    public String getSystemUrl(String ticket) {
+        HttpServletRequest request = HttpServletUtil.getRequest();
         String baseUrl = HttpServletUtil.getBaseUrl(request, "/api/v1/feishu/resource", "/{ticket}");
         return HttpRequestUtil.buildUrl(baseUrl, null, ticket);
     }

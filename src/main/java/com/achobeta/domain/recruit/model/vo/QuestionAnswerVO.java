@@ -17,9 +17,10 @@ public class QuestionAnswerVO {
     @ExcelIgnore
     private Long id;
 
-    @Excel(name = "标题", width = 50, needMerge = true)
+    @Excel(name = "问题", width = 50, needMerge = true)
     private String title;
 
+    // height 最好不要设置，容易出 bug
     @Excel(name = "回答", width = 50, needMerge = true)
     private String answer;
 }

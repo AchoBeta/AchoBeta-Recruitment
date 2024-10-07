@@ -28,12 +28,12 @@ public class HttpServletUtil {
         return Optional.ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
     }
 
-    public static Optional<HttpServletRequest> getRequest() {
-        return getAttributes().map(ServletRequestAttributes::getRequest);
+    public static HttpServletRequest getRequest() {
+        return getAttributes().map(ServletRequestAttributes::getRequest).orElseThrow(GlobalServiceException::new);
     }
 
-    public static Optional<HttpServletResponse> getResponse() {
-        return getAttributes().map(ServletRequestAttributes::getResponse);
+    public static HttpServletResponse getResponse() {
+        return getAttributes().map(ServletRequestAttributes::getResponse).orElseThrow(GlobalServiceException::new);
     }
 
     public static void returnBytes(byte[] bytes, HttpServletResponse response) {

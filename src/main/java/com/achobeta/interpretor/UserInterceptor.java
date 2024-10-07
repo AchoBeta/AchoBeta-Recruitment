@@ -35,7 +35,7 @@ import java.util.Optional;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class UserInterpretor implements HandlerInterceptor {
+public class UserInterceptor implements HandlerInterceptor {
 
     private final RequestIdConfig requestIdConfig;
 
@@ -55,16 +55,18 @@ public class UserInterpretor implements HandlerInterceptor {
         //通过明文钥匙生成密钥
         SecretKey secretKey = JwtUtil.generalKey(jwtProperties.getSecretKey());
         Claims claims = JwtUtil.parseJWT(secretKey, token);
-        Long userId = Long.valueOf(claims.get(UserInterpretor.USER_ID).toString());
-        Integer role = Integer.parseInt(claims.get(UserInterpretor.USER_ROLE_NAME).toString());
-        return UserHelper.builder().userId(userId).token(token).role(role).build();
+        UserHelper userHelper = UserHelper.builder()
+                .userId(Long.parseLong(claims.get(UserInterceptor.USER_ID).toString()))
+                .token(token)
+                .role(Integer.parseInt(claims.get(UserInterceptor.USER_ROLE_NAME).toString()))
+                .build();
+        BaseContext.setCurrentUser(userHelper);
+        return userHelper;
     }
 
     public UserHelper getUserHelper() {
         return Optional.ofNullable(BaseContext.getCurrentUser())
-                .or(() -> HttpServletUtil.getRequest().map(this::getUserHelper))
-                .orElseThrow(GlobalServiceException::new)
-        ;
+                .orElseGet(() -> getUserHelper(HttpServletUtil.getRequest()));
     }
 
     @Override
@@ -97,7 +99,7 @@ public class UserInterpretor implements HandlerInterceptor {
         Claims claims = JwtUtil.parseJWT(secretKey, token);
 
         // permit 中没有 role 就会抛异常
-        UserTypeEnum role = UserTypeEnum.get(Integer.parseInt(claims.get(UserInterpretor.USER_ROLE_NAME).toString()));
+        UserTypeEnum role = UserTypeEnum.get(Integer.parseInt(claims.get(UserInterceptor.USER_ROLE_NAME).toString()));
         if(!InterceptHelper.isValid(intercept, role)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
         }
@@ -120,8 +122,8 @@ public class UserInterpretor implements HandlerInterceptor {
     }
 
     private void setGlobalUserInfoByClaims(Claims claims, String token) {
-        Long userId = Long.valueOf(claims.get(UserInterpretor.USER_ID).toString());
-        Integer role = Integer.parseInt(claims.get(UserInterpretor.USER_ROLE_NAME).toString());
+        Long userId = Long.valueOf(claims.get(UserInterceptor.USER_ID).toString());
+        Integer role = Integer.parseInt(claims.get(UserInterceptor.USER_ROLE_NAME).toString());
         UserHelper userHelper = UserHelper.builder()
                 .userId(userId)
                 .token(token)
@@ -130,4 +132,27 @@ public class UserInterpretor implements HandlerInterceptor {
         log.info("登录信息->{}",userHelper);
         BaseContext.setCurrentUser(userHelper);
     }
+
+    // 此方法在全局响应异常处理器处理异常之后再执行，已经是大局已定了，对响应的写不会生效，抛出的异常也不会影响正常响应
+    // 因为请求还没结束，这个方法的处理时间也在请求时间内，会影响响应速度
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        try {
+            if(handler instanceof HandlerMethod handlerMethod) {
+                // 获取目标方法
+                Method targetMethod = handlerMethod.getMethod();
+                if(InterceptHelper.shouldPrintLog(targetMethod)) {
+                    String requestId = response.getHeader(requestIdConfig.getHeader());
+                    log.warn("请求 {} 访问 {}，响应 HTTP 状态码 {}，错误信息 {}",
+                            requestId, request.getRequestURI(), response.getStatus(),
+                            Optional.ofNullable(ex).map(Exception::getMessage).orElse(null)
+                    );
+                }
+            }
+        } finally {
+            log.info("删除本地线程变量");
+            BaseContext.removeCurrentUser();
+        }
+    }
+
 }

@@ -2,6 +2,8 @@ package com.achobeta.domain.paper.model.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -16,6 +18,6 @@ public class PaperQueryDTO {
 
     private Integer pageSize;
 
-    private Long libId;
+    private List<Long> libIds;
 
 }

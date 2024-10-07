@@ -5,7 +5,6 @@ import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.entity.DigitalResource;
 import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
 import com.achobeta.feishu.constants.ObjectType;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,7 +33,7 @@ public interface ResourceService {
 
     void checkAndRemoveImage(Long code, Long old);
 
-    String getSystemUrl(HttpServletRequest request, Long code);
+    String getSystemUrl(Long code);
 
     String gerObjectUrl(Long code, Boolean hidden);
 
@@ -49,11 +48,11 @@ public interface ResourceService {
      * 错误的参数，可能会导致乱码、或者表格等文件 encrypt_file 的情况！
      * 所以务必在此方法之前检测好文件二进制类型与 objectType 适配！
      */
-    OnlineResourceVO synchronousFeishuUpload(Long managerId, String originalName, byte[] bytes, ResourceAccessLevel level, ObjectType objectType, Boolean synchronous);
+    OnlineResourceVO synchronousFeishuUpload(Long managerId, byte[] bytes, ResourceAccessLevel level, ObjectType objectType, String fileName, Boolean synchronous);
 
-    OnlineResourceVO synchronousFeishuUpload(Long managerId, MultipartFile file, ResourceAccessLevel level, ObjectType objectType, Boolean synchronous);
+    OnlineResourceVO synchronousFeishuUpload(Long managerId, MultipartFile file, ResourceAccessLevel level, ObjectType objectType, String fileName, Boolean synchronous);
 
-    <E> OnlineResourceVO uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<E> clazz, List<E> data, ResourceAccessLevel level, Boolean synchronous);
+    <E> OnlineResourceVO uploadExcel(Long managerId, ExcelTemplateEnum excelTemplateEnum, Class<E> clazz, List<E> data, ResourceAccessLevel level, String fileName, Boolean synchronous);
 
     List<Long> uploadList(Long userId, List<MultipartFile> fileList);
 
