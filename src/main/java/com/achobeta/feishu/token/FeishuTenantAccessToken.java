@@ -42,7 +42,7 @@ public class FeishuTenantAccessToken {
     public void refreshToken() {
 //        try {
 //            InternalTenantAccessTokenReq tenantAccessTokenReq = InternalTenantAccessTokenReq.newBuilder()
-//                    .internalTenantAccessTokenReqBody(feishuAppConfig.getToken())
+//                    .internalTenantAccessTokenReqBody(feishuAppConfig.getCredentials())
 //                    .build();
 //            byte[] bytes = feishuClient.auth()
 //                    .tenantAccessToken()
@@ -52,11 +52,11 @@ public class FeishuTenantAccessToken {
 //            FeishuTenantTokenResponse responseBody = GsonUtil.fromBytes(bytes, FeishuTenantTokenResponse.class);
 //            feishuRequestEngine.checkResponse(responseBody);
 //            this.tenantAccessToken = responseBody.getTenantAccessToken();
-//            this.expire = responseBody.getExpire();
+//            this.expire = TimeUtil.secondToMillis(responseBody.getExpire()) + System.currentTimeMillis();
 //        } catch (Exception e) {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
-        FeishuTenantTokenResponse responseBody = feishuRequestEngine.request(
+        FeishuTenantTokenResponse responseBody = feishuRequestEngine.jsonRequest(
                 HttpRequestEnum.TENANT_ACCESS_TOKEN,
                 feishuAppConfig.getCredentials(),
                 FeishuTenantTokenResponse.class,

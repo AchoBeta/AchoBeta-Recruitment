@@ -31,17 +31,17 @@ public class FeishuRequestEngine {
         }
     }
 
-    public <T, E, R extends BaseResponse<E>> R request(HttpRequestEnum httpRequestEnum, T requestBody, Class<R> rClazz, Map<String, String> headers) {
+    public <T, E, R extends BaseResponse<E>> R jsonRequest(HttpRequestEnum httpRequestEnum, T requestBody, Class<R> rClazz, Map<String, String> headers) {
         return HttpRequestUtil.jsonRequest(httpRequestEnum, requestBody, rClazz, headers);
     }
 
-    public <T, E, R extends BaseResponse<E>> R request(HttpRequestEnum httpRequestEnum, T requestBody, Class<R> rClazz,
-                                                              Map<String, String> headers, Map<String, List<String>> queryParams, Map<String, ?> pathParams) {
+    public <T, E, R extends BaseResponse<E>> R jsonRequest(HttpRequestEnum httpRequestEnum, T requestBody, Class<R> rClazz,
+                                                           Map<String, String> headers, Map<String, List<String>> queryParams, Map<String, ?> pathParams) {
         return HttpRequestUtil.jsonRequest(httpRequestEnum, requestBody, rClazz, headers, queryParams, pathParams);
     }
 
-    public <T, E, R extends BaseResponse<E>> R request(HttpRequestEnum httpRequestEnum, T requestBody, Class<R> rClazz,
-                                                              Map<String, String> headers, Map<String, List<String>> queryParams, Object... uriVariableValues) {
+    public <T, E, R extends BaseResponse<E>> R jsonRequest(HttpRequestEnum httpRequestEnum, T requestBody, Class<R> rClazz,
+                                                           Map<String, String> headers, Map<String, List<String>> queryParams, Object... uriVariableValues) {
         return HttpRequestUtil.jsonRequest(httpRequestEnum, requestBody, rClazz, headers, queryParams, uriVariableValues);
     }
 }

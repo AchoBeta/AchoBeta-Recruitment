@@ -87,7 +87,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
         String token = feishuTenantAccessToken.getToken();
-        return feishuRequestEngine.request(
+        return feishuRequestEngine.jsonRequest(
                 GET_USER_ID,
                 batchGetIdUserReqBody,
                 BatchGetIdUserResp.class,
@@ -134,7 +134,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
         String token = feishuTenantAccessToken.getToken();
-        return feishuRequestEngine.request(
+        return feishuRequestEngine.jsonRequest(
                 RESERVE_APPLY,
                 applyReserveReqBody,
                 ApplyReserveResp.class,
@@ -229,7 +229,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
         String token = feishuTenantAccessToken.getToken();
-        return feishuRequestEngine.request(
+        return feishuRequestEngine.jsonRequest(
                 IMPORT_TASK,
                 importTask,
                 CreateImportTaskResp.class,
@@ -265,7 +265,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
         String token = feishuTenantAccessToken.getToken();
-        return feishuRequestEngine.request(
+        return feishuRequestEngine.jsonRequest(
                 GET_IMPORT_TASK,
                 null,
                 GetImportTaskResp.class,
