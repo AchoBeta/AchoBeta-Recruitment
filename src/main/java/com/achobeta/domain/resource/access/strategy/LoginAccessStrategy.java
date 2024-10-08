@@ -1,7 +1,7 @@
 package com.achobeta.domain.resource.access.strategy;
 
 import com.achobeta.domain.resource.model.entity.DigitalResource;
-import com.achobeta.interpretor.UserInterceptor;
+import com.achobeta.interceptor.UserInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
