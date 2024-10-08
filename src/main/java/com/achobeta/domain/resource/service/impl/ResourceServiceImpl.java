@@ -176,6 +176,9 @@ public class ResourceServiceImpl implements ResourceService {
         // 获取一个文件名
         String originName = ResourceUtil.getFileNameByExtension(fileName, objectType.getFileExtension());
         OnlineResourceVO onlineResourceVO = new OnlineResourceVO();
+        // 上传对象存储系统
+        Long code = upload(managerId, originName, bytes, level);
+        onlineResourceVO.setDownloadUrl(getSystemUrl(code));
         // 是否同步飞书文档
         if(Boolean.TRUE.equals(synchronous)) {
             try {
@@ -188,9 +191,6 @@ public class ResourceServiceImpl implements ResourceService {
                 log.warn("{} {}", e.getStatusCode(), e.getMessage());
             }
         }
-        // 上传对象存储系统
-        Long code = upload(managerId, originName, bytes, level);
-        onlineResourceVO.setDownloadUrl(getSystemUrl(code));
         return onlineResourceVO;
     }
 

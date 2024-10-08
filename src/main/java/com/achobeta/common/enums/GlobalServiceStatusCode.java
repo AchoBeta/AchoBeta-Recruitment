@@ -110,8 +110,7 @@ public enum GlobalServiceStatusCode {
     RESOURCE_GET_OBJECT_URL_FAILED(7011, "获取资源 url 失败"),
     RESOURCE_NOT_VALID(7012, "资源非法"),
     RESOURCE_IS_BLANK(7013, "资源为空"),
-    RESOURCE_OUT_SIZE(7014, "资源过大"),
-    RESOURCE_TYPE_NOT_MATCH(7015, "资源类型不匹配"),
+    RESOURCE_TYPE_NOT_MATCH(7014, "资源类型不匹配"),
 
     /*消息错误 8001-9000*/
     MESSAGE_TEMPLATE_NOT_EXIST(8001,"消息模板不存在"),
