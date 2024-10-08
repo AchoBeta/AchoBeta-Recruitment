@@ -48,7 +48,11 @@ public class TimePeriodServiceImpl extends ServiceImpl<TimePeriodMapper, TimePer
 
     @Override
     public List<TimePeriodVO> getTimePeriodsByActId(Long actId) {
-        List<TimePeriod> timePeriods = this.lambdaQuery().eq(TimePeriod::getActId, actId).list();
+        List<TimePeriod> timePeriods = this.lambdaQuery()
+                .eq(TimePeriod::getActId, actId)
+                .orderBy(Boolean.TRUE, Boolean.TRUE, TimePeriod::getStartTime)
+                .orderBy(Boolean.TRUE, Boolean.TRUE, TimePeriod::getEndTime)
+                .list();
         return TimePeriodConverter.INSTANCE.timePeriodListToTimePeriodVOList(timePeriods);
     }
 

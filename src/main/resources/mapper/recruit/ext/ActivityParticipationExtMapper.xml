@@ -45,6 +45,7 @@
             left join participation_period_link pp on ap.id = pp.participation_id and ap.is_deleted = 0 and pp.is_deleted = 0
             left join time_period t on pp.period_id = t.id and pp.is_deleted = 0 and t.is_deleted = 0
         where ap.id = #{participationId,jdbcType=BIGINT} and t.id is not null and ap.is_deleted = 0
+        order by t.start_time asc, t.end_time asc
     </select>
 
     <select id="getParticipationPeriods" resultMap="ParticipationPeriodMap">
@@ -58,6 +59,7 @@
         <foreach collection="participationIds" open="in (" close=")" item="participationId" separator=",">
             #{participationId,jdbcType=BIGINT}
         </foreach>
+        order by t.start_time asc, t.end_time asc
     </select>
 
     <select id="getParticipationQuestions" resultMap="ParticipationQuestionMap">

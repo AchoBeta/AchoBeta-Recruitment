@@ -129,6 +129,7 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
         List<UserParticipationVO> userParticipationVOS = userParticipationVOMap.values()
                 .stream()
                 .sorted(Comparator.comparingInt(up -> up.getTimePeriodVOS().size())) // 根据选择时间段排序
+                .sorted(Comparator.comparingLong(up -> CollectionUtils.isEmpty(up.getTimePeriodVOS()) ? 0L : up.getTimePeriodVOS().getFirst().getStartTime().getTime()))
                 .sorted(Comparator.comparingInt(up -> up.getScheduleVOS().size())) // 没被安排的会被排在前面
                 .toList();
         List<TimePeriodCountVO> timePeriodCountVOS = countMap.values()
@@ -140,7 +141,6 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
         userSituationVO.setTimePeriodCountVOS(timePeriodCountVOS);
         return userSituationVO;
     }
-
 
     @Override
     public ScheduleDetailVO getInterviewScheduleDetail(Long scheduleId) {

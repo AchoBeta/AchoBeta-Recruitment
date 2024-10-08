@@ -9,7 +9,6 @@ import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.resource.constants.ResourceConstants;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
-import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.schedule.model.dto.ScheduleDTO;
 import com.achobeta.domain.schedule.model.dto.ScheduleUpdateDTO;
 import com.achobeta.domain.schedule.model.vo.ParticipationDetailVO;
@@ -51,8 +50,6 @@ public class InterviewScheduleController {
     private final InterviewerService interviewerService;
 
     private final RecruitmentActivityService recruitmentActivityService;
-
-    private final ResourceService resourceService;
 
     @PostMapping("/create")
     public SystemJsonResponse createInterviewSchedule(@Valid @RequestBody ScheduleDTO scheduleDTO) {
