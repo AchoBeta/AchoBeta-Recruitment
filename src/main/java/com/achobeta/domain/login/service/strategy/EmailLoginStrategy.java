@@ -90,7 +90,7 @@ public class EmailLoginStrategy implements LoginStrategy {
     private boolean validateEmailCode(String email, String emailCode) {
         Optional<String> codeOptional = redisCache.getCacheMapValue(CAPTCHA_CODES_KEY + email, CAPTCHA_CODE_KEY);
         String code = codeOptional.orElseThrow(() -> {
-            String message = String.format("Redis 中不存在邮箱[%s]的相关记录", email);
+            String message = String.format("不存在邮箱[%s]的相关记录", email);
             return new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_NOT_EXIST_RECORD);
         });
         return code.equals(emailCode);
