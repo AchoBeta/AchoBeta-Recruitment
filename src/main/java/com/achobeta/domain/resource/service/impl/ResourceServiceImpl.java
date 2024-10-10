@@ -20,6 +20,8 @@ import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.feishu.constants.ObjectType;
 import com.achobeta.redis.cache.RedisCache;
+import com.achobeta.redis.lock.RedisLock;
+import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
 import com.achobeta.util.HttpRequestUtil;
 import com.achobeta.util.HttpServletUtil;
 import com.achobeta.util.MediaUtil;
@@ -29,6 +31,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,6 +56,12 @@ import static com.achobeta.domain.resource.constants.ResourceConstants.DEFAULT_R
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class ResourceServiceImpl implements ResourceService {
 
+    @Value("${spring.redisson.lock.timeout:10}")
+    private Long timeout;
+
+    @Value("${spring.redisson.lock.unit:SECONDS}")
+    private TimeUnit unit;
+
     private final UploadLimitProperties uploadLimitProperties;
 
     private final AccessStrategyFactory accessStrategyFactory;
@@ -66,6 +75,10 @@ public class ResourceServiceImpl implements ResourceService {
     private final FeishuResourceService feishuResourceService;
 
     private final RedisCache redisCache;
+
+    private final RedisLock redisLock;
+
+    private final SimpleLockStrategy simpleLockStrategy;
 
     @Override
     public DigitalResource checkAndGetResource(Long code, ResourceAccessLevel level) {
@@ -173,25 +186,29 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     @Transactional
     public OnlineResourceVO synchronousFeishuUpload(Long managerId, byte[] bytes, ResourceAccessLevel level, ObjectType objectType, String fileName, Boolean synchronous) {
-        // 获取一个文件名
-        String originName = ResourceUtil.getFileNameByExtension(fileName, objectType.getFileExtension());
-        OnlineResourceVO onlineResourceVO = new OnlineResourceVO();
-        // 上传对象存储系统
-        Long code = upload(managerId, originName, bytes, level);
-        onlineResourceVO.setDownloadUrl(getSystemUrl(code));
-        // 是否同步飞书文档
-        if(Boolean.TRUE.equals(synchronous)) {
-            try {
-                String ticket = feishuService.importTaskBriefly(originName, bytes, objectType).getTicket();
-                FeishuResource resource = feishuResourceService.createAndGetFeishuResource(ticket, originName);
-                ImportTask importTask = feishuService.getImportTaskPolling(ticket);
-                feishuResourceService.updateFeishuResource(resource.getId(), importTask);
-                onlineResourceVO.setFeishuUrl(feishuResourceService.getSystemUrl(ticket));
-            } catch (GlobalServiceException e) {
-                log.warn("{} {}", e.getStatusCode(), e.getMessage());
+        // 若同一管理员同时访问这个同步飞书的方法，未获得锁的上传任务都拒绝（防抖）（可能上传时间长，多点了几下...）
+        return redisLock.tryLockGetSomething(ResourceConstants.REDIS_MANAGER_SYNC_FEISHU_LOCK + managerId, 0L, timeout, unit, () -> {
+            // 获取一个文件名
+            String originName = ResourceUtil.getFileNameByExtension(fileName, objectType.getFileExtension());
+            OnlineResourceVO onlineResourceVO = new OnlineResourceVO();
+            // 上传对象存储系统
+            Long code = upload(managerId, originName, bytes, level);
+            onlineResourceVO.setDownloadUrl(getSystemUrl(code));
+            // 是否同步飞书文档
+            if(Boolean.TRUE.equals(synchronous)) {
+                try {
+                    String ticket = feishuService.importTaskBriefly(originName, bytes, objectType).getTicket();
+                    FeishuResource resource = feishuResourceService.createAndGetFeishuResource(ticket, originName);
+                    // 轮询获取导入任务的结果
+                    ImportTask importTask = feishuService.getImportTaskPolling(ticket);
+                    feishuResourceService.updateFeishuResource(resource.getId(), importTask);
+                    onlineResourceVO.setFeishuUrl(feishuResourceService.getSystemUrl(ticket));
+                } catch (GlobalServiceException e) {
+                    log.warn("{} {}", e.getStatusCode(), e.getMessage());
+                }
             }
-        }
-        return onlineResourceVO;
+            return onlineResourceVO;
+        }, () -> null, simpleLockStrategy);
     }
 
     @Override

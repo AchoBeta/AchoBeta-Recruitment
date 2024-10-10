@@ -20,4 +20,6 @@ public interface ResourceConstants {
 
     String REDIS_USER_UPLOAD_BLOCK = "userUploadBlock:";
 
+    String REDIS_MANAGER_SYNC_FEISHU_LOCK = "managerSyncFeishuLock:";
+
 }

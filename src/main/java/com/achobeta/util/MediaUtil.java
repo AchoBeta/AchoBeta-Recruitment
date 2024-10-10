@@ -109,8 +109,10 @@ public class MediaUtil {
 
     public static <T> T createTempFileGetSomething(String originalName, byte[] data, Function<File, T> converter) {
         String fileNameSuffix = ResourceUtil.getSuffix(originalName);
+        // 获取即将创建的临时文件的路径
         String tempFilePath = getTempFilePath(fileNameSuffix);
         File tempFile = new File(tempFilePath);
+        // 创建并写入，应用后删除
         try (FileOutputStream outputStream = createAndGetFileOutputStream(tempFile)) {
             outputStream.write(data);
             outputStream.flush();
