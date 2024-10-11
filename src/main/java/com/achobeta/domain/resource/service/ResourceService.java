@@ -43,6 +43,8 @@ public interface ResourceService {
 
     Long upload(Long userId, MultipartFile file);
 
+    Long uploadImage(Long userId, MultipartFile file, ResourceAccessLevel level);
+
     /**
      * ⚠️由于飞书的限制，此接口会强制转扩展名⚠️
      * 错误的参数，可能会导致乱码、或者表格等文件 encrypt_file 的情况！

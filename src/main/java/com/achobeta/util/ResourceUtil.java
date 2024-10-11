@@ -1,9 +1,9 @@
-package com.achobeta.domain.resource.util;
+package com.achobeta.util;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.resource.enums.ResourceType;
+import com.achobeta.domain.resource.util.ExcelUtil;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.util.TimeUtil;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -82,6 +82,16 @@ public class ResourceUtil {
 
     public static String getExtension(String originalName) {
         return getSuffix(originalName).substring(1);
+    }
+
+    public static String changeSuffix(String originalName, String suffix) {
+        checkSuffix(suffix);
+        return getFileNameExcludeSuffix(originalName) + suffix;
+    }
+
+    public static String changeExtension(String originalName, String extension) {
+        checkExtension(extension);
+        return changeSuffix(originalName, "." + extension);
     }
 
     public static String getSimpleFileName(String suffix) {

@@ -12,12 +12,12 @@ import com.achobeta.domain.resource.model.vo.ResourceAccessLevelVO;
 import com.achobeta.domain.resource.model.vo.ResourceQueryVO;
 import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ResourceService;
-import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.service.UserService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.feishu.constants.ObjectType;
 import com.achobeta.util.MediaUtil;
+import com.achobeta.util.ResourceUtil;
 import com.achobeta.util.TimeUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -30,6 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.achobeta.domain.resource.constants.ResourceConstants.DEFAULT_RESOURCE_ACCESS_LEVEL;
 
 /**
  * Created With Intellij IDEA
@@ -124,10 +126,9 @@ public class ResourceController {
     @PostMapping("/upload/image")
     @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER}, log = true)
     public SystemJsonResponse uploadImage(@RequestPart("file") MultipartFile file) {
-        // 检查
-        ResourceUtil.checkImage(MediaUtil.getContentType(file));
+        // 上传图片
         Long userId = BaseContext.getCurrentUser().getUserId();
-        Long code = resourceService.upload(userId, file);
+        Long code = resourceService.uploadImage(userId, file, DEFAULT_RESOURCE_ACCESS_LEVEL);
         return SystemJsonResponse.SYSTEM_SUCCESS(code);
     }
 

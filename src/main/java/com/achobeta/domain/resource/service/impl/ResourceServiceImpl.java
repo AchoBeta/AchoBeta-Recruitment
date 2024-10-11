@@ -16,16 +16,12 @@ import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.resource.util.ExcelUtil;
-import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.feishu.constants.ObjectType;
 import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.redis.lock.RedisLock;
 import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
-import com.achobeta.util.HttpRequestUtil;
-import com.achobeta.util.HttpServletUtil;
-import com.achobeta.util.MediaUtil;
-import com.achobeta.util.TimeUtil;
+import com.achobeta.util.*;
 import com.lark.oapi.service.drive.v1.model.ImportTask;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -181,6 +177,20 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Long upload(Long userId, MultipartFile file) {
         return upload(userId, file, DEFAULT_RESOURCE_ACCESS_LEVEL);
+    }
+
+    @Override
+    public Long uploadImage(Long userId, MultipartFile file, ResourceAccessLevel level) {
+        // 检查
+        ResourceUtil.checkImage(MediaUtil.getContentType(file));
+        // 获取文件数据
+        String originalFilename = ResourceUtil.getOriginalName(file);
+        byte[] bytes = MediaUtil.getBytes(file);
+        // 压缩图片
+        byte[] compressedImage = MediaUtil.compressImage(bytes);
+        // 上传图片
+        String compressedName = ResourceUtil.changeExtension(originalFilename, MediaUtil.COMPRESS_FORMAT_NAME);
+        return upload(userId, compressedName, compressedImage, level);
     }
 
     @Override
