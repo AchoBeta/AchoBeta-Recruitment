@@ -79,6 +79,10 @@ public class ResourceUtil {
         return originalName.substring(0, originalName.lastIndexOf("."));
     }
 
+    public static String getFileNameExcludeSuffix(MultipartFile file) {
+        return getFileNameExcludeSuffix(file.getOriginalFilename());
+    }
+
     public static String getSuffix(String originalName) {
         checkOriginalName(originalName);
         return originalName.substring(originalName.lastIndexOf("."));

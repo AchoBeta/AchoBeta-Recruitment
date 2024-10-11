@@ -103,7 +103,7 @@ public class ResourceController {
         Long userId = BaseContext.getCurrentUser().getUserId();
         ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(null);
         OnlineResourceVO onlineResourceVO = resourceService.synchronousFeishuUpload(
-                userId, file, accessLevel, ObjectType.MD, ResourceUtil.getOriginalName(file),
+                userId, file, accessLevel, ObjectType.MD, ResourceUtil.getFileNameExcludeSuffix(file),
                 Boolean.TRUE);
         return SystemJsonResponse.SYSTEM_SUCCESS(onlineResourceVO);
     }
@@ -116,7 +116,7 @@ public class ResourceController {
         Long userId = BaseContext.getCurrentUser().getUserId();
         ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(null);
         OnlineResourceVO onlineResourceVO = resourceService.synchronousFeishuUpload(
-                userId, file, accessLevel, ObjectType.XLSX, ResourceUtil.getOriginalName(file),
+                userId, file, accessLevel, ObjectType.XLSX, ResourceUtil.getFileNameExcludeSuffix(file),
                 Boolean.TRUE);
         return SystemJsonResponse.SYSTEM_SUCCESS(onlineResourceVO);
     }
