@@ -40,8 +40,12 @@ public class ResourceUtil {
         }
     }
 
+    public static boolean matchType(String contentType, ResourceType resourceType) {
+        return contentType.startsWith(resourceType.getContentTypeSuffix());
+    }
+
     public static void checkType(String contentType, ResourceType resourceType) {
-        if(!contentType.startsWith(resourceType.getContentTypeSuffix())) {
+        if(!matchType(contentType, resourceType)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_TYPE_NOT_MATCH);
         }
     }

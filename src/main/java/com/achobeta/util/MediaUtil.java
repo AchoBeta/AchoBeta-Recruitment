@@ -46,7 +46,6 @@ public class MediaUtil {
         } catch (IOException e) {
             throw new GlobalServiceException(e.getMessage());
         }
-
     }
 
     public static InputStream getInputStream(String url) throws IOException {

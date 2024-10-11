@@ -42,21 +42,18 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService, Init
     private MinioEngine minioEngine;
 
     @Override
-    public String upload(Long userId, String originalName, byte[] bytes) {
+    public void upload(String originalName, byte[] bytes) {
         try {
             // 上传资源
-            String suffix = ResourceUtil.getSuffix(originalName);
-            String uniqueFileName = ResourceUtil.getUniqueFileName(userId, suffix);
-            minioEngine.upload(uniqueFileName, bytes);
-            return uniqueFileName;
+            minioEngine.upload(originalName, bytes);
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_UPLOAD_FAILED);
         }
     }
 
     @Override
-    public String upload(Long userId, MultipartFile file) {
-        return upload(userId, ResourceUtil.getOriginalName(file), MediaUtil.getBytes(file));
+    public void upload(MultipartFile file) {
+        upload(ResourceUtil.getOriginalName(file), MediaUtil.getBytes(file));
     }
 
     @Override
@@ -102,6 +99,22 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService, Init
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.RESOURCE_REMOVE_FAILED);
         }
+    }
+
+    @Override
+    public String compressImage(Long userId, String fileName) throws Exception {
+        // 加载图片
+        byte[] bytes = load(fileName);
+        // 检查是不是图片
+        ResourceUtil.checkImage(MediaUtil.getContentType(bytes));
+        // 删除原图片
+        remove(fileName);
+        // 压缩图片
+        bytes = MediaUtil.compressImage(bytes);
+        // 上传图片
+        String uniqueFileName = ResourceUtil.getUniqueFileName(userId, "." + MediaUtil.COMPRESS_FORMAT_NAME);
+        minioEngine.upload(uniqueFileName, bytes);
+        return uniqueFileName;
     }
 
     @Override

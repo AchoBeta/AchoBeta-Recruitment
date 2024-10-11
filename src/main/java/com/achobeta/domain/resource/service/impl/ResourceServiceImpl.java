@@ -9,6 +9,7 @@ import com.achobeta.domain.resource.config.UploadLimitProperties;
 import com.achobeta.domain.resource.constants.ResourceConstants;
 import com.achobeta.domain.resource.enums.ExcelTemplateEnum;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.enums.ResourceType;
 import com.achobeta.domain.resource.factory.AccessStrategyFactory;
 import com.achobeta.domain.resource.model.entity.DigitalResource;
 import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
@@ -146,6 +147,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public Long upload(Long userId, String originalName, byte[] data, ResourceAccessLevel level) {
+        // 判断是否被限制上传
         checkBlockUser(userId);
         // 进行上传次数的检测
         String redisKey = ResourceConstants.REDIS_USER_UPLOAD_LIMIT + userId;
@@ -158,10 +160,28 @@ public class ResourceServiceImpl implements ResourceService {
         if(uploadLimitProperties.getFrequency().compareTo(times) <= 0) {
             throw new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_UPLOAD_TOO_FREQUENT);
         }
+        // 判断文件类型
+        String contentType = MediaUtil.getContentType(data);
+        String suffix = null;
+        // 判断是否是图片类型，若是则压缩图片
+        if(ResourceUtil.matchType(contentType, ResourceType.IMAGE)) {
+            // 压缩图片
+            data = MediaUtil.compressImage(data);
+            suffix = "." + MediaUtil.COMPRESS_FORMAT_NAME;
+            originalName = ResourceUtil.changeSuffix(originalName, suffix);
+        } else {
+            // 使用原后缀
+            suffix = ResourceUtil.getSuffix(originalName);
+        }
+        // 获得唯一文件名
+        String uniqueFileName = ResourceUtil.getUniqueFileName(userId, suffix);
+        // 上传
+        objectStorageService.upload(uniqueFileName, data);
+        // 记录
         DigitalResource resource = new DigitalResource();
         resource.setUserId(userId);
         resource.setOriginalName(originalName);
-        resource.setFileName(objectStorageService.upload(userId, originalName, data));
+        resource.setFileName(uniqueFileName);
         resource.setAccessLevel(Optional.ofNullable(level).orElse(DEFAULT_RESOURCE_ACCESS_LEVEL));
         Long code = digitalResourceService.createResource(resource).getCode();
         // 自增
@@ -177,20 +197,6 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Long upload(Long userId, MultipartFile file) {
         return upload(userId, file, DEFAULT_RESOURCE_ACCESS_LEVEL);
-    }
-
-    @Override
-    public Long uploadImage(Long userId, MultipartFile file, ResourceAccessLevel level) {
-        // 检查
-        ResourceUtil.checkImage(MediaUtil.getContentType(file));
-        // 获取文件数据
-        String originalFilename = ResourceUtil.getOriginalName(file);
-        byte[] bytes = MediaUtil.getBytes(file);
-        // 压缩图片
-        byte[] compressedImage = MediaUtil.compressImage(bytes);
-        // 上传图片
-        String compressedName = ResourceUtil.changeExtension(originalFilename, MediaUtil.COMPRESS_FORMAT_NAME);
-        return upload(userId, compressedName, compressedImage, level);
     }
 
     @Override
@@ -294,6 +300,17 @@ public class ResourceServiceImpl implements ResourceService {
             // 若为过去时，则直接封禁
             redisCache.deleteObject(blockKey);
         }
+    }
+
+    @Override
+    public void compressImage(Long code) throws Exception {
+        DigitalResource resource = digitalResourceService.getResourceByCode(code);
+        String compressImage = objectStorageService.compressImage(resource.getUserId(), resource.getFileName());
+        digitalResourceService.renameDigitalResource(
+                resource.getId(),
+                ResourceUtil.changeExtension(resource.getOriginalName(), MediaUtil.COMPRESS_FORMAT_NAME),
+                compressImage
+        );
     }
 
 }

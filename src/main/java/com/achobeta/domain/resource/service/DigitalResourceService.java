@@ -21,6 +21,8 @@ public interface DigitalResourceService extends IService<DigitalResource> {
 
     void setAccessLevel(Long resourceId, ResourceAccessLevel level);
 
-    void removeDigitalResource(Long id);
+    void removeDigitalResource(Long resourceId);
+
+    void renameDigitalResource(Long resourceId, String originalName, String fileName);
 
 }

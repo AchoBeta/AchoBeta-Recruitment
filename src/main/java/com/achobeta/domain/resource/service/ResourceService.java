@@ -43,8 +43,6 @@ public interface ResourceService {
 
     Long upload(Long userId, MultipartFile file);
 
-    Long uploadImage(Long userId, MultipartFile file, ResourceAccessLevel level);
-
     /**
      * ⚠️由于飞书的限制，此接口会强制转扩展名⚠️
      * 错误的参数，可能会导致乱码、或者表格等文件 encrypt_file 的情况！
@@ -71,4 +69,12 @@ public interface ResourceService {
     void checkBlockUser(Long userId);
 
     void blockUser(Long userId, Long blockDDL);
+
+    /**
+     * 压缩图片，同时更新对象上传服务器，以及数据库的记录
+     * @param code 资源码
+     * @throws Exception 若不是图片会抛异常
+     */
+    void compressImage(Long code) throws Exception;
+
 }

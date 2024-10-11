@@ -31,8 +31,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Optional;
 
-import static com.achobeta.domain.resource.constants.ResourceConstants.DEFAULT_RESOURCE_ACCESS_LEVEL;
-
 /**
  * Created With Intellij IDEA
  * Description:
@@ -126,9 +124,10 @@ public class ResourceController {
     @PostMapping("/upload/image")
     @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER}, log = true)
     public SystemJsonResponse uploadImage(@RequestPart("file") MultipartFile file) {
-        // 上传图片
+        // 检查
+        ResourceUtil.checkImage(MediaUtil.getContentType(file));
         Long userId = BaseContext.getCurrentUser().getUserId();
-        Long code = resourceService.uploadImage(userId, file, DEFAULT_RESOURCE_ACCESS_LEVEL);
+        Long code = resourceService.upload(userId, file);
         return SystemJsonResponse.SYSTEM_SUCCESS(code);
     }
 
