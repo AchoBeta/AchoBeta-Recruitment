@@ -3,6 +3,7 @@ package com.achobeta.domain.message.controller;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.message.model.dto.EmailMassDTO;
 import com.achobeta.domain.message.model.dto.EmailSendDTO;
 import com.achobeta.domain.message.model.dto.QueryStuListDTO;
 import com.achobeta.domain.message.model.vo.MessageContentVO;
@@ -51,6 +52,15 @@ public class MessageController {
         Long managerId = BaseContext.getCurrentUser().getUserId();
         //发送邮箱
         messageService.sendMessageByEmail(managerId, emailSendDTO, attachmentList);
+        return SystemJsonResponse.SYSTEM_SUCCESS();
+    }
+
+    @PostMapping("/email/mass")
+    @Intercept(permit = {UserTypeEnum.ADMIN})
+    public SystemJsonResponse massEmailing(@Valid EmailMassDTO emailMassDTO, @RequestPart(value = "attachment", required = false) List<MultipartFile> attachmentList) {
+        Long managerId = BaseContext.getCurrentUser().getUserId();
+        //发送邮箱
+        messageService.sendMessageByEmail(managerId, emailMassDTO, attachmentList);
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 }

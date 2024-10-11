@@ -27,6 +27,4 @@ public class QueryStuListDTO implements Serializable {
 
     /*简历状态*/
     Integer status;
-    /*学生名称*/
-    String name;
 }

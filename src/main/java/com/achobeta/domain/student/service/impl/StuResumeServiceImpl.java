@@ -227,4 +227,11 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
         stuResume.setUserId(userId);
         return stuResume;
     }
+
+    @Override
+    public List<StuResume> queryStuList(List<Long> userIds) {
+        return lambdaQuery()
+                .in(StuResume::getUserId, userIds)
+                .list();
+    }
 }

@@ -7,6 +7,7 @@ import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.model.vo.StuResumeVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -28,5 +29,7 @@ public interface StuResumeService extends IService<StuResume> {
 
     StuResume checkAndGetResume(Long resumeId);
 
-    StuResume checkResumeSubmitCount(StuSimpleResumeDTO stuSimpleResumeDTO,Long userId);
+    StuResume checkResumeSubmitCount(StuSimpleResumeDTO stuSimpleResumeDTO, Long userId);
+
+    List<StuResume> queryStuList(List<Long> userIds);
 }
