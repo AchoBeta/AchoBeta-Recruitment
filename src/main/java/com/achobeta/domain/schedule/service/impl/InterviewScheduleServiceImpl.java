@@ -130,11 +130,13 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
         List<UserParticipationVO> userParticipationVOS = userParticipationVOMap.values()
                 .stream()
                 .filter(up -> !CollectionUtils.isEmpty(up.getTimePeriodVOS()) || !CollectionUtils.isEmpty(up.getScheduleVOS())) // 过滤出有选时间段的或有预约的
+                .sorted(Comparator.comparingLong(up -> CollectionUtils.isEmpty(up.getTimePeriodVOS()) ? 0L : up.getTimePeriodVOS().getFirst().getStartTime().getTime()))
                 .sorted(Comparator.comparingInt(up -> up.getTimePeriodVOS().size())) // 根据选择时间段排序
                 .sorted(Comparator.comparingInt(up -> up.getScheduleVOS().size())) // 没被安排的会被排在前面
                 .toList();
         List<TimePeriodCountVO> timePeriodCountVOS = countMap.values()
                 .stream()
+                .sorted(Comparator.comparingLong(tc -> tc.getStartTime().getTime()))
                 .sorted((x1, x2) -> x2.getCount().compareTo(x1.getCount()))
                 .toList();
         UserSituationVO userSituationVO = new UserSituationVO();
