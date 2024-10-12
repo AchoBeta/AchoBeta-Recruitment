@@ -99,13 +99,13 @@ public class UserInterceptor implements HandlerInterceptor {
 
         Claims claims = JwtUtil.parseJWT(secretKey, token);
 
-        // permit 中没有 role 就会抛异常
+        // 记录接口的访问记录
         Long userId = Long.valueOf(claims.get(UserInterceptor.USER_ID).toString());
         log.info("请求 {} 账户 {} 访问接口 {} ", requestId, userId, request.getRequestURI());
 
+        // permit 中没有 role 就会抛异常
         Integer role = Integer.parseInt(claims.get(UserInterceptor.USER_ROLE_NAME).toString());
-        UserTypeEnum userTypeEnum = UserTypeEnum.get(role);
-        if(!InterceptHelper.isValid(intercept, userTypeEnum)) {
+        if(!InterceptHelper.isValid(intercept, UserTypeEnum.get(role))) {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
         }
 
