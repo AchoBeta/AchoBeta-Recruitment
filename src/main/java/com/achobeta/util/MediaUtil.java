@@ -36,7 +36,7 @@ public class MediaUtil {
     public static byte[] compressImage(byte[] bytes) {
         try(InputStream inputStream = getInputStream(bytes);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-            // 使用 thumbnailator 进行压缩，指定输出格式为 formatName（无损格式）
+            // 使用 thumbnailator 进行压缩，指定输出格式
             Thumbnails.of(inputStream)
                     .outputFormat(COMPRESS_FORMAT_NAME)
                     .scale(COMPRESS_SCALE)
