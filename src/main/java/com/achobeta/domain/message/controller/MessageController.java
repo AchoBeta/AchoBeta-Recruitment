@@ -42,7 +42,8 @@ public class MessageController {
     @GetMapping("/info/query")
     @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER})
     public SystemJsonResponse queryMessageListOfUser() {
-        List<MessageContentVO> messageContentVOList = messageService.getMessageListOfUser();
+        Long userId = BaseContext.getCurrentUser().getUserId();
+        List<MessageContentVO> messageContentVOList = messageService.getMessageListOfUser(userId);
         return SystemJsonResponse.SYSTEM_SUCCESS(messageContentVOList);
     }
 

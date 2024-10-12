@@ -15,7 +15,6 @@ import com.achobeta.domain.message.service.MessageService;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.service.StuResumeService;
-import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.email.model.po.EmailAttachment;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -160,8 +159,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
     }
 
     @Override
-    public List<MessageContentVO> getMessageListOfUser() {
-        Long userId = BaseContext.getCurrentUser().getUserId();
+    public List<MessageContentVO> getMessageListOfUser(Long userId) {
         //缓存消息列表
         /*Optional<List<MessageContentVO>> messageOptional = redisCache.getCacheList(MESSAGE_CACHE_NAME + userId, MessageContentVO.class);
 
@@ -169,9 +167,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
             return messageOptional.get();*/
         //查询并封装返回结果
         List<Message> messageList = lambdaQuery().eq(Message::getUserId, userId).list();
-        List<MessageContentVO> messageContentVOList = messageConverter.messageContentPoToVOList(messageList);
-
-        return messageContentVOList;
+        return messageConverter.messageContentPoToVOList(messageList);
     }
 
     @Override

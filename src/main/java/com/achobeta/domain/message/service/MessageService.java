@@ -34,7 +34,7 @@ public interface MessageService extends IService<Message> {
 
     Long storeMessage(MessageContentDTO messageContent);
 
-    List<MessageContentVO> getMessageListOfUser();
+    List<MessageContentVO> getMessageListOfUser(Long userId);
 
     void sendMessageByEmail(Long managerId, EmailSendDTO emailSendDTO, List<MultipartFile> attachmentList);
 
