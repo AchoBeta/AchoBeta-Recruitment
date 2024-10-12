@@ -124,7 +124,7 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
             throw new GlobalServiceException("面试预约时间为过去时", GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
         }
         // 预约会议
-        ApplyReserveRespBody reserveRespBody = feishuService.reserveApplyBriefly(ownerId, endTime, title);
+         ApplyReserveRespBody reserveRespBody = feishuService.reserveApplyBriefly(ownerId, endTime, title);
         return InterviewConverter.INSTANCE.feishuReserveToInterviewReserveVO(reserveRespBody.getReserve());
     }
 
