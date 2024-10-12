@@ -75,23 +75,24 @@ public class UserInterceptor implements HandlerInterceptor {
         if (!(handler instanceof HandlerMethod)) {
             // 并不处理非目标方法的请求
             // todo: 例如通过本服务，但不是通过目标方法获取资源的请求，而这些请求需要进行其他的处理！
-            return true;
+            return Boolean.TRUE;
         }
         // 设置请求 id
-        response.setHeader(requestIdConfig.getHeader(), String.valueOf(requestIdGenerator.nextId()));
+        long requestId = requestIdGenerator.nextId();
+        response.setHeader(requestIdConfig.getHeader(), String.valueOf(requestId));
         // 获取目标方法
         Method targetMethod = ((HandlerMethod) handler).getMethod();
         // 获取 intercept 注解实例
         Intercept intercept = InterceptHelper.getIntercept(targetMethod);
         // 判断是否忽略
         if(InterceptHelper.isIgnore(intercept)) {
-            return true;
+            return Boolean.TRUE;
         }
 
         String token = request.getHeader(jwtProperties.getTokenName());
         //从请求头中获取token
         if (StrUtil.isEmpty(token)) {
-            throw new GlobalServiceException("用户未登录,token为空", GlobalServiceStatusCode.USER_NOT_LOGIN);
+            throw new GlobalServiceException("用户未登录,token 为空", GlobalServiceStatusCode.USER_NOT_LOGIN);
         }
         //通过明文钥匙生成密钥
         SecretKey secretKey = JwtUtil.generalKey(jwtProperties.getSecretKey());
@@ -99,37 +100,38 @@ public class UserInterceptor implements HandlerInterceptor {
         Claims claims = JwtUtil.parseJWT(secretKey, token);
 
         // permit 中没有 role 就会抛异常
-        UserTypeEnum role = UserTypeEnum.get(Integer.parseInt(claims.get(UserInterceptor.USER_ROLE_NAME).toString()));
-        if(!InterceptHelper.isValid(intercept, role)) {
+        Long userId = Long.valueOf(claims.get(UserInterceptor.USER_ID).toString());
+        log.info("请求 {} 账户 {} 访问接口 {} ", requestId, userId, request.getRequestURI());
+
+        Integer role = Integer.parseInt(claims.get(UserInterceptor.USER_ROLE_NAME).toString());
+        UserTypeEnum userTypeEnum = UserTypeEnum.get(role);
+        if(!InterceptHelper.isValid(intercept, userTypeEnum)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
         }
 
         //通过线程局部变量设置当前线程用户信息
-        setGlobalUserInfoByClaims(claims, token);
+        setGlobalUserInfoByClaims(userId, role, token);
         //判断token是否即将过期
-        if (JwtUtil.judgeApproachExpiration(token, secretKey)) {
+        if (JwtUtil.judgeApproachExpiration(token, secretKey, jwtProperties.getRefreshTime())) {
             refreshToken(response, secretKey, claims);
         }
-        return true;
+        return Boolean.TRUE;
     }
 
     private void refreshToken(HttpServletResponse response, SecretKey secretKey, Claims claims) {
-        long ttl = jwtProperties.getTtl();
-        String refreshToken = JwtUtil.createJWT(secretKey, ttl, claims);
+        String refreshToken = JwtUtil.createJWT(secretKey, jwtProperties.getTtl(), claims);
         //刷新token,通过请求头返回前端
         response.setHeader(jwtProperties.getTokenName(), refreshToken);
-        log.info("无感刷新token:{}", refreshToken);
+        log.info("无感刷新 token: {}", refreshToken);
     }
 
-    private void setGlobalUserInfoByClaims(Claims claims, String token) {
-        Long userId = Long.valueOf(claims.get(UserInterceptor.USER_ID).toString());
-        Integer role = Integer.parseInt(claims.get(UserInterceptor.USER_ROLE_NAME).toString());
+    private void setGlobalUserInfoByClaims(Long userId, Integer role, String token) {
         UserHelper userHelper = UserHelper.builder()
                 .userId(userId)
                 .token(token)
                 .role(role)
                 .build();
-        log.info("登录信息->{}",userHelper);
+        log.info("登录信息 -> {}",userHelper);
         BaseContext.setCurrentUser(userHelper);
     }
 
@@ -143,7 +145,7 @@ public class UserInterceptor implements HandlerInterceptor {
                 Method targetMethod = handlerMethod.getMethod();
                 if(InterceptHelper.shouldPrintLog(targetMethod)) {
                     String requestId = response.getHeader(requestIdConfig.getHeader());
-                    log.warn("请求 {} 访问 {}，响应 HTTP 状态码 {}，错误信息 {}",
+                    log.warn("请求 {} 访问接口 {}，响应 HTTP 状态码 {}，错误信息 {}",
                             requestId, request.getRequestURI(), response.getStatus(),
                             Optional.ofNullable(ex).map(Exception::getMessage).orElse(null)
                     );

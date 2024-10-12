@@ -1,5 +1,6 @@
 package com.achobeta.domain.schedule.service;
 
+import com.achobeta.domain.interview.model.dto.InterviewConditionDTO;
 import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
@@ -24,7 +25,7 @@ public interface InterviewScheduleService extends IService<InterviewSchedule> {
 
     Optional<InterviewSchedule> getInterviewSchedule(Long scheduleId);
 
-    List<ScheduleResumeVO> getInterviewScheduleList(Long managerId, Long actId);
+    List<ScheduleResumeVO> getInterviewScheduleList(Long managerId, InterviewConditionDTO interviewConditionDTO);
 
     /**
      * @param actId 活动 id

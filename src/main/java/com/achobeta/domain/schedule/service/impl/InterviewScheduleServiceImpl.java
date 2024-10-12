@@ -1,6 +1,7 @@
 package com.achobeta.domain.schedule.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.interview.model.dto.InterviewConditionDTO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.recruit.model.converter.TimePeriodConverter;
@@ -80,8 +81,8 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
     }
 
     @Override
-    public List<ScheduleResumeVO> getInterviewScheduleList(Long managerId, Long actId) {
-        return interviewScheduleMapper.getInterviewScheduleList(managerId, actId);
+    public List<ScheduleResumeVO> getInterviewScheduleList(Long managerId, InterviewConditionDTO interviewConditionDTO) {
+        return interviewScheduleMapper.getInterviewScheduleList(managerId, interviewConditionDTO);
     }
 
     /**

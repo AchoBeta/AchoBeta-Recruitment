@@ -90,10 +90,9 @@ public class JwtUtil {
         return key;
     }
 
-    //
-    public static boolean judgeApproachExpiration(@NotNull String token, @NotNull SecretKey secretKey) {
+    public static boolean judgeApproachExpiration(String token, SecretKey secretKey, long refreshTime) {
         long cur = System.currentTimeMillis();
         long exp = getTokenExpiration(secretKey, token).getTime();
-        return (exp - cur) < REFRESH_TIME;
+        return (exp - cur) < refreshTime;
     }
 }

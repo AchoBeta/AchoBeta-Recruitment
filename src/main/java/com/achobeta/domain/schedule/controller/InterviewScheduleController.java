@@ -3,6 +3,7 @@ package com.achobeta.domain.schedule.controller;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
+import com.achobeta.domain.interview.model.dto.InterviewConditionDTO;
 import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
@@ -107,13 +108,19 @@ public class InterviewScheduleController {
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
-    @GetMapping("/list/{actId}")
-    public SystemJsonResponse getInterviewScheduleList(@PathVariable("actId") @NotNull Long actId) {
+    @PostMapping("/list/own")
+    public SystemJsonResponse getInterviewScheduleList(@Valid @RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 检测
         Long managerId = BaseContext.getCurrentUser().getUserId();
-        recruitmentActivityService.checkRecruitmentActivityExists(actId);
         // 查询
-        List<ScheduleResumeVO> interviewScheduleList = interviewScheduleService.getInterviewScheduleList(managerId, actId);
+        List<ScheduleResumeVO> interviewScheduleList = interviewScheduleService.getInterviewScheduleList(managerId, InterviewConditionDTO.of(interviewConditionDTO));
+        return SystemJsonResponse.SYSTEM_SUCCESS(interviewScheduleList);
+    }
+
+    @PostMapping("/list/all")
+    public SystemJsonResponse getInterviewScheduleListAll(@Valid @RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
+        // 查询
+        List<ScheduleResumeVO> interviewScheduleList = interviewScheduleService.getInterviewScheduleList(null, InterviewConditionDTO.of(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewScheduleList);
     }
 
