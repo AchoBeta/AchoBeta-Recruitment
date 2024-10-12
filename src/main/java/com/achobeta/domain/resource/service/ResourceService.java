@@ -19,13 +19,13 @@ import java.util.List;
  */
 public interface ResourceService {
 
-    DigitalResource checkAndGetResource(Long code, ResourceAccessLevel level);
+    DigitalResource analyzeCode(Long code, ResourceAccessLevel level);
 
     DigitalResource analyzeCode(Long code);
 
-    void download(Long code, HttpServletResponse response);
-
     void preview(Long code, HttpServletResponse response);
+
+    void download(Long code, HttpServletResponse response);
 
     byte[] load(Long code);
 

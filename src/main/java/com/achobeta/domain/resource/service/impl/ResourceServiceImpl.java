@@ -21,6 +21,7 @@ import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.feishu.constants.ObjectType;
 import com.achobeta.redis.cache.RedisCache;
 import com.achobeta.redis.lock.RedisLock;
+import com.achobeta.redis.lock.RedisLockProperties;
 import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
 import com.achobeta.util.*;
 import com.lark.oapi.service.drive.v1.model.ImportTask;
@@ -53,11 +54,8 @@ import static com.achobeta.domain.resource.constants.ResourceConstants.DEFAULT_R
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class ResourceServiceImpl implements ResourceService {
 
-    @Value("${spring.redisson.lock.timeout:10}")
-    private Long timeout;
-
-    @Value("${spring.redisson.lock.unit:SECONDS}")
-    private TimeUnit unit;
+    @Value("${resource.compression.threshold}")
+    private Integer compressionThreshold;
 
     private final UploadLimitProperties uploadLimitProperties;
 
@@ -75,10 +73,12 @@ public class ResourceServiceImpl implements ResourceService {
 
     private final RedisLock redisLock;
 
+    private final RedisLockProperties redisLockProperties;
+
     private final SimpleLockStrategy simpleLockStrategy;
 
     @Override
-    public DigitalResource checkAndGetResource(Long code, ResourceAccessLevel level) {
+    public DigitalResource analyzeCode(Long code, ResourceAccessLevel level) {
         DigitalResource resource = digitalResourceService.getResourceByCode(code);
         // 获取策略并判断是否可以访问（level 取最高的那个）
         ResourceAccessStrategy accessStrategy = accessStrategyFactory.getStrategy(resource.getAccessLevel().and(level));
@@ -94,19 +94,19 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public DigitalResource analyzeCode(Long code) {
-        return checkAndGetResource(code, null);
-    }
-
-    @Override
-    public void download(Long code, HttpServletResponse response) {
-        DigitalResource resource = analyzeCode(code);
-        objectStorageService.download(resource.getOriginalName(), resource.getFileName(), response);
+        return analyzeCode(code, null);
     }
 
     @Override
     public void preview(Long code, HttpServletResponse response) {
         DigitalResource resource = analyzeCode(code);
         objectStorageService.preview(resource.getFileName(), response);
+    }
+
+    @Override
+    public void download(Long code, HttpServletResponse response) {
+        DigitalResource resource = analyzeCode(code);
+        objectStorageService.download(resource.getOriginalName(), resource.getFileName(), response);
     }
 
     @Override
@@ -163,8 +163,8 @@ public class ResourceServiceImpl implements ResourceService {
         // 判断文件类型
         String contentType = MediaUtil.getContentType(data);
         String suffix = null;
-        // 判断是否是图片类型，若是则压缩图片
-        if(ResourceUtil.matchType(contentType, ResourceType.IMAGE)) {
+        // 判断是否是图片类型，并判断是否达到压缩阈值（否则压缩适得其反），若是则压缩图片
+        if(ResourceUtil.matchType(contentType, ResourceType.IMAGE) && compressionThreshold.compareTo(data.length) <= 0) {
             // 压缩图片
             data = MediaUtil.compressImage(data);
             suffix = "." + MediaUtil.COMPRESS_FORMAT_NAME;
@@ -203,7 +203,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Transactional
     public OnlineResourceVO synchronousFeishuUpload(Long managerId, byte[] bytes, ResourceAccessLevel level, ObjectType objectType, String fileName, Boolean synchronous) {
         // 若同一管理员同时访问这个同步飞书的方法，未获得锁的上传任务都拒绝（防抖）（可能上传时间长，多点了几下...）
-        return redisLock.tryLockGetSomething(ResourceConstants.REDIS_MANAGER_SYNC_FEISHU_LOCK + managerId, 0L, timeout, unit, () -> {
+        return redisLock.tryLockGetSomething(ResourceConstants.REDIS_MANAGER_SYNC_FEISHU_LOCK + managerId, 0L, redisLockProperties.getTimeout(), redisLockProperties.getUnit(), () -> {
             // 获取一个文件名
             String originName = ResourceUtil.getFileNameByExtension(fileName, objectType.getFileExtension());
             OnlineResourceVO onlineResourceVO = new OnlineResourceVO();
@@ -256,7 +256,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Transactional
     public void remove(Long code) {
         // 若权限小于 USER_ACCESS 就按 USER_ACCESS 权限
-        DigitalResource resource = checkAndGetResource(code, DEFAULT_RESOURCE_ACCESS_LEVEL);
+        DigitalResource resource = analyzeCode(code, DEFAULT_RESOURCE_ACCESS_LEVEL);
         objectStorageService.remove(resource.getFileName());
         digitalResourceService.removeDigitalResource(resource.getId());
     }

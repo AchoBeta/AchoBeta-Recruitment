@@ -37,29 +37,46 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserInterceptor implements HandlerInterceptor {
 
+    public static final String USER_ID = "user_id";
+
+    public static final String USER_ROLE_NAME = "user";
+
     private final RequestIdConfig requestIdConfig;
 
     private final JwtProperties jwtProperties;
 
     private final SnowflakeIdGenerator requestIdGenerator;
 
-    public static final String USER_ID = "user_id";
-    public static final String USER_ROLE_NAME = "user";
+    private void refreshToken(HttpServletResponse response, SecretKey secretKey, Claims claims) {
+        String refreshToken = JwtUtil.createJWT(secretKey, jwtProperties.getTtl(), claims);
+        //刷新 token，通过请求头返回前端
+        response.setHeader(jwtProperties.getTokenName(), refreshToken);
+        log.info("无感刷新 token: {}", refreshToken);
+    }
 
     public UserHelper getUserHelper(HttpServletRequest request) {
         String token = request.getHeader(jwtProperties.getTokenName());
-        //从请求头中获取token
+        //从请求头中获取 token
         if (StrUtil.isEmpty(token)) {
             throw new GlobalServiceException("用户未登录,token为空", GlobalServiceStatusCode.USER_NOT_LOGIN);
         }
         //通过明文钥匙生成密钥
         SecretKey secretKey = JwtUtil.generalKey(jwtProperties.getSecretKey());
         Claims claims = JwtUtil.parseJWT(secretKey, token);
+
+        // 记录接口的访问记录
         UserHelper userHelper = UserHelper.builder()
                 .userId(Long.parseLong(claims.get(UserInterceptor.USER_ID).toString()))
                 .token(token)
                 .role(Integer.parseInt(claims.get(UserInterceptor.USER_ROLE_NAME).toString()))
                 .build();
+        log.info("登录信息 -> {}", userHelper);
+
+        //判断 token 是否即将过期
+        if (JwtUtil.judgeApproachExpiration(token, secretKey, jwtProperties.getRefreshTime())) {
+            refreshToken(HttpServletUtil.getResponse(), secretKey, claims);
+        }
+        //通过线程局部变量设置当前线程用户信息
         BaseContext.setCurrentUser(userHelper);
         return userHelper;
     }
@@ -89,50 +106,16 @@ public class UserInterceptor implements HandlerInterceptor {
             return Boolean.TRUE;
         }
 
-        String token = request.getHeader(jwtProperties.getTokenName());
-        //从请求头中获取token
-        if (StrUtil.isEmpty(token)) {
-            throw new GlobalServiceException("用户未登录,token 为空", GlobalServiceStatusCode.USER_NOT_LOGIN);
-        }
-        //通过明文钥匙生成密钥
-        SecretKey secretKey = JwtUtil.generalKey(jwtProperties.getSecretKey());
-
-        Claims claims = JwtUtil.parseJWT(secretKey, token);
-
+        UserHelper userHelper = getUserHelper(request);
         // 记录接口的访问记录
-        Long userId = Long.valueOf(claims.get(UserInterceptor.USER_ID).toString());
-        log.info("请求 {} 账户 {} 访问接口 {} ", requestId, userId, request.getRequestURI());
-
+        log.info("请求 {} 账户 {} 访问接口 {} ", requestId, userHelper.getUserId(), request.getRequestURI());
         // permit 中没有 role 就会抛异常
-        Integer role = Integer.parseInt(claims.get(UserInterceptor.USER_ROLE_NAME).toString());
+        Integer role = userHelper.getRole();
         if(!InterceptHelper.isValid(intercept, UserTypeEnum.get(role))) {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
         }
 
-        //通过线程局部变量设置当前线程用户信息
-        setGlobalUserInfoByClaims(userId, role, token);
-        //判断token是否即将过期
-        if (JwtUtil.judgeApproachExpiration(token, secretKey, jwtProperties.getRefreshTime())) {
-            refreshToken(response, secretKey, claims);
-        }
         return Boolean.TRUE;
-    }
-
-    private void refreshToken(HttpServletResponse response, SecretKey secretKey, Claims claims) {
-        String refreshToken = JwtUtil.createJWT(secretKey, jwtProperties.getTtl(), claims);
-        //刷新token,通过请求头返回前端
-        response.setHeader(jwtProperties.getTokenName(), refreshToken);
-        log.info("无感刷新 token: {}", refreshToken);
-    }
-
-    private void setGlobalUserInfoByClaims(Long userId, Integer role, String token) {
-        UserHelper userHelper = UserHelper.builder()
-                .userId(userId)
-                .token(token)
-                .role(role)
-                .build();
-        log.info("登录信息 -> {}",userHelper);
-        BaseContext.setCurrentUser(userHelper);
     }
 
     // 此方法在全局响应异常处理器处理异常之后再执行，已经是大局已定了，对响应的写不会生效，抛出的异常也不会影响正常响应

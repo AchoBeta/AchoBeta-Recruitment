@@ -34,8 +34,6 @@ public interface FeishuConstants {
 
     String MEDIA_TICKET_QUERY_KEY = "ticket";
 
-    int SUCCESS_CODE = 0;
-
     static String getAuthorization(String accessToken) {
         return Optional.ofNullable(accessToken)
                 .map(token -> AUTHORIZATION_PREFIX + token)

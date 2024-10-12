@@ -5,7 +5,7 @@ import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
 
 import java.util.concurrent.TimeUnit;
@@ -21,18 +21,24 @@ import java.util.function.Supplier;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-public class RedisLock {
+public class RedisLock implements InitializingBean {
 
-    @Value("${spring.redisson.lock.wait:10}")
     private Long wait;
 
-    @Value("${spring.redisson.lock.timeout:10}")
     private Long timeout;
 
-    @Value("${spring.redisson.lock.unit:SECONDS}")
     private TimeUnit unit;
 
     private final SimpleLockStrategy simpleLockStrategy;
+
+    private final RedisLockProperties redisLockProperties;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        this.wait = redisLockProperties.getWait();
+        this.timeout = redisLockProperties.getTimeout();
+        this.unit = redisLockProperties.getUnit();
+    }
 
     private boolean tryLock(RLock rLock, final Long wait,
                            final Long timeout, final TimeUnit timeUnit) throws InterruptedException {

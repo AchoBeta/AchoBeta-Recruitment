@@ -39,7 +39,3 @@ public class ResumeStatusProcessServiceImpl extends ServiceImpl<ResumeStatusProc
                 .list();
     }
 }
-
-
-
-

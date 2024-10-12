@@ -4,6 +4,7 @@ import com.achobeta.exception.GlobalServiceException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -54,12 +55,12 @@ public class HttpServletUtil {
 
     public static void returnBytes(String downloadName, byte[] bytes, HttpServletResponse response) {
         // 在设置内容类型之前设置下载的文件名称
-        response.addHeader("Content-Disposition", "attachment; fileName=" + HttpRequestUtil.encodeString(downloadName));
+        response.addHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; fileName=%s", HttpRequestUtil.encodeString(downloadName)));
         returnBytes(bytes, response);
     }
 
     public static String getHost(HttpServletRequest request) {
-        return String.format("%s://%s", request.getScheme(), request.getHeader("host"));
+        return String.format("%s://%s", request.getScheme(), request.getHeader(HttpHeaders.HOST));
     }
 
     public static String getBaseUrl(HttpServletRequest request, String... uris) {
