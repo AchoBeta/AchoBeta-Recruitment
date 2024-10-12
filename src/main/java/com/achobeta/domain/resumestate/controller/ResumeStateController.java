@@ -8,7 +8,6 @@ import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import com.achobeta.domain.resumestate.machine.context.ResumeContext;
 import com.achobeta.domain.resumestate.model.converter.ResumeStateConverter;
 import com.achobeta.domain.resumestate.model.dto.ResumeExecuteDTO;
-import com.achobeta.domain.resumestate.model.entity.ResumeStatusProcess;
 import com.achobeta.domain.resumestate.model.vo.ResumeEventVO;
 import com.achobeta.domain.resumestate.model.vo.ResumeStatusProcessVO;
 import com.achobeta.domain.resumestate.model.vo.ResumeStatusVO;
@@ -102,16 +101,14 @@ public class ResumeStateController {
     public SystemJsonResponse getProcesses(@PathVariable("batchId") @NotNull Long batchId) {
         long userId = BaseContext.getCurrentUser().getUserId();
         StuResume currentResume = stuResumeService.checkAndGetStuResumeByBatchIdAndStuId(batchId, userId);
-        List<ResumeStatusProcess> processes = resumeStateService.getProcessByResumeId(currentResume);
-        List<ResumeStatusProcessVO> resumeStatusProcessVOList = ResumeStateConverter.INSTANCE.processesToProcessVOList(processes);
+        List<ResumeStatusProcessVO> resumeStatusProcessVOList =  resumeStateService.getProcessByResumeId(currentResume);
         return SystemJsonResponse.SYSTEM_SUCCESS(resumeStatusProcessVOList);
     }
 
     @GetMapping("/process/manager/{resumeId}")
     public SystemJsonResponse getProcessesByResumeId(@PathVariable("resumeId") @NotNull Long resumeId) {
         StuResume currentResume = stuResumeService.checkAndGetResume(resumeId);
-        List<ResumeStatusProcess> processes = resumeStateService.getProcessByResumeId(currentResume);
-        List<ResumeStatusProcessVO> resumeStatusProcessVOList = ResumeStateConverter.INSTANCE.processesToProcessVOList(processes);
+        List<ResumeStatusProcessVO> resumeStatusProcessVOList =  resumeStateService.getProcessByResumeId(currentResume);
         return SystemJsonResponse.SYSTEM_SUCCESS(resumeStatusProcessVOList);
     }
 

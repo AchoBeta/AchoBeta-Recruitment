@@ -3,7 +3,7 @@ package com.achobeta.domain.resumestate.service;
 import com.achobeta.domain.resumestate.enums.ResumeEvent;
 import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import com.achobeta.domain.resumestate.machine.context.ResumeContext;
-import com.achobeta.domain.resumestate.model.entity.ResumeStatusProcess;
+import com.achobeta.domain.resumestate.model.vo.ResumeStatusProcessVO;
 import com.achobeta.domain.student.model.entity.StuResume;
 
 import java.util.List;
@@ -21,6 +21,6 @@ public interface ResumeStateService {
 
     ResumeStatus executeResumeEvent(ResumeEvent resumeEvent, ResumeContext resumeContext);
 
-    List<ResumeStatusProcess> getProcessByResumeId(StuResume currentResume);
+    List<ResumeStatusProcessVO> getProcessByResumeId(StuResume currentResume);
 
 }
