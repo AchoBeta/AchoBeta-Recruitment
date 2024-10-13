@@ -63,8 +63,8 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
     }
 
     @Override
-    public List<StuBaseInfoDTO> queryStuList(List<Long> userIds) {
-        List<StuResume> stuResumeList = stuResumeService.queryStuList(userIds.stream().distinct().toList());
+    public List<StuBaseInfoDTO> queryStuList(Long batchId, List<Long> userIds) {
+        List<StuResume> stuResumeList = stuResumeService.queryStuList(batchId, userIds.stream().distinct().toList());
         return messageConverter.stuResumeListToStuBaseInfoDTOList(stuResumeList);
     }
 
@@ -193,7 +193,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
     @Override
     public void sendMessageByEmail(Long managerId, EmailMassDTO emailMassDTO, List<MultipartFile> attachmentList) {
         // 查询学生列表
-        List<StuBaseInfoDTO> stuBaseInfoDTOS = queryStuList(emailMassDTO.getUserIds());
+        List<StuBaseInfoDTO> stuBaseInfoDTOS = queryStuList(emailMassDTO.getBatchId(), emailMassDTO.getUserIds());
         // 转换对象
         EmailSendDTO emailSendDTO = new EmailSendDTO();
         emailSendDTO.setTittle(emailMassDTO.getTittle());

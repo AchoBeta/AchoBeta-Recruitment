@@ -2,6 +2,7 @@ package com.achobeta.domain.message.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.List;
@@ -27,6 +28,9 @@ public class EmailMassDTO {
      */
     @NotBlank(message = "消息内容不能为空")
     private String content;
+
+    @NotNull(message = "招新批次 id 不能为空")
+    private Long batchId;
 
     @NotEmpty(message = "用户 id 列表不能为空")
     private List<Long> userIds;

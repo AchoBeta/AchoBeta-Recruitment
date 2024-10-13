@@ -31,5 +31,5 @@ public interface StuResumeService extends IService<StuResume> {
 
     StuResume checkResumeSubmitCount(StuSimpleResumeDTO stuSimpleResumeDTO, Long userId);
 
-    List<StuResume> queryStuList(List<Long> userIds);
+    List<StuResume> queryStuList(Long batchId, List<Long> userIds);
 }

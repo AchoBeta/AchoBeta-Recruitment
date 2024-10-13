@@ -28,7 +28,7 @@ public interface MessageService extends IService<Message> {
 
     QueryStuListVO queryStuListByCondition(QueryStuListDTO queryStuDTO);
 
-    List<StuBaseInfoDTO> queryStuList(List<Long> userIds);
+    List<StuBaseInfoDTO> queryStuList(Long batchId, List<Long> userIds);
 
     void sendMessage(MessageContentDTO messageContentBody, CopyOnWriteArraySet<MessageReceiveServer> webSocketSet);
 
