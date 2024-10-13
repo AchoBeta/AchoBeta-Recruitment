@@ -37,6 +37,7 @@ public class EmailSender {
             String from = Optional.ofNullable(sender)
                     .filter(StringUtils::hasText)
                     .or(() -> Optional.ofNullable(javaMailSender.getUsername()))
+                    .filter(StringUtils::hasText)
                     .orElseThrow(() -> new GlobalServiceException("无法确定发送者邮箱地址", GlobalServiceStatusCode.EMAIL_SEND_FAIL));
             mimeMessageHelper.setFrom(Objects.requireNonNull(from));
             mimeMessageHelper.setCc(carbonCopy);
