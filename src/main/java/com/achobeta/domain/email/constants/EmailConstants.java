@@ -6,6 +6,8 @@ package com.achobeta.domain.email.constants;
  */
 public interface EmailConstants {
 
+    Integer EMAIL_VERIFICATION_CODE_LENGTH = 6;
+
     /**
      * 验证码集合
      */

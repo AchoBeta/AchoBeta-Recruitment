@@ -2,6 +2,7 @@ package com.achobeta.domain.email.controller;
 
 import cn.hutool.core.util.RandomUtil;
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.domain.email.constants.EmailConstants;
 import com.achobeta.domain.email.service.EmailService;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -32,8 +33,8 @@ public class EmailController {
      */
     @PostMapping("/code")
     public SystemJsonResponse emailIdentityCheck(@RequestParam("email") @NotBlank @Email(message = "邮箱非法") String email) {
-        // 生成 6位数 随机验证码
-        String code = RandomUtil.randomNumbers(6);
+        // 生成随机验证码
+        String code = RandomUtil.randomNumbers(EmailConstants.EMAIL_VERIFICATION_CODE_LENGTH);
         emailService.sendIdentifyingCode(email, code);
         // 能到这一步就成功了
         log.info("发送验证码:{} -> email:{}", code, email);

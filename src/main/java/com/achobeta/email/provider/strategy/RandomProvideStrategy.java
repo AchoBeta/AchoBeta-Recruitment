@@ -1,10 +1,8 @@
 package com.achobeta.email.provider.strategy;
 
 import cn.hutool.core.util.RandomUtil;
-import jakarta.validation.constraints.NotEmpty;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
