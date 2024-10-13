@@ -1,11 +1,14 @@
 package com.achobeta.email.factory;
 
 import cn.hutool.core.util.RandomUtil;
+import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.exception.GlobalServiceException;
 import lombok.Setter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +45,9 @@ public class EmailSenderFactory implements InitializingBean {
             javaMailSender.setJavaMailProperties(sender.getProperties());
             senderList.add(javaMailSender);
         });
+        if(CollectionUtils.isEmpty(this.senderList)) {
+            throw new GlobalServiceException(GlobalServiceStatusCode.EMAIL_SENDER_NOT_EXISTS);
+        }
     }
 
     public JavaMailSenderImpl fetch() {

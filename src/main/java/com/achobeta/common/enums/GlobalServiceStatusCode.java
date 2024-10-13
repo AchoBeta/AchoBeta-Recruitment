@@ -52,8 +52,9 @@ public enum GlobalServiceStatusCode {
 
      /* 邮箱错误 3001-4000 */
     EMAIL_PATTERN_ERROR(3001, "邮箱格式错误"),
-    EMAIL_SEND_FAIL(3002, "邮箱发送失败"),
-    EMAIL_ATTACH_SEND_FAIL(3003, "邮箱附件发送失败"),
+    EMAIL_SENDER_NOT_EXISTS(3002, "邮箱发送器不存在"),
+    EMAIL_SEND_FAIL(3003, "邮箱发送失败"),
+    EMAIL_ATTACH_SEND_FAIL(3004, "邮箱附件发送失败"),
 
     EMAIL_NOT_EXIST_RECORD(3101, "邮箱不存在记录"),
     EMAIL_CAPTCHA_CODE_COUNT_EXHAUST(3103, "申请次数达到上限"),
