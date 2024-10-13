@@ -34,14 +34,14 @@
         亲爱的同学<strong th:text="${stuName}"></strong>：
         <br />
         <span th:text="${content}"></span>
-        <br />
-        <span class="theme" th:if="${not #lists.isEmpty(attachmentInfoList)}"><strong>Attachment:</strong></span>
-        <br />
+    </p>
+
+    <p th:if="${not #lists.isEmpty(attachmentInfoList)}"><span class="theme"><strong> Attachment: </strong></span>
         <span th:if="${not #lists.isEmpty(attachmentInfoList)}" th:each="attachment : ${attachmentInfoList}">
+            <br />
             <span class="theme" th:text="${attachment.fileName}"></span>
             <br />
             <span class="theme" th:text="${attachment.attachmentUrl}"></span>
-            <br />
         </span>
     </p>
 
