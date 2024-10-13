@@ -40,9 +40,6 @@ public class EmailServiceImpl implements EmailService {
     @Value("${ab.email.riskControlTime:1}")
     private Integer riskControlTime;
 
-    @Value("${spring.mail.username}")
-    private String achobetaEmail;
-
     private final RedisCache redisCache;
     private final EmailSender emailSender;
     private final HtmlEngine htmlEngine;
@@ -102,7 +99,6 @@ public class EmailServiceImpl implements EmailService {
         emailMessage.setTitle(CAPTCHA.getTitle());
         emailMessage.setRecipient(email);
         emailMessage.setCarbonCopy();
-        emailMessage.setSender(achobetaEmail);
         // 构造模板消息
         VerificationCodeTemplate verificationCodeTemplate = VerificationCodeTemplate.builder()
                 .code(code)

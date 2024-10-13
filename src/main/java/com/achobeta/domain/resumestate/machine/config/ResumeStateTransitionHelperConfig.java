@@ -13,7 +13,6 @@ import com.achobeta.template.engine.HtmlEngine;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,9 +29,6 @@ import java.util.Optional;
 @Configuration
 @RequiredArgsConstructor
 public class ResumeStateTransitionHelperConfig {
-
-    @Value("${spring.mail.username}")
-    private String achobetaEmail;
 
     private final HtmlEngine htmlEngine;
 
@@ -63,7 +59,6 @@ public class ResumeStateTransitionHelperConfig {
                 // 封装 email
                 EmailTemplateEnum emailTemplate = EmailTemplateEnum.RESUME_NOTICE;
                 EmailMessage emailMessage = new EmailMessage();
-                emailMessage.setSender(achobetaEmail);
                 emailMessage.setCarbonCopy();
                 emailMessage.setCreateTime(new Date());
                 emailMessage.setTitle(emailTemplate.getTitle());

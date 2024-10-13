@@ -1,6 +1,7 @@
 package com.achobeta.email.sender;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.email.factory.EmailSenderFactory;
 import com.achobeta.email.model.po.EmailAttachment;
 import com.achobeta.email.model.po.EmailMessage;
 import com.achobeta.exception.GlobalServiceException;
@@ -8,9 +9,10 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.function.Function;
@@ -18,19 +20,25 @@ import java.util.function.Function;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection"})
 public class EmailSender {
 
-    private final JavaMailSender javaMailSender;
+    private final EmailSenderFactory emailSenderFactory;
 
     public void send(String sender, String[] recipient, String[] carbonCopy,
                      String title, String content, boolean isHtml,
                      Date sentDate, List<EmailAttachment> fileList) {
         // 封装对象
         try {
+            // 获取邮件发送器实现
+            JavaMailSenderImpl javaMailSender = emailSenderFactory.fetch();
+            // 构造邮件
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, Boolean.TRUE);
-            mimeMessageHelper.setFrom(sender);
+            String from = Optional.ofNullable(sender)
+                    .filter(StringUtils::hasText)
+                    .or(() -> Optional.ofNullable(javaMailSender.getUsername()))
+                    .orElseThrow(() -> new GlobalServiceException("无法确定发送者邮箱地址", GlobalServiceStatusCode.EMAIL_SEND_FAIL));
+            mimeMessageHelper.setFrom(Objects.requireNonNull(from));
             mimeMessageHelper.setCc(carbonCopy);
             mimeMessageHelper.setSubject(title);
             mimeMessageHelper.setSentDate(sentDate);

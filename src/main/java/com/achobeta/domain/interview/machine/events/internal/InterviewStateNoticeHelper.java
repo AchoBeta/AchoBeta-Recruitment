@@ -18,7 +18,6 @@ import com.achobeta.template.engine.HtmlEngine;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -34,9 +33,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class InterviewStateNoticeHelper implements InterviewStateInternalTransitionHelper{
-
-    @Value("${spring.mail.username}")
-    private String achobetaEmail;
 
     private final EmailSender emailSender;
 
@@ -78,7 +74,6 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
             // 封装 email
             EmailTemplateEnum emailTemplate = EmailTemplateEnum.INTERVIEW_NOTICE;
             EmailMessage emailMessage = new EmailMessage();
-            emailMessage.setSender(achobetaEmail);
             emailMessage.setCarbonCopy();
             emailMessage.setCreateTime(new Date());
             emailMessage.setTitle(emailTemplate.getTitle());

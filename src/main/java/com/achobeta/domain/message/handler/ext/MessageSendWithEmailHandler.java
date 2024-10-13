@@ -12,7 +12,6 @@ import com.achobeta.template.engine.HtmlEngine;
 import com.achobeta.template.util.TemplateUtil;
 import com.achobeta.util.TimeUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -26,9 +25,6 @@ import static com.achobeta.email.enums.EmailTemplateEnum.MESSAGE_EMAIL_NOTICE;
 @Component("email" + MessageSendHandler.HANDLER_BASE_NAME)
 @RequiredArgsConstructor
 public class MessageSendWithEmailHandler extends MessageSendHandler {
-
-    @Value("${spring.mail.username}")
-    private String achobetaEmail;
 
     private final EmailSender emailSender;
     private final HtmlEngine htmlEngine;
@@ -53,7 +49,6 @@ public class MessageSendWithEmailHandler extends MessageSendHandler {
         emailMessage.setTitle(MESSAGE_EMAIL_NOTICE.getTitle());
         emailMessage.setRecipient(email);
         emailMessage.setCarbonCopy();
-        emailMessage.setSender(achobetaEmail);
 
         //构造当前时间
         String now = TimeUtil.getDateTime(new Date());
