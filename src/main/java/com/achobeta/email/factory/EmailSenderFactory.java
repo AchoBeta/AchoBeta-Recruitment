@@ -36,12 +36,12 @@ public class EmailSenderFactory implements InitializingBean {
         Optional.ofNullable(senders).stream().flatMap(List::stream).forEach(sender -> {
             // 邮件发送者
             JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
-            javaMailSender.setDefaultEncoding(sender.getDefaultEncoding());
             javaMailSender.setHost(sender.getHost());
             javaMailSender.setPort(sender.getPort());
-            javaMailSender.setProtocol(sender.getProtocol());
             javaMailSender.setUsername(sender.getUsername());
             javaMailSender.setPassword(sender.getPassword());
+            javaMailSender.setProtocol(sender.getProtocol());
+            javaMailSender.setDefaultEncoding(sender.getDefaultEncoding());
             javaMailSender.setJavaMailProperties(sender.getProperties());
             senderList.add(javaMailSender);
         });

@@ -15,7 +15,7 @@ public class EmailMessage implements Serializable {
 
     private String[] recipient;
 
-    private String[] carbonCopy;
+    private String[] carbonCopy; // 可以为空，默认是 sender，若 sender 也为空，默认按照邮件发送器实现的用户名
 
     private String title;
 
@@ -39,15 +39,6 @@ public class EmailMessage implements Serializable {
 
     public void setCarbonCopy(String cc) {
         this.carbonCopy = new String[]{cc};
-    }
-
-    public String[] getRecipient() {
-        return recipient;
-    }
-
-
-    public String[] getCarbonCopy() {
-        return carbonCopy;
     }
 
     public String getRecipient(int i) {

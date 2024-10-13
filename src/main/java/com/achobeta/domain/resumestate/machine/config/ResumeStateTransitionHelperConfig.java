@@ -59,7 +59,6 @@ public class ResumeStateTransitionHelperConfig {
                 // 封装 email
                 EmailTemplateEnum emailTemplate = EmailTemplateEnum.RESUME_NOTICE;
                 EmailMessage emailMessage = new EmailMessage();
-                emailMessage.setCarbonCopy();
                 emailMessage.setCreateTime(new Date());
                 emailMessage.setTitle(emailTemplate.getTitle());
                 emailMessage.setRecipient(currentResume.getEmail());

@@ -88,7 +88,6 @@ ResumeConfirmHelper implements ResumeStateInternalTransitionHelper{
             // 封装 email
             EmailTemplateEnum emailTemplate = EmailTemplateEnum.MEMBER_NOTICE;
             EmailMessage emailMessage = new EmailMessage();
-            emailMessage.setCarbonCopy();
             emailMessage.setCreateTime(new Date());
             emailMessage.setTitle(emailTemplate.getTitle());
             emailMessage.setRecipient(currentResume.getEmail());

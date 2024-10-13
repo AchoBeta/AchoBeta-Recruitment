@@ -48,7 +48,6 @@ public class MessageSendWithEmailHandler extends MessageSendHandler {
         emailMessage.setCreateTime(new Date());
         emailMessage.setTitle(MESSAGE_EMAIL_NOTICE.getTitle());
         emailMessage.setRecipient(email);
-        emailMessage.setCarbonCopy();
 
         //构造当前时间
         String now = TimeUtil.getDateTime(new Date());

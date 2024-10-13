@@ -34,18 +34,22 @@ public class EmailSender {
             // 构造邮件
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, Boolean.TRUE);
+            // 确定发送至邮箱地址
             String from = Optional.ofNullable(sender)
                     .filter(StringUtils::hasText)
                     .or(() -> Optional.ofNullable(javaMailSender.getUsername()))
                     .filter(StringUtils::hasText)
                     .orElseThrow(() -> new GlobalServiceException("无法确定发送者邮箱地址", GlobalServiceStatusCode.EMAIL_SEND_FAIL));
-            mimeMessageHelper.setFrom(Objects.requireNonNull(from));
-            mimeMessageHelper.setCc(carbonCopy);
+            mimeMessageHelper.setFrom(from);
+            // 指定抄送人，避免一些情况导致发送邮件失败
+            mimeMessageHelper.setCc(Optional.ofNullable(carbonCopy).filter(cc -> cc.length > 0).orElseGet(() -> new String[]{from}));
+            // 设置标题与内容
             mimeMessageHelper.setSubject(title);
-            mimeMessageHelper.setSentDate(sentDate);
-            mimeMessageHelper.setTo(recipient);
-            // 设置文本
             mimeMessageHelper.setText(content, isHtml);
+            // 设置发送时间（但大部分邮箱不支持此功能）
+            mimeMessageHelper.setSentDate(sentDate);
+            // 设置接受者邮箱地址
+            mimeMessageHelper.setTo(recipient);
             // 设置附件
             for (EmailAttachment attachment : fileList) {
                 if (Objects.nonNull(attachment)) {

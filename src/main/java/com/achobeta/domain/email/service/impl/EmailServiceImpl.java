@@ -98,7 +98,6 @@ public class EmailServiceImpl implements EmailService {
         emailMessage.setCreateTime(new Date());
         emailMessage.setTitle(CAPTCHA.getTitle());
         emailMessage.setRecipient(email);
-        emailMessage.setCarbonCopy();
         // 构造模板消息
         VerificationCodeTemplate verificationCodeTemplate = VerificationCodeTemplate.builder()
                 .code(code)

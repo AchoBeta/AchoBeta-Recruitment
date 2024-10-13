@@ -79,7 +79,6 @@ public class InterviewSummaryHelper implements InterviewStateInternalTransitionH
             // 封装 email
             EmailTemplateEnum emailTemplate = EmailTemplateEnum.INTERVIEW_SUMMARY;
             EmailMessage emailMessage = new EmailMessage();
-            emailMessage.setCarbonCopy();
             emailMessage.setCreateTime(new Date());
             emailMessage.setTitle(emailTemplate.getTitle());
             emailMessage.setRecipient(simpleStudentVO.getEmail());
