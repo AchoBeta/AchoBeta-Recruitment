@@ -54,7 +54,7 @@ public class UserInterceptor implements HandlerInterceptor {
         log.info("无感刷新 token: {}", refreshToken);
     }
 
-    public UserHelper getUserHelper(HttpServletRequest request) {
+    public UserHelper getUserHelper(HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader(jwtProperties.getTokenName());
         //从请求头中获取 token
         if (StrUtil.isEmpty(token)) {
@@ -74,7 +74,7 @@ public class UserInterceptor implements HandlerInterceptor {
 
         //判断 token 是否即将过期
         if (JwtUtil.judgeApproachExpiration(token, secretKey, jwtProperties.getRefreshTime())) {
-            refreshToken(HttpServletUtil.getResponse(), secretKey, claims);
+            refreshToken(response, secretKey, claims);
         }
         //通过线程局部变量设置当前线程用户信息
         BaseContext.setCurrentUser(userHelper);
@@ -83,7 +83,7 @@ public class UserInterceptor implements HandlerInterceptor {
 
     public UserHelper getUserHelper() {
         return Optional.ofNullable(BaseContext.getCurrentUser())
-                .orElseGet(() -> getUserHelper(HttpServletUtil.getRequest()));
+                .orElseGet(() -> getUserHelper(HttpServletUtil.getRequest(), HttpServletUtil.getResponse()));
     }
 
     @Override
@@ -106,7 +106,7 @@ public class UserInterceptor implements HandlerInterceptor {
             return Boolean.TRUE;
         }
 
-        UserHelper userHelper = getUserHelper(request);
+        UserHelper userHelper = getUserHelper(request, response);
         // 记录接口的访问记录
         log.info("请求 {} 账户 {} 访问接口 {} ", requestId, userHelper.getUserId(), request.getRequestURI());
         // permit 中没有 role 就会抛异常

@@ -32,8 +32,6 @@ public interface FeishuConstants {
 
     String USER_ID_TYPE_QUERY_KEY = "use_id_type";
 
-    String MEDIA_TICKET_QUERY_KEY = "ticket";
-
     static String getAuthorization(String accessToken) {
         return Optional.ofNullable(accessToken)
                 .map(token -> AUTHORIZATION_PREFIX + token)

@@ -271,7 +271,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
                 GetImportTaskResp.class,
                 Map.of(AUTHORIZATION_HEADER, getAuthorization(token)),
                 null,
-                Map.of(MEDIA_TICKET_QUERY_KEY, ticket)
+                ticket
         ).getData();
     }
 
