@@ -15,7 +15,7 @@ public class EmailMessage implements Serializable {
 
     private String[] recipient;
 
-    private String[] carbonCopy; // 可以为空，默认是 sender，若 sender 也为空，默认按照邮件发送器实现的用户名
+    private String[] carbonCopy; // 可以为空，默认是 recipient
 
     private String title;
 

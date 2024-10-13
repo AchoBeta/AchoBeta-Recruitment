@@ -45,7 +45,6 @@ public class MessageSendWithEmailHandler extends MessageSendHandler {
     private EmailMessage getNoticeMessage(String email, String tittle, String content, String stuName, List<AttachmentFile> attachmentInfoList) {
         // 封装 Email
         EmailMessage emailMessage = new EmailMessage();
-        emailMessage.setCreateTime(new Date());
         emailMessage.setTitle(MESSAGE_EMAIL_NOTICE.getTitle());
         emailMessage.setRecipient(email);
 

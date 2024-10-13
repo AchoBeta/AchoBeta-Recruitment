@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -95,7 +94,6 @@ public class EmailServiceImpl implements EmailService {
     private void buildEmailAndSend(String email, String code) {
         // 封装 Email
         EmailMessage emailMessage = new EmailMessage();
-        emailMessage.setCreateTime(new Date());
         emailMessage.setTitle(CAPTCHA.getTitle());
         emailMessage.setRecipient(email);
         // 构造模板消息

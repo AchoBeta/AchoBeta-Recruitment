@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -59,7 +58,6 @@ public class ResumeStateTransitionHelperConfig {
                 // 封装 email
                 EmailTemplateEnum emailTemplate = EmailTemplateEnum.RESUME_NOTICE;
                 EmailMessage emailMessage = new EmailMessage();
-                emailMessage.setCreateTime(new Date());
                 emailMessage.setTitle(emailTemplate.getTitle());
                 emailMessage.setRecipient(currentResume.getEmail());
                 // 构造模板消息

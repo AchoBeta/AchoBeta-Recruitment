@@ -41,17 +41,17 @@ public class EmailSender {
                     .filter(StringUtils::hasText)
                     .orElseThrow(() -> new GlobalServiceException("无法确定发送者邮箱地址", GlobalServiceStatusCode.EMAIL_SEND_FAIL));
             mimeMessageHelper.setFrom(from);
-            // 指定抄送人，避免一些情况导致发送邮件失败
-            mimeMessageHelper.setCc(Optional.ofNullable(carbonCopy).filter(cc -> cc.length > 0).orElseGet(() -> new String[]{from}));
             // 设置标题与内容
             mimeMessageHelper.setSubject(title);
             mimeMessageHelper.setText(content, isHtml);
             // 设置发送时间（但大部分邮箱不支持此功能）
-            mimeMessageHelper.setSentDate(sentDate);
+            mimeMessageHelper.setSentDate(Optional.ofNullable(sentDate).orElseGet(Date::new));
             // 设置接受者邮箱地址
             mimeMessageHelper.setTo(recipient);
+            // 指定抄送人，避免一些情况导致发送邮件失败
+            mimeMessageHelper.setCc(Optional.ofNullable(carbonCopy).filter(cc -> cc.length > 0).orElse(recipient));
             // 设置附件
-            for (EmailAttachment attachment : fileList) {
+            for (EmailAttachment attachment : Optional.ofNullable(fileList).orElseGet(ArrayList::new)) {
                 if (Objects.nonNull(attachment)) {
                     mimeMessageHelper.addAttachment(attachment.getFileName(), attachment);
                 }

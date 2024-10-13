@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,7 +87,6 @@ ResumeConfirmHelper implements ResumeStateInternalTransitionHelper{
             // 封装 email
             EmailTemplateEnum emailTemplate = EmailTemplateEnum.MEMBER_NOTICE;
             EmailMessage emailMessage = new EmailMessage();
-            emailMessage.setCreateTime(new Date());
             emailMessage.setTitle(emailTemplate.getTitle());
             emailMessage.setRecipient(currentResume.getEmail());
             // 构造模板消息

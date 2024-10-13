@@ -20,7 +20,6 @@ import com.alibaba.cola.statemachine.Condition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -74,7 +73,6 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
             // 封装 email
             EmailTemplateEnum emailTemplate = EmailTemplateEnum.INTERVIEW_NOTICE;
             EmailMessage emailMessage = new EmailMessage();
-            emailMessage.setCreateTime(new Date());
             emailMessage.setTitle(emailTemplate.getTitle());
             emailMessage.setRecipient(simpleStudentVO.getEmail());
             // 构造模板消息
