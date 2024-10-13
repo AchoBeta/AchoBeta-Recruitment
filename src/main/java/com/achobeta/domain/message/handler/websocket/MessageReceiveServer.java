@@ -56,12 +56,12 @@ public class MessageReceiveServer {
         String chainName = messageSendDTO.getMessageContent().getSendType() + MessageSendHandlerChain.CHAIN_BASE_NAME;
         judgeBeanIfExist(chainName);
         //初始化消息处理链路
-        MessageSendHandlerChain sendHandlerChain = (MessageSendHandlerChain) SpringUtil.getBean(chainName);
+        MessageSendHandlerChain sendHandlerChain = SpringUtil.getBean(chainName, MessageSendHandlerChain.class);
         messageSendDTO.getSendTypeList().stream().forEach(sendType->{
             //获取要发送的所有消息类型
             String handlerBeanName=sendType+MessageSendHandler.HANDLER_BASE_NAME;
             judgeBeanIfExist(handlerBeanName);
-            sendHandlerChain.addHandler((MessageSendHandler)SpringUtil.getBean(handlerBeanName));
+            sendHandlerChain.addHandler(SpringUtil.getBean(handlerBeanName, MessageSendHandler.class));
         });
         return sendHandlerChain;
     }

@@ -1,13 +1,15 @@
-package com.achobeta.email.factory;
+package com.achobeta.email.provider;
 
-import cn.hutool.core.util.RandomUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.email.config.EmailSenderConfig;
+import com.achobeta.email.config.EmailSenderProperties;
+import com.achobeta.email.provider.strategy.ProvideStrategy;
 import com.achobeta.exception.GlobalServiceException;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -19,20 +21,23 @@ import java.util.Optional;
  * Description:
  * User: 马拉圈
  * Date: 2024-10-13
- * Time: 15:22
+ * Time: 22:50
  */
-@Configuration
-@Setter
-@ConfigurationProperties("ab.mail")
-public class EmailSenderFactory implements InitializingBean {
+@Component
+@RequiredArgsConstructor
+public class EmailSenderProvider implements InitializingBean {
 
-    private List<EmailSenderProperties> senders;
+    private final EmailSenderConfig emailSenderConfig;
 
     private List<JavaMailSenderImpl> senderList;
 
+    private ProvideStrategy provideStrategy;
+
     @Override
     public void afterPropertiesSet() throws Exception {
+        // 构造邮件发送器实现
         this.senderList = new ArrayList<>();
+        List<EmailSenderProperties> senders = emailSenderConfig.getSenders();
         Optional.ofNullable(senders).stream().flatMap(List::stream).forEach(sender -> {
             // 邮件发送者
             JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
@@ -45,12 +50,19 @@ public class EmailSenderFactory implements InitializingBean {
             javaMailSender.setJavaMailProperties(sender.getProperties());
             senderList.add(javaMailSender);
         });
+        // 若不存在一个实现则抛出异常（启动项目时）
         if(CollectionUtils.isEmpty(this.senderList)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.EMAIL_SENDER_NOT_EXISTS);
         }
+        // 初始化获取发送器实现的策略
+        this.provideStrategy = SpringUtil.getBean(
+                emailSenderConfig.getStrategy() + ProvideStrategy.BASE_NAME,
+                ProvideStrategy.class
+        );
     }
 
-    public JavaMailSenderImpl fetch() {
-        return senderList.get(RandomUtil.randomInt(senderList.size()));
+    public JavaMailSenderImpl provide() {
+        return provideStrategy.getSender(senderList);
     }
+
 }

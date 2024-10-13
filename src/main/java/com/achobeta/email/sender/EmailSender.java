@@ -1,10 +1,11 @@
 package com.achobeta.email.sender;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.email.factory.EmailSenderFactory;
 import com.achobeta.email.model.po.EmailAttachment;
 import com.achobeta.email.model.po.EmailMessage;
+import com.achobeta.email.provider.EmailSenderProvider;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.util.TimeUtil;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -22,41 +23,47 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class EmailSender {
 
-    private final EmailSenderFactory emailSenderFactory;
+    private final EmailSenderProvider emailSenderProvider;
 
     public void send(String sender, String[] recipient, String[] carbonCopy,
                      String title, String content, boolean isHtml,
-                     Date sentDate, List<EmailAttachment> fileList) {
+                     Date sendDate, List<EmailAttachment> fileList) {
         // 封装对象
         try {
             // 获取邮件发送器实现
-            JavaMailSenderImpl javaMailSender = emailSenderFactory.fetch();
+            JavaMailSenderImpl javaMailSender = emailSenderProvider.provide();
             // 构造邮件
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, Boolean.TRUE);
             // 确定发送至邮箱地址
-            String from = Optional.ofNullable(sender)
+            sender = Optional.ofNullable(sender)
                     .filter(StringUtils::hasText)
                     .or(() -> Optional.ofNullable(javaMailSender.getUsername()))
                     .filter(StringUtils::hasText)
                     .orElseThrow(() -> new GlobalServiceException("无法确定发送者邮箱地址", GlobalServiceStatusCode.EMAIL_SEND_FAIL));
-            mimeMessageHelper.setFrom(from);
-            // 设置标题与内容
-            mimeMessageHelper.setSubject(title);
-            mimeMessageHelper.setText(content, isHtml);
-            // 设置发送时间（但大部分邮箱不支持此功能）
-            mimeMessageHelper.setSentDate(Optional.ofNullable(sentDate).orElseGet(Date::new));
+            mimeMessageHelper.setFrom(sender);
             // 设置接受者邮箱地址
             mimeMessageHelper.setTo(recipient);
             // 指定抄送人，避免一些情况导致发送邮件失败
-            mimeMessageHelper.setCc(Optional.ofNullable(carbonCopy).filter(cc -> cc.length > 0).orElse(recipient));
+            carbonCopy = Optional.ofNullable(carbonCopy).filter(cc -> cc.length > 0).orElse(recipient);
+            mimeMessageHelper.setCc(carbonCopy);
+            // 设置标题与内容
+            mimeMessageHelper.setSubject(title);
+            mimeMessageHelper.setText(content, isHtml);
             // 设置附件
-            for (EmailAttachment attachment : Optional.ofNullable(fileList).orElseGet(ArrayList::new)) {
+            fileList = Optional.ofNullable(fileList).orElseGet(ArrayList::new);
+            for (EmailAttachment attachment : fileList) {
                 if (Objects.nonNull(attachment)) {
                     mimeMessageHelper.addAttachment(attachment.getFileName(), attachment);
                 }
             }
+            // 设置发送时间（但大部分邮箱不支持此功能）
+            sendDate = Optional.ofNullable(sendDate).orElseGet(Date::new);
+            mimeMessageHelper.setSentDate(sendDate);
             // 发送
+            log.info("发送者 {}，接收者 {}，抄送人 {}，标题 {}，附件数 {}，发送日期 {}",
+                    sender, recipient, carbonCopy, title, fileList.size(), TimeUtil.getDateTime(sendDate)
+            );
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.EMAIL_SEND_FAIL);

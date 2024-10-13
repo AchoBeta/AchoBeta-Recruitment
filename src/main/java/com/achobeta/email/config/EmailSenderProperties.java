@@ -1,4 +1,4 @@
-package com.achobeta.email.factory;
+package com.achobeta.email.config;
 
 import lombok.Data;
 
