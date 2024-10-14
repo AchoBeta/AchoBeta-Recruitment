@@ -1,6 +1,5 @@
 package com.achobeta.domain.schedule.model.dto;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
