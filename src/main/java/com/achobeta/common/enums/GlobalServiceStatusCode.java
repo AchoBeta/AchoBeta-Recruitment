@@ -52,8 +52,9 @@ public enum GlobalServiceStatusCode {
 
      /* 邮箱错误 3001-4000 */
     EMAIL_PATTERN_ERROR(3001, "邮箱格式错误"),
-    EMAIL_SEND_FAIL(3002, "邮箱发送失败"),
-    EMAIL_ATTACH_SEND_FAIL(3003, "邮箱附件发送失败"),
+    EMAIL_SENDER_NOT_EXISTS(3002, "邮箱发送器不存在"),
+    EMAIL_SEND_FAIL(3003, "邮箱发送失败"),
+    EMAIL_ATTACH_SEND_FAIL(3004, "邮箱附件发送失败"),
 
     EMAIL_NOT_EXIST_RECORD(3101, "邮箱不存在记录"),
     EMAIL_CAPTCHA_CODE_COUNT_EXHAUST(3103, "申请次数达到上限"),
@@ -87,7 +88,7 @@ public enum GlobalServiceStatusCode {
     /* 面试错误 6001-7000 */
     INTERVIEW_SCHEDULE_NOT_EXISTS(6001, "面试预约不存在"),
     INTERVIEWER_NOT_EXISTS(6002, "面试官不存在"),
-    INTERVIEW_SCHEDULE_IS_REFERENCED(6003, "面试预约已被引用"),
+    INTERVIEW_SCHEDULE_IS_REFERENCED(6003, "无法删除已创建面试的面试预约"),
 
     INTERVIEW_NOT_EXISTS(6101, "本场面试不存在"),
     INTERVIEW_STATUS_EXCEPTION(6102, "面试状态异常"),
@@ -110,8 +111,7 @@ public enum GlobalServiceStatusCode {
     RESOURCE_GET_OBJECT_URL_FAILED(7011, "获取资源 url 失败"),
     RESOURCE_NOT_VALID(7012, "资源非法"),
     RESOURCE_IS_BLANK(7013, "资源为空"),
-    RESOURCE_OUT_SIZE(7014, "资源过大"),
-    RESOURCE_TYPE_NOT_MATCH(7015, "资源类型不匹配"),
+    RESOURCE_TYPE_NOT_MATCH(7014, "资源类型不匹配"),
 
     /*消息错误 8001-9000*/
     MESSAGE_TEMPLATE_NOT_EXIST(8001,"消息模板不存在"),

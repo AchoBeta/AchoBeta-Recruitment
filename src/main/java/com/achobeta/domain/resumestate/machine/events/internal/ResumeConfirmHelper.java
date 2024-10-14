@@ -18,10 +18,8 @@ import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,9 +35,6 @@ import java.util.Optional;
 @Slf4j
 public class
 ResumeConfirmHelper implements ResumeStateInternalTransitionHelper{
-
-    @Value("${spring.mail.username}")
-    private String achobetaEmail;
 
     private final EmailSender emailSender;
 
@@ -92,9 +87,6 @@ ResumeConfirmHelper implements ResumeStateInternalTransitionHelper{
             // 封装 email
             EmailTemplateEnum emailTemplate = EmailTemplateEnum.MEMBER_NOTICE;
             EmailMessage emailMessage = new EmailMessage();
-            emailMessage.setSender(achobetaEmail);
-            emailMessage.setCarbonCopy();
-            emailMessage.setCreateTime(new Date());
             emailMessage.setTitle(emailTemplate.getTitle());
             emailMessage.setRecipient(currentResume.getEmail());
             // 构造模板消息

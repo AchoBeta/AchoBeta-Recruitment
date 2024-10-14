@@ -11,21 +11,21 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum EmailTemplateEnum {
 
-    CAPTCHA("邮箱验证码：验证用户身份", "identifying-code-model.html"),
+    CAPTCHA("AchoBeta 邮箱验证：验证用户身份", "identifying-code-model.html"),
 
-    INTERVIEW_NOTICE("面试通知", "interview-notice-model.html"),
+    INTERVIEW_NOTICE("AchoBeta 面试通知", "interview-notice-model.html"),
 
-    INTERVIEW_SUMMARY("面试总结", "interview-summary-model.html"),
+    INTERVIEW_SUMMARY("AchoBeta 面试总结", "interview-summary-model.html"),
 
-    INTERVIEW_SUMMARY_MARKDOWN("面试总结", "interview-summary-model.md"),
+    INTERVIEW_SUMMARY_MARKDOWN("AchoBeta 面试总结", "interview-summary-model.md"),
 
-    INTERVIEW_EXPERIENCE("面试经历", "interview-experience-model.html"),
+    INTERVIEW_EXPERIENCE("AchoBeta 面试经历", "interview-experience-model.html"),
 
-    RESUME_NOTICE("简历状态轮转通知", "resume-notice-model.html"),
+    RESUME_NOTICE("AchoBeta 简历状态轮转通知", "resume-notice-model.html"),
 
-    MEMBER_NOTICE("转正通知", "confirmation-notice-model.html"),
+    MEMBER_NOTICE("AchoBeta 转正通知", "confirmation-notice-model.html"),
 
-    MESSAGE_EMAIL_NOTICE("Achobeta消息通知", "message-email-notice.html"),
+    MESSAGE_EMAIL_NOTICE("AchoBeta 消息通知", "message-email-notice.html"),
 
     ;
 

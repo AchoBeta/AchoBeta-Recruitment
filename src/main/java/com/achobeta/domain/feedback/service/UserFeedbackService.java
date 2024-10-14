@@ -8,6 +8,7 @@ import com.achobeta.domain.feedback.model.vo.FeedbackMessageVO;
 import com.achobeta.domain.feedback.model.vo.QueryUserOfFeedbackVO;
 import com.achobeta.domain.feedback.model.vo.UserPersonalFeedBackVO;
 import com.achobeta.domain.message.model.entity.Message;
+import com.achobeta.domain.users.model.po.UserHelper;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -19,15 +20,15 @@ import java.util.List;
 */
 public interface UserFeedbackService extends IService<UserFeedback> {
 
-    List<UserPersonalFeedBackVO> getUserFeedbackList();
+    List<UserPersonalFeedBackVO> getUserFeedbackList(Long userId);
 
-    void submitUserFeedback(UserFeedbackDTO userFeedbackDTO);
+    void submitUserFeedback(Long userId, UserFeedbackDTO userFeedbackDTO);
 
     QueryUserOfFeedbackVO queryUserOfFeedbackList(QueryUserOfFeedbackDTO queryUserOfFeedbackDTO);
 
     Long handleFeedbackOfUser(HandleFeedbackDTO handleFeedbackDTO);
 
-    FeedbackMessageVO queryMessageOfFeedback(Message message);
+    FeedbackMessageVO queryMessageOfFeedback(UserHelper currentUser, Message message);
 
     Message judgeMessageOfFeedbackIfExist(Long messageId);
 

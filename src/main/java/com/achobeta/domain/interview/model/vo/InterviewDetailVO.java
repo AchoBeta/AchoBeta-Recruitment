@@ -12,14 +12,12 @@ import lombok.Data;
 @Data
 public class InterviewDetailVO extends InterviewVO {
 
-    private Long stuId;
-
     private String description;
 
     private String address;
 
     public void hidden() {
-        setStuId(null);
+        setSimpleStudentVO(null);
     }
 
 }

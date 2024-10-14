@@ -36,7 +36,8 @@
 
     <select id="getInterviewScheduleList" resultMap="ScheduleResumeMap">
         select
-            s.id, s.participation_id, s.start_time, s.end_time,
+            -- 面试预约与面试官多对多，在本条 sql 容易出现重复行
+            distinct s.id, s.participation_id, s.start_time, s.end_time,
             <include refid="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.Simple_Column_List" />
         from user m
              left join interviewer i on m.id = i.manager_id and m.is_deleted = 0 and i.is_deleted = 0
@@ -46,13 +47,24 @@
              left join recruitment_activity a on p.act_id = a.id and p.is_deleted = 0 and a.is_deleted = 0
              left join recruitment_batch b on a.batch_id = b.id and a.is_deleted = 0 and b.is_deleted = 0
              left join stu_resume r on r.batch_id = b.id and r.user_id = stu.id and r.is_deleted = 0 and b.is_deleted = 0 and stu.is_deleted = 0
-        where m.id = #{managerId,jdbcType=BIGINT} and a.id = #{actId,jdbcType=BIGINT} and s.id is not null and m.is_deleted = 0
+        <where>
+            s.id is not null and m.is_deleted = 0
+            <if test="managerId != null">
+                and m.id = #{managerId,jdbcType=BIGINT}
+            </if>
+            <if test="condition.batchId != null">
+                and b.id = #{condition.batchId,jdbcType=BIGINT}
+            </if>
+            <if test="condition.actId != null">
+                and a.id = #{condition.actId,jdbcType=BIGINT}
+            </if>
+        </where>
         order by s.start_time asc, s.end_time asc
     </select>
 
     <select id="getSituationsByActId" parameterType="java.lang.Long" resultMap="ParticipationScheduleMap">
         select
-            p.id, s.id s_id, s.start_time s_start_time, s.end_time s_end_time,
+            p.id, s.id s_id, s.participation_id s_participation_id, s.start_time s_start_time, s.end_time s_end_time,
             <include refid="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.Simple_Column_List" />
         from activity_participation p
              left join user stu on p.stu_id = stu.id and p.is_deleted = 0 and stu.is_deleted = 0
@@ -61,6 +73,7 @@
              left join stu_resume r on r.batch_id = b.id and r.user_id = stu.id and r.is_deleted = 0 and b.is_deleted = 0 and stu.is_deleted = 0
              left join interview_schedule s on s.participation_id = p.id and s.is_deleted = 0 and p.is_deleted = 0
         where a.id = #{actId,jdbcType=BIGINT} and r.id is not null and p.is_deleted = 0
+        order by s.start_time asc, s.end_time asc
     </select>
 
     <select id="getSituationsByParticipationId" parameterType="java.lang.Long" resultMap="ParticipationScheduleMap">
@@ -74,6 +87,7 @@
              left join stu_resume r on r.batch_id = b.id and r.user_id = stu.id and r.is_deleted = 0 and b.is_deleted = 0 and stu.is_deleted = 0
              left join interview_schedule s on s.participation_id = p.id and s.is_deleted = 0 and p.is_deleted = 0
         where p.id = #{participationId,jdbcType=BIGINT} and r.id is not null and p.is_deleted = 0
+        order by s.start_time asc, s.end_time asc
     </select>
 
     <select id="getInterviewerScheduleDetail" parameterType="java.lang.Long" resultMap="ScheduleDetailMap">
@@ -91,6 +105,7 @@
              left join interviewer i on s.id = i.schedule_id and s.is_deleted = 0 and i.is_deleted = 0
              left join user m on m.id = i.manager_id and m.is_deleted = 0 and i.is_deleted = 0
         where s.id = #{scheduleId,jdbcType=BIGINT} and s.is_deleted = 0
+        order by s.start_time asc, s.end_time asc
     </select>
 
 </mapper>

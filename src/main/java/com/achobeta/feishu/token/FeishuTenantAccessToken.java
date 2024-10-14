@@ -30,24 +30,19 @@ public class FeishuTenantAccessToken {
 
     private volatile String tenantAccessToken;
 
-    private volatile Integer expire;
-
-
-    private long compareToNow(int tokenExpire) {
-        return TimeUtil.millisToSecond(tokenExpire) - System.currentTimeMillis();
-    }
+    private volatile Long expire;
 
     private boolean shouldRefresh() {
         return !StringUtils.hasText(tenantAccessToken) || Optional.ofNullable(expire)
                 // 这里判断的一般是准确的，如果非本类请求到的 token，可能会出现到期前三十分钟获取另一个 token，那也不影响这个 token 的有效性
-                .filter(tokenExpire -> compareToNow(tokenExpire) > 0)
-                .isPresent();
+                .filter(tokenExpire -> tokenExpire - System.currentTimeMillis() > 0)
+                .isEmpty();
     }
 
     public void refreshToken() {
 //        try {
 //            InternalTenantAccessTokenReq tenantAccessTokenReq = InternalTenantAccessTokenReq.newBuilder()
-//                    .internalTenantAccessTokenReqBody(feishuAppConfig.getToken())
+//                    .internalTenantAccessTokenReqBody(feishuAppConfig.getCredentials())
 //                    .build();
 //            byte[] bytes = feishuClient.auth()
 //                    .tenantAccessToken()
@@ -57,18 +52,18 @@ public class FeishuTenantAccessToken {
 //            FeishuTenantTokenResponse responseBody = GsonUtil.fromBytes(bytes, FeishuTenantTokenResponse.class);
 //            feishuRequestEngine.checkResponse(responseBody);
 //            this.tenantAccessToken = responseBody.getTenantAccessToken();
-//            this.expire = responseBody.getExpire();
+//            this.expire = TimeUtil.secondToMillis(responseBody.getExpire()) + System.currentTimeMillis();
 //        } catch (Exception e) {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
-        FeishuTenantTokenResponse responseBody = feishuRequestEngine.request(
+        FeishuTenantTokenResponse responseBody = feishuRequestEngine.jsonRequest(
                 HttpRequestEnum.TENANT_ACCESS_TOKEN,
                 feishuAppConfig.getCredentials(),
                 FeishuTenantTokenResponse.class,
                 null
         );
         this.tenantAccessToken = responseBody.getTenantAccessToken();
-        this.expire = responseBody.getExpire();
+        this.expire = TimeUtil.secondToMillis(responseBody.getExpire()) + System.currentTimeMillis();
     }
 
     public String getToken() {

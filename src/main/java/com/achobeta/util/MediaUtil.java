@@ -1,9 +1,9 @@
 package com.achobeta.util;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
-import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.exception.GlobalServiceException;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.tika.Tika;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,7 +25,28 @@ public class MediaUtil {
 
     public final static String TEMP_RESOURCE_PATH = "./temp/"; // 临时文件夹的文件都是用完就删的，所以我就觉得这个变量没必要写在配置文件里了
 
+    public final static String COMPRESS_FORMAT_NAME = "jpg"; // 压缩图片格式
+
+    public final static float COMPRESS_SCALE = 1.0f; // 压缩图片大小
+
+    public final static float COMPRESS_QUALITY = 0.5f; // 压缩图片质量
+
     private final static Tika TIKA = new Tika();
+
+    public static byte[] compressImage(byte[] bytes) {
+        try(InputStream inputStream = getInputStream(bytes);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            // 使用 thumbnailator 进行压缩，指定输出格式
+            Thumbnails.of(inputStream)
+                    .outputFormat(COMPRESS_FORMAT_NAME)
+                    .scale(COMPRESS_SCALE)
+                    .outputQuality(COMPRESS_QUALITY)
+                    .toOutputStream(byteArrayOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            throw new GlobalServiceException(e.getMessage());
+        }
+    }
 
     public static InputStream getInputStream(String url) throws IOException {
         HttpURLConnection connection = HttpRequestUtil.openConnection(url);
@@ -109,8 +130,10 @@ public class MediaUtil {
 
     public static <T> T createTempFileGetSomething(String originalName, byte[] data, Function<File, T> converter) {
         String fileNameSuffix = ResourceUtil.getSuffix(originalName);
+        // 获取即将创建的临时文件的路径
         String tempFilePath = getTempFilePath(fileNameSuffix);
         File tempFile = new File(tempFilePath);
+        // 创建并写入，应用后删除
         try (FileOutputStream outputStream = createAndGetFileOutputStream(tempFile)) {
             outputStream.write(data);
             outputStream.flush();

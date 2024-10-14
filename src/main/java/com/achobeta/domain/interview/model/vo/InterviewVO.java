@@ -2,6 +2,7 @@ package com.achobeta.domain.interview.model.vo;
 
 import com.achobeta.domain.interview.enums.InterviewStatus;
 import com.achobeta.domain.schedule.model.vo.ScheduleVO;
+import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import lombok.Data;
 
 /**
@@ -21,5 +22,7 @@ public class InterviewVO {
     private InterviewStatus status;
 
     private ScheduleVO scheduleVO;
+
+    private SimpleStudentVO simpleStudentVO;
 
 }

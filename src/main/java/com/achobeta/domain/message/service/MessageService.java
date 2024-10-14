@@ -1,9 +1,7 @@
 package com.achobeta.domain.message.service;
 
 import com.achobeta.domain.message.handler.websocket.MessageReceiveServer;
-import com.achobeta.domain.message.model.dto.EmailSendDTO;
-import com.achobeta.domain.message.model.dto.MessageContentDTO;
-import com.achobeta.domain.message.model.dto.QueryStuListDTO;
+import com.achobeta.domain.message.model.dto.*;
 import com.achobeta.domain.message.model.entity.Message;
 import com.achobeta.domain.message.model.vo.MessageContentVO;
 import com.achobeta.domain.message.model.vo.QueryStuListVO;
@@ -30,12 +28,15 @@ public interface MessageService extends IService<Message> {
 
     QueryStuListVO queryStuListByCondition(QueryStuListDTO queryStuDTO);
 
+    List<StuBaseInfoDTO> queryStuList(Long batchId, List<Long> userIds);
+
     void sendMessage(MessageContentDTO messageContentBody, CopyOnWriteArraySet<MessageReceiveServer> webSocketSet);
 
     Long storeMessage(MessageContentDTO messageContent);
 
-    List<MessageContentVO> getMessageListOfUser();
+    List<MessageContentVO> getMessageListOfUser(Long userId);
 
     void sendMessageByEmail(Long managerId, EmailSendDTO emailSendDTO, List<MultipartFile> attachmentList);
 
+    void sendMessageByEmail(Long managerId, EmailMassDTO emailMassDTO, List<MultipartFile> attachmentList);
 }

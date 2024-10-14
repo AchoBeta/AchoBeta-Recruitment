@@ -9,6 +9,7 @@ import com.achobeta.domain.resource.config.UploadLimitProperties;
 import com.achobeta.domain.resource.constants.ResourceConstants;
 import com.achobeta.domain.resource.enums.ExcelTemplateEnum;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
+import com.achobeta.domain.resource.enums.ResourceType;
 import com.achobeta.domain.resource.factory.AccessStrategyFactory;
 import com.achobeta.domain.resource.model.entity.DigitalResource;
 import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
@@ -16,19 +17,19 @@ import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ObjectStorageService;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.resource.util.ExcelUtil;
-import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.feishu.constants.ObjectType;
 import com.achobeta.redis.cache.RedisCache;
-import com.achobeta.util.HttpRequestUtil;
-import com.achobeta.util.HttpServletUtil;
-import com.achobeta.util.MediaUtil;
-import com.achobeta.util.TimeUtil;
+import com.achobeta.redis.lock.RedisLock;
+import com.achobeta.redis.lock.RedisLockProperties;
+import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
+import com.achobeta.util.*;
 import com.lark.oapi.service.drive.v1.model.ImportTask;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,6 +54,9 @@ import static com.achobeta.domain.resource.constants.ResourceConstants.DEFAULT_R
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class ResourceServiceImpl implements ResourceService {
 
+    @Value("${resource.compression.threshold}")
+    private Integer compressionThreshold;
+
     private final UploadLimitProperties uploadLimitProperties;
 
     private final AccessStrategyFactory accessStrategyFactory;
@@ -67,8 +71,14 @@ public class ResourceServiceImpl implements ResourceService {
 
     private final RedisCache redisCache;
 
+    private final RedisLock redisLock;
+
+    private final RedisLockProperties redisLockProperties;
+
+    private final SimpleLockStrategy simpleLockStrategy;
+
     @Override
-    public DigitalResource checkAndGetResource(Long code, ResourceAccessLevel level) {
+    public DigitalResource analyzeCode(Long code, ResourceAccessLevel level) {
         DigitalResource resource = digitalResourceService.getResourceByCode(code);
         // 获取策略并判断是否可以访问（level 取最高的那个）
         ResourceAccessStrategy accessStrategy = accessStrategyFactory.getStrategy(resource.getAccessLevel().and(level));
@@ -84,19 +94,19 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public DigitalResource analyzeCode(Long code) {
-        return checkAndGetResource(code, null);
-    }
-
-    @Override
-    public void download(Long code, HttpServletResponse response) {
-        DigitalResource resource = analyzeCode(code);
-        objectStorageService.download(resource.getOriginalName(), resource.getFileName(), response);
+        return analyzeCode(code, null);
     }
 
     @Override
     public void preview(Long code, HttpServletResponse response) {
         DigitalResource resource = analyzeCode(code);
         objectStorageService.preview(resource.getFileName(), response);
+    }
+
+    @Override
+    public void download(Long code, HttpServletResponse response) {
+        DigitalResource resource = analyzeCode(code);
+        objectStorageService.download(resource.getOriginalName(), resource.getFileName(), response);
     }
 
     @Override
@@ -137,6 +147,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public Long upload(Long userId, String originalName, byte[] data, ResourceAccessLevel level) {
+        // 判断是否被限制上传
         checkBlockUser(userId);
         // 进行上传次数的检测
         String redisKey = ResourceConstants.REDIS_USER_UPLOAD_LIMIT + userId;
@@ -149,10 +160,28 @@ public class ResourceServiceImpl implements ResourceService {
         if(uploadLimitProperties.getFrequency().compareTo(times) <= 0) {
             throw new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_UPLOAD_TOO_FREQUENT);
         }
+        // 判断文件类型
+        String contentType = MediaUtil.getContentType(data);
+        String suffix = null;
+        // 判断是否是图片类型，并判断是否达到压缩阈值（否则压缩适得其反），若是则压缩图片
+        if(ResourceUtil.matchType(contentType, ResourceType.IMAGE) && compressionThreshold.compareTo(data.length) <= 0) {
+            // 压缩图片
+            data = MediaUtil.compressImage(data);
+            suffix = "." + MediaUtil.COMPRESS_FORMAT_NAME;
+            originalName = ResourceUtil.changeSuffix(originalName, suffix);
+        } else {
+            // 使用原后缀
+            suffix = ResourceUtil.getSuffix(originalName);
+        }
+        // 获得唯一文件名
+        String uniqueFileName = ResourceUtil.getUniqueFileName(userId, suffix);
+        // 上传
+        objectStorageService.upload(uniqueFileName, data);
+        // 记录
         DigitalResource resource = new DigitalResource();
         resource.setUserId(userId);
         resource.setOriginalName(originalName);
-        resource.setFileName(objectStorageService.upload(userId, originalName, data));
+        resource.setFileName(uniqueFileName);
         resource.setAccessLevel(Optional.ofNullable(level).orElse(DEFAULT_RESOURCE_ACCESS_LEVEL));
         Long code = digitalResourceService.createResource(resource).getCode();
         // 自增
@@ -173,25 +202,29 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     @Transactional
     public OnlineResourceVO synchronousFeishuUpload(Long managerId, byte[] bytes, ResourceAccessLevel level, ObjectType objectType, String fileName, Boolean synchronous) {
-        // 获取一个文件名
-        String originName = ResourceUtil.getFileNameByExtension(fileName, objectType.getFileExtension());
-        OnlineResourceVO onlineResourceVO = new OnlineResourceVO();
-        // 是否同步飞书文档
-        if(Boolean.TRUE.equals(synchronous)) {
-            try {
-                String ticket = feishuService.importTaskBriefly(originName, bytes, objectType).getTicket();
-                FeishuResource resource = feishuResourceService.createAndGetFeishuResource(ticket, originName);
-                ImportTask importTask = feishuService.getImportTaskPolling(ticket);
-                feishuResourceService.updateFeishuResource(resource.getId(), importTask);
-                onlineResourceVO.setFeishuUrl(feishuResourceService.getSystemUrl(ticket));
-            } catch (GlobalServiceException e) {
-                log.warn("{} {}", e.getStatusCode(), e.getMessage());
+        // 若同一管理员同时访问这个同步飞书的方法，未获得锁的上传任务都拒绝（防抖）（可能上传时间长，多点了几下...）
+        return redisLock.tryLockGetSomething(ResourceConstants.REDIS_MANAGER_SYNC_FEISHU_LOCK + managerId, 0L, redisLockProperties.getTimeout(), redisLockProperties.getUnit(), () -> {
+            // 获取一个文件名
+            String originName = ResourceUtil.getFileNameByExtension(fileName, objectType.getFileExtension());
+            OnlineResourceVO onlineResourceVO = new OnlineResourceVO();
+            // 上传对象存储系统
+            Long code = upload(managerId, originName, bytes, level);
+            onlineResourceVO.setDownloadUrl(getSystemUrl(code));
+            // 是否同步飞书文档
+            if(Boolean.TRUE.equals(synchronous)) {
+                try {
+                    String ticket = feishuService.importTaskBriefly(originName, bytes, objectType).getTicket();
+                    FeishuResource resource = feishuResourceService.createAndGetFeishuResource(ticket, originName);
+                    // 轮询获取导入任务的结果
+                    ImportTask importTask = feishuService.getImportTaskPolling(ticket);
+                    feishuResourceService.updateFeishuResource(resource.getId(), importTask);
+                    onlineResourceVO.setFeishuUrl(feishuResourceService.getSystemUrl(ticket));
+                } catch (GlobalServiceException e) {
+                    log.warn("{} {}", e.getStatusCode(), e.getMessage());
+                }
             }
-        }
-        // 上传对象存储系统
-        Long code = upload(managerId, originName, bytes, level);
-        onlineResourceVO.setDownloadUrl(getSystemUrl(code));
-        return onlineResourceVO;
+            return onlineResourceVO;
+        }, () -> null, simpleLockStrategy);
     }
 
     @Override
@@ -223,7 +256,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Transactional
     public void remove(Long code) {
         // 若权限小于 USER_ACCESS 就按 USER_ACCESS 权限
-        DigitalResource resource = checkAndGetResource(code, DEFAULT_RESOURCE_ACCESS_LEVEL);
+        DigitalResource resource = analyzeCode(code, DEFAULT_RESOURCE_ACCESS_LEVEL);
         objectStorageService.remove(resource.getFileName());
         digitalResourceService.removeDigitalResource(resource.getId());
     }
@@ -267,6 +300,17 @@ public class ResourceServiceImpl implements ResourceService {
             // 若为过去时，则直接封禁
             redisCache.deleteObject(blockKey);
         }
+    }
+
+    @Override
+    public void compressImage(Long code) throws Exception {
+        DigitalResource resource = digitalResourceService.getResourceByCode(code);
+        String compressImage = objectStorageService.compressImage(resource.getUserId(), resource.getFileName());
+        digitalResourceService.renameDigitalResource(
+                resource.getId(),
+                ResourceUtil.changeExtension(resource.getOriginalName(), MediaUtil.COMPRESS_FORMAT_NAME),
+                compressImage
+        );
     }
 
 }

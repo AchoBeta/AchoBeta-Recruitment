@@ -16,9 +16,9 @@ public interface ObjectStorageService {
      * 文件上传
      *
      */
-    String upload(Long userId, String originalName, byte[] bytes);
+    void upload(String originalName, byte[] bytes);
 
-    String upload(Long userId, MultipartFile file);
+    void upload(MultipartFile file);
 
     /**
      * 预览图片
@@ -51,5 +51,7 @@ public interface ObjectStorageService {
      *
      */
     void remove(String fileName);
+
+    String compressImage(Long userId, String fileName) throws Exception;
 
 }

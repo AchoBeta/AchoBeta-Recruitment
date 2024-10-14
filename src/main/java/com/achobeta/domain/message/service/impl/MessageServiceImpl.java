@@ -6,9 +6,7 @@ import com.achobeta.domain.message.handler.ext.MessageSendWithEmailHandler;
 import com.achobeta.domain.message.handler.websocket.MessageReceiveServer;
 import com.achobeta.domain.message.model.converter.MessageConverter;
 import com.achobeta.domain.message.model.dao.mapper.MessageMapper;
-import com.achobeta.domain.message.model.dto.EmailSendDTO;
-import com.achobeta.domain.message.model.dto.MessageContentDTO;
-import com.achobeta.domain.message.model.dto.QueryStuListDTO;
+import com.achobeta.domain.message.model.dto.*;
 import com.achobeta.domain.message.model.entity.AttachmentFile;
 import com.achobeta.domain.message.model.entity.Message;
 import com.achobeta.domain.message.model.vo.MessageContentVO;
@@ -17,7 +15,7 @@ import com.achobeta.domain.message.service.MessageService;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.student.model.entity.StuResume;
 import com.achobeta.domain.student.service.StuResumeService;
-import com.achobeta.domain.users.context.BaseContext;
+import com.achobeta.email.model.po.EmailAttachment;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -25,14 +23,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.stream.Collectors;
 
 /**
  * @author cattleyuan
@@ -56,7 +53,6 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
         IPage<StuResume> page = messageConverter.queryStuListDTOToBasePageQuery(queryStuDTO).toMpPage();
         //查询分页返回结果
         IPage<StuResume> pageResult = stuResumeService.lambdaQuery()
-                .like(StringUtils.hasText(queryStuDTO.getName()), StuResume::getName, queryStuDTO.getName())
                 .eq(Objects.nonNull(queryStuDTO.getBatchId()), StuResume::getBatchId, queryStuDTO.getBatchId())
                 .eq(Objects.nonNull(queryStuDTO.getGrade()), StuResume::getGrade, queryStuDTO.getGrade())
                 .eq(Objects.nonNull(queryStuDTO.getStatus()), StuResume::getStatus, queryStuDTO.getStatus())
@@ -64,6 +60,12 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
         //封装返回结果
         BasePageResult<StuResume> stuResumeBasePageResult = BasePageResult.of(pageResult);
         return messageConverter.basePageResultToQueryStuListVO(stuResumeBasePageResult);
+    }
+
+    @Override
+    public List<StuBaseInfoDTO> queryStuList(Long batchId, List<Long> userIds) {
+        List<StuResume> stuResumeList = stuResumeService.queryStuList(batchId, userIds.stream().distinct().toList());
+        return messageConverter.stuResumeListToStuBaseInfoDTOList(stuResumeList);
     }
 
  /*   @Override
@@ -94,8 +96,8 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
 
         // 获取需要排除的用户ID列表
         List<Long> excludedUserIds = messageContentBody.getStuInfoSendList().stream()
-                .map(data -> data.getUserId())
-                .collect(Collectors.toList());
+                .map(StuBaseInfoDTO::getUserId)
+                .toList();
 
         // 发送消息
         webSocketSet.stream()
@@ -139,7 +141,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
         Message message = messageConverter.messsageContentDTOToPo(messageContent);
         message.setManagerId(managerId);
 
-        messageContent.getStuInfoSendList().stream().forEach(stu -> {
+        messageContent.getStuInfoSendList().forEach(stu -> {
             message.setUserId(stu.getUserId());
             this.save(message);
         });
@@ -157,8 +159,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
     }
 
     @Override
-    public List<MessageContentVO> getMessageListOfUser() {
-        Long userId = BaseContext.getCurrentUser().getUserId();
+    public List<MessageContentVO> getMessageListOfUser(Long userId) {
         //缓存消息列表
         /*Optional<List<MessageContentVO>> messageOptional = redisCache.getCacheList(MESSAGE_CACHE_NAME + userId, MessageContentVO.class);
 
@@ -166,21 +167,41 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
             return messageOptional.get();*/
         //查询并封装返回结果
         List<Message> messageList = lambdaQuery().eq(Message::getUserId, userId).list();
-        List<MessageContentVO> messageContentVOList = messageConverter.messageContentPoToVOList(messageList);
-
-        return messageContentVOList;
+        return messageConverter.messageContentPoToVOList(messageList);
     }
 
     @Override
     public void sendMessageByEmail(Long managerId, EmailSendDTO emailSendDTO, List<MultipartFile> attachmentList) {
-
-        emailSendDTO.getStuInfoSendList().stream().forEach(stu -> {
-            List<AttachmentFile> attachmentInfoList = getAttachUrlList(managerId, attachmentList);
-            messageSendWithEmailHandler.sendEmail(stu.getEmail(),emailSendDTO.getTittle(),emailSendDTO.getContent(),stu.getStuName(),attachmentInfoList,attachmentList);
+        //构造邮箱附件列表
+        List<EmailAttachment> emailAttachmentList = CollectionUtils.isEmpty(attachmentList) ? Collections.emptyList() : attachmentList.stream().map(EmailAttachment::of).toList();
+        //构造附件 url 列表
+        List<AttachmentFile> attachmentInfoList = getAttachUrlList(managerId, attachmentList);
+        // 发送附件
+        emailSendDTO.getStuInfoSendList().forEach(stu -> {
+            messageSendWithEmailHandler.sendEmail(
+                    stu.getEmail(),
+                    emailSendDTO.getTittle(),
+                    emailSendDTO.getContent(),
+                    stu.getStuName(),
+                    emailAttachmentList,
+                    attachmentInfoList
+            );
         });
         log.info("邮箱发送成功!");
     }
 
+    @Override
+    public void sendMessageByEmail(Long managerId, EmailMassDTO emailMassDTO, List<MultipartFile> attachmentList) {
+        // 查询学生列表
+        List<StuBaseInfoDTO> stuBaseInfoDTOS = queryStuList(emailMassDTO.getBatchId(), emailMassDTO.getUserIds());
+        // 转换对象
+        EmailSendDTO emailSendDTO = new EmailSendDTO();
+        emailSendDTO.setTittle(emailMassDTO.getTittle());
+        emailSendDTO.setContent(emailMassDTO.getContent());
+        emailSendDTO.setStuInfoSendList(stuBaseInfoDTOS);
+        // 发送
+        sendMessageByEmail(managerId, emailSendDTO, attachmentList);
+    }
 
     private List<AttachmentFile> getAttachUrlList(Long managerId, List<MultipartFile> attachmentList) {
         if(CollectionUtils.isEmpty(attachmentList)) {
@@ -197,7 +218,6 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
             return attachmentFile;
         }).toList();
     }
-
 }
 
 

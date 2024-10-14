@@ -11,7 +11,7 @@ import com.achobeta.domain.login.model.entity.LoginUser;
 import com.achobeta.domain.login.model.vo.LoginVO;
 import com.achobeta.domain.users.service.UserService;
 import com.achobeta.exception.GlobalServiceException;
-import com.achobeta.interpretor.UserInterceptor;
+import com.achobeta.interceptor.UserInterceptor;
 import com.achobeta.jwt.propertities.JwtProperties;
 import com.achobeta.jwt.util.JwtUtil;
 import com.achobeta.redis.cache.RedisCache;

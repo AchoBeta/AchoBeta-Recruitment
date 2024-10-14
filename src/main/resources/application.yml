@@ -34,6 +34,8 @@ ab:
       header: Request-ID
 
 resource:
+  compression:
+    threshold: 65536
   code:
     workerId: 2
   upload:

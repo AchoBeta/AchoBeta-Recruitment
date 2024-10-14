@@ -93,10 +93,19 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
     }
 
     @Override
-    public void removeDigitalResource(Long id) {
+    public void removeDigitalResource(Long resourceId) {
         this.lambdaUpdate()
-                .eq(DigitalResource::getId, id)
+                .eq(DigitalResource::getId, resourceId)
                 .remove();
+    }
+
+    @Override
+    public void renameDigitalResource(Long resourceId, String originalName, String fileName) {
+        this.lambdaUpdate()
+                .eq(DigitalResource::getId, resourceId)
+                .set(DigitalResource::getOriginalName, originalName)
+                .set(DigitalResource::getFileName, fileName)
+                .update();
     }
 }
 

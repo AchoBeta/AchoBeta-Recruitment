@@ -16,7 +16,7 @@ import com.achobeta.domain.feedback.service.UserFeedbackService;
 import com.achobeta.domain.login.model.dao.UserEntity;
 import com.achobeta.domain.message.model.entity.Message;
 import com.achobeta.domain.message.service.MessageService;
-import com.achobeta.domain.users.context.BaseContext;
+import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.domain.users.service.UserService;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -43,20 +43,15 @@ public class UserFeedbackServiceImpl extends ServiceImpl<UserFeedbackMapper, Use
     private final MessageService messageService;
 
     @Override
-    public List<UserPersonalFeedBackVO> getUserFeedbackList() {
-        long userId = BaseContext.getCurrentUser().getUserId();
+    public List<UserPersonalFeedBackVO> getUserFeedbackList(Long userId) {
         //根据用户id查询反馈列表
         List<UserFeedback> userFeedbackList = lambdaQuery().eq(UserFeedback::getUserId, userId).list();
         //构造返回实体
-        List<UserPersonalFeedBackVO> userPersonalFeedBackVOList = feedbackConverter.userFeedbackPoToPersonalVoList(userFeedbackList);
-
-        return userPersonalFeedBackVOList;
+        return feedbackConverter.userFeedbackPoToPersonalVoList(userFeedbackList);
     }
 
     @Override
-    public void submitUserFeedback(UserFeedbackDTO userFeedbackDTO) {
-        //获取用户id
-        long userId = BaseContext.getCurrentUser().getUserId();
+    public void submitUserFeedback(Long userId, UserFeedbackDTO userFeedbackDTO) {
         //构造反馈实体
         UserFeedback userFeedback = feedbackConverter.userFeedbackDTOToPo(userFeedbackDTO);
         userFeedback.setUserId(userId);
@@ -84,22 +79,16 @@ public class UserFeedbackServiceImpl extends ServiceImpl<UserFeedbackMapper, Use
         UserFeedback userFeedback = this.getById(handleFeedbackDTO.getFeedbackId());
         Optional.ofNullable(userFeedback).orElseThrow(() -> new GlobalServiceException("不存在的用户反馈"));
         //处理用户反馈
-        Long messageId = handleFeedback(handleFeedbackDTO, userFeedback);
-
-        return messageId;
+        return handleFeedback(handleFeedbackDTO, userFeedback);
     }
 
     @Override
-    public FeedbackMessageVO queryMessageOfFeedback(Message message) {
-
-        Integer role = BaseContext.getCurrentUser().getRole();
-
+    public FeedbackMessageVO queryMessageOfFeedback(UserHelper currentUser, Message message) {
         //学生用户只能查自己的反馈消息
-        if (!(role.equals(UserTypeEnum.USER) && message.getUserId().equals(BaseContext.getCurrentUser().getUserId())))
+        if (UserTypeEnum.USER.getCode().equals(currentUser.getRole()) && message.getUserId().equals(currentUser.getUserId())) {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
-
+        }
         return getFeedbackMessageVO(message);
-
     }
 
     private FeedbackMessageVO getFeedbackMessageVO(Message message) {

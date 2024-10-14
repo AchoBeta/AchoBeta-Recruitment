@@ -10,7 +10,10 @@ import com.achobeta.domain.interview.machine.context.InterviewContext;
 import com.achobeta.domain.interview.model.converter.InterviewConverter;
 import com.achobeta.domain.interview.model.dto.*;
 import com.achobeta.domain.interview.model.entity.Interview;
-import com.achobeta.domain.interview.model.vo.*;
+import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
+import com.achobeta.domain.interview.model.vo.InterviewEventVO;
+import com.achobeta.domain.interview.model.vo.InterviewStatusVO;
+import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.domain.resource.constants.ResourceConstants;
@@ -22,7 +25,6 @@ import com.achobeta.domain.users.model.po.UserHelper;
 import com.achobeta.exception.GlobalServiceException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -73,19 +75,6 @@ public class InterviewController {
         // 更新
         interviewService.updateInterview(interviewUpdateDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS();
-    }
-
-    @GetMapping("/reserve/{interviewId}")
-    public SystemJsonResponse interviewReserveApply(@PathVariable("interviewId") @NotNull Long interviewId,
-                                                    @RequestParam(name = "mobile", required = false) @Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号非法") String mobile) {
-        // 检查
-        interviewService.checkInterviewExists(interviewId);
-        // 当前管理员
-        Long managerId = BaseContext.getCurrentUser().getUserId();
-        log.warn("管理员 {} 尝试预约面试 {}", managerId, interviewId);
-        // 预约会议
-        InterviewReserveVO interviewReserveVO = interviewService.interviewReserveApply(interviewId, mobile);
-        return SystemJsonResponse.SYSTEM_SUCCESS(interviewReserveVO);
     }
 
     @GetMapping("/list/status")
@@ -190,7 +179,7 @@ public class InterviewController {
         InterviewDetailVO interviewDetail = interviewService.getInterviewDetail(interviewId);
         if(UserTypeEnum.USER.getCode().equals(currentUser.getRole())) {
             // 判断是否是当前用户的面试
-            if(!Objects.equals(currentUser.getUserId(), interviewDetail.getStuId())) {
+            if(!Objects.equals(currentUser.getUserId(), interviewDetail.getSimpleStudentVO().getUserId())) {
                 throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
             }
             // 对于普通用户，隐藏一些字段

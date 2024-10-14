@@ -32,12 +32,6 @@ public interface FeishuConstants {
 
     String USER_ID_TYPE_QUERY_KEY = "use_id_type";
 
-    String MEDIA_TICKET_QUERY_KEY = "ticket";
-
-    int SUCCESS_CODE = 0;
-
-    int SHOULD_REFRESH_CODE = 4001;
-
     static String getAuthorization(String accessToken) {
         return Optional.ofNullable(accessToken)
                 .map(token -> AUTHORIZATION_PREFIX + token)

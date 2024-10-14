@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 import static com.achobeta.domain.feishu.constants.FeishuResourceConstants.*;
@@ -66,8 +65,8 @@ public class FeishuResourceServiceImpl extends ServiceImpl<FeishuResourceMapper,
     @Override
     public void updateFeishuResource(Long id, ImportTask importTask) {
         FeishuResource feishuResource = FeishuResourceConverter.INSTANCE.importTaskToFeishuResource(importTask);
-        log.warn("任务状态 {}，额外提示 {}, 任务若失败，失败的原因 {}，参考 {}", (
-                        importTask.getJobStatus()), Arrays.toString(importTask.getExtra()), importTask.getJobErrorMsg(),
+        log.warn("任务状态 {}，额外提示 {}, 任务若失败，失败的原因 {}，参考 {}",
+                importTask.getJobStatus(), importTask.getExtra(), importTask.getJobErrorMsg(),
                 "https://open.feishu.cn/document/server-docs/docs/drive-v1/import_task/get?appId=cli_a67eb2cebcf99013"
         );
         log.warn("飞书资源 {}，更新为 {}", id, feishuResource);

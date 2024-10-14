@@ -11,11 +11,11 @@ import java.util.Date;
 @Data
 public class EmailMessage implements Serializable {
 
-    private String sender;
+    private String sender; // 可以为空，默认按照邮件发送器实现的用户名
 
-    String[] recipient;
+    private String[] recipient;
 
-    String[] carbonCopy;
+    private String[] carbonCopy; // 可以为空，默认是 recipient
 
     private String title;
 
@@ -39,15 +39,6 @@ public class EmailMessage implements Serializable {
 
     public void setCarbonCopy(String cc) {
         this.carbonCopy = new String[]{cc};
-    }
-
-    public String[] getRecipient() {
-        return recipient;
-    }
-
-
-    public String[] getCarbonCopy() {
-        return carbonCopy;
     }
 
     public String getRecipient(int i) {

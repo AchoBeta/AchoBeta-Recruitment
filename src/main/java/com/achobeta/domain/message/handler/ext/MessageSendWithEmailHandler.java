@@ -12,13 +12,9 @@ import com.achobeta.template.engine.HtmlEngine;
 import com.achobeta.template.util.TemplateUtil;
 import com.achobeta.util.TimeUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -30,9 +26,6 @@ import static com.achobeta.email.enums.EmailTemplateEnum.MESSAGE_EMAIL_NOTICE;
 @RequiredArgsConstructor
 public class MessageSendWithEmailHandler extends MessageSendHandler {
 
-    @Value("${spring.mail.username}")
-    private String achobetaEmail;
-
     private final EmailSender emailSender;
     private final HtmlEngine htmlEngine;
 
@@ -43,7 +36,7 @@ public class MessageSendWithEmailHandler extends MessageSendHandler {
         messageSendBody.getMessageContent().getStuInfoSendList().stream().forEach(stuInfo -> {
 
             sendEmail(stuInfo.getEmail(), messageSendBody.getMessageContent().getTittle(),
-                    messageSendBody.getMessageContent().getContent(), stuInfo.getStuName(),null);
+                    messageSendBody.getMessageContent().getContent(), stuInfo.getStuName());
 
         });
         super.doNextHandler(messageSendBody, webSocketSet);
@@ -52,11 +45,8 @@ public class MessageSendWithEmailHandler extends MessageSendHandler {
     private EmailMessage getNoticeMessage(String email, String tittle, String content, String stuName, List<AttachmentFile> attachmentInfoList) {
         // 封装 Email
         EmailMessage emailMessage = new EmailMessage();
-        emailMessage.setCreateTime(new Date());
         emailMessage.setTitle(MESSAGE_EMAIL_NOTICE.getTitle());
         emailMessage.setRecipient(email);
-        emailMessage.setCarbonCopy();
-        emailMessage.setSender(achobetaEmail);
 
         //构造当前时间
         String now = TimeUtil.getDateTime(new Date());
@@ -79,21 +69,15 @@ public class MessageSendWithEmailHandler extends MessageSendHandler {
         return emailMessage;
     }
 
-    public void sendEmail(String email, String tittle, String content, String stuName, List<AttachmentFile> attachmentInfoList, List<MultipartFile> multipartFileList) {
+    public void sendEmail(String email, String tittle, String content, String stuName, List<EmailAttachment> emailAttachmentList, List<AttachmentFile> attachmentInfoList) {
         // 封装 Email
         EmailMessage emailMessage = getNoticeMessage(email, tittle, content, stuName, attachmentInfoList);
 
-        List<EmailAttachment> emailAttachmentList = Collections.emptyList();
-        if(!CollectionUtils.isEmpty(multipartFileList)){
-            //构造邮箱附件列表
-            emailAttachmentList = multipartFileList.stream().map(EmailAttachment::of).toList();
-        }
-
         // 发送模板消息
-        emailSender.send(emailMessage,true,emailAttachmentList);
+        emailSender.send(emailMessage, Boolean.TRUE, emailAttachmentList);
     }
 
-    public void sendEmail(String email, String tittle, String content, String stuName, List<AttachmentFile> attachmentInfoList) {
-        sendEmail(email, tittle, content, stuName, attachmentInfoList, new ArrayList<>());
+    public void sendEmail(String email, String tittle, String content, String stuName) {
+        sendEmail(email, tittle, content, stuName, new ArrayList<>(), new ArrayList<>());
     }
 }

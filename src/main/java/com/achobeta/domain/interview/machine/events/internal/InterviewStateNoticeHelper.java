@@ -7,7 +7,6 @@ import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.model.vo.InterviewNoticeTemplate;
 import com.achobeta.domain.interview.service.InterviewService;
-import com.achobeta.domain.schedule.model.vo.ParticipationDetailVO;
 import com.achobeta.domain.schedule.model.vo.ScheduleVO;
 import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
@@ -18,10 +17,8 @@ import com.achobeta.template.engine.HtmlEngine;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,9 +31,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class InterviewStateNoticeHelper implements InterviewStateInternalTransitionHelper{
-
-    @Value("${spring.mail.username}")
-    private String achobetaEmail;
 
     private final EmailSender emailSender;
 
@@ -73,14 +67,10 @@ public class InterviewStateNoticeHelper implements InterviewStateInternalTransit
             Interview currentInterview = context.getInterview();
             InterviewDetailVO interviewDetail = interviewService.getInterviewDetail(currentInterview.getId());
             ScheduleVO scheduleVO = interviewDetail.getScheduleVO();
-            ParticipationDetailVO detailActivityParticipation = interviewScheduleService.getDetailActivityParticipation(scheduleVO.getParticipationId());
-            SimpleStudentVO simpleStudentVO = detailActivityParticipation.getSimpleStudentVO();
+            SimpleStudentVO simpleStudentVO = interviewDetail.getSimpleStudentVO();
             // 封装 email
             EmailTemplateEnum emailTemplate = EmailTemplateEnum.INTERVIEW_NOTICE;
             EmailMessage emailMessage = new EmailMessage();
-            emailMessage.setSender(achobetaEmail);
-            emailMessage.setCarbonCopy();
-            emailMessage.setCreateTime(new Date());
             emailMessage.setTitle(emailTemplate.getTitle());
             emailMessage.setRecipient(simpleStudentVO.getEmail());
             // 构造模板消息

@@ -1,5 +1,6 @@
 package com.achobeta.domain.schedule.model.dao.mapper;
 
+import com.achobeta.domain.interview.model.dto.InterviewConditionDTO;
 import com.achobeta.domain.schedule.model.entity.InterviewSchedule;
 import com.achobeta.domain.schedule.model.vo.ParticipationScheduleVO;
 import com.achobeta.domain.schedule.model.vo.ScheduleDetailVO;
@@ -17,7 +18,7 @@ import java.util.List;
 */
 public interface InterviewScheduleMapper extends BaseMapper<InterviewSchedule> {
 
-    List<ScheduleResumeVO> getInterviewScheduleList(@Param("managerId") Long managerId, @Param("actId") Long actId);
+    List<ScheduleResumeVO> getInterviewScheduleList(@Param("managerId") Long managerId, @Param("condition") InterviewConditionDTO interviewConditionDTO);
 
     List<ParticipationScheduleVO> getSituationsByActId(@Param("actId") Long actId);
 

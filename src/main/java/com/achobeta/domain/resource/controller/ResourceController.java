@@ -12,12 +12,12 @@ import com.achobeta.domain.resource.model.vo.ResourceAccessLevelVO;
 import com.achobeta.domain.resource.model.vo.ResourceQueryVO;
 import com.achobeta.domain.resource.service.DigitalResourceService;
 import com.achobeta.domain.resource.service.ResourceService;
-import com.achobeta.domain.resource.util.ResourceUtil;
 import com.achobeta.domain.users.context.BaseContext;
 import com.achobeta.domain.users.service.UserService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.feishu.constants.ObjectType;
 import com.achobeta.util.MediaUtil;
+import com.achobeta.util.ResourceUtil;
 import com.achobeta.util.TimeUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -103,7 +103,7 @@ public class ResourceController {
         Long userId = BaseContext.getCurrentUser().getUserId();
         ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(null);
         OnlineResourceVO onlineResourceVO = resourceService.synchronousFeishuUpload(
-                userId, file, accessLevel, ObjectType.MD, ResourceUtil.getOriginalName(file),
+                userId, file, accessLevel, ObjectType.MD, ResourceUtil.getFileNameExcludeSuffix(file),
                 Boolean.TRUE);
         return SystemJsonResponse.SYSTEM_SUCCESS(onlineResourceVO);
     }
@@ -116,7 +116,7 @@ public class ResourceController {
         Long userId = BaseContext.getCurrentUser().getUserId();
         ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(null);
         OnlineResourceVO onlineResourceVO = resourceService.synchronousFeishuUpload(
-                userId, file, accessLevel, ObjectType.XLSX, ResourceUtil.getOriginalName(file),
+                userId, file, accessLevel, ObjectType.XLSX, ResourceUtil.getFileNameExcludeSuffix(file),
                 Boolean.TRUE);
         return SystemJsonResponse.SYSTEM_SUCCESS(onlineResourceVO);
     }

@@ -8,7 +8,6 @@ import com.achobeta.domain.interview.model.dto.InterviewCreateDTO;
 import com.achobeta.domain.interview.model.dto.InterviewUpdateDTO;
 import com.achobeta.domain.interview.model.entity.Interview;
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
-import com.achobeta.domain.interview.model.vo.InterviewReserveVO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
@@ -39,8 +38,6 @@ public interface InterviewService extends IService<Interview> {
     InterviewDetailVO getInterviewDetail(Long interviewId);
 
     Long getInterviewPaperId(Long interviewId);
-
-    InterviewReserveVO interviewReserveApply(Long interviewId, String mobile);
 
     // 写入 ------------------------------------------
 

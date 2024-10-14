@@ -10,7 +10,6 @@ import com.achobeta.domain.interview.machine.events.internal.InterviewStateInter
 import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.schedule.model.vo.ScheduleVO;
-import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.student.model.vo.SimpleStudentVO;
 import com.achobeta.email.enums.EmailTemplateEnum;
 import com.achobeta.email.model.po.EmailMessage;
@@ -21,10 +20,8 @@ import com.achobeta.template.util.TemplateUtil;
 import com.alibaba.cola.statemachine.Action;
 import com.alibaba.cola.statemachine.Condition;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,9 +36,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class InterviewExperienceHelper implements InterviewStateInternalTransitionHelper {
 
-    @Value("${spring.mail.username}")
-    private String achobetaEmail;
-
     private final EmailSender emailSender;
 
     private final HtmlEngine htmlEngine;
@@ -53,8 +47,6 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
     private final InterviewQuestionScoreService interviewQuestionScoreService;
 
     private final InterviewService interviewService;
-
-    private final InterviewScheduleService interviewScheduleService;
 
     @Override
     public List<InterviewStatus> getWithin() {
@@ -82,16 +74,11 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
             Long interviewId = context.getInterview().getId();
             InterviewDetailVO interviewDetail = interviewService.getInterviewDetail(interviewId);
             ScheduleVO interviewDetailScheduleVO = interviewDetail.getScheduleVO();
-            SimpleStudentVO simpleStudentVO = interviewScheduleService
-                    .getDetailActivityParticipation(interviewDetailScheduleVO.getParticipationId())
-                    .getSimpleStudentVO();
+            SimpleStudentVO simpleStudentVO = interviewDetail.getSimpleStudentVO();
 
             // 构造邮件消息
             EmailTemplateEnum emailTemplate = EmailTemplateEnum.INTERVIEW_EXPERIENCE;
             EmailMessage emailMessage = new EmailMessage();
-            emailMessage.setSender(achobetaEmail);
-            emailMessage.setCarbonCopy();
-            emailMessage.setCreateTime(new Date());
             emailMessage.setTitle(emailTemplate.getTitle());
             emailMessage.setRecipient(simpleStudentVO.getEmail());
 

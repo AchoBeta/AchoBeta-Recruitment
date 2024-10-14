@@ -11,9 +11,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-import static com.achobeta.feishu.constants.FeishuConstants.SHOULD_REFRESH_CODE;
-import static com.achobeta.feishu.constants.FeishuConstants.SUCCESS_CODE;
-
 /**
  * Created With Intellij IDEA
  * Description:
@@ -40,13 +37,11 @@ public class FeishuRequestAspect {
         if(result instanceof BaseResponse response) {
             int code = response.getCode();
             log.info("飞书响应码 {}", code);
-            if(code == SUCCESS_CODE) {
+            if(response.success()) {
                 log.info("飞书请求成功");
             } else {
-                if(code == SHOULD_REFRESH_CODE) {
-                    log.info("飞书 token 刷新");
-                    feishuTenantAccessToken.refreshToken();
-                }
+                log.info("飞书 token 刷新");
+                feishuTenantAccessToken.refreshToken();
                 throw new GlobalServiceException(response.getMsg(), GlobalServiceStatusCode.REQUEST_NOT_VALID);
             }
         }else {

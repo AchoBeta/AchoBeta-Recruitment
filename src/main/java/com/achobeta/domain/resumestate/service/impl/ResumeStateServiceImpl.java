@@ -6,7 +6,9 @@ import com.achobeta.domain.resumestate.enums.ResumeEvent;
 import com.achobeta.domain.resumestate.enums.ResumeStatus;
 import com.achobeta.domain.resumestate.machine.constants.ResumeStateMachineConstants;
 import com.achobeta.domain.resumestate.machine.context.ResumeContext;
+import com.achobeta.domain.resumestate.model.converter.ResumeStateConverter;
 import com.achobeta.domain.resumestate.model.entity.ResumeStatusProcess;
+import com.achobeta.domain.resumestate.model.vo.ResumeStatusProcessVO;
 import com.achobeta.domain.resumestate.service.ResumeStateService;
 import com.achobeta.domain.resumestate.service.ResumeStatusProcessService;
 import com.achobeta.domain.student.model.entity.StuResume;
@@ -80,7 +82,7 @@ public class ResumeStateServiceImpl implements ResumeStateService {
 
     @Override
     @Transactional
-    public List<ResumeStatusProcess> getProcessByResumeId(StuResume currentResume) {
+    public List<ResumeStatusProcessVO> getProcessByResumeId(StuResume currentResume) {
         Long resumeId = currentResume.getId();
         ResumeStatus currentStatus = currentResume.getStatus();
         List<ResumeStatusProcess> statusProcesses = resumeStatusProcessService.getProcessByResumeId(resumeId);
@@ -89,6 +91,6 @@ public class ResumeStateServiceImpl implements ResumeStateService {
             ResumeStatusProcess process = resumeStatusProcessService.createResumeStatusProcess(resumeId, currentStatus, ResumeEvent.NEXT);
             statusProcesses.add(process);
         }
-        return statusProcesses;
+        return ResumeStateConverter.INSTANCE.processesToProcessVOList(statusProcesses);
     }
 }

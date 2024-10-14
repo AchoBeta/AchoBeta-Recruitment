@@ -1,7 +1,7 @@
 package com.achobeta.config;
 
 
-import com.achobeta.interpretor.UserInterceptor;
+import com.achobeta.interceptor.UserInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

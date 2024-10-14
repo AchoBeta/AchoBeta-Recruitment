@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
         String requestURI = request.getRequestURI();
         String message = e.getMessage();
         log.error("请求地址'{}', '{}'", requestURI, message);
-        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(RESOURCE_OUT_SIZE, message);
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(RESOURCE_NOT_VALID, message);
     }
 
     @ExceptionHandler({DataIntegrityViolationException.class})
