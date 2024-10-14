@@ -4,7 +4,6 @@ import com.achobeta.domain.interview.model.dto.InterviewConditionDTO;
 import com.achobeta.domain.schedule.model.entity.InterviewSchedule;
 import com.achobeta.domain.schedule.model.vo.ParticipationScheduleVO;
 import com.achobeta.domain.schedule.model.vo.ScheduleDetailVO;
-import com.achobeta.domain.schedule.model.vo.ScheduleResumeVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,7 +17,7 @@ import java.util.List;
 */
 public interface InterviewScheduleMapper extends BaseMapper<InterviewSchedule> {
 
-    List<ScheduleResumeVO> getInterviewScheduleList(@Param("managerId") Long managerId, @Param("condition") InterviewConditionDTO interviewConditionDTO);
+    List<ScheduleDetailVO> getInterviewScheduleList(@Param("managerId") Long managerId, @Param("condition") InterviewConditionDTO interviewConditionDTO);
 
     List<ParticipationScheduleVO> getSituationsByActId(@Param("actId") Long actId);
 

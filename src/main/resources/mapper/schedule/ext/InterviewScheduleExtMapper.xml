@@ -4,15 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.achobeta.domain.schedule.model.dao.mapper.InterviewScheduleMapper">
 
-    <resultMap id="InterviewerMap" type="com.achobeta.domain.schedule.model.vo.InterviewerVO">
-        <id property="managerId" column="id" jdbcType="BIGINT"/>
-        <result property="username" column="username" jdbcType="VARCHAR"/>
-        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
-        <result property="email" column="email" jdbcType="VARCHAR"/>
-        <result property="phoneNumber" column="phone_number" jdbcType="VARCHAR"/>
-        <result property="avatar" column="avatar" jdbcType="BIGINT"/>
-    </resultMap>
-
     <resultMap id="ScheduleMap" type="com.achobeta.domain.schedule.model.vo.ScheduleVO">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="participationId" column="participation_id" jdbcType="BIGINT"/>
@@ -25,7 +16,8 @@
     </resultMap>
 
     <resultMap id="ScheduleDetailMap" extends="ScheduleResumeMap" type="com.achobeta.domain.schedule.model.vo.ScheduleDetailVO">
-        <collection property="interviewerVOList" columnPrefix="m_" resultMap="InterviewerMap"/>
+        <collection property="interviewerVOList" columnPrefix="m_" resultMap="com.achobeta.domain.schedule.model.dao.mapper.InterviewerMapper.InterviewerMap"/>
+        <collection property="interviewVOList" columnPrefix="i_" resultMap="com.achobeta.domain.interview.model.dao.mapper.InterviewMapper.InterviewMap"/>
     </resultMap>
 
     <resultMap id="ParticipationScheduleMap" type="com.achobeta.domain.schedule.model.vo.ParticipationScheduleVO">
@@ -34,19 +26,21 @@
         <collection property="scheduleVOS" columnPrefix="s_" resultMap="ScheduleMap"/>
     </resultMap>
 
-    <select id="getInterviewScheduleList" resultMap="ScheduleResumeMap">
+    <select id="getInterviewScheduleList" resultMap="ScheduleDetailMap">
         select
             -- 面试预约与面试官多对多，在本条 sql 容易出现重复行
             distinct s.id, s.participation_id, s.start_time, s.end_time,
+            i.id i_id, i.title i_title, i.status i_status,
             <include refid="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.Simple_Column_List" />
         from user m
-             left join interviewer i on m.id = i.manager_id and m.is_deleted = 0 and i.is_deleted = 0
-             left join interview_schedule s on i.schedule_id = s.id and i.is_deleted = 0 and s.is_deleted = 0
-             left join activity_participation p on p.id = s.participation_id and p.is_deleted = 0 and s.is_deleted = 0
-             left join user stu on p.stu_id = stu.id and p.is_deleted = 0 and stu.is_deleted = 0
-             left join recruitment_activity a on p.act_id = a.id and p.is_deleted = 0 and a.is_deleted = 0
-             left join recruitment_batch b on a.batch_id = b.id and a.is_deleted = 0 and b.is_deleted = 0
-             left join stu_resume r on r.batch_id = b.id and r.user_id = stu.id and r.is_deleted = 0 and b.is_deleted = 0 and stu.is_deleted = 0
+            left join interviewer ir on m.id = ir.manager_id and m.is_deleted = 0 and ir.is_deleted = 0
+            left join interview_schedule s on ir.schedule_id = s.id and ir.is_deleted = 0 and s.is_deleted = 0
+            left join activity_participation p on p.id = s.participation_id and p.is_deleted = 0 and s.is_deleted = 0
+            left join user stu on p.stu_id = stu.id and p.is_deleted = 0 and stu.is_deleted = 0
+            left join recruitment_activity a on p.act_id = a.id and p.is_deleted = 0 and a.is_deleted = 0
+            left join recruitment_batch b on a.batch_id = b.id and a.is_deleted = 0 and b.is_deleted = 0
+            left join stu_resume r on r.batch_id = b.id and r.user_id = stu.id and r.is_deleted = 0 and b.is_deleted = 0 and stu.is_deleted = 0
+            left join interview i on i.schedule_id = s.id and i.is_deleted = 0 and s.is_deleted = 0
         <where>
             s.id is not null and m.is_deleted = 0
             <if test="managerId != null">
@@ -93,7 +87,7 @@
     <select id="getInterviewerScheduleDetail" parameterType="java.lang.Long" resultMap="ScheduleDetailMap">
         select
             s.id, s.participation_id, s.start_time, s.end_time,
-            m.id m_id, m.username m_username, m.nickname m_nickname,m.email m_email,
+            m.id m_id, m.username m_username, m.nickname m_nickname, m.email m_email,
             m.phone_number m_phone_number, m.avatar m_acvtar,
             <include refid="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.Simple_Column_List" />
         from interview_schedule s

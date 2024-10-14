@@ -29,7 +29,7 @@ public interface InterviewService extends IService<Interview> {
 
     List<InterviewVO> getInterviewListByScheduleId(Long scheduleId);
 
-    List<InterviewVO> managerGetInterviewList(Long managerId, InterviewConditionDTO condition);
+    List<InterviewDetailVO> managerGetInterviewList(Long managerId, InterviewConditionDTO condition);
 
     OnlineResourceVO printAllInterviewList(Long managerId, InterviewConditionDTO condition, ResourceAccessLevel level, Boolean synchronous);
 

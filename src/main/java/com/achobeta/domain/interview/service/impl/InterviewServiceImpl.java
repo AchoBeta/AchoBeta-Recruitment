@@ -74,13 +74,13 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     }
 
     @Override
-    public List<InterviewVO> managerGetInterviewList(Long managerId, InterviewConditionDTO condition) {
+    public List<InterviewDetailVO> managerGetInterviewList(Long managerId, InterviewConditionDTO condition) {
         return interviewMapper.managerGetInterviewList(managerId, condition);
     }
 
     @Override
     public OnlineResourceVO printAllInterviewList(Long managerId, InterviewConditionDTO condition, ResourceAccessLevel level, Boolean synchronous) {
-        List<InterviewVO> interviewVOList = managerGetInterviewList(null, condition);
+        List<InterviewDetailVO> interviewVOList = managerGetInterviewList(null, condition);
         // 上传表格到对象存储服务器
         ExcelTemplateEnum achobetaInterviewAll = ExcelTemplateEnum.ACHOBETA_INTERVIEW_ALL;
         return resourceService.uploadExcel(

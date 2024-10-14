@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.achobeta.domain.schedule.model.dao.mapper.InterviewerMapper">
+
+    <resultMap id="InterviewerMap" type="com.achobeta.domain.schedule.model.vo.InterviewerVO">
+        <id property="managerId" column="id" jdbcType="BIGINT"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="phoneNumber" column="phone_number" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <resultMap id="ScheduleInterviewerMap" extends="com.achobeta.domain.schedule.model.dao.mapper.InterviewScheduleMapper.ScheduleMap" type="com.achobeta.domain.schedule.model.vo.ScheduleInterviewerVO">
+        <collection property="interviewerVOList" columnPrefix="m_" resultMap="InterviewerMap"/>
+    </resultMap>
+
+    <select id="getInterviewersByScheduleIds" resultMap="ScheduleInterviewerMap">
+        select
+            s.id, s.participation_id, s.start_time, s.end_time,
+            m.id m_id, m.username m_username, m.nickname m_nickname, m.email m_email,
+            m.phone_number m_phone_number, m.avatar m_acvtar
+        from interview_schedule s
+            left join interviewer i on s.id = i.schedule_id and s.is_deleted = 0 and i.is_deleted = 0
+            left join user m on m.id = i.manager_id and m.is_deleted = 0 and i.is_deleted = 0
+        where s.is_deleted = 0 and  m.id is not null and s.id
+        <foreach collection="scheduleIds" open="in (" close=")" item="scheduleId" separator=",">
+            #{scheduleId,jdbcType=BIGINT}
+        </foreach>
+        order by s.start_time asc, s.end_time asc
+    </select>
+
+</mapper>

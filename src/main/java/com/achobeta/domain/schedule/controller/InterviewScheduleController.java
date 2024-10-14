@@ -15,7 +15,6 @@ import com.achobeta.domain.schedule.model.dto.ScheduleDTO;
 import com.achobeta.domain.schedule.model.dto.ScheduleUpdateDTO;
 import com.achobeta.domain.schedule.model.vo.ParticipationDetailVO;
 import com.achobeta.domain.schedule.model.vo.ScheduleDetailVO;
-import com.achobeta.domain.schedule.model.vo.ScheduleResumeVO;
 import com.achobeta.domain.schedule.model.vo.UserSituationVO;
 import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.schedule.service.InterviewerService;
@@ -116,14 +115,14 @@ public class InterviewScheduleController {
         // 检测
         Long managerId = BaseContext.getCurrentUser().getUserId();
         // 查询
-        List<ScheduleResumeVO> interviewScheduleList = interviewScheduleService.getInterviewScheduleList(managerId, InterviewConditionDTO.of(interviewConditionDTO));
+        List<ScheduleDetailVO> interviewScheduleList = interviewScheduleService.getInterviewScheduleList(managerId, InterviewConditionDTO.of(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewScheduleList);
     }
 
     @PostMapping("/list/all")
     public SystemJsonResponse getInterviewScheduleListAll(@Valid @RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 查询
-        List<ScheduleResumeVO> interviewScheduleList = interviewScheduleService.getInterviewScheduleList(null, InterviewConditionDTO.of(interviewConditionDTO));
+        List<ScheduleDetailVO> interviewScheduleList = interviewScheduleService.getInterviewScheduleList(null, InterviewConditionDTO.of(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewScheduleList);
     }
 

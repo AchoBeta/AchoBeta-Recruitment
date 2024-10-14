@@ -8,7 +8,6 @@ import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
 import com.achobeta.domain.schedule.model.entity.InterviewSchedule;
 import com.achobeta.domain.schedule.model.vo.ParticipationDetailVO;
 import com.achobeta.domain.schedule.model.vo.ScheduleDetailVO;
-import com.achobeta.domain.schedule.model.vo.ScheduleResumeVO;
 import com.achobeta.domain.schedule.model.vo.UserSituationVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -26,7 +25,7 @@ public interface InterviewScheduleService extends IService<InterviewSchedule> {
 
     Optional<InterviewSchedule> getInterviewSchedule(Long scheduleId);
 
-    List<ScheduleResumeVO> getInterviewScheduleList(Long managerId, InterviewConditionDTO interviewConditionDTO);
+    List<ScheduleDetailVO> getInterviewScheduleList(Long managerId, InterviewConditionDTO interviewConditionDTO);
 
     /**
      * @param actId 活动 id

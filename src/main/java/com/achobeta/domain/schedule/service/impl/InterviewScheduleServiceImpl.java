@@ -87,8 +87,24 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
     }
 
     @Override
-    public List<ScheduleResumeVO> getInterviewScheduleList(Long managerId, InterviewConditionDTO interviewConditionDTO) {
-        return interviewScheduleMapper.getInterviewScheduleList(managerId, interviewConditionDTO);
+    public List<ScheduleDetailVO> getInterviewScheduleList(Long managerId, InterviewConditionDTO interviewConditionDTO) {
+        Map<Long, ScheduleDetailVO> scheduleDetailVOMap = interviewScheduleMapper.getInterviewScheduleList(managerId, interviewConditionDTO).stream().collect(Collectors.toMap(
+                ScheduleDetailVO::getId,
+                scheduleDetailVO -> {
+                    // 处理 MP 给枚举默认值的情况
+                    List<InterviewVO> interviewVOList = scheduleDetailVO.getInterviewVOList().stream().filter(i -> Objects.nonNull(i.getId())).toList();
+                    scheduleDetailVO.setInterviewVOList(interviewVOList);
+                    return scheduleDetailVO;
+                },
+                (oldData, newData) -> newData
+        ));
+        List<Long> scheduleIds = new ArrayList<>(scheduleDetailVOMap.keySet());
+        interviewerService.getInterviewersByScheduleIds(scheduleIds).stream()
+                .filter(scheduleDetailVO -> scheduleDetailVOMap.containsKey(scheduleDetailVO.getId()))
+                .forEach(scheduleDetailVO -> {
+                    scheduleDetailVOMap.get(scheduleDetailVO.getId()).setInterviewerVOList(scheduleDetailVO.getInterviewerVOList());
+                });
+        return new ArrayList<>(scheduleDetailVOMap.values());
     }
 
     /**
