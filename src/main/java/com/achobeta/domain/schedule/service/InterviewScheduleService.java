@@ -2,9 +2,9 @@ package com.achobeta.domain.schedule.service;
 
 import com.achobeta.domain.interview.model.dto.InterviewConditionDTO;
 import com.achobeta.domain.interview.model.vo.InterviewReserveVO;
-import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
+import com.achobeta.domain.schedule.model.dto.SituationQueryDTO;
 import com.achobeta.domain.schedule.model.entity.InterviewSchedule;
 import com.achobeta.domain.schedule.model.vo.ParticipationDetailVO;
 import com.achobeta.domain.schedule.model.vo.ScheduleDetailVO;
@@ -35,13 +35,17 @@ public interface InterviewScheduleService extends IService<InterviewSchedule> {
      *  3. 学生面试预约情况
      *  并统计各个时间段选中次数
      */
-    UserSituationVO getSituationsByActId(Long actId);
+    UserSituationVO querySituations(Long actId);
+
+    UserSituationVO querySituations(SituationQueryDTO situationQueryDTO);
 
     ScheduleDetailVO getInterviewScheduleDetail(Long scheduleId);
 
     ParticipationDetailVO getDetailActivityParticipation(Long participationId);
 
-    OnlineResourceVO printSituations(Long managerId, RecruitmentActivity activity, ResourceAccessLevel level, Boolean synchronous);
+    OnlineResourceVO printSituations(Long managerId, Long actId, ResourceAccessLevel level, Boolean synchronous);
+
+    OnlineResourceVO printSituations(Long managerId, SituationQueryDTO situationQueryDTO, ResourceAccessLevel level, Boolean synchronous);
 
     InterviewReserveVO interviewReserveApply(Long scheduleId, String title, String mobile);
 

@@ -56,7 +56,7 @@
         order by s.start_time asc, s.end_time asc
     </select>
 
-    <select id="getSituationsByActId" parameterType="java.lang.Long" resultMap="ParticipationScheduleMap">
+    <select id="querySituations" parameterType="java.lang.Long" resultMap="ParticipationScheduleMap">
         select
             p.id, s.id s_id, s.participation_id s_participation_id, s.start_time s_start_time, s.end_time s_end_time,
             <include refid="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.Simple_Column_List" />
@@ -66,7 +66,12 @@
              left join recruitment_batch b on a.batch_id = b.id and a.is_deleted = 0 and b.is_deleted = 0
              left join stu_resume r on r.batch_id = b.id and r.user_id = stu.id and r.is_deleted = 0 and b.is_deleted = 0 and stu.is_deleted = 0
              left join interview_schedule s on s.participation_id = p.id and s.is_deleted = 0 and p.is_deleted = 0
-        where a.id = #{actId,jdbcType=BIGINT} and r.id is not null and p.is_deleted = 0
+        <where>
+            a.id = #{condition.actId,jdbcType=BIGINT} and r.id is not null and p.is_deleted = 0
+            <foreach collection="condition.statusList" item="status" open="and r.status in (" close=")" separator=",">
+                #{status,jdbcType=BIGINT}
+            </foreach>
+        </where>
         order by s.start_time asc, s.end_time asc
     </select>
 

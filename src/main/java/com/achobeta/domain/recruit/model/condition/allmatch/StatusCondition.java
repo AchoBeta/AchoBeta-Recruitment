@@ -18,11 +18,9 @@ public class StatusCondition extends ArrayList<Integer> implements StudentCondit
 
     @Override
     public Predicate<StuResume> predicate() {
-        return stuResume -> this
-                .stream()
+        return stuResume -> this.stream()
                 .filter(Objects::nonNull)
-                .anyMatch(status -> status.equals(stuResume.getStatus().getCode()))
-                ;
+                .anyMatch(status -> status.equals(stuResume.getStatus().getCode()));
     }
 
 }

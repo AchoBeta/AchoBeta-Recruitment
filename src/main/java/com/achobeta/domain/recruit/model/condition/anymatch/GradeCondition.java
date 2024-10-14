@@ -18,10 +18,8 @@ public class GradeCondition extends ArrayList<Integer> implements StudentConditi
 
     @Override
     public Predicate<StuResume> predicate() {
-        return stuResume -> this
-                .stream()
+        return stuResume -> this.stream()
                 .filter(Objects::nonNull)
-                .anyMatch(grade -> grade.equals(stuResume.getGrade()))
-                ;
+                .anyMatch(grade -> grade.equals(stuResume.getGrade()));
     }
 }
