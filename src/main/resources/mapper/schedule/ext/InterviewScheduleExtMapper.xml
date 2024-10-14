@@ -68,6 +68,7 @@
              left join interview_schedule s on s.participation_id = p.id and s.is_deleted = 0 and p.is_deleted = 0
         <where>
             a.id = #{condition.actId,jdbcType=BIGINT} and r.id is not null and p.is_deleted = 0
+            -- and r.status 放在外面，foreach 内部为空导致没有 in，可能会因为 r.status 为 0 而没有查询到一些行
             <foreach collection="condition.statusList" item="status" open="and r.status in (" close=")" separator=",">
                 #{status,jdbcType=BIGINT}
             </foreach>
