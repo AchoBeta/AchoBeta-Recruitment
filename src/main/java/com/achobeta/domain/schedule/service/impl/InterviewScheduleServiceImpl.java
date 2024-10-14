@@ -4,7 +4,6 @@ import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.feishu.service.FeishuService;
 import com.achobeta.domain.interview.model.converter.InterviewConverter;
 import com.achobeta.domain.interview.model.dto.InterviewConditionDTO;
-import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
 import com.achobeta.domain.interview.model.vo.InterviewReserveVO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.interview.service.InterviewService;
