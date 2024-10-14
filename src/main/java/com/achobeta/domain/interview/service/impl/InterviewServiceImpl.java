@@ -57,8 +57,6 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
 
     private final ResourceService resourceService;
 
-    private final FeishuService feishuService;
-
     private final RedisLock redisLock;
 
     private final SimpleLockStrategy simpleLockStrategy;
@@ -111,21 +109,6 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     @Override
     public Long getInterviewPaperId(Long interviewId) {
         return checkAndGetInterviewExists(interviewId).getPaperId();
-    }
-
-    @Override
-    public InterviewReserveVO interviewReserveApply(Long interviewId, String mobile) {
-        InterviewDetailVO interviewDetail = getInterviewDetail(interviewId);
-        // 如果输入的手机号有效则是该手机号对应的 userId 作为此处的 ownerId，但 ownerId 不是同租户下的合法飞书用户，可能会在后续过程中报错
-        String ownerId = feishuService.getUserIdByMobile(mobile);
-        String title = interviewDetail.getTitle();
-        Long endTime = interviewDetail.getScheduleVO().getEndTime().getTime();
-        if(endTime.compareTo(System.currentTimeMillis()) < 0) {
-            throw new GlobalServiceException("面试预约时间为过去时", GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
-        }
-        // 预约会议
-         ApplyReserveRespBody reserveRespBody = feishuService.reserveApplyBriefly(ownerId, endTime, title);
-        return InterviewConverter.INSTANCE.feishuReserveToInterviewReserveVO(reserveRespBody.getReserve());
     }
 
     @Override

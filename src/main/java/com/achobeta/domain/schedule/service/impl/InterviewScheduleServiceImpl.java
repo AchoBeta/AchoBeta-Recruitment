@@ -1,7 +1,11 @@
 package com.achobeta.domain.schedule.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.feishu.service.FeishuService;
+import com.achobeta.domain.interview.model.converter.InterviewConverter;
 import com.achobeta.domain.interview.model.dto.InterviewConditionDTO;
+import com.achobeta.domain.interview.model.vo.InterviewDetailVO;
+import com.achobeta.domain.interview.model.vo.InterviewReserveVO;
 import com.achobeta.domain.interview.model.vo.InterviewVO;
 import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.recruit.model.converter.TimePeriodConverter;
@@ -27,6 +31,7 @@ import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.lock.RedisLock;
 import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lark.oapi.service.vc.v1.model.ApplyReserveRespBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,6 +61,8 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
     private final ActivityParticipationMapper activityParticipationMapper;
 
     private final ActivityParticipationService activityParticipationService;
+
+    private final FeishuService feishuService;
 
     private final InterviewerService interviewerService;
 
@@ -203,6 +210,20 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
                 activity.getTitle(),
                 synchronous
         );
+    }
+
+    @Override
+    public InterviewReserveVO interviewReserveApply(Long scheduleId, String title, String mobile) {
+        ScheduleDetailVO interviewScheduleDetail = getInterviewScheduleDetail(scheduleId);
+        // 如果输入的手机号有效则是该手机号对应的 userId 作为此处的 ownerId，但 ownerId 不是同租户下的合法飞书用户，可能会在后续过程中报错
+        String ownerId = feishuService.getUserIdByMobile(mobile);
+        Long endTime = interviewScheduleDetail.getEndTime().getTime();
+        if(endTime.compareTo(System.currentTimeMillis()) < 0) {
+            throw new GlobalServiceException("面试预约时间为过去时", GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
+        }
+        // 预约会议
+        ApplyReserveRespBody reserveRespBody = feishuService.reserveApplyBriefly(ownerId, endTime, title);
+        return InterviewConverter.INSTANCE.feishuReserveToInterviewReserveVO(reserveRespBody.getReserve());
     }
 
     @Override

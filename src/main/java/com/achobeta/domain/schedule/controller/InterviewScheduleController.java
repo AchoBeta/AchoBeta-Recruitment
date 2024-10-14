@@ -4,6 +4,7 @@ import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.interview.model.dto.InterviewConditionDTO;
+import com.achobeta.domain.interview.model.vo.InterviewReserveVO;
 import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
@@ -20,7 +21,9 @@ import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.domain.users.context.BaseContext;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -168,6 +171,20 @@ public class InterviewScheduleController {
         // 获取详细信息
         ParticipationDetailVO detail = interviewScheduleService.getDetailActivityParticipation(participationId);
         return SystemJsonResponse.SYSTEM_SUCCESS(detail);
+    }
+
+    @GetMapping("/reserve/{scheduleId}")
+    public SystemJsonResponse interviewReserveApply(@PathVariable("scheduleId") @NotNull Long scheduleId,
+                                                    @RequestParam("title") @NotBlank(message = "标题不能为空") String title,
+                                                    @RequestParam(name = "mobile", required = false) @Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号非法") String mobile) {
+        // 检查
+        interviewScheduleService.checkInterviewScheduleExists(scheduleId);
+        // 当前管理员
+        Long managerId = BaseContext.getCurrentUser().getUserId();
+        log.warn("管理员 {} 尝试预约面试 {} {}", managerId, scheduleId, title);
+        // 预约会议
+        InterviewReserveVO interviewReserveVO = interviewScheduleService.interviewReserveApply(scheduleId, title, mobile);
+        return SystemJsonResponse.SYSTEM_SUCCESS(interviewReserveVO);
     }
 
 }

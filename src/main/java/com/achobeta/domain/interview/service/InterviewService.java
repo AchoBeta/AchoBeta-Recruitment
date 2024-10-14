@@ -40,8 +40,6 @@ public interface InterviewService extends IService<Interview> {
 
     Long getInterviewPaperId(Long interviewId);
 
-    InterviewReserveVO interviewReserveApply(Long interviewId, String mobile);
-
     // 写入 ------------------------------------------
 
     Long createInterview(InterviewCreateDTO interviewCreateDTO, Long managerId);

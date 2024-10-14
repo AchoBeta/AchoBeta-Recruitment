@@ -59,7 +59,7 @@ public class InterviewSummaryController {
         // 如果当前用户是普通用户，则判断是否可以查询活动的总结
         UserHelper currentUser = BaseContext.getCurrentUser();
         if(UserTypeEnum.USER.getCode().equals(currentUser.getRole())) {
-            Long stuId = interviewService.getInterviewDetail(interviewId).getStuId();
+            Long stuId = interviewService.getInterviewDetail(interviewId).getSimpleStudentVO().getUserId();
             if(!Objects.equals(stuId, currentUser.getUserId())) {
                 throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
             }
