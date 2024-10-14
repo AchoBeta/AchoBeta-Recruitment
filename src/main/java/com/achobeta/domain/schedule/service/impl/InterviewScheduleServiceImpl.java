@@ -104,7 +104,9 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
                 .forEach(scheduleDetailVO -> {
                     scheduleDetailVOMap.get(scheduleDetailVO.getId()).setInterviewerVOList(scheduleDetailVO.getInterviewerVOList());
                 });
-        return new ArrayList<>(scheduleDetailVOMap.values());
+        return scheduleDetailVOMap.values().stream()
+                .sorted(Comparator.comparingLong(s -> s.getStartTime().getTime()))
+                .toList();
     }
 
     /**
