@@ -167,8 +167,7 @@ public class ResourceServiceImpl implements ResourceService {
         if(ResourceUtil.matchType(contentType, ResourceType.IMAGE) && compressionThreshold.compareTo(data.length) <= 0) {
             // 压缩图片
             data = MediaUtil.compressImage(data);
-            suffix = "." + MediaUtil.COMPRESS_FORMAT_NAME;
-            originalName = ResourceUtil.changeSuffix(originalName, suffix);
+            originalName = ResourceUtil.changeExtension(originalName, MediaUtil.COMPRESS_FORMAT_NAME);
         } else {
             // 使用原后缀
             suffix = ResourceUtil.getSuffix(originalName);

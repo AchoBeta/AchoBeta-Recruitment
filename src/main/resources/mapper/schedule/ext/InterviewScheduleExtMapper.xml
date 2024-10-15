@@ -16,6 +16,7 @@
     </resultMap>
 
     <resultMap id="ScheduleDetailMap" extends="ScheduleResumeMap" type="com.achobeta.domain.schedule.model.vo.ScheduleDetailVO">
+        <!-- 一次多表查询，只能映射给一个 collection -->
         <collection property="interviewerVOList" columnPrefix="m_" resultMap="com.achobeta.domain.schedule.model.dao.mapper.InterviewerMapper.InterviewerMap"/>
         <collection property="interviewVOList" columnPrefix="i_" resultMap="com.achobeta.domain.interview.model.dao.mapper.InterviewMapper.InterviewMap"/>
     </resultMap>

@@ -29,10 +29,16 @@ public class HttpServletUtil {
         return Optional.ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
     }
 
+    /**
+     * 获取本次请求的 HttpServletRequest 对象
+     */
     public static HttpServletRequest getRequest() {
         return getAttributes().map(ServletRequestAttributes::getRequest).orElseThrow(GlobalServiceException::new);
     }
 
+    /**
+     * 获取本次请求的 HttpServletResponse 对象
+     */
     public static HttpServletResponse getResponse() {
         return getAttributes().map(ServletRequestAttributes::getResponse).orElseThrow(GlobalServiceException::new);
     }
