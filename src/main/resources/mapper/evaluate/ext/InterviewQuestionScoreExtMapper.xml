@@ -24,7 +24,6 @@
             </if>
         </where>
         group by q.id
-        order by q.id
     </select>
 
 </mapper>
