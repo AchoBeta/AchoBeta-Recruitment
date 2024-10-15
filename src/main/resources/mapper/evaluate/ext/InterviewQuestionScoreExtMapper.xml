@@ -15,11 +15,14 @@
             q.id, q.title, q.standard, q.create_time, q.update_time, avg(s.score) average
         from question q
              left join interview_question_score s on q.id = s.question_id and s.is_deleted = 0 and q.is_deleted = 0 and s.score != -1
-        where
+        <where>
             q.is_deleted = 0 and q.id
-            <foreach collection="questionIds" item="questionId" separator="," open="in (" close=")" >
-                #{questionId,jdbcType=BIGINT}
-            </foreach>
+            <if test="questionIds != null">
+                <foreach collection="questionIds" item="questionId" separator="," open="in (" close=")" >
+                    #{questionId,jdbcType=BIGINT}
+                </foreach>
+            </if>
+        </where>
         group by q.id
         order by q.id
     </select>

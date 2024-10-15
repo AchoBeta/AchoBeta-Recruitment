@@ -26,7 +26,7 @@
             m.id, m.manager_id, m.parent_id,
             stu.username u_username, stu.nickname u_nickname,
             stu.email u_email, stu.phone_number u_phone_number,
-            stu.user_type u_user_type, stu.avatar u_avatar, stu.create_time,
+            stu.user_type u_user_type, stu.avatar u_avatar, stu.id
             <include refid="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.Simple_Column_List" />
         from user stu
              left join member m on stu.id = m.manager_id and stu.is_deleted = 0 and m.is_deleted = 0
@@ -37,7 +37,7 @@
                 and r.batch_id = #{batchId,jdbcType=BIGINT}
             </if>
         </where>
-        order by stu.create_time
+        order by stu.id
     </select>
 
 

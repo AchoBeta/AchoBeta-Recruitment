@@ -69,9 +69,11 @@
         <where>
             a.id = #{condition.actId,jdbcType=BIGINT} and r.id is not null and p.is_deleted = 0
             -- and r.status 放在外面，foreach 内部为空导致没有 in，可能会因为 r.status 为 0 而没有查询到一些行
-            <foreach collection="condition.statusList" item="status" open="and r.status in (" close=")" separator=",">
-                #{status,jdbcType=BIGINT}
-            </foreach>
+            <if test="condition.statusList != null">
+                <foreach collection="condition.statusList" item="status" open="and r.status in (" close=")" separator=",">
+                    #{status,jdbcType=INTEGER}
+                </foreach>
+            </if>
         </where>
         order by s.start_time asc, s.end_time asc
     </select>
