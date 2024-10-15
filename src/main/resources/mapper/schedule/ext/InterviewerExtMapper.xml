@@ -26,9 +26,9 @@
             left join interviewer i on s.id = i.schedule_id and s.is_deleted = 0 and i.is_deleted = 0
             left join user m on m.id = i.manager_id and m.is_deleted = 0 and i.is_deleted = 0
         <where>
-            s.is_deleted = 0 and m.id is not null and s.id
+            s.is_deleted = 0 and m.id is not null
             <if test="scheduleIds != null">
-                <foreach collection="scheduleIds" open="in (" close=")" item="scheduleId" separator=",">
+                <foreach collection="scheduleIds" open="and s.id in (" close=")" item="scheduleId" separator=",">
                     #{scheduleId,jdbcType=BIGINT}
                 </foreach>
             </if>

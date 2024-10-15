@@ -23,8 +23,7 @@
         <where>
             q.id is not null and l.is_deleted = 0
             <if test="libIds != null">
-                and l.id
-                <foreach collection="libIds" open="in (" close=")" item="libId" separator=",">
+                <foreach collection="libIds" open="and l.id in (" close=")" item="libId" separator=",">
                     #{libId,jdbcType=BIGINT}
                 </foreach>
             </if>

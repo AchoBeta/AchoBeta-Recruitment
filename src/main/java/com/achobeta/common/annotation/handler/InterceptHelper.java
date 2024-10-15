@@ -39,14 +39,6 @@ public class InterceptHelper {
         return isIgnore(getIntercept(targetMethod));
     }
 
-    public static boolean shouldPrintLog(Intercept intercept) {
-        return Objects.isNull(intercept) || intercept.log();
-    }
-
-    public static boolean shouldPrintLog(Method targetMethod) {
-        return shouldPrintLog(getIntercept(targetMethod));
-    }
-
     public static boolean isValid(Intercept intercept, UserTypeEnum role) {
         // permit 中没有 role 就会抛异常
         return Arrays.stream(intercept.permit())

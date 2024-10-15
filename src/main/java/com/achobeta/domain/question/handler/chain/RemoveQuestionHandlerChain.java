@@ -5,6 +5,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class RemoveQuestionHandlerChain extends RemoveQuestionHandler {
     }
 
     @Override
+    @Transactional
     public void handle(Long questionId) {
         log.info("责任链开始处理 [questionId 为 {}] 的“删除问题”事件", questionId);
         super.doNextHandler(questionId);

@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
@@ -70,10 +71,12 @@ public class PaperQuestionLinkServiceImpl extends ServiceImpl<PaperQuestionLinkM
 
     @Override
     public void removeQuestionsFromPaper(Long paperId, List<Long> questionIds) {
-        this.lambdaUpdate()
-                .eq(PaperQuestionLink::getPaperId, paperId)
-                .in(PaperQuestionLink::getQuestionId, questionIds)
-                .remove();
+        if(!CollectionUtils.isEmpty(questionIds)) {
+            this.lambdaUpdate()
+                    .eq(PaperQuestionLink::getPaperId, paperId)
+                    .in(PaperQuestionLink::getQuestionId, questionIds)
+                    .remove();
+        }
     }
 
     @Override

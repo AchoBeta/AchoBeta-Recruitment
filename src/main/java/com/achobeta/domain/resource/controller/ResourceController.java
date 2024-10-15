@@ -88,7 +88,6 @@ public class ResourceController {
     }
 
     @PostMapping("/upload/one")
-    @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER}, log = true)
     public SystemJsonResponse upload(@RequestPart("file") MultipartFile file) {
         Long userId = BaseContext.getCurrentUser().getUserId();
         Long code = resourceService.upload(userId, file);
@@ -96,7 +95,7 @@ public class ResourceController {
     }
 
     @PostMapping("/upload/syncfeishu/markdown")
-    @Intercept(permit = {UserTypeEnum.ADMIN}, log = true)
+    @Intercept(permit = {UserTypeEnum.ADMIN})
     public SystemJsonResponse uploadMarkdown(@RequestPart("file") MultipartFile file,
                                              @RequestParam(name = "level", required = false) Integer level) {
         ResourceUtil.checkText(MediaUtil.getContentType(file));
@@ -109,7 +108,7 @@ public class ResourceController {
     }
 
     @PostMapping("/upload/syncfeishu/sheet")
-    @Intercept(permit = {UserTypeEnum.ADMIN}, log = true)
+    @Intercept(permit = {UserTypeEnum.ADMIN})
     public SystemJsonResponse uploadExcel(@RequestPart("file") MultipartFile file,
                                           @RequestParam(name = "level", required = false) Integer level) {
         ResourceUtil.checkSheet(MediaUtil.getBytes(file));
@@ -122,7 +121,6 @@ public class ResourceController {
     }
 
     @PostMapping("/upload/image")
-    @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER}, log = true)
     public SystemJsonResponse uploadImage(@RequestPart("file") MultipartFile file) {
         // 检查
         ResourceUtil.checkImage(MediaUtil.getContentType(file));
@@ -132,7 +130,6 @@ public class ResourceController {
     }
 
     @PostMapping("/upload/video")
-    @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER}, log = true)
     public SystemJsonResponse uploadVideo(@RequestPart("file") MultipartFile file) {
         // 检查
         ResourceUtil.checkVideo(MediaUtil.getContentType(file));
@@ -142,7 +139,6 @@ public class ResourceController {
     }
 
     @PostMapping("/upload/list")
-    @Intercept(permit = {UserTypeEnum.ADMIN, UserTypeEnum.USER}, log = true)
     public SystemJsonResponse upload(@RequestPart("file") List<MultipartFile> fileList) {
         Long userId = BaseContext.getCurrentUser().getUserId();
         List<Long> codeList = resourceService.uploadList(userId, fileList);

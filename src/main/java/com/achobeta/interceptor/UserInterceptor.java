@@ -123,16 +123,12 @@ public class UserInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         try {
-            if(handler instanceof HandlerMethod handlerMethod) {
-                // 获取目标方法
-                Method targetMethod = handlerMethod.getMethod();
-                if(InterceptHelper.shouldPrintLog(targetMethod)) {
-                    String requestId = response.getHeader(requestIdConfig.getHeader());
-                    log.warn("请求 {} 访问接口 {}，响应 HTTP 状态码 {}，错误信息 {}",
-                            requestId, request.getRequestURI(), response.getStatus(),
-                            Optional.ofNullable(ex).map(Exception::getMessage).orElse(null)
-                    );
-                }
+            if(handler instanceof HandlerMethod) {
+                String requestId = response.getHeader(requestIdConfig.getHeader());
+                log.warn("请求 {} 访问接口 {}，响应 HTTP 状态码 {}，错误信息 {}",
+                        requestId, request.getRequestURI(), response.getStatus(),
+                        Optional.ofNullable(ex).map(Exception::getMessage).orElse(null)
+                );
             }
         } finally {
             log.info("删除本地线程变量");
