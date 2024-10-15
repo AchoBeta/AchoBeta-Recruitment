@@ -38,7 +38,7 @@
             <id>prod</id>
             <properties>
                 <profiles.active>prod</profiles.active>
-                <logging.level>debug</logging.level>
+                <logging.level>info</logging.level>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
