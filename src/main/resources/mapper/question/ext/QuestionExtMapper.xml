@@ -28,6 +28,6 @@
                 </foreach>
             </if>
         </where>
-        order by lq_create_time
+        order by lq_create_time asc
     </select>
 </mapper>

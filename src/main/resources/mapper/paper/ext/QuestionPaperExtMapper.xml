@@ -28,7 +28,7 @@
                 </foreach>
             </if>
         </where>
-        order by lp_create_time
+        order by lp_create_time asc
     </select>
 
 </mapper>

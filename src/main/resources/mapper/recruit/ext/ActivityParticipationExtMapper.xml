@@ -29,12 +29,13 @@
 
     <select id="getQuestions" parameterType="java.lang.Long" resultMap="QuestionAnswerMap">
         select
-            q.id, q.title, pq.answer
+            q.id, q.title, pq.answer, pq.create_time pq_create_time
         from
             activity_participation ap
             left join participation_question_link pq on ap.id = pq.participation_id and ap.is_deleted = 0 and pq.is_deleted = 0
             left join question q on pq.question_id = q.id and pq.is_deleted = 0 and q.is_deleted = 0
         where ap.id = #{participationId,jdbcType=BIGINT} and q.id is not null and ap.is_deleted = 0
+        order by pq_create_time
     </select>
 
     <select id="getPeriods" parameterType="java.lang.Long" resultMap="PeriodMap">
@@ -68,7 +69,7 @@
 
     <select id="getParticipationQuestions" resultMap="ParticipationQuestionMap">
         select
-            ap.id, q.id q_id, q.title q_title, pq.answer q_answer,
+            ap.id, q.id q_id, q.title q_title, pq.answer q_answer, pq.create_time pq_create_time,
             <include refid="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.Stu_Simple_Column_List"/>
         from
         activity_participation ap
@@ -85,5 +86,6 @@
                 </foreach>
             </if>
         </where>
+        order by pq_create_time asc
     </select>
 </mapper>

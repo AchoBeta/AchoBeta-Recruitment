@@ -85,6 +85,7 @@
              left join recruitment_batch b on b.id = a.batch_id and a.is_deleted = 0 and b.is_deleted = 0
              left join stu_resume r on r.batch_id = b.id and r.user_id = stu.id and r.is_deleted = 0 and b.is_deleted = 0 and stu.is_deleted = 0
         where i.id = #{interviewId,jdbcType=BIGINT} and i.is_deleted = 0
+        order by s.start_time asc, s.end_time asc
     </select>
 
 </mapper>
