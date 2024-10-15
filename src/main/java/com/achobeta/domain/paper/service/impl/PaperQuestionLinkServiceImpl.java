@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -85,15 +86,18 @@ public class PaperQuestionLinkServiceImpl extends ServiceImpl<PaperQuestionLinkM
 
     @Override
     @Transactional
-    public Long cloneQuestionPaper(Long paperId) {
+    public Long cloneQuestionPaper(Long paperId, String title) {
         // 拷贝试卷的定义
         QuestionPaperDetailVO paperDetail = getPaperDetail(paperId);
         List<Long> libIds = paperDetail.getTypes()
                 .stream()
                 .map(PaperLibraryVO::getId)
                 .toList();
-        Long newPaperId = questionPaperService.addQuestionPaper(libIds,
-                paperDetail.getTitle(), paperDetail.getDescription());
+        Long newPaperId = questionPaperService.addQuestionPaper(
+                libIds,
+                Optional.ofNullable(title).filter(StringUtils::hasText).orElseGet(paperDetail::getTitle),
+                paperDetail.getDescription()
+        );
         // 拷贝试卷的题目
         List<Long> questionIds = paperDetail.getQuestions()
                 .stream()

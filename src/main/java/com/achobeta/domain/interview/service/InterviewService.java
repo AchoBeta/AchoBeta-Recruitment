@@ -49,7 +49,7 @@ public interface InterviewService extends IService<Interview> {
 
     InterviewStatus executeInterviewStateEvent(InterviewEvent interviewEvent, InterviewContext interviewContext);
 
-    void setPaperForInterview(Long interviewId, Long paperId);
+    void setPaperForInterview(Interview interview, Long paperId);
 
     // 检测 ------------------------------------------
 

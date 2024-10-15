@@ -124,7 +124,7 @@ public class InterviewController {
             // 检查试卷是否存在
             questionPaperService.checkPaperExists(paperId);
             // 设置试卷
-            interviewService.setPaperForInterview(interviewId, paperId);
+            interviewService.setPaperForInterview(interview, paperId);
         }
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }

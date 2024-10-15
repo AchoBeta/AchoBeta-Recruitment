@@ -161,13 +161,14 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
 
     @Override
     @Transactional
-    public void setPaperForInterview(Long interviewId, Long paperId) {
+    public void setPaperForInterview(Interview interview, Long paperId) {
         // 删除面试相关的打分
+        Long interviewId = interview.getId();
         Db.lambdaUpdate(InterviewQuestionScore.class)
                 .eq(InterviewQuestionScore::getInterviewId, interviewId)
                 .remove();
         // 拷贝一份试卷
-        Long newPaperId = paperQuestionLinkService.cloneQuestionPaper(paperId);
+        Long newPaperId = paperQuestionLinkService.cloneQuestionPaper(paperId, interview.getTitle());
         // 设置试卷
         this.lambdaUpdate()
                 .eq(Interview::getId, interviewId)
