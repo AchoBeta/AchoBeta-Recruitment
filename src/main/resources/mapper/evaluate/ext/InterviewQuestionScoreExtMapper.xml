@@ -12,7 +12,7 @@
 
     <select id="getAverageQuestions" resultMap="QuestionAverageMap">
         select
-            q.id, q.title, q.standard, q.create_time, q.update_time, avg(s.score) average, s.create_time s_create_time
+            q.id, q.title, q.standard, q.create_time, q.update_time, avg(s.score) average
         from question q
              left join interview_question_score s on q.id = s.question_id and s.is_deleted = 0 and q.is_deleted = 0 and s.score != -1
         <where>
@@ -24,7 +24,6 @@
             </if>
         </where>
         group by q.id
-        order by s_create_time asc
     </select>
 
 </mapper>
