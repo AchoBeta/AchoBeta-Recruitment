@@ -16,14 +16,14 @@
         from question q
              left join interview_question_score s on q.id = s.question_id and s.is_deleted = 0 and q.is_deleted = 0 and s.score != -1
         <where>
-            q.is_deleted = 0
+            q.id is not null and q.is_deleted = 0
             <if test="questionIds != null">
                 <foreach collection="questionIds" item="questionId" separator="," open="and q.id in (" close=")" >
                     #{questionId,jdbcType=BIGINT}
                 </foreach>
             </if>
         </where>
-        group by q.create_time
+        group by q.id
         order by s_create_time asc
     </select>
 
