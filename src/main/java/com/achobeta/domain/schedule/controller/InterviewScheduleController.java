@@ -131,39 +131,14 @@ public class InterviewScheduleController {
     /**
      * 管理员查看用户参与和预约情况
      *
-     * @param actId
-     * @return
      */
-    @GetMapping("/situations/{actId}")
-    public SystemJsonResponse getUserParticipationSituationByActId(@PathVariable("actId") @NotNull Long actId) {
-        // 检测
-        recruitmentActivityService.checkRecruitmentActivityExists(actId);
-        // 获取参与本次招新活动的所有用户参与和预约情况
-        UserSituationVO situations = interviewScheduleService.querySituations(actId);
-        return SystemJsonResponse.SYSTEM_SUCCESS(situations);
-    }
-
     @PostMapping("/situations")
     public SystemJsonResponse querySituations(@Valid @RequestBody SituationQueryDTO situationQueryDTO) {
         // 检测
         recruitmentActivityService.checkRecruitmentActivityExists(situationQueryDTO.getActId());
-        List<Integer> statusList = Optional.ofNullable(situationQueryDTO.getStatusList()).stream().flatMap(Collection::stream).filter(Objects::nonNull).toList();
-        situationQueryDTO.setStatusList(statusList);
         // 获取参与本次招新活动的所有用户参与和预约情况
         UserSituationVO situations = interviewScheduleService.querySituations(situationQueryDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS(situations);
-    }
-
-    @GetMapping("/print/situations/{actId}")
-    public SystemJsonResponse printUserParticipationSituationByActId(@PathVariable("actId") @NotNull Long actId,
-                                                                     @RequestParam(name = "level", required = false) Integer level,
-                                                                     @RequestParam(name = "synchronous", required = false) Boolean synchronous) {
-        // 检测
-        ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(ResourceConstants.DEFAULT_EXCEL_ACCESS_LEVEL);
-        // 打印表格
-        Long managerId = BaseContext.getCurrentUser().getUserId();
-        OnlineResourceVO onlineResourceVO = interviewScheduleService.printSituations(managerId, actId, accessLevel, synchronous);
-        return SystemJsonResponse.SYSTEM_SUCCESS(onlineResourceVO);
     }
 
     @PostMapping("/print/situations")

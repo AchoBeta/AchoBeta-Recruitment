@@ -120,12 +120,9 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
      * 4. 构造返回值返回
      */
     @Override
-    public UserSituationVO querySituations(Long actId) {
-        return querySituations(new SituationQueryDTO(actId, null));
-    }
-
-    @Override
     public UserSituationVO querySituations(SituationQueryDTO situationQueryDTO) {
+        List<Integer> statusList = Optional.ofNullable(situationQueryDTO.getStatusList()).stream().flatMap(Collection::stream).filter(Objects::nonNull).toList();
+        situationQueryDTO.setStatusList(statusList);
         // periodId --> 时间段计数器
         Map<Long, TimePeriodCountVO> countMap = timePeriodService.getTimePeriodsByActId(situationQueryDTO.getActId())
                 .stream()
@@ -205,11 +202,6 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
             participationDetailVO.setScheduleVOS(situations.getScheduleVOS());
             return participationDetailVO;
         }).orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.ACTIVITY_PARTICIPATION_NOT_EXISTS));
-    }
-
-    @Override
-    public OnlineResourceVO printSituations(Long managerId, Long actId, ResourceAccessLevel level, Boolean synchronous) {
-        return printSituations(managerId, new SituationQueryDTO(actId, null), level, synchronous);
     }
 
     @Override
