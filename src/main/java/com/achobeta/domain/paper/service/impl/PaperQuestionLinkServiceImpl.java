@@ -17,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
 * @author 马拉圈
@@ -54,7 +51,7 @@ public class PaperQuestionLinkServiceImpl extends ServiceImpl<PaperQuestionLinkM
     @Override
     @Transactional
     public void addQuestionsForPaper(Long paperId, List<Long> questionIds) {
-        Set<Long> hash = new HashSet<>();
+        Set<Long> hash = new LinkedHashSet<>();
         // 获取试卷的所有题
         getQuestionsOnPaper(paperId).forEach(questionVO -> hash.add(questionVO.getId()));
         // 将不存在于原试卷的题滤出来

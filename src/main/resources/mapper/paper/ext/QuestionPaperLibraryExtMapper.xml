@@ -19,10 +19,11 @@
     <select id="getQuestionPaperDetail" parameterType="java.lang.Long" resultMap="QuestionPaperDetail">
         select
             p.id, p.title, p.description, p.create_time, p.update_time,
-            l.id l_id, l.lib_type l_lib_type, l.create_time l_create_time
+            l.id l_id, l.lib_type l_lib_type, l.create_time l_create_time, lp.create_time lp_create_time
         from question_paper p
              left join library_paper_link lp on p.id = lp.paper_id and p.is_deleted = 0 and lp.is_deleted = 0
              left join question_paper_library l on l.id = lp.lib_id and l.is_deleted = 0 and lp.is_deleted = 0
         where p.id = #{paperId,jdbcType=BIGINT} and p.is_deleted = 0
+        order by lp_create_time
     </select>
 </mapper>

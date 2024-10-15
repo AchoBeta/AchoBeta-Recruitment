@@ -16,7 +16,7 @@
             resultMap="com.achobeta.domain.paper.model.dao.mapper.QuestionPaperMapper.BaseResultMap">
         select
             -- 试卷与试卷库多对多，在本条 sql 容易出现重复行
-            distinct p.id, p.title, p.description, p.create_time, p.update_time
+            distinct p.id, p.title, p.description, p.create_time, p.update_time, lp.create_time lp_create_time
         from question_paper_library l
             left join library_paper_link lp on l.id = lp.lib_id and l.is_deleted = 0 and lp.is_deleted = 0
             left join question_paper p on p.id = lp.paper_id and p.is_deleted = 0 and lp.is_deleted = 0
@@ -28,6 +28,7 @@
                 </foreach>
             </if>
         </where>
+        order by lp_create_time
     </select>
 
 </mapper>
