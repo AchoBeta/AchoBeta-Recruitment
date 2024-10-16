@@ -124,8 +124,8 @@ services:
       # 密码
       MINIO_ROOT_PASSWORD: bitter-macaron
     ports:
-      - "9005:9005"
-      - "19005:19005"
+      - "9005:9001"
+      - "19005:9000"
     volumes:
       - ./minio/data:/data
     command: server /data
