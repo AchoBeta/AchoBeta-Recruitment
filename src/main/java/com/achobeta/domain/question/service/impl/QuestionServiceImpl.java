@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
 * @author 马拉圈
@@ -88,6 +89,21 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         Long questionId = question.getId();
         libraryQuestionLinkService.addLibraryQuestionLinkBatch(libIds, questionId);
         return questionId;
+    }
+
+    @Override
+    public void referenceQuestions(Long libId, List<Long> questionIds) {
+        Set<Long> hash = questionMapper.getQuestions(List.of(libId)).stream().map(Question::getId).collect(Collectors.toSet());
+        List<LibraryQuestionLink> libraryQuestionLinkList = questionIds.stream()
+                .distinct()
+                .filter(questionId -> Objects.nonNull(questionId) && !hash.contains(questionId))
+                .map(questionId -> {
+                    LibraryQuestionLink libraryQuestionLink = new LibraryQuestionLink();
+                    libraryQuestionLink.setQuestionId(questionId);
+                    libraryQuestionLink.setLibId(libId);
+                    return libraryQuestionLink;
+                }).toList();
+        libraryQuestionLinkService.saveBatch(libraryQuestionLinkList);
     }
 
     @Override

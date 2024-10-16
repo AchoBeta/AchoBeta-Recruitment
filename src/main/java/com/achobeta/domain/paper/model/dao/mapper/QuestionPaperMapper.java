@@ -17,6 +17,8 @@ public interface QuestionPaperMapper extends BaseMapper<QuestionPaper> {
 
     // 并不会将结果集加入 page，而是返回值 IPage 里
     IPage<QuestionPaper> queryPapers(IPage<QuestionPaper> page, @Param("libIds") List<Long> libIds);
+
+    List<QuestionPaper> getPapers(@Param("libIds") List<Long> libIds);
 }
 
 

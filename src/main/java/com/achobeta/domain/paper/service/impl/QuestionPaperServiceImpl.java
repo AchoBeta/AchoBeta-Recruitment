@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
 * @author 马拉圈
@@ -75,6 +76,21 @@ public class QuestionPaperServiceImpl extends ServiceImpl<QuestionPaperMapper, Q
         Long paperId = questionPaper.getId();
         libraryPaperLinkService.addLibraryPaperLinkBatch(libIds, paperId);
         return paperId;
+    }
+
+    @Override
+    public void referencePapers(Long libId, List<Long> paperIds) {
+        Set<Long> hash = questionPaperMapper.getPapers(List.of(libId)).stream().map(QuestionPaper::getId).collect(Collectors.toSet());
+        List<LibraryPaperLink> libraryPaperLinkList = paperIds.stream()
+                .distinct()
+                .filter(paperId -> Objects.nonNull(paperId) && !hash.contains(paperId))
+                .map(paperId -> {
+                    LibraryPaperLink libraryPaperLink = new LibraryPaperLink();
+                    libraryPaperLink.setPaperId(paperId);
+                    libraryPaperLink.setLibId(libId);
+                    return libraryPaperLink;
+                }).toList();
+        libraryPaperLinkService.saveBatch(libraryPaperLinkList);
     }
 
     @Override
