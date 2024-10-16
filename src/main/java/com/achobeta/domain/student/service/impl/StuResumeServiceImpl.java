@@ -80,7 +80,8 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
             StuSimpleResumeDTO resumeDTO = stuResumeDTO.getStuSimpleResumeDTO();
 
             // 检测
-            resourceService.checkAndRemoveImage(resumeDTO.getImage(), stuResume.getImage());
+            Long oldImage = stuResume.getImage();
+            Boolean shouldRemove = resourceService.shouldRemove(resumeDTO.getImage(), oldImage);
 
             //附件列表
             List<StuAttachmentDTO> stuAttachmentDTOList = stuResumeDTO.getStuAttachmentDTOList();
@@ -91,6 +92,11 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
 
             //保存附件信息
             saveStuAttachment(stuAttachmentDTOList, stuResume.getId());
+
+            // 等提交成功后再删除
+            if(Boolean.TRUE.equals(shouldRemove)) {
+                resourceService.removeKindly(oldImage);
+            }
         }, () -> {}, simpleLockStrategy);
     }
 

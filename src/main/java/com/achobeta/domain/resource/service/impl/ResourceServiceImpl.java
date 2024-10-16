@@ -125,11 +125,12 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     @Transactional
-    public void checkAndRemoveImage(Long code, Long old) {
+    public Boolean shouldRemove(Long code, Long old) {
         if(!code.equals(old)) {
             checkImage(code);
-            removeKindly(old);
+            return Boolean.TRUE;
         }
+        return Boolean.FALSE;
     }
 
     @Override
