@@ -34,11 +34,11 @@
     <select id="getQuestions" parameterType="java.lang.Long"
             resultMap="com.achobeta.domain.question.model.dao.mapper.QuestionMapper.BaseResultMap">
         select
-        -- 问题与题库多对多，在本条 sql 容易出现重复行
-        distinct q.id, q.title, q.standard, q.create_time, q.update_time, lq.create_time lq_create_time
+            -- 问题与题库多对多，在本条 sql 容易出现重复行
+            distinct q.id, q.title, q.standard, q.create_time, q.update_time, lq.create_time lq_create_time
         from question_library l
-        left join library_question_link lq on l.id = lq.lib_id and l.is_deleted = 0 and lq.is_deleted = 0
-        left join question q on q.id = lq.question_id and q.is_deleted = 0 and lq.is_deleted = 0
+            left join library_question_link lq on l.id = lq.lib_id and l.is_deleted = 0 and lq.is_deleted = 0
+            left join question q on q.id = lq.question_id and q.is_deleted = 0 and lq.is_deleted = 0
         <where>
             q.id is not null and l.is_deleted = 0
             <if test="libIds != null">

@@ -3,6 +3,7 @@ package com.achobeta.domain.paper.service.impl;
 import com.achobeta.common.base.BasePageQuery;
 import com.achobeta.common.base.BasePageResult;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.paper.constants.PaperLibraryConstants;
 import com.achobeta.domain.paper.model.converter.QuestionPaperConverter;
 import com.achobeta.domain.paper.model.dao.mapper.QuestionPaperMapper;
 import com.achobeta.domain.paper.model.dto.PaperQueryDTO;
@@ -12,6 +13,8 @@ import com.achobeta.domain.paper.model.vo.PaperQueryVO;
 import com.achobeta.domain.paper.service.LibraryPaperLinkService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.redis.lock.RedisLock;
+import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +37,10 @@ public class QuestionPaperServiceImpl extends ServiceImpl<QuestionPaperMapper, Q
     private final QuestionPaperMapper questionPaperMapper;
 
     private final LibraryPaperLinkService libraryPaperLinkService;
+
+    private final RedisLock redisLock;
+
+    private final SimpleLockStrategy simpleLockStrategy;
 
     /**
      * 流程：dto -> BasePageQuery -> page -> BasePageResult -> vo
@@ -80,17 +87,19 @@ public class QuestionPaperServiceImpl extends ServiceImpl<QuestionPaperMapper, Q
 
     @Override
     public void referencePapers(Long libId, List<Long> paperIds) {
-        Set<Long> hash = questionPaperMapper.getPapers(List.of(libId)).stream().map(QuestionPaper::getId).collect(Collectors.toSet());
-        List<LibraryPaperLink> libraryPaperLinkList = paperIds.stream()
-                .distinct()
-                .filter(paperId -> Objects.nonNull(paperId) && !hash.contains(paperId))
-                .map(paperId -> {
-                    LibraryPaperLink libraryPaperLink = new LibraryPaperLink();
-                    libraryPaperLink.setPaperId(paperId);
-                    libraryPaperLink.setLibId(libId);
-                    return libraryPaperLink;
-                }).toList();
-        libraryPaperLinkService.saveBatch(libraryPaperLinkList);
+        redisLock.tryLockDoSomething(PaperLibraryConstants.PAPER_LIBRARY_REFERENCE_PAPERS_LOCK + libId, () -> {
+            Set<Long> hash = questionPaperMapper.getPapers(List.of(libId)).stream().map(QuestionPaper::getId).collect(Collectors.toSet());
+            List<LibraryPaperLink> libraryPaperLinkList = paperIds.stream()
+                    .distinct()
+                    .filter(paperId -> Objects.nonNull(paperId) && !hash.contains(paperId))
+                    .map(paperId -> {
+                        LibraryPaperLink libraryPaperLink = new LibraryPaperLink();
+                        libraryPaperLink.setPaperId(paperId);
+                        libraryPaperLink.setLibId(libId);
+                        return libraryPaperLink;
+                    }).toList();
+            libraryPaperLinkService.saveBatch(libraryPaperLinkList);
+        }, () -> {}, simpleLockStrategy);
     }
 
     @Override

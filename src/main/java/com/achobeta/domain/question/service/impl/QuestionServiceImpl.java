@@ -3,6 +3,7 @@ package com.achobeta.domain.question.service.impl;
 import com.achobeta.common.base.BasePageQuery;
 import com.achobeta.common.base.BasePageResult;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.question.constants.QuestionLibraryConstants;
 import com.achobeta.domain.question.model.converter.QuestionConverter;
 import com.achobeta.domain.question.model.dao.mapper.QuestionLibraryMapper;
 import com.achobeta.domain.question.model.dao.mapper.QuestionMapper;
@@ -19,6 +20,8 @@ import com.achobeta.domain.question.service.LibraryQuestionLinkService;
 import com.achobeta.domain.question.service.QuestionLibraryService;
 import com.achobeta.domain.question.service.QuestionService;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.redis.lock.RedisLock;
+import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +42,6 @@ import java.util.stream.Collectors;
 public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     implements QuestionService{
 
-
     private final QuestionMapper questionMapper;
 
     private final QuestionLibraryMapper questionLibraryMapper;
@@ -47,6 +49,10 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     private final QuestionLibraryService questionLibraryService;
 
     private final LibraryQuestionLinkService libraryQuestionLinkService;
+
+    private final RedisLock redisLock;
+
+    private final SimpleLockStrategy simpleLockStrategy;
 
     /**
      * 流程：dto -> BasePageQuery -> page -> BasePageResult -> vo
@@ -93,17 +99,19 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
 
     @Override
     public void referenceQuestions(Long libId, List<Long> questionIds) {
-        Set<Long> hash = questionMapper.getQuestions(List.of(libId)).stream().map(Question::getId).collect(Collectors.toSet());
-        List<LibraryQuestionLink> libraryQuestionLinkList = questionIds.stream()
-                .distinct()
-                .filter(questionId -> Objects.nonNull(questionId) && !hash.contains(questionId))
-                .map(questionId -> {
-                    LibraryQuestionLink libraryQuestionLink = new LibraryQuestionLink();
-                    libraryQuestionLink.setQuestionId(questionId);
-                    libraryQuestionLink.setLibId(libId);
-                    return libraryQuestionLink;
-                }).toList();
-        libraryQuestionLinkService.saveBatch(libraryQuestionLinkList);
+        redisLock.tryLockDoSomething(QuestionLibraryConstants.QUESTION_LIBRARY_REFERENCE_QUESTIONS_LOCK + libId, () -> {
+            Set<Long> hash = questionMapper.getQuestions(List.of(libId)).stream().map(Question::getId).collect(Collectors.toSet());
+            List<LibraryQuestionLink> libraryQuestionLinkList = questionIds.stream()
+                    .distinct()
+                    .filter(questionId -> Objects.nonNull(questionId) && !hash.contains(questionId))
+                    .map(questionId -> {
+                        LibraryQuestionLink libraryQuestionLink = new LibraryQuestionLink();
+                        libraryQuestionLink.setQuestionId(questionId);
+                        libraryQuestionLink.setLibId(libId);
+                        return libraryQuestionLink;
+                    }).toList();
+            libraryQuestionLinkService.saveBatch(libraryQuestionLinkList);
+        }, () -> {}, simpleLockStrategy);
     }
 
     @Override
