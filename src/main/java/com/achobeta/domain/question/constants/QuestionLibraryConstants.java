@@ -1,7 +1,5 @@
 package com.achobeta.domain.question.constants;
 
-import lombok.Data;
-
 /**
  * Created With Intellij IDEA
  * Description:
