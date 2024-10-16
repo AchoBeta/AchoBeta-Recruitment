@@ -27,6 +27,8 @@ public class MediaUtil {
 
     public final static String COMPRESS_FORMAT_NAME = "jpg"; // 压缩图片格式
 
+    public final static String COMPRESS_FORMAT_SUFFIX = "." + COMPRESS_FORMAT_NAME; // 压缩图片格式
+
     public final static float COMPRESS_SCALE = 1.0f; // 压缩图片大小
 
     public final static float COMPRESS_QUALITY = 0.5f; // 压缩图片质量

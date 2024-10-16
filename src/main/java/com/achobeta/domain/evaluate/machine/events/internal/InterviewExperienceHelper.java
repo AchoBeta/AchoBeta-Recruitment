@@ -91,7 +91,6 @@ public class InterviewExperienceHelper implements InterviewStateInternalTransiti
                         InterviewExperienceTemplateInner inner = InterviewExperienceTemplateInner.builder()
                                 .title(question.getTitle())
                                 .score(question.getScore())
-                                .average(question.getAverage())
                                 .standard(target)
                                 .build();
                         replaceResourceList.add(new ReplaceResource(target, question.getStandard()));

@@ -6,6 +6,7 @@ import com.achobeta.domain.message.handler.websocket.MessageReceiveServer;
 import com.achobeta.domain.message.model.dto.MessageSendDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -27,6 +28,7 @@ public class MessageSendNowChain extends MessageSendHandlerChain {
     }
 
     @Override
+    @Transactional
     public void handleChain(MessageSendDTO messageSendBody, CopyOnWriteArraySet<MessageReceiveServer> webSocketSet) {
         //初始化责任链
         MessageSendHandler messageSendHandler = initHandlerChain();

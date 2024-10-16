@@ -124,7 +124,7 @@ public class InterviewController {
             // 检查试卷是否存在
             questionPaperService.checkPaperExists(paperId);
             // 设置试卷
-            interviewService.setPaperForInterview(interviewId, paperId);
+            interviewService.setPaperForInterview(interview, paperId);
         }
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
@@ -132,7 +132,7 @@ public class InterviewController {
     @PostMapping("/list/manager/all")
     public SystemJsonResponse managerGetAllInterviewList(@Valid @RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 查询
-        List<InterviewVO> interviewVOList = interviewService.managerGetInterviewList(null, InterviewConditionDTO.of(interviewConditionDTO));
+        List<InterviewDetailVO> interviewVOList = interviewService.managerGetInterviewList(null, InterviewConditionDTO.of(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewVOList);
     }
 
@@ -154,7 +154,7 @@ public class InterviewController {
         // 获取当前管理员 id
         Long managerId = BaseContext.getCurrentUser().getUserId();
         // 查询
-        List<InterviewVO> interviewVOList = interviewService.managerGetInterviewList(managerId, InterviewConditionDTO.of(interviewConditionDTO));
+        List<InterviewDetailVO> interviewVOList = interviewService.managerGetInterviewList(managerId, InterviewConditionDTO.of(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewVOList);
     }
 

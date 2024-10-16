@@ -230,6 +230,9 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
 
     @Override
     public List<StuResume> queryStuList(Long batchId, List<Long> userIds) {
+        if(CollectionUtils.isEmpty(userIds)) {
+            return new ArrayList<>();
+        }
         return lambdaQuery()
                 .eq(StuResume::getBatchId, batchId)
                 .in(StuResume::getUserId, userIds)

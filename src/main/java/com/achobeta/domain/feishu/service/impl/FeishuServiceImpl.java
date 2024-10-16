@@ -7,7 +7,7 @@ import com.achobeta.feishu.config.FeishuAppConfig;
 import com.achobeta.feishu.config.ResourceProperties;
 import com.achobeta.feishu.constants.ObjectType;
 import com.achobeta.feishu.request.FeishuRequestEngine;
-import com.achobeta.feishu.token.FeishuTenantAccessToken;
+import com.achobeta.feishu.token.FeishuTenantSession;
 import com.achobeta.util.GsonUtil;
 import com.achobeta.util.MediaUtil;
 import com.achobeta.util.TimeUtil;
@@ -57,7 +57,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
     private final FeishuAppConfig feishuAppConfig;
 
-    private final FeishuTenantAccessToken feishuTenantAccessToken;
+    private final FeishuTenantSession feishuTenantSession;
 
     private final FeishuRequestEngine feishuRequestEngine;
 
@@ -86,7 +86,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //        } catch (Exception e) {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
-        String token = feishuTenantAccessToken.getToken();
+        String token = feishuTenantSession.getToken();
         return feishuRequestEngine.jsonRequest(
                 GET_USER_ID,
                 batchGetIdUserReqBody,
@@ -133,7 +133,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //        } catch (Exception e) {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
-        String token = feishuTenantAccessToken.getToken();
+        String token = feishuTenantSession.getToken();
         return feishuRequestEngine.jsonRequest(
                 RESERVE_APPLY,
                 applyReserveReqBody,
@@ -228,7 +228,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //        } catch (Exception e) {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
-        String token = feishuTenantAccessToken.getToken();
+        String token = feishuTenantSession.getToken();
         return feishuRequestEngine.jsonRequest(
                 IMPORT_TASK,
                 importTask,
@@ -264,7 +264,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //        } catch (Exception e) {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
-        String token = feishuTenantAccessToken.getToken();
+        String token = feishuTenantSession.getToken();
         return feishuRequestEngine.jsonRequest(
                 GET_IMPORT_TASK,
                 null,

@@ -34,18 +34,17 @@ public class RemovePaperIQScoreHandler extends RemovePaperHandler {
                 .stream()
                 .map(Interview::getId)
                 .toList();
-        if(CollectionUtils.isEmpty(interviewIds)) {
-            return;
+        if(!CollectionUtils.isEmpty(interviewIds)) {
+            // 将面试试卷设置为空
+            interviewService.lambdaUpdate()
+                    .in(Interview::getId, interviewIds)
+                    .set(Interview::getPaperId, null)
+                    .update();
+            // 删除对应的评分
+            interviewQuestionScoreService.lambdaUpdate()
+                    .in(InterviewQuestionScore::getInterviewId, interviewIds)
+                    .remove();
         }
-        // 将面试试卷设置为空
-        interviewService.lambdaUpdate()
-                .in(Interview::getId, interviewIds)
-                .set(Interview::getPaperId, null)
-                .update();
-        // 删除对应的评分
-        interviewQuestionScoreService.lambdaUpdate()
-                .in(InterviewQuestionScore::getInterviewId, interviewIds)
-                .remove();
         // 执行下一个
         super.doNextHandler(paperId);
     }

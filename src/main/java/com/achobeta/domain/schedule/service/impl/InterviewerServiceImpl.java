@@ -3,12 +3,15 @@ package com.achobeta.domain.schedule.service.impl;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.domain.schedule.model.dao.mapper.InterviewerMapper;
 import com.achobeta.domain.schedule.model.entity.Interviewer;
+import com.achobeta.domain.schedule.model.vo.ScheduleInterviewerVO;
 import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +24,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class InterviewerServiceImpl extends ServiceImpl<InterviewerMapper, Interviewer>
     implements InterviewerService{
+
+    private final InterviewerMapper interviewerMapper;
 
     @Override
     public Optional<Interviewer> getInterviewer(Long managerId, Long scheduleId) {
@@ -35,6 +40,14 @@ public class InterviewerServiceImpl extends ServiceImpl<InterviewerMapper, Inter
         return this.lambdaQuery()
                 .eq(Interviewer::getScheduleId, scheduleId)
                 .list();
+    }
+
+    @Override
+    public List<ScheduleInterviewerVO> getInterviewersByScheduleIds(List<Long> scheduleIds) {
+        if(CollectionUtils.isEmpty(scheduleIds)) {
+            return new ArrayList<>();
+        }
+        return interviewerMapper.getInterviewersByScheduleIds(scheduleIds);
     }
 
     @Override

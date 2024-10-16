@@ -39,6 +39,6 @@ public interface InterviewConverter {
 
     InterviewReserveVO feishuReserveToInterviewReserveVO(Reserve reserve);
 
-    List<InterviewExcelTemplate> interviewVOListToInterviewExcelTemplateList(List<InterviewVO> interviewVOList);
+    List<InterviewExcelTemplate> interviewVOListToInterviewExcelTemplateList(List<InterviewDetailVO> interviewVOList);
 
 }
