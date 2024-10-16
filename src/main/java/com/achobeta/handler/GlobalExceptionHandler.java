@@ -1,12 +1,14 @@
 package com.achobeta.handler;
 
 import com.achobeta.common.SystemJsonResponse;
-import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.config.RequestIdConfig;
 import com.achobeta.exception.GlobalServiceException;
 import com.mysql.jdbc.MysqlDataTruncation;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -32,38 +34,43 @@ import static com.achobeta.common.enums.GlobalServiceStatusCode.*;
  */
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
+    private final RequestIdConfig requestIdConfig;
+
+    private void logError(HttpServletRequest request, HttpServletResponse response, Exception e) {
+        log.error("请求 {} 访问接口 {}，错误信息 {}",
+                response.getHeader(requestIdConfig.getHeader()),
+                request.getRequestURI(),
+                e.getMessage()
+        );
+    }
+
     @ExceptionHandler(GlobalServiceException.class)
-    public SystemJsonResponse handleGlobalServiceException(GlobalServiceException e, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        String message = e.getMessage();
-        GlobalServiceStatusCode statusCode = e.getStatusCode();
-        log.error("请求地址'{}', {}: '{}'", requestURI, statusCode, message);
-        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(statusCode, message);
+    public SystemJsonResponse handleGlobalServiceException(GlobalServiceException e, HttpServletRequest request, HttpServletResponse response) {
+        logError(request, response, e);
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(e.getStatusCode(), e.getMessage());
     }
 
     @ExceptionHandler({FileUploadException.class})
-    public SystemJsonResponse handleFileUploadException(FileUploadException e, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        String message = e.getMessage();
-        log.error("请求地址'{}', '{}'", requestURI, message);
+    public SystemJsonResponse handleFileUploadException(FileUploadException e, HttpServletRequest request, HttpServletResponse response) {
+        logError(request, response, e);
+        String message = "文件上传异常";
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(RESOURCE_NOT_VALID, message);
     }
 
     @ExceptionHandler({DataIntegrityViolationException.class})
-    public SystemJsonResponse handleDataIntegrityViolationException(DataIntegrityViolationException e, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        String message = e.getCause() instanceof MysqlDataTruncation ? "文本长度超出限制" : "数据异常";
-        log.error("请求地址'{}', '{}', '{}'", requestURI, message, e.getMessage());
+    public SystemJsonResponse handleDataIntegrityViolationException(DataIntegrityViolationException e, HttpServletRequest request, HttpServletResponse response) {
+        logError(request, response, e);
+        String message = e.getCause() instanceof MysqlDataTruncation ? "数据截断，请检查长度、范围和类型" : "数据非法";
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_ERROR, message);
     }
 
     @ExceptionHandler({SQLException.class})
-    public SystemJsonResponse handleSQLException(SQLException e, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        String message = "数据异常";
-        log.error("请求地址'{}', '{}', '{}'", requestURI, message, e.getMessage());
+    public SystemJsonResponse handleSQLException(SQLException e, HttpServletRequest request, HttpServletResponse response) {
+        logError(request, response, e);
+        String message = "数据访问与交互异常";
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(SYSTEM_SERVICE_ERROR, message);
     }
 
@@ -71,9 +78,8 @@ public class GlobalExceptionHandler {
      * 自定义验证异常
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public SystemJsonResponse constraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        log.error("请求地址'{}', 自定义验证异常'{}'", requestURI, e.getMessage());
+    public SystemJsonResponse constraintViolationException(ConstraintViolationException e, HttpServletRequest request, HttpServletResponse response) {
+        logError(request, response, e);
         String message = e.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
                 .filter(Objects::nonNull)
@@ -82,9 +88,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public SystemJsonResponse ValidationHandler(MethodArgumentNotValidException e, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        log.error("请求地址'{}', 自定义验证异常'{}'", requestURI, e.getMessage());
+    public SystemJsonResponse ValidationHandler(MethodArgumentNotValidException e, HttpServletRequest request, HttpServletResponse response) {
+        logError(request, response, e);
         String message = e.getBindingResult().getFieldErrors().stream()
                 .map(FieldError::getDefaultMessage)
                 .filter(Objects::nonNull)
