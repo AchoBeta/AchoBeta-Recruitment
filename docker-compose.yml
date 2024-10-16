@@ -4,11 +4,13 @@ services:
   mysql:
     image: mysql:5.7
     container_name: mysql
-    command: --default-authentication-plugin=mysql_native_password
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     restart: always
     environment:
       TZ: Asia/Shanghai
-      MYSQL_ROOT_PASSWORD: bitter-macaron
+      MYSQL_ROOT_PASSWORD: achobeta666
+      MYSQL_USER: mms
+      MYSQL_PASSWORD: bitter-macaron
     networks:
       - my-network
     depends_on:
@@ -16,8 +18,7 @@ services:
     ports:
       - "13306:3306"
     volumes:
-      - ./mysql/sql:/docker-entrypoint-initdb.d
-      - ./mysql/conf/my.conf:/usr/local/etc/mysql/my.conf
+      - ./docker/mysql/db:/docker-entrypoint-initdb.d
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       interval: 5s
@@ -38,11 +39,11 @@ services:
     container_name: phpmyadmin
     hostname: phpmyadmin
     ports:
-      - 8899:80
+      - "8899:80"
     environment:
       - PMA_HOST=mysql
-      - PMA_PORT=13306
-      - MYSQL_ROOT_PASSWORD=bitter-macaron
+      - PMA_PORT=3306
+      - MYSQL_ROOT_PASSWORD=achobeta666
     depends_on:
       mysql:
         condition: service_healthy
@@ -59,7 +60,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ./redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./docker/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
     command: redis-server /usr/local/etc/redis/redis.conf
     networks:
       - my-network
@@ -105,8 +106,6 @@ services:
       RABBITMQ_DEFAULT_USER: itcast
       RABBITMQ_DEFAULT_PASS: 123321
     command: rabbitmq-server
-    volumes:
-      - ./rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
     networks:
       - my-network
 
@@ -124,8 +123,8 @@ services:
       # 密码
       MINIO_ROOT_PASSWORD: bitter-macaron
     ports:
-      - "9005:9005"
-      - "19005:19005"
+      - "19005:9000"
+      - "9005:9001"
     volumes:
       - ./minio/data:/data
     command: server /data
@@ -135,11 +134,11 @@ services:
   ab-recruitment-app:
     container_name: ab-recruitment-app
     build:
-      context: ../
+      context: ./
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "9001:9001"
+      - "9001:19001"
     environment:
       - TZ=PRC
       - SERVER_PORT=9001
@@ -147,7 +146,7 @@ services:
       - APP_CONFIG_CROSS_ORIGIN=*
       - SPRING_DATASOURCE_USERNAME=mms
       - SPRING_DATASOURCE_PASSWORD=bitter-macaron
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:13306/achobeta_recruitment?serverTimezone=UTC&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Shanghai
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/achobeta_recruitment?serverTimezone=UTC&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Shanghai
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.jdbc.Driver
       - SPRING_HIKARI_POOL_NAME=Retail_HikariCP
       - REDIS_SDK_CONFIG_HOST=redis
@@ -158,10 +157,12 @@ services:
       - redis
       - rabbitmq
       - mysql
+      - minio
     links:
       - redis
       - rabbitmq
       - mysql
+      - minio
     networks:
       - my-network
     logging:
