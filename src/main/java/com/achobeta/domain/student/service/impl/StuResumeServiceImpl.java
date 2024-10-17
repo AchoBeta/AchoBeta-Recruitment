@@ -158,7 +158,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     @Transactional
     public void updateResumeInfo(StuResume stuResume, StuSimpleResumeDTO resumeDTO) {
         ResumeStatus resumeStatus = stuResume.getStatus();
-        if (Objects.isNull(resumeStatus) || ResumeStatus.DRAFT.equals(resumeStatus)) {
+        if (Objects.isNull(resumeStatus) || ResumeStatus.DRAFT == resumeStatus) {
             //简历状态若为草稿则更新为待筛选
             stuResume.setStatus(ResumeStatus.PENDING_SELECTION);
             // 添加一个简历过程节点
