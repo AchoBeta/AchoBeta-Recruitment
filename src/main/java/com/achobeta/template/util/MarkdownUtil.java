@@ -1,15 +1,19 @@
 package com.achobeta.template.util;
 
-import lombok.Data;
-import org.commonmark.Extension;
-import org.commonmark.ext.autolink.AutolinkExtension;
-import org.commonmark.ext.footnotes.FootnotesExtension;
-import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
-import org.commonmark.ext.gfm.tables.TablesExtension;
-import org.commonmark.ext.task.list.items.TaskListItemsExtension;
-import org.commonmark.node.Node;
-import org.commonmark.parser.Parser;
-import org.commonmark.renderer.html.HtmlRenderer;
+
+
+import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
+import com.vladsch.flexmark.ext.footnotes.FootnoteExtension;
+import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
+import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
+import com.vladsch.flexmark.ext.ins.InsExtension;
+import com.vladsch.flexmark.ext.tables.TablesExtension;
+import com.vladsch.flexmark.ext.toc.TocExtension;
+import com.vladsch.flexmark.ext.yaml.front.matter.YamlFrontMatterExtension;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.ast.Node;
+import com.vladsch.flexmark.util.data.MutableDataSet;
 
 import java.util.List;
 
@@ -20,25 +24,28 @@ import java.util.List;
  * Date: 2024-10-17
  * Time: 11:16
  */
-@Data
 public class MarkdownUtil {
 
-    private final static List<Extension> OPTIONS;
+    private final static MutableDataSet OPTIONS;
 
     private final static Parser PARSER;
 
     private final static HtmlRenderer HTML_RENDERER;
 
     static {
-        OPTIONS = List.of(
-                TablesExtension.create(),
-                AutolinkExtension.create(),
-                StrikethroughExtension.create(),
-                FootnotesExtension.create(),
-                TaskListItemsExtension.create()
-        );
-        PARSER = Parser.builder().extensions(OPTIONS).build();
-        HTML_RENDERER = HtmlRenderer.builder().extensions(OPTIONS).build();
+        OPTIONS = new MutableDataSet()
+                .set(Parser.EXTENSIONS, List.of(
+                        TablesExtension.create(),
+                        AutolinkExtension.create(),
+                        StrikethroughExtension.create(),
+                        FootnoteExtension.create(),
+                        TaskListExtension.create(),
+                        InsExtension.create(),
+                        TocExtension.create()
+                ));
+
+        PARSER = Parser.builder(OPTIONS).build();
+        HTML_RENDERER = HtmlRenderer.builder(OPTIONS).build();
     }
 
     public static String markdownToHtml(String markdown) {
