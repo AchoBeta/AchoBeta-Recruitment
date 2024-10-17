@@ -31,6 +31,7 @@ import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.lock.RedisLock;
 import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
+import com.achobeta.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lark.oapi.service.vc.v1.model.ApplyReserveRespBody;
 import lombok.RequiredArgsConstructor;
@@ -121,8 +122,6 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
      */
     @Override
     public UserSituationVO querySituations(SituationQueryDTO situationQueryDTO) {
-        List<Integer> statusList = Optional.ofNullable(situationQueryDTO.getStatusList()).stream().flatMap(Collection::stream).filter(Objects::nonNull).toList();
-        situationQueryDTO.setStatusList(statusList);
         // periodId --> 时间段计数器
         Map<Long, TimePeriodCountVO> countMap = timePeriodService.getTimePeriodsByActId(situationQueryDTO.getActId())
                 .stream()
@@ -132,6 +131,8 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
                         (oldData, newData) -> newData)
                 );
         // participationId --> 用户预约情况
+        List<Integer> statusList = ObjectUtil.distinctNonNullStream(situationQueryDTO.getStatusList()).toList();
+        situationQueryDTO.setStatusList(statusList);
         Map<Long, UserParticipationVO> userParticipationVOMap = interviewScheduleMapper.querySituations(situationQueryDTO)
                 .stream()
                 .collect(Collectors.toMap(

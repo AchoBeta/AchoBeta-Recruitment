@@ -2,9 +2,9 @@ package com.achobeta.domain.recruit.model.condition.allmatch;
 
 import com.achobeta.domain.recruit.model.condition.function.StudentCondition;
 import com.achobeta.domain.student.model.entity.StuResume;
+import com.achobeta.util.ObjectUtil;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
@@ -18,8 +18,7 @@ public class StatusCondition extends ArrayList<Integer> implements StudentCondit
 
     @Override
     public Predicate<StuResume> predicate() {
-        return stuResume -> this.stream()
-                .filter(Objects::nonNull)
+        return stuResume -> ObjectUtil.distinctNonNullStream(this)
                 .anyMatch(status -> status.equals(stuResume.getStatus().getCode()));
     }
 

@@ -25,7 +25,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -61,8 +64,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
 
     @Override
     public List<StuBaseInfoDTO> queryStuList(Long batchId, List<Long> userIds) {
-        List<Long> stuIds = Optional.ofNullable(userIds).stream().flatMap(Collection::stream).distinct().filter(Objects::nonNull).toList();
-        List<StuResume> stuResumeList = stuResumeService.queryStuList(batchId, stuIds);
+        List<StuResume> stuResumeList = stuResumeService.queryStuList(batchId, userIds);
         return messageConverter.stuResumeListToStuBaseInfoDTOList(stuResumeList);
     }
 

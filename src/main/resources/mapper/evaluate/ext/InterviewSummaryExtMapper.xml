@@ -16,7 +16,7 @@
 
     <select id="getInterviewRankList" resultMap="InterviewRankMap">
         select
-            s.id summary_id, s.basis + s.coding + s.thinking + s.express sum,
+            s.id summary_id, s.basis + s.coding + s.thinking + s.express sum, s.update_time update_time,
             i.id interview_id, i.title title, i.status status,
             <include refid="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.Simple_Column_List" />
         from recruitment_batch b
@@ -36,7 +36,7 @@
                 and a.id = #{condition.actId,jdbcType=BIGINT}
             </if>
         </where>
-        order by sum desc
+        order by sum desc, status desc, update_time asc
     </select>
 
 </mapper>

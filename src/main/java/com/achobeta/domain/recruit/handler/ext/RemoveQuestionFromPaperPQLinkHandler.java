@@ -28,7 +28,7 @@ public class RemoveQuestionFromPaperPQLinkHandler extends RemoveQuestionFromPape
     @Override
     public void handle(Long paperId, List<Long> questionIds) {
         List<Long> participationIds = activityParticipationService.getParticipationIdsByPaperId(paperId);
-        if(!CollectionUtils.isEmpty(participationIds)) {
+        if(!CollectionUtils.isEmpty(participationIds) && !CollectionUtils.isEmpty(questionIds)) {
             // 删除对应的行
             participationQuestionLinkService.lambdaUpdate()
                     .in(ParticipationQuestionLink::getParticipationId, participationIds)

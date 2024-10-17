@@ -6,6 +6,7 @@ import com.achobeta.domain.schedule.model.entity.Interviewer;
 import com.achobeta.domain.schedule.model.vo.ScheduleInterviewerVO;
 import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,7 @@ public class InterviewerServiceImpl extends ServiceImpl<InterviewerMapper, Inter
 
     @Override
     public List<ScheduleInterviewerVO> getInterviewersByScheduleIds(List<Long> scheduleIds) {
+        scheduleIds = ObjectUtil.distinctNonNullStream(scheduleIds).toList();
         if(CollectionUtils.isEmpty(scheduleIds)) {
             return new ArrayList<>();
         }

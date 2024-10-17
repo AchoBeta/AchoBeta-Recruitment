@@ -3,18 +3,16 @@ package com.achobeta.email.provider;
 import cn.hutool.extra.spring.SpringUtil;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.email.config.EmailSenderConfig;
-import com.achobeta.email.config.EmailSenderProperties;
 import com.achobeta.email.provider.strategy.ProvideStrategy;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.util.ObjectUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created With Intellij IDEA
@@ -36,9 +34,7 @@ public class EmailSenderProvider implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         // 构造邮件发送器实现
-        this.senderList = new ArrayList<>();
-        List<EmailSenderProperties> senders = emailSenderConfig.getSenders();
-        Optional.ofNullable(senders).stream().flatMap(List::stream).forEach(sender -> {
+        this.senderList = ObjectUtil.distinctNonNullStream(emailSenderConfig.getSenders()).map(sender -> {
             // 邮件发送者
             JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
             javaMailSender.setHost(sender.getHost());
@@ -48,8 +44,8 @@ public class EmailSenderProvider implements InitializingBean {
             javaMailSender.setProtocol(sender.getProtocol());
             javaMailSender.setDefaultEncoding(sender.getDefaultEncoding());
             javaMailSender.setJavaMailProperties(sender.getProperties());
-            senderList.add(javaMailSender);
-        });
+            return javaMailSender;
+        }).toList();
         // 若不存在一个实现则抛出异常（启动项目时）
         if(CollectionUtils.isEmpty(this.senderList)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.EMAIL_SENDER_NOT_EXISTS);

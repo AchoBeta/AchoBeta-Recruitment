@@ -13,6 +13,7 @@ import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.lock.RedisLock;
 import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
+import com.achobeta.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -81,6 +82,7 @@ public class PaperQuestionLinkServiceImpl extends ServiceImpl<PaperQuestionLinkM
 
     @Override
     public void removeQuestionsFromPaper(Long paperId, List<Long> questionIds) {
+        questionIds = ObjectUtil.distinctNonNullStream(questionIds).toList();
         if(!CollectionUtils.isEmpty(questionIds)) {
             this.lambdaUpdate()
                     .eq(PaperQuestionLink::getPaperId, paperId)
