@@ -2,7 +2,11 @@ package com.achobeta.template.util;
 
 import lombok.Data;
 import org.commonmark.Extension;
+import org.commonmark.ext.autolink.AutolinkExtension;
+import org.commonmark.ext.footnotes.FootnotesExtension;
+import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
+import org.commonmark.ext.task.list.items.TaskListItemsExtension;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
@@ -26,7 +30,13 @@ public class MarkdownUtil {
     private final static HtmlRenderer HTML_RENDERER;
 
     static {
-        OPTIONS = List.of(TablesExtension.create());
+        OPTIONS = List.of(
+                TablesExtension.create(),
+                AutolinkExtension.create(),
+                StrikethroughExtension.create(),
+                FootnotesExtension.create(),
+                TaskListItemsExtension.create()
+        );
         PARSER = Parser.builder().extensions(OPTIONS).build();
         HTML_RENDERER = HtmlRenderer.builder().extensions(OPTIONS).build();
     }
