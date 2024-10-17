@@ -6,8 +6,11 @@ import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.definition.DefinitionExtension;
 import com.vladsch.flexmark.ext.footnotes.FootnoteExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
+import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughSubscriptExtension;
+import com.vladsch.flexmark.ext.gfm.strikethrough.SubscriptExtension;
 import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
 import com.vladsch.flexmark.ext.ins.InsExtension;
+import com.vladsch.flexmark.ext.superscript.SuperscriptExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.toc.TocExtension;
 import com.vladsch.flexmark.ext.typographic.TypographicExtension;
@@ -43,7 +46,8 @@ public class MarkdownUtil {
                         TocExtension.create(),
                         TablesExtension.create(),
                         AutolinkExtension.create(),
-                        StrikethroughExtension.create(),
+                        SuperscriptExtension.create(),
+                        StrikethroughSubscriptExtension.create(),
                         FootnoteExtension.create(),
                         TaskListExtension.create(),
                         InsExtension.create(),
