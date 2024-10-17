@@ -37,3 +37,5 @@ build/
 ### Mac OS ###
 .DS_Store
 /.idea/
+/docker/minio/data/.minio.sys/
+/docker/minio/data/achobeta-recruitment/

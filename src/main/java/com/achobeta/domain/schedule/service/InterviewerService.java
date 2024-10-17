@@ -1,6 +1,7 @@
 package com.achobeta.domain.schedule.service;
 
 import com.achobeta.domain.schedule.model.entity.Interviewer;
+import com.achobeta.domain.schedule.model.vo.ScheduleInterviewerVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -18,6 +19,8 @@ public interface InterviewerService extends IService<Interviewer> {
     Optional<Interviewer> getInterviewer(Long managerId, Long scheduleId);
 
     List<Interviewer> getInterviewersByScheduleId(Long scheduleId);
+
+    List<ScheduleInterviewerVO> getInterviewersByScheduleIds(List<Long> scheduleIds);
 
     // 写入 ------------------------------------------
 

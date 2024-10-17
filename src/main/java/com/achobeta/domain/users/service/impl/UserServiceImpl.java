@@ -56,12 +56,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity>
         // 设置默认头像
         Long avatar = userDTO.getAvatar();
         UserEntity userEntity = UserConverter.INSTANCE.userDTOToUser(userDTO);
-        getUserById(userId).map(UserEntity::getAvatar).ifPresent(code -> {
-            resourceService.checkAndRemoveImage(avatar, code);
-        });
+        Long oldAvatar = getUserById(userId).map(UserEntity::getAvatar).orElse(null);
+        Boolean shouldRemove = resourceService.shouldRemove(avatar, oldAvatar);
         // 更新
         this.lambdaUpdate()
                 .eq(UserEntity::getId, userId)
                 .update(userEntity);
+        // 更新成功再删除
+        if(Boolean.TRUE.equals(shouldRemove)) {
+            resourceService.removeKindly(oldAvatar);
+        }
     }
 }

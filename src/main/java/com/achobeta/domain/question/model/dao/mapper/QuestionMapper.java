@@ -18,6 +18,8 @@ public interface QuestionMapper extends BaseMapper<Question> {
     // 并不会将结果集加入 page，而是返回值 IPage 里
     IPage<Question> queryQuestions(IPage<Question> page, @Param("libIds") List<Long> libIds);
 
+    List<Question> getQuestions(@Param("libIds") List<Long> libIds);
+
 }
 
 

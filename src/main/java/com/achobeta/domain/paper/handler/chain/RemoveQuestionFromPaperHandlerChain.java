@@ -5,6 +5,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class RemoveQuestionFromPaperHandlerChain extends RemoveQuestionFromPaper
     }
 
     @Override
+    @Transactional
     public void handle(Long paperId, List<Long> questionIds) {
         log.info("责任链开始处理 [paperId 为 {}，questionIds 为 {}] 的“从试卷中移除若干题”事件", paperId, questionIds);
         super.doNextHandler(paperId, questionIds);

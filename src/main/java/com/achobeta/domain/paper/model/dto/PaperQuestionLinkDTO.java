@@ -1,5 +1,6 @@
 package com.achobeta.domain.paper.model.dto;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -18,7 +19,7 @@ public class PaperQuestionLinkDTO {
     @NotNull(message = "试卷 id 不能为空")
     private Long paperId;
 
-    @NotNull(message = "问题 ids 不能为空")
+    @NotEmpty(message = "问题 ids 不能为空")
     private List<Long> questionIds;
 
 }

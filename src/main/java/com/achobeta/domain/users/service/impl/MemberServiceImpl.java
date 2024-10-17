@@ -90,6 +90,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
         return memberMapper.queryMemberList(batchId)
                 .stream()
                 .peek(member -> {
+                    // 处理 MP 给枚举设置默认值的现象
                     if(Objects.isNull(member.getId())) {
                         member.setSimpleStudentVO(null);
                     }

@@ -1,12 +1,180 @@
-version: '3'
+# 命令执行 docker-compose -f docker-compose.yml up -d
+version: '3.9'
 services:
-  recruitment:
-    container_name: achobeta-recruitment #配置容器名
-    build:
-      context: .
-      dockerfile: ./dockerfile #指定dockerFile文件
-    image: java/achobeta-recruitment:1.0.0 # 指定镜像名
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: achobeta666
+      MYSQL_USER: mms
+      MYSQL_PASSWORD: bitter-macaron
+    networks:
+      - my-network
+    depends_on:
+      - mysql-job-dbdata
     ports:
-      - "9001:9001" # 暴露端口
+      - "13306:3306"
     volumes:
-      - ./logs:/logs # 创建容器数据卷
+      - ./docker/mysql/db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 15s
+
+  # 自动加载数据
+  mysql-job-dbdata:
+    image: alpine:3.18.2
+    container_name: mysql-job-dbdata
+    volumes:
+      - /var/lib/mysql
+
+  # phpmyadmin https://hub.docker.com/_/phpmyadmin
+  phpmyadmin:
+    image: phpmyadmin:5.2.1
+    container_name: phpmyadmin
+    hostname: phpmyadmin
+    ports:
+      - "8899:80"
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+      - MYSQL_ROOT_PASSWORD=achobeta666
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - my-network
+
+  # Redis
+  redis:
+    image: redis:6.2
+    container_name: redis
+    restart: always
+    hostname: redis
+    privileged: true
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./docker/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - my-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # RedisAdmin https://github.com/joeferner/redis-commander
+  # 账密 admin/admin
+  redis-admin:
+    image: spryker/redis-commander:0.8.0
+    container_name: redis-admin
+    hostname: redis-commander
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+      - HTTP_USER=admin
+      - HTTP_PASSWORD=bitter-macaron
+      - LANG=C.UTF-8
+      - LANGUAGE=C.UTF-8
+      - LC_ALL=C.UTF-8
+    networks:
+      - my-network
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # rabbitmq
+  # 账密 admin/admin
+  # rabbitmq-plugins enable rabbitmq_management
+  rabbitmq:
+    image: rabbitmq:3.12.9
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: itcast
+      RABBITMQ_DEFAULT_PASS: 123321
+    command: rabbitmq-server
+    networks:
+      - my-network
+
+  # minio
+  minio:
+    image: minio/minio:RELEASE.2024-09-13T20-26-02Z
+    container_name: minio
+    hostname: minio
+    privileged: true
+    restart: always
+    environment:
+      # 账号
+      MINIO_ROOT_USER: mms
+      # 密码
+      MINIO_ROOT_PASSWORD: bitter-macaron
+    ports:
+      - "19005:19005"
+      - "9005:9005"
+    volumes:
+      - ./docker/minio/data:/data
+    command: server /data --console-address ":19005"
+    networks:
+      - my-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9005/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  ab-recruitment-app:
+    container_name: ab-recruitment-app
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "9001:19001"
+    environment:
+      - TZ=PRC
+      - SERVER_PORT=9001
+      - APP_CONFIG_API_VERSION=v1
+      - APP_CONFIG_CROSS_ORIGIN=*
+      - SPRING_DATASOURCE_USERNAME=mms
+      - SPRING_DATASOURCE_PASSWORD=bitter-macaron
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/achobeta_recruitment?serverTimezone=UTC&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Shanghai
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.jdbc.Driver
+      - SPRING_HIKARI_POOL_NAME=Retail_HikariCP
+      - REDIS_SDK_CONFIG_HOST=redis
+      - REDIS_SDK_CONFIG_PORT=6379
+    volumes:
+      - ./log:/data/log
+    depends_on:
+      - redis
+      - rabbitmq
+      - mysql
+      - minio
+    links:
+      - redis
+      - rabbitmq
+      - mysql
+      - minio
+    networks:
+      - my-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  my-network:
+    driver: bridge

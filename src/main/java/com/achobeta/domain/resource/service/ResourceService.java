@@ -35,7 +35,7 @@ public interface ResourceService {
 
     void checkImage(Long code);
 
-    void checkAndRemoveImage(Long code, Long old);
+    Boolean shouldRemove(Long code, Long old);
 
     String getSystemUrl(Long code);
 

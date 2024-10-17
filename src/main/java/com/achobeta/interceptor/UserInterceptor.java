@@ -88,15 +88,16 @@ public class UserInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // 设置请求 id
+        long requestId = requestIdGenerator.nextId();
+        response.setHeader(requestIdConfig.getHeader(), String.valueOf(requestId));
+
         //可以解决拦截器跨域问题
         if (!(handler instanceof HandlerMethod)) {
             // 并不处理非目标方法的请求
             // todo: 例如通过本服务，但不是通过目标方法获取资源的请求，而这些请求需要进行其他的处理！
             return Boolean.TRUE;
         }
-        // 设置请求 id
-        long requestId = requestIdGenerator.nextId();
-        response.setHeader(requestIdConfig.getHeader(), String.valueOf(requestId));
         // 获取目标方法
         Method targetMethod = ((HandlerMethod) handler).getMethod();
         // 获取 intercept 注解实例
@@ -123,17 +124,11 @@ public class UserInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         try {
-            if(handler instanceof HandlerMethod handlerMethod) {
-                // 获取目标方法
-                Method targetMethod = handlerMethod.getMethod();
-                if(InterceptHelper.shouldPrintLog(targetMethod)) {
-                    String requestId = response.getHeader(requestIdConfig.getHeader());
-                    log.warn("请求 {} 访问接口 {}，响应 HTTP 状态码 {}，错误信息 {}",
-                            requestId, request.getRequestURI(), response.getStatus(),
-                            Optional.ofNullable(ex).map(Exception::getMessage).orElse(null)
-                    );
-                }
-            }
+            String requestId = response.getHeader(requestIdConfig.getHeader());
+            log.warn("请求 {} 访问接口 {}，响应 HTTP 状态码 {}，错误信息 {}",
+                    requestId, request.getRequestURI(), response.getStatus(),
+                    Optional.ofNullable(ex).map(Exception::getMessage).orElse(null)
+            );
         } finally {
             log.info("删除本地线程变量");
             BaseContext.removeCurrentUser();

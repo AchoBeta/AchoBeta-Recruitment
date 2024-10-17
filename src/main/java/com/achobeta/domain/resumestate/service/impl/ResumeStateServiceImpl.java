@@ -87,7 +87,7 @@ public class ResumeStateServiceImpl implements ResumeStateService {
         ResumeStatus currentStatus = currentResume.getStatus();
         List<ResumeStatusProcess> statusProcesses = resumeStatusProcessService.getProcessByResumeId(resumeId);
         // 如果没有节点或者最后一个节点不是当前状态，则推进到当前状态
-        if(CollectionUtils.isEmpty(statusProcesses) || !currentStatus.equals(statusProcesses.getLast().getResumeStatus())) {
+        if(CollectionUtils.isEmpty(statusProcesses) || currentStatus != statusProcesses.getLast().getResumeStatus()) {
             ResumeStatusProcess process = resumeStatusProcessService.createResumeStatusProcess(resumeId, currentStatus, ResumeEvent.NEXT);
             statusProcesses.add(process);
         }

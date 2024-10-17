@@ -20,7 +20,7 @@ import java.util.Optional;
  */
 @Component
 @RequiredArgsConstructor
-public class FeishuTenantAccessToken {
+public class FeishuTenantSession {
 
     private final Client feishuClient;
 

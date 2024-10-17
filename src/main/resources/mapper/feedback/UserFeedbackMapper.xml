@@ -9,18 +9,19 @@
             <result property="userId" column="user_id" jdbcType="BIGINT"/>
             <result property="batchId" column="batch_id" jdbcType="BIGINT"/>
             <result property="messageId" column="message_id" jdbcType="BIGINT"/>
-            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="tittle" column="tittle" jdbcType="VARCHAR"/>
             <result property="content" column="content" jdbcType="VARCHAR"/>
-            <result property="attchment" column="attchment" jdbcType="VARCHAR"/>
+            <result property="attachment" column="attachment" jdbcType="VARCHAR"/>
             <result property="isHandle" column="is_handle" jdbcType="BIT"/>
             <result property="version" column="version" jdbcType="INTEGER"/>
+            <result property="deleted" column="is_deleted" jdbcType="BIT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,user_id,batch_id,
-        message_id,title,content,
+        message_id,tittle,content,
         attchment,is_handle,version,
         is_deleted,create_time,update_time
     </sql>

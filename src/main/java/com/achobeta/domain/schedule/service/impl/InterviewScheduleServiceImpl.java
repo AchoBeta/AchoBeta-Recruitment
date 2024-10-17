@@ -14,6 +14,7 @@ import com.achobeta.domain.recruit.model.vo.QuestionAnswerVO;
 import com.achobeta.domain.recruit.model.vo.TimePeriodCountVO;
 import com.achobeta.domain.recruit.model.vo.TimePeriodVO;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
+import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.recruit.service.TimePeriodService;
 import com.achobeta.domain.resource.enums.ExcelTemplateEnum;
 import com.achobeta.domain.resource.enums.ResourceAccessLevel;
@@ -21,6 +22,7 @@ import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
 import com.achobeta.domain.resource.service.ResourceService;
 import com.achobeta.domain.schedule.model.converter.SituationConverter;
 import com.achobeta.domain.schedule.model.dao.mapper.InterviewScheduleMapper;
+import com.achobeta.domain.schedule.model.dto.SituationQueryDTO;
 import com.achobeta.domain.schedule.model.entity.InterviewSchedule;
 import com.achobeta.domain.schedule.model.entity.Interviewer;
 import com.achobeta.domain.schedule.model.vo.*;
@@ -29,6 +31,7 @@ import com.achobeta.domain.schedule.service.InterviewerService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.lock.RedisLock;
 import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
+import com.achobeta.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lark.oapi.service.vc.v1.model.ApplyReserveRespBody;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +59,8 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
     private final SimpleLockStrategy simpleLockStrategy;
 
     private final InterviewScheduleMapper interviewScheduleMapper;
+
+    private final RecruitmentActivityService recruitmentActivityService;
 
     private final ActivityParticipationMapper activityParticipationMapper;
 
@@ -87,8 +92,26 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
     }
 
     @Override
-    public List<ScheduleResumeVO> getInterviewScheduleList(Long managerId, InterviewConditionDTO interviewConditionDTO) {
-        return interviewScheduleMapper.getInterviewScheduleList(managerId, interviewConditionDTO);
+    public List<ScheduleDetailVO> getInterviewScheduleList(Long managerId, InterviewConditionDTO interviewConditionDTO) {
+        Map<Long, ScheduleDetailVO> scheduleDetailVOMap = interviewScheduleMapper.getInterviewScheduleList(managerId, interviewConditionDTO).stream().collect(Collectors.toMap(
+                ScheduleDetailVO::getId,
+                scheduleDetailVO -> {
+                    // 处理 MP 给枚举默认值的情况
+                    List<InterviewVO> interviewVOList = scheduleDetailVO.getInterviewVOList().stream().filter(i -> Objects.nonNull(i.getId())).toList();
+                    scheduleDetailVO.setInterviewVOList(interviewVOList);
+                    return scheduleDetailVO;
+                },
+                (oldData, newData) -> newData
+        ));
+        List<Long> scheduleIds = new ArrayList<>(scheduleDetailVOMap.keySet());
+        interviewerService.getInterviewersByScheduleIds(scheduleIds).stream()
+                .filter(scheduleDetailVO -> scheduleDetailVOMap.containsKey(scheduleDetailVO.getId()))
+                .forEach(scheduleDetailVO -> {
+                    scheduleDetailVOMap.get(scheduleDetailVO.getId()).setInterviewerVOList(scheduleDetailVO.getInterviewerVOList());
+                });
+        return scheduleDetailVOMap.values().stream()
+                .sorted(Comparator.comparingLong(s -> s.getStartTime().getTime()))
+                .toList();
     }
 
     /**
@@ -98,9 +121,9 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
      * 4. 构造返回值返回
      */
     @Override
-    public UserSituationVO getSituationsByActId(Long actId) {
+    public UserSituationVO querySituations(SituationQueryDTO situationQueryDTO) {
         // periodId --> 时间段计数器
-        Map<Long, TimePeriodCountVO> countMap = timePeriodService.getTimePeriodsByActId(actId)
+        Map<Long, TimePeriodCountVO> countMap = timePeriodService.getTimePeriodsByActId(situationQueryDTO.getActId())
                 .stream()
                 .collect(Collectors.toMap(
                         TimePeriodVO::getId,
@@ -108,7 +131,9 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
                         (oldData, newData) -> newData)
                 );
         // participationId --> 用户预约情况
-        Map<Long, UserParticipationVO> userParticipationVOMap = interviewScheduleMapper.getSituationsByActId(actId)
+        List<Integer> statusList = ObjectUtil.distinctNonNullStream(situationQueryDTO.getStatusList()).toList();
+        situationQueryDTO.setStatusList(statusList);
+        Map<Long, UserParticipationVO> userParticipationVOMap = interviewScheduleMapper.querySituations(situationQueryDTO)
                 .stream()
                 .collect(Collectors.toMap(
                         ParticipationScheduleVO::getParticipationId,
@@ -181,10 +206,11 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
     }
 
     @Override
-    public OnlineResourceVO printSituations(Long managerId, RecruitmentActivity activity, ResourceAccessLevel level, Boolean synchronous) {
+    public OnlineResourceVO printSituations(Long managerId, SituationQueryDTO situationQueryDTO, ResourceAccessLevel level, Boolean synchronous) {
+        RecruitmentActivity activity = recruitmentActivityService.checkAndGetRecruitmentActivity(situationQueryDTO.getActId());
         // 构造数据
         Map<Long, ActivitySituationExcelTemplate> resultMap = new LinkedHashMap<>();
-        getSituationsByActId(activity.getId()).getUserParticipationVOS().forEach(situation -> {
+        querySituations(situationQueryDTO).getUserParticipationVOS().forEach(situation -> {
             ActivitySituationExcelTemplate activitySituationExcelTemplate = new ActivitySituationExcelTemplate();
             activitySituationExcelTemplate.setTimePeriodVOS(situation.getTimePeriodVOS());
             activitySituationExcelTemplate.setScheduleVOS(situation.getScheduleVOS());
@@ -209,6 +235,7 @@ public class InterviewScheduleServiceImpl extends ServiceImpl<InterviewScheduleM
                 activity.getTitle(),
                 synchronous
         );
+
     }
 
     @Override

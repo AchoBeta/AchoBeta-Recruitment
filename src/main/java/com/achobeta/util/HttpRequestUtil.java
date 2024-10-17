@@ -22,10 +22,10 @@ import java.util.regex.Pattern;
 
 /**
  * Created With Intellij IDEA
- * Description:
  * User: 马拉圈
  * Date: 2024-09-26
  * Time: 7:41
+ * Description: 用 Gson 序列化，已有业务依赖 Gson，不建议修改为其他序列化器
  */
 public class HttpRequestUtil {
 

@@ -17,14 +17,12 @@
     <resultMap id="InterviewDetailMap" extends="InterviewMap" type="com.achobeta.domain.interview.model.vo.InterviewDetailVO">
         <result property="description" column="description" jdbcType="VARCHAR"/>
         <result property="address" column="address" jdbcType="VARCHAR"/>
-        <association property="simpleStudentVO" columnPrefix="r_"
-                     resultMap="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.SimpleResumeMap" />
     </resultMap>
 
-    <select id="managerGetInterviewList" resultMap="InterviewMap">
+    <select id="managerGetInterviewList" resultMap="InterviewDetailMap">
         select
             -- 面试预约与面试官多对多，在本条 sql 容易出现重复行
-            distinct i.id, i.title, i.status,
+            distinct i.id, i.title, i.status, i.description, i.address,
             s.id s_id, s.participation_id s_participation_id, s.start_time s_start_time, s.end_time s_end_time,
             <include refid="com.achobeta.domain.student.model.dao.mapper.StuResumeMapper.Simple_Column_List" />
         from user m
@@ -87,6 +85,7 @@
              left join recruitment_batch b on b.id = a.batch_id and a.is_deleted = 0 and b.is_deleted = 0
              left join stu_resume r on r.batch_id = b.id and r.user_id = stu.id and r.is_deleted = 0 and b.is_deleted = 0 and stu.is_deleted = 0
         where i.id = #{interviewId,jdbcType=BIGINT} and i.is_deleted = 0
+        order by s.start_time asc, s.end_time asc
     </select>
 
 </mapper>

@@ -73,7 +73,7 @@ public class ResumeStateController {
         Long managerId = BaseContext.getCurrentUser().getUserId();
         log.warn("管理员更新简历 {} 为 {} 状态", managerId, resumeStatus);
         // 不相等则更新
-        if(!currentStatus.equals(resumeStatus)) {
+        if(currentStatus != resumeStatus) {
             resumeStateService.switchResumeState(resumeId, resumeStatus, ResumeEvent.NEXT);
         }
         return SystemJsonResponse.SYSTEM_SUCCESS();

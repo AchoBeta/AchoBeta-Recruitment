@@ -7,6 +7,7 @@ import com.achobeta.domain.interview.service.InterviewService;
 import com.achobeta.domain.paper.handler.RemoveQuestionFromPaperHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -34,10 +35,12 @@ public class RemoveQuestionFromPaperIQSHandler extends RemoveQuestionFromPaperHa
                 .map(Interview::getId)
                 .toList();
         // 删除对应的评分
-        interviewQuestionScoreService.lambdaUpdate()
-                .in(InterviewQuestionScore::getInterviewId, interviewIds)
-                .in(InterviewQuestionScore::getQuestionId, questionIds)
-                .remove();
+        if(!CollectionUtils.isEmpty(interviewIds) && !CollectionUtils.isEmpty(questionIds)) {
+            interviewQuestionScoreService.lambdaUpdate()
+                    .in(InterviewQuestionScore::getInterviewId, interviewIds)
+                    .in(InterviewQuestionScore::getQuestionId, questionIds)
+                    .remove();
+        }
         // 执行下一个
         super.doNextHandler(paperId, questionIds);
     }

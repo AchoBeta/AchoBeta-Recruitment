@@ -18,6 +18,7 @@ import com.achobeta.domain.student.service.StuResumeService;
 import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.lock.RedisLock;
 import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
+import com.achobeta.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -80,7 +81,8 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
             StuSimpleResumeDTO resumeDTO = stuResumeDTO.getStuSimpleResumeDTO();
 
             // 检测
-            resourceService.checkAndRemoveImage(resumeDTO.getImage(), stuResume.getImage());
+            Long oldImage = stuResume.getImage();
+            Boolean shouldRemove = resourceService.shouldRemove(resumeDTO.getImage(), oldImage);
 
             //附件列表
             List<StuAttachmentDTO> stuAttachmentDTOList = stuResumeDTO.getStuAttachmentDTOList();
@@ -91,6 +93,11 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
 
             //保存附件信息
             saveStuAttachment(stuAttachmentDTOList, stuResume.getId());
+
+            // 等提交成功后再删除
+            if(Boolean.TRUE.equals(shouldRemove)) {
+                resourceService.removeKindly(oldImage);
+            }
         }, () -> {}, simpleLockStrategy);
     }
 
@@ -152,7 +159,7 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
     @Transactional
     public void updateResumeInfo(StuResume stuResume, StuSimpleResumeDTO resumeDTO) {
         ResumeStatus resumeStatus = stuResume.getStatus();
-        if (Objects.isNull(resumeStatus) || ResumeStatus.DRAFT.equals(resumeStatus)) {
+        if (Objects.isNull(resumeStatus) || ResumeStatus.DRAFT == resumeStatus) {
             //简历状态若为草稿则更新为待筛选
             stuResume.setStatus(ResumeStatus.PENDING_SELECTION);
             // 添加一个简历过程节点
@@ -230,6 +237,10 @@ public class StuResumeServiceImpl extends ServiceImpl<StuResumeMapper, StuResume
 
     @Override
     public List<StuResume> queryStuList(Long batchId, List<Long> userIds) {
+        userIds = ObjectUtil.distinctNonNullStream(userIds).toList();
+        if(CollectionUtils.isEmpty(userIds)) {
+            return new ArrayList<>();
+        }
         return lambdaQuery()
                 .eq(StuResume::getBatchId, batchId)
                 .in(StuResume::getUserId, userIds)

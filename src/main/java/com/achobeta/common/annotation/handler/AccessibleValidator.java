@@ -1,6 +1,6 @@
 package com.achobeta.common.annotation.handler;
 
-import com.achobeta.common.annotation.IsAccessible;
+import com.achobeta.common.annotation.Accessible;
 import com.achobeta.util.HttpRequestUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Slf4j
-public class IsAccessibleValidator implements ConstraintValidator<IsAccessible, String> {
+public class AccessibleValidator implements ConstraintValidator<Accessible, String> {
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {

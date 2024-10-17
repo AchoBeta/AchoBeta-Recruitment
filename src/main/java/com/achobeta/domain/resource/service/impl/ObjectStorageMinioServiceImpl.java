@@ -112,7 +112,7 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService, Init
         // 压缩图片
         bytes = MediaUtil.compressImage(bytes);
         // 上传图片
-        String uniqueFileName = ResourceUtil.getUniqueFileName(userId, "." + MediaUtil.COMPRESS_FORMAT_NAME);
+        String uniqueFileName = ResourceUtil.getUniqueFileName(userId, MediaUtil.COMPRESS_FORMAT_SUFFIX);
         minioEngine.upload(uniqueFileName, bytes);
         return uniqueFileName;
     }

@@ -14,15 +14,15 @@ import lombok.Data;
 @Data
 public class InterviewRankVO {
 
-    private Long summaryId;
-
-    private Integer average;
-
     private Long interviewId;
 
     private String title;
 
     private InterviewStatus status;
+
+    private Long summaryId;
+
+    private Integer sum;
 
     private SimpleStudentVO simpleStudentVO;
 

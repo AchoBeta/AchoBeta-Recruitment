@@ -22,6 +22,12 @@ public class InterviewExcelTemplate {
     @Excel(name = "状态", width = 20)
     private InterviewStatus status;
 
+    @Excel(name = "说明", width = 50)
+    private String description;
+
+    @Excel(name = "地址", width = 50)
+    private String address;
+
     @ExcelEntity(name = "面试预约")
     private ScheduleVO scheduleVO;
 

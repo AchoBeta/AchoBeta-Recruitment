@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 public class PaperLibraryDTO {
 
-    @NotNull(message = "库的 id 不能为空")
+    @NotNull(message = "试卷库 id 不能为空")
     private Long libId;
 
     @NotBlank(message = "库的类型不能为空")

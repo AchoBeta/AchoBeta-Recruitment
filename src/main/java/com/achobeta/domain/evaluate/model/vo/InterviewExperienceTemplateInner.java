@@ -22,8 +22,6 @@ public class InterviewExperienceTemplateInner {
 
     private Integer score;
 
-    private Double average;
-
     private String standard;
 
 }

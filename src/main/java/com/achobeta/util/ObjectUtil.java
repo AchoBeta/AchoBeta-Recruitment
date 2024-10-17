@@ -88,4 +88,8 @@ public class ObjectUtil {
                 .forEach(consumer);
     }
 
+    public static <T> Stream<T> distinctNonNullStream(Collection<T> collection) {
+        return stream(collection).distinct().filter(Objects::nonNull);
+    }
+
 }

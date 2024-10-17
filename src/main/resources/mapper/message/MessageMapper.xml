@@ -12,6 +12,7 @@
             <result property="sendTime" column="send_time" jdbcType="TIMESTAMP"/>
             <result property="attachment" column="attachment" jdbcType="VARCHAR"/>
             <result property="version" column="version" jdbcType="INTEGER"/>
+            <result property="deleted" column="is_deleted" jdbcType="BIT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>

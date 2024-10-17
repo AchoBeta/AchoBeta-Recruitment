@@ -14,9 +14,11 @@ import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.achobeta.redis.lock.RedisLock;
 import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
+import com.achobeta.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,9 +69,11 @@ public class InterviewQuestionScoreServiceImpl extends ServiceImpl<InterviewQues
 
     @Override
     public List<InterviewQuestionAverageVO> getAverageQuestions(List<Long> questionIds) {
-        return Optional.ofNullable(questionIds)
-                .map(ids -> interviewQuestionScoreMapper.getAverageQuestions(questionIds))
-                .orElseGet(ArrayList::new);
+        questionIds = ObjectUtil.distinctNonNullStream(questionIds).toList();
+        if(CollectionUtils.isEmpty(questionIds)) {
+            return new ArrayList<>();
+        }
+        return interviewQuestionScoreMapper.getAverageQuestions(questionIds);
     }
 
     @Override

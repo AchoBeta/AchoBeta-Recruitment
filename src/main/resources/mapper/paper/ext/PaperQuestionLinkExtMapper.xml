@@ -6,11 +6,12 @@
 
     <select id="getQuestionsOnPaper" parameterType="java.lang.Long" resultMap="com.achobeta.domain.question.model.dao.mapper.QuestionMapper.QuestionMap">
         select
-            q.id, q.title, q.standard, q.create_time, q.update_time
+            q.id, q.title, q.standard, q.create_time, q.update_time, pq.create_time pq_create_time
         from question_paper p
              left join paper_question_link pq on p.id  = pq.paper_id and p.is_deleted = 0 and pq.is_deleted = 0
              left join question q on q.id = pq.question_id and q.is_deleted = 0 and pq.is_deleted = 0
         where p.id = #{paperId,jdbcType=BIGINT} and q.id is not null and p.is_deleted = 0
+        order by pq_create_time asc
     </select>
 
 </mapper>

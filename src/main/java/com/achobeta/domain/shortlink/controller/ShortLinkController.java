@@ -1,8 +1,8 @@
 package com.achobeta.domain.shortlink.controller;
 
 import com.achobeta.common.SystemJsonResponse;
+import com.achobeta.common.annotation.Accessible;
 import com.achobeta.common.annotation.Intercept;
-import com.achobeta.common.annotation.IsAccessible;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.shortlink.model.dto.ShortLinkQueryDTO;
 import com.achobeta.domain.shortlink.model.vo.ShortLinkQueryVO;
@@ -51,7 +51,7 @@ public class ShortLinkController {
      */
     @PostMapping("/trans")
     public SystemJsonResponse transferAndSaveShortLink(HttpServletRequest request,
-                                                       @RequestParam("url") @NotBlank @IsAccessible(message = "链接不可访问") String url) {
+                                                       @RequestParam("url") @NotBlank @Accessible(message = "链接不可访问") String url) {
         // 转化
         String shortLinkURL = shortLinkService.transShortLinkURL(request, url);
         log.info("原链接:{} -> 短链接:{}", url, shortLinkURL);

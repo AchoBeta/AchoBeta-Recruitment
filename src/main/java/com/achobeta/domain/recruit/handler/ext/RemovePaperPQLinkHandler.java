@@ -32,22 +32,20 @@ public class RemovePaperPQLinkHandler extends RemovePaperHandler {
     @Override
     public void handle(Long paperId) {
         List<Long> participationIds = activityParticipationService.getParticipationIdsByPaperId(paperId);
-        if(CollectionUtils.isEmpty(participationIds)) {
-            return;
+        if(!CollectionUtils.isEmpty(participationIds)) {
+            // 删除对应的行
+            participationQuestionLinkService.lambdaUpdate()
+                    .in(ParticipationQuestionLink::getParticipationId, participationIds)
+                    .remove();
         }
-        // 删除对应的行
-        participationQuestionLinkService.lambdaUpdate()
-                .in(ParticipationQuestionLink::getParticipationId, participationIds)
-                .remove();
         // 涉及的招新活动的 paperId 置为 null
         List<Long> actIds = recruitmentActivityService.getActIdsByPaperId(paperId);
-        if(CollectionUtils.isEmpty(actIds)) {
-            return;
+        if(!CollectionUtils.isEmpty(actIds)) {
+            recruitmentActivityService.lambdaUpdate()
+                    .in(RecruitmentActivity::getId, actIds)
+                    .set(RecruitmentActivity::getPaperId, null)
+                    .update();
         }
-        recruitmentActivityService.lambdaUpdate()
-                .in(RecruitmentActivity::getId, actIds)
-                .set(RecruitmentActivity::getPaperId, null)
-                .update();
         // 执行下一个
         super.doNextHandler(paperId);
     }

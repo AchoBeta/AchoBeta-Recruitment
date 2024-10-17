@@ -21,6 +21,8 @@ public interface QuestionPaperService extends IService<QuestionPaper> {
 
     Long addQuestionPaper(List<Long> libIds, String title, String description);
 
+    void referencePapers(Long libId, List<Long> paperIds);
+
     void updateQuestionPaper(Long paperId, List<Long> libIds, String title, String description);
 
     /**
