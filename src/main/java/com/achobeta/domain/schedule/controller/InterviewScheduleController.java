@@ -2,6 +2,7 @@ package com.achobeta.domain.schedule.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
+import com.achobeta.common.annotation.MobilePhone;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.interview.model.dto.InterviewConditionDTO;
 import com.achobeta.domain.interview.model.vo.InterviewReserveVO;
@@ -22,7 +23,6 @@ import com.achobeta.domain.users.context.BaseContext;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -172,7 +172,7 @@ public class InterviewScheduleController {
     @GetMapping("/reserve/{scheduleId}")
     public SystemJsonResponse interviewReserveApply(@PathVariable("scheduleId") @NotNull Long scheduleId,
                                                     @RequestParam("title") @NotBlank(message = "标题不能为空") String title,
-                                                    @RequestParam(name = "mobile", required = false) @Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号非法") String mobile) {
+                                                    @RequestParam(name = "mobile", required = false) @MobilePhone String mobile) {
         // 检查
         interviewScheduleService.checkInterviewScheduleExists(scheduleId);
         // 当前管理员

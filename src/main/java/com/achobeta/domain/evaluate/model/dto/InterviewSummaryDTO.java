@@ -1,7 +1,7 @@
 package com.achobeta.domain.evaluate.model.dto;
 
+import com.achobeta.common.annotation.Accessible;
 import com.achobeta.common.annotation.IntRange;
-import com.achobeta.common.annotation.IsAccessible;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -44,7 +44,7 @@ public class InterviewSummaryDTO {
     private String suggest;
 
 //    @NotBlank(message = "回放不能为空")
-    @IsAccessible(message = "回放链接不可访问")
+    @Accessible(message = "回放链接不可访问")
     private String playback;
 
 }
