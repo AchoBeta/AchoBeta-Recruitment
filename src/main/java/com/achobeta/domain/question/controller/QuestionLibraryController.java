@@ -45,6 +45,8 @@ public class QuestionLibraryController {
 
     @PostMapping("/reference")
     public SystemJsonResponse referenceQuestions(@Valid @RequestBody LibraryReferenceQuestionDTO libraryReferenceQuestionDTO) {
+        Long libId = libraryReferenceQuestionDTO.getLibId();
+        questionLibraryService.checkQuestionLibraryExists(libId);
         // 引用
         questionService.referenceQuestions(libraryReferenceQuestionDTO.getLibId(), libraryReferenceQuestionDTO.getQuestionIds());
         return SystemJsonResponse.SYSTEM_SUCCESS();

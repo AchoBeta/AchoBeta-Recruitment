@@ -45,6 +45,8 @@ public class PaperLibraryController {
 
     @PostMapping("/reference")
     public SystemJsonResponse referencePapers(@Valid @RequestBody LibraryReferencePaperDTO libraryReferencePaperDTO) {
+        Long libId = libraryReferencePaperDTO.getLibId();
+        questionPaperLibraryService.checkPaperLibraryExists(libId);
         // 引用
         questionPaperService.referencePapers(libraryReferencePaperDTO.getLibId(), libraryReferencePaperDTO.getPaperIds());
         return SystemJsonResponse.SYSTEM_SUCCESS();
