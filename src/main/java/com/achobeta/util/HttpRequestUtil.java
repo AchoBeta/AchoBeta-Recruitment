@@ -6,8 +6,6 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
 import com.achobeta.common.enums.HttpRequestEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.StringUtils;
@@ -15,7 +13,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -39,7 +36,7 @@ public class HttpRequestUtil {
 
     public static final Pattern HTTP_URL_PATTERN = Pattern.compile("^(?i)(http|https):(//(([^@\\[/?#]*)@)?(\\[[\\p{XDigit}:.]*[%\\p{Alnum}]*]|[^\\[/?#:]*)(:(\\{[^}]+\\}?|[^/?#]*))?)?([^?#]*)(\\?([^#]*))?(#(.*))?");
 
-    private static final int MAX_REDIRECT_COUNT = 30;
+    private static final int MAX_REDIRECT_COUNT = 10;
 
     public static boolean isHttpUrl(String url) {
         return StringUtils.hasText(url) && HTTP_URL_PATTERN.matcher(url).matches();

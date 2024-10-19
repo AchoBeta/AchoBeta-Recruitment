@@ -23,10 +23,7 @@ import com.lark.oapi.service.drive.v1.enums.UploadAllFileParentTypeEnum;
 import com.lark.oapi.service.drive.v1.enums.UploadAllMediaParentTypeEnum;
 import com.lark.oapi.service.drive.v1.model.*;
 import com.lark.oapi.service.vc.v1.enums.ApplyReserveUserIdTypeEnum;
-import com.lark.oapi.service.vc.v1.model.ApplyReserveReqBody;
-import com.lark.oapi.service.vc.v1.model.ApplyReserveResp;
-import com.lark.oapi.service.vc.v1.model.ApplyReserveRespBody;
-import com.lark.oapi.service.vc.v1.model.ReserveMeetingSetting;
+import com.lark.oapi.service.vc.v1.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -145,10 +142,15 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
     @Override
     public ApplyReserveRespBody reserveApplyBriefly(String ownerId, Long endTime, String topic) {
+        // 这里预约的会议不会出现在日历里
+        // 其中，是否自动录制（云录制，无法自动本地录制），不会根据飞书管理后台的全局配置中的是否自动录制，在飞书网页/软件申请的会议根据的才会用到这个全局配置
+        // 而我们这次的请求参数若不设置，默认为 false（局部优先），设置为 true 后，若允许云录制会议有若的时候就会自动录制
         ApplyReserveReqBody reserveReqBody = ApplyReserveReqBody.newBuilder()
                 .endTime(String.valueOf(TimeUtil.millisToSecond(endTime)))
                 .ownerId(ownerId)
-                .meetingSettings(ReserveMeetingSetting.newBuilder().topic(topic).meetingInitialType(GROUP_MEETING).build())
+                .meetingSettings(ReserveMeetingSetting.newBuilder().topic(topic)
+//                        .autoRecord(Boolean.TRUE)
+                        .meetingInitialType(GROUP_MEETING).build())
                 .build();
         return reserveApply(reserveReqBody);
     }
