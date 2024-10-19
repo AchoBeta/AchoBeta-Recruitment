@@ -5,12 +5,18 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
 import com.achobeta.common.enums.HttpRequestEnum;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -26,16 +32,21 @@ import java.util.regex.Pattern;
  * Time: 7:41
  * Description: 用 Gson 序列化，已有业务依赖 Gson，不建议修改为其他序列化器
  */
+@Slf4j
 public class HttpRequestUtil {
 
     public final static Map<String, String> JSON_CONTENT_TYPE_HEADER = Map.of(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8");
 
     public static final Pattern HTTP_URL_PATTERN = Pattern.compile("^(?i)(http|https):(//(([^@\\[/?#]*)@)?(\\[[\\p{XDigit}:.]*[%\\p{Alnum}]*]|[^\\[/?#:]*)(:(\\{[^}]+\\}?|[^/?#]*))?)?([^?#]*)(\\?([^#]*))?(#(.*))?");
 
-    private static final int MAX_RECURSION_COUNT = 10;
+    private static final int MAX_REDIRECT_COUNT = 30;
 
     public static boolean isHttpUrl(String url) {
         return StringUtils.hasText(url) && HTTP_URL_PATTERN.matcher(url).matches();
+    }
+
+    public static boolean isAccessible(HttpURLConnection connection) throws IOException {
+        return Objects.nonNull(connection) && connection.getResponseCode() / 100 == 2;
     }
 
     public static boolean isAccessible(HttpResponse response) throws IOException {
@@ -43,7 +54,24 @@ public class HttpRequestUtil {
     }
 
     public static boolean isAccessible(String url) throws IOException {
-        return isAccessible(getRequestAndExecute(url));
+        // 尝试两种方式去校验
+        try {
+            if(isAccessible(getRequestAndExecute(url))) {
+                return Boolean.TRUE;
+            }
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+        }
+        return isAccessible(openConnection(url));
+    }
+
+    public static HttpURLConnection openConnection(String url) throws IOException {
+        HttpURLConnection connection = isHttpUrl(url) ? (HttpURLConnection) new URL(url).openConnection() : null;
+        if(Objects.nonNull(connection) && connection.getResponseCode() / 100 == 3) {
+            return openConnection(connection.getHeaderField("Location")); // Location 就是最深的那个地址了
+        } else {
+            return connection;
+        }
     }
 
     public static HttpResponse getRequestAndExecute(String url) {
@@ -52,7 +80,7 @@ public class HttpRequestUtil {
 
     public static HttpResponse getRequestAndExecute(String url, int count) {
         HttpResponse response = isHttpUrl(url) ? HttpUtil.createRequest(Method.GET, url).execute() : null;
-        if(Objects.nonNull(response) && response.getStatus() / 100 == 3 && count <= MAX_RECURSION_COUNT) {
+        if(Objects.nonNull(response) && response.getStatus() / 100 == 3 && count <= MAX_REDIRECT_COUNT) {
             return getRequestAndExecute(response.header("Location"), count + 1); // Location 就是最深的那个地址了
         } else {
             return response;
