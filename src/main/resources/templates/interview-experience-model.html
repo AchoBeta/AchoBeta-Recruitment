@@ -30,8 +30,8 @@
         <span th:text="${title}"></span>
     </p>
 
-    <p th:if="${not #lists.isEmpty(inners)}" th:each="inner : ${inners}">
-        <strong style="background-color: #ffc832" th:text="${inner.title}"></strong>
+    <p th:if="${not #lists.isEmpty(inners)}" th:each="inner, iterStat : ${inners}">
+        <strong style="background-color: #ffc832" th:text="(${iterStat.index} + 1) + '. ' + ${inner.title}"></strong>
         <br />
         <strong th:with="score=${inner.score}">得分（0-10）：
             <span th:if="${score} lt 0"                     style="color: grey">问题超纲</span>
