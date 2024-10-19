@@ -1,6 +1,7 @@
 package com.achobeta.util;
 
 import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
 import com.achobeta.common.enums.HttpRequestEnum;
@@ -10,8 +11,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -33,24 +32,30 @@ public class HttpRequestUtil {
 
     public static final Pattern HTTP_URL_PATTERN = Pattern.compile("^(?i)(http|https):(//(([^@\\[/?#]*)@)?(\\[[\\p{XDigit}:.]*[%\\p{Alnum}]*]|[^\\[/?#:]*)(:(\\{[^}]+\\}?|[^/?#]*))?)?([^?#]*)(\\?([^#]*))?(#(.*))?");
 
+    private static final int MAX_RECURSION_COUNT = 10;
+
     public static boolean isHttpUrl(String url) {
         return StringUtils.hasText(url) && HTTP_URL_PATTERN.matcher(url).matches();
     }
 
-    public static boolean isAccessible(HttpURLConnection connection) throws IOException {
-        return Objects.nonNull(connection) && connection.getResponseCode() / 100 == 2;
+    public static boolean isAccessible(HttpResponse response) throws IOException {
+        return Objects.nonNull(response) && response.getStatus() / 100 == 2;
     }
 
     public static boolean isAccessible(String url) throws IOException {
-        return isAccessible(openConnection(url));
+        return isAccessible(getRequestAndExecute(url));
     }
 
-    public static HttpURLConnection openConnection(String url) throws IOException {
-        HttpURLConnection connection = isHttpUrl(url) ? (HttpURLConnection) new URL(url).openConnection() : null;
-        if(Objects.nonNull(connection) && connection.getResponseCode() / 100 == 3) {
-            return openConnection(connection.getHeaderField("Location")); // Location 就是最深的那个地址了
+    public static HttpResponse getRequestAndExecute(String url) {
+        return getRequestAndExecute(url, 1);
+    }
+
+    public static HttpResponse getRequestAndExecute(String url, int count) {
+        HttpResponse response = isHttpUrl(url) ? HttpUtil.createRequest(Method.GET, url).execute() : null;
+        if(Objects.nonNull(response) && response.getStatus() / 100 == 3 && count <= MAX_RECURSION_COUNT) {
+            return getRequestAndExecute(response.header("Location"), count + 1); // Location 就是最深的那个地址了
         } else {
-            return connection;
+            return response;
         }
     }
 

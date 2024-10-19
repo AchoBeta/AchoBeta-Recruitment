@@ -6,7 +6,6 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
 import java.util.Optional;
 
 @Slf4j
@@ -19,8 +18,7 @@ public class AccessibleValidator implements ConstraintValidator<Accessible, Stri
                 .map(url -> {
                     try {
                         return HttpRequestUtil.isAccessible(url);
-                    } catch (IOException e) {
-                        // 重定向次数过多也判定为无法访问
+                    } catch (Exception e) {
                         log.warn(e.getMessage());
                         return Boolean.FALSE;
                     }

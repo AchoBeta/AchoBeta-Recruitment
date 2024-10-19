@@ -1,6 +1,6 @@
 package com.achobeta.common.annotation;
 
-import com.achobeta.common.annotation.handler.AccessibleValidator;
+import com.achobeta.common.annotation.handler.HttpUrlValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -14,7 +14,7 @@ import java.lang.annotation.*;
  * Time: 11:35
  */
 @Documented
-@Constraint(validatedBy = {AccessibleValidator.class})
+@Constraint(validatedBy = {HttpUrlValidator.class})
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HttpUrl {

@@ -1,5 +1,6 @@
 package com.achobeta.util;
 
+import cn.hutool.http.HttpResponse;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.exception.GlobalServiceException;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +9,6 @@ import org.apache.tika.Tika;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.zip.Adler32;
@@ -51,8 +51,8 @@ public class MediaUtil {
     }
 
     public static InputStream getInputStream(String url) throws IOException {
-        HttpURLConnection connection = HttpRequestUtil.openConnection(url);
-        return HttpRequestUtil.isAccessible(connection) ? connection.getInputStream() : null;
+        HttpResponse response = HttpRequestUtil.getRequestAndExecute(url);
+        return HttpRequestUtil.isAccessible(response) ? response.bodyStream() : null;
     }
 
     public static InputStream getInputStream(byte[] bytes) {

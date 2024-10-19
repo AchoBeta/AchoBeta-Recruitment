@@ -1,11 +1,11 @@
 package com.achobeta.common.annotation.handler;
 
 import com.achobeta.common.annotation.HttpUrl;
+import com.achobeta.util.HttpRequestUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 /**
  * Created With Intellij IDEA
@@ -16,12 +16,10 @@ import java.util.regex.Pattern;
  */
 public class HttpUrlValidator implements ConstraintValidator<HttpUrl, String> {
 
-    private static final Pattern HTTP_URL_PATTERN = Pattern.compile("^(?i)(http|https):(//(([^@\\[/?#]*)@)?(\\[[\\p{XDigit}:.]*[%\\p{Alnum}]*]|[^\\[/?#:]*)(:(\\{[^}]+\\}?|[^/?#]*))?)?([^?#]*)(\\?([^#]*))?(#(.*))?");
-
     @Override
     public boolean isValid(String url, ConstraintValidatorContext constraintValidatorContext) {
         return Optional.ofNullable(url)
-                .map(s -> HTTP_URL_PATTERN.matcher(s).matches())
+                .map(s -> HttpRequestUtil.HTTP_URL_PATTERN.matcher(s).matches())
                 .orElse(Boolean.TRUE);
     }
 }
