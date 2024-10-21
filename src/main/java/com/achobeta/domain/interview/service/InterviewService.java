@@ -57,6 +57,4 @@ public interface InterviewService extends IService<Interview> {
 
     Interview checkAndGetInterviewExists(Long interviewId);
 
-    void checkInterviewStatus(Long interviewId, List<InterviewStatus> interviewStatus);
-
 }

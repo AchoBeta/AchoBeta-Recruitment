@@ -188,10 +188,4 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
                 new GlobalServiceException(GlobalServiceStatusCode.INTERVIEW_NOT_EXISTS));
     }
 
-    @Override
-    public void checkInterviewStatus(Long interviewId, List<InterviewStatus> interviewStatus) {
-        checkAndGetInterviewExists(interviewId)
-                .getStatus()
-                .check(interviewStatus);
-    }
 }
