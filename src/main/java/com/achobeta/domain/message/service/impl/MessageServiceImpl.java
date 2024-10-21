@@ -64,7 +64,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
 
     @Override
     public List<StuBaseInfoDTO> queryStuList(Long batchId, List<Long> userIds) {
-        List<StuResume> stuResumeList = stuResumeService.queryStuList(batchId, userIds.stream().distinct().toList());
+        List<StuResume> stuResumeList = stuResumeService.queryStuList(batchId, userIds);
         return messageConverter.stuResumeListToStuBaseInfoDTOList(stuResumeList);
     }
 

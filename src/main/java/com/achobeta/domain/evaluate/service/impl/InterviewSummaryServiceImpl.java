@@ -65,6 +65,8 @@ public class InterviewSummaryServiceImpl extends ServiceImpl<InterviewSummaryMap
             getInterviewSummaryByInterviewId(interviewId).map(InterviewSummary::getId).ifPresentOrElse(summaryId -> {
                 this.lambdaUpdate()
                         .eq(InterviewSummary::getId, summaryId)
+                        .set(InterviewSummary::getPlayback, Optional.ofNullable(interviewSummary.getPlayback()).orElse(""))
+                        .set(InterviewSummary::getSuggest, Optional.ofNullable(interviewSummary.getSuggest()).orElse(""))
                         .update(interviewSummary);
             }, () -> {
                 this.save(interviewSummary);

@@ -1,6 +1,7 @@
 package com.achobeta.domain.student.model.dto;
 
 import com.achobeta.common.annotation.IntRange;
+import com.achobeta.common.annotation.MobilePhone;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -45,7 +46,7 @@ public class StuSimpleResumeDTO implements Serializable {
     private String email;
 
     @NotBlank(message = "手机号不能为空")
-    @Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号非法")
+    @MobilePhone
     private String phoneNumber;
 
     @NotBlank(message = "加入ab理由不能为空")

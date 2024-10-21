@@ -1,16 +1,15 @@
 package com.achobeta.common.annotation.handler;
 
-import com.achobeta.common.annotation.IsAccessible;
+import com.achobeta.common.annotation.Accessible;
 import com.achobeta.util.HttpRequestUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
 import java.util.Optional;
 
 @Slf4j
-public class IsAccessibleValidator implements ConstraintValidator<IsAccessible, String> {
+public class AccessibleValidator implements ConstraintValidator<Accessible, String> {
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
@@ -19,8 +18,7 @@ public class IsAccessibleValidator implements ConstraintValidator<IsAccessible, 
                 .map(url -> {
                     try {
                         return HttpRequestUtil.isAccessible(url);
-                    } catch (IOException e) {
-                        // 重定向次数过多也判定为无法访问
+                    } catch (Exception e) {
                         log.warn(e.getMessage());
                         return Boolean.FALSE;
                     }

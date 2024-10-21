@@ -14,14 +14,18 @@
         select
             q.id, q.title, q.standard, q.create_time, q.update_time, avg(s.score) average
         from question q
-             left join interview_question_score s on q.id = s.question_id and s.is_deleted = 0 and q.is_deleted = 0 and s.score != -1
-        where
-            q.is_deleted = 0 and q.id
-            <foreach collection="questionIds" item="questionId" separator="," open="in (" close=")" >
-                #{questionId,jdbcType=BIGINT}
-            </foreach>
+             left join interview_question_score s on q.id = s.question_id and s.is_deleted = 0 and q.is_deleted = 0 and s.score >= 0
+             left join interview i on i.id = s.interview_id and s.is_deleted = 0 and i.is_deleted = 0
+        <where>
+            q.id is not null and q.is_deleted = 0 and i.id is not null
+            <if test="questionIds != null">
+                <foreach collection="questionIds" item="questionId" separator="," open="and q.id in (" close=")" >
+                    #{questionId,jdbcType=BIGINT}
+                </foreach>
+            </if>
+        </where>
         group by q.id
-        order by q.id
+        order by q.create_time
     </select>
 
 </mapper>

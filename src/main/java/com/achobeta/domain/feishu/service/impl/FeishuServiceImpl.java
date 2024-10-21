@@ -7,7 +7,7 @@ import com.achobeta.feishu.config.FeishuAppConfig;
 import com.achobeta.feishu.config.ResourceProperties;
 import com.achobeta.feishu.constants.ObjectType;
 import com.achobeta.feishu.request.FeishuRequestEngine;
-import com.achobeta.feishu.token.FeishuTenantAccessToken;
+import com.achobeta.feishu.token.FeishuTenantSession;
 import com.achobeta.util.GsonUtil;
 import com.achobeta.util.MediaUtil;
 import com.achobeta.util.TimeUtil;
@@ -57,7 +57,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
     private final FeishuAppConfig feishuAppConfig;
 
-    private final FeishuTenantAccessToken feishuTenantAccessToken;
+    private final FeishuTenantSession feishuTenantSession;
 
     private final FeishuRequestEngine feishuRequestEngine;
 
@@ -86,7 +86,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //        } catch (Exception e) {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
-        String token = feishuTenantAccessToken.getToken();
+        String token = feishuTenantSession.getToken();
         return feishuRequestEngine.jsonRequest(
                 GET_USER_ID,
                 batchGetIdUserReqBody,
@@ -133,7 +133,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //        } catch (Exception e) {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
-        String token = feishuTenantAccessToken.getToken();
+        String token = feishuTenantSession.getToken();
         return feishuRequestEngine.jsonRequest(
                 RESERVE_APPLY,
                 applyReserveReqBody,
@@ -145,10 +145,15 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 
     @Override
     public ApplyReserveRespBody reserveApplyBriefly(String ownerId, Long endTime, String topic) {
+        // 这里预约的会议不会出现在日历里
+        // 其中，是否自动录制（云录制，无法自动本地录制），不会根据飞书管理后台的全局配置中的是否自动录制，在飞书网页/软件申请的会议根据的才会用到这个全局配置
+        // 而我们这次的请求参数若不设置，默认为 false（局部优先），设置为 true 后，若允许云录制会议有若的时候就会自动录制
         ApplyReserveReqBody reserveReqBody = ApplyReserveReqBody.newBuilder()
                 .endTime(String.valueOf(TimeUtil.millisToSecond(endTime)))
                 .ownerId(ownerId)
-                .meetingSettings(ReserveMeetingSetting.newBuilder().topic(topic).meetingInitialType(GROUP_MEETING).build())
+                .meetingSettings(ReserveMeetingSetting.newBuilder().topic(topic)
+//                        .autoRecord(Boolean.TRUE)
+                        .meetingInitialType(GROUP_MEETING).build())
                 .build();
         return reserveApply(reserveReqBody);
     }
@@ -228,7 +233,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //        } catch (Exception e) {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
-        String token = feishuTenantAccessToken.getToken();
+        String token = feishuTenantSession.getToken();
         return feishuRequestEngine.jsonRequest(
                 IMPORT_TASK,
                 importTask,
@@ -264,7 +269,7 @@ public class FeishuServiceImpl implements FeishuService, InitializingBean {
 //        } catch (Exception e) {
 //            throw new GlobalServiceException(e.getMessage());
 //        }
-        String token = feishuTenantAccessToken.getToken();
+        String token = feishuTenantSession.getToken();
         return feishuRequestEngine.jsonRequest(
                 GET_IMPORT_TASK,
                 null,

@@ -17,7 +17,7 @@ import java.util.List;
 */
 public interface InterviewMapper extends BaseMapper<Interview> {
 
-    List<InterviewVO> managerGetInterviewList(@Param("managerId") Long managerId, @Param("condition") InterviewConditionDTO interviewConditionDTO);
+    List<InterviewDetailVO> managerGetInterviewList(@Param("managerId") Long managerId, @Param("condition") InterviewConditionDTO interviewConditionDTO);
 
     List<InterviewVO> userGetInterviewList(@Param("userId") Long userId, @Param("condition") InterviewConditionDTO interviewConditionDTO);
 

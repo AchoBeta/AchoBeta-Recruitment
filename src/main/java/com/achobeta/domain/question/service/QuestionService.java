@@ -23,6 +23,8 @@ public interface QuestionService extends IService<Question> {
 
     Long addQuestion(List<Long> libIds, String title, String standard);
 
+    void referenceQuestions(Long libId, List<Long> questionIds);
+
     void saveBatchQuestion(QuestionSaveBatchDTO questionSaveBatchDTO);
 
     void updateQuestion(Long questionId, List<Long> libIds, String title, String standard);

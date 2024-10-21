@@ -4,9 +4,11 @@ import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.paper.model.converter.LibraryConverter;
+import com.achobeta.domain.paper.model.dto.LibraryReferencePaperDTO;
 import com.achobeta.domain.paper.model.dto.PaperLibraryDTO;
 import com.achobeta.domain.paper.model.entity.QuestionPaperLibrary;
 import com.achobeta.domain.paper.service.QuestionPaperLibraryService;
+import com.achobeta.domain.paper.service.QuestionPaperService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -33,10 +35,21 @@ public class PaperLibraryController {
 
     private final QuestionPaperLibraryService questionPaperLibraryService;
 
+    private final QuestionPaperService questionPaperService;
+
     @PostMapping("/create")
     public SystemJsonResponse createPaperLibrary(@RequestParam("libType") @NotBlank String libType) {
         Long paperLibraryId = questionPaperLibraryService.createPaperLibrary(libType);
         return SystemJsonResponse.SYSTEM_SUCCESS(paperLibraryId);
+    }
+
+    @PostMapping("/reference")
+    public SystemJsonResponse referencePapers(@Valid @RequestBody LibraryReferencePaperDTO libraryReferencePaperDTO) {
+        Long libId = libraryReferencePaperDTO.getLibId();
+        questionPaperLibraryService.checkPaperLibraryExists(libId);
+        // 引用
+        questionPaperService.referencePapers(libraryReferencePaperDTO.getLibId(), libraryReferencePaperDTO.getPaperIds());
+        return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
     @PostMapping("/rename")
