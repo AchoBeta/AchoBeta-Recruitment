@@ -22,6 +22,7 @@ import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.toc.TocExtension;
 import com.vladsch.flexmark.ext.typographic.TypographicExtension;
 import com.vladsch.flexmark.ext.wikilink.WikiLinkExtension;
+import com.vladsch.flexmark.formatter.Formatter;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.html2md.converter.FlexmarkHtmlConverter;
 import com.vladsch.flexmark.parser.Parser;
@@ -29,7 +30,7 @@ import com.vladsch.flexmark.parser.ParserEmulationProfile;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 
-import java.util.List;
+import java.util.Arrays;
 
 /**
  * Created With Intellij IDEA
@@ -48,16 +49,18 @@ public class MarkdownUtil {
 
     private final static FlexmarkHtmlConverter HTML_CONVERTER;
 
+    private final static Formatter MARKDOWN_FORMATTER;
+
     static {
         OPTIONS = new MutableDataSet()
                 // 指定 Markdown 标准为 COMMONMARK（使用 ParserEmulationProfile.MARKDOWN 可能会有一些语法失效！）
                 .setFrom(ParserEmulationProfile.COMMONMARK)
-                .set(Parser.EXTENSIONS, List.of(new Parser.ParserExtension[]{
+                .set(Parser.EXTENSIONS, Arrays.asList(new Parser.ParserExtension[]{
                         // 设置一些常扩展
                         TocExtension.create(),
                         TablesExtension.create(),
                         AbbreviationExtension.create(),
-                        AutolinkExtension.create(),
+//                        AutolinkExtension.create(),
                         AnchorLinkExtension.create(),
                         AsideExtension.create(),
                         AdmonitionExtension.create(),
@@ -80,6 +83,7 @@ public class MarkdownUtil {
         PARSER = Parser.builder(OPTIONS).build();
         HTML_RENDERER = HtmlRenderer.builder(OPTIONS).build();
         HTML_CONVERTER = FlexmarkHtmlConverter.builder(OPTIONS).build();
+        MARKDOWN_FORMATTER = Formatter.builder(OPTIONS).build();
     }
 
     public static String markdownToHtml(String markdown) {
@@ -92,6 +96,14 @@ public class MarkdownUtil {
     public static String htmlToMarkdown(String html) {
         // 将 HTML 转化为 Markdown
         return HTML_CONVERTER.convert(html);
+    }
+
+    public static String markdownPrettyUp(String markdown) {
+
+        // 解析 Markdown 文本为节点
+        Node document = PARSER.parse(markdown);
+        // 格式化 Markdown
+        return MARKDOWN_FORMATTER.render(document);
     }
 
 }
