@@ -146,6 +146,7 @@ mvn clean install package -Dmaven.test.skip=true
 ![img.png](docs/image/over-resource-uml.png)
 
 其中 key 为 `AB_MINIO_ENDPOINT`，对应 yml 里的 ab.minio.endpoint
+
 value 为 `http://minio:9005`, 对应 yml 里的具体内容
 
 这样可以达到覆盖的目的
