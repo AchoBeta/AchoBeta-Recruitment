@@ -84,3 +84,68 @@ fix: fix a bug
 
 ## 提交内容
 无用 import 请删除，快捷键 ctrl + alt + o 也可以通过设置 idea 自动删除无用 import
+
+# 部署
+
+Linux 通过 git clone 克隆该项目
+
+## 环境配置
+
+需要找项目同学获取 application-dev.yml 和 application-prod.yml 文件
+
+放在 src/main/resource 下（application-dev、prod 两个文件**不能 git push 到远程仓库！**）
+
+![img.png](docs/image/resource-yml.png)
+
+## 两种部署方式
+
+### Linux 一键式运行
+
+前提是 Linux 上有 mvn 环境，不然会报错（建议 mvn 配置镜像代理，不然下载很慢）
+
+命令：
+
+```shell
+cd AchoBeta-Recruitment/
+sh build.sh
+```
+![img.png](docs/image/build-ab-recruitment-app-docker.png)
+
+mvn 生成出的 target/xxx.jar 包会添加到 docker 构建成项目镜像，及上图表述
+
+---
+
+考虑到部署一般都是更新配置或者更改代码逻辑，故每次执行 build.sh 都会清空旧服务 ab-recruitment-app 容器
+
+> （详可见根目录下 build.sh 文件）
+
+或者可执行 start.sh 文件，两者的区别在于：
+
+build.sh 会构建 springboot 所需的所有的环境， 而 start.sh 只启动 ab-recruitment-app 容器且端口为 9001
+
+如果有改端口的要求，start.sh 要同步更改
+
+### 本地生成 xxx.jar 包再迁移到 Linux 服务器上部署
+
+做好改动后，在本地上执行 mvn 命令生成出 jar 包
+
+```shell
+mvn clean install package -Dmaven.test.skip=true
+```
+
+通过 mcp 命令或 SFTP 将本地 target 包里的 jar 包迁移到 Linux 同目录的 target 包里
+
+在 Linux 执行 `sh build.sh` 命令完成部署
+
+## 特殊部署
+
+每次改动都要重新构建 jar 包很麻烦，如果仅仅针对 yml 配置文件进行配置方面的修改
+
+可以直接在 docker-compose.yml 文件里找到 ab-recruitment-app 的 environment，增加新配置覆盖 yml 旧配置 `- key=value`
+
+![img.png](docs/image/over-resource-uml.png)
+
+其中 key 为 `AB_MINIO_ENDPOINT`，对应 yml 里的 ab.minio.endpoint
+value 为 `http://minio:9005`, 对应 yml 里的具体内容
+
+这样可以达到覆盖的目的
