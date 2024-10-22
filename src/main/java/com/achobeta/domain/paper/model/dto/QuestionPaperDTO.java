@@ -1,7 +1,7 @@
 package com.achobeta.domain.paper.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 public class QuestionPaperDTO {
 
-    @NotNull(message = "试卷库 ids 不能为空")
+    @NotEmpty(message = "试卷库 ids 不能为空")
     private List<Long> libIds;
 
     @NotBlank(message = "题目不能为空")
@@ -24,6 +24,5 @@ public class QuestionPaperDTO {
 
     @NotBlank(message = "试卷说明不能为空")
     private String description;
-
 
 }

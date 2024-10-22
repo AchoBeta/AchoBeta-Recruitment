@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -37,6 +38,7 @@ public class MessageSendDelayChain extends MessageSendHandlerChain {
     }
 
     @Override
+    @Transactional
     public void handleChain(MessageSendDTO messageSendBody, CopyOnWriteArraySet<MessageReceiveServer> webSocketSet) {
         //初始化责任链
         MessageSendHandler messageSendHandler = initHandlerChain();

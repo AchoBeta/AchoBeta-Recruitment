@@ -2,10 +2,10 @@ package com.achobeta.domain.schedule.controller;
 
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
+import com.achobeta.common.annotation.MobilePhone;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.interview.model.dto.InterviewConditionDTO;
 import com.achobeta.domain.interview.model.vo.InterviewReserveVO;
-import com.achobeta.domain.recruit.model.entity.RecruitmentActivity;
 import com.achobeta.domain.recruit.service.ActivityParticipationService;
 import com.achobeta.domain.recruit.service.RecruitmentActivityService;
 import com.achobeta.domain.resource.constants.ResourceConstants;
@@ -13,9 +13,9 @@ import com.achobeta.domain.resource.enums.ResourceAccessLevel;
 import com.achobeta.domain.resource.model.vo.OnlineResourceVO;
 import com.achobeta.domain.schedule.model.dto.ScheduleDTO;
 import com.achobeta.domain.schedule.model.dto.ScheduleUpdateDTO;
+import com.achobeta.domain.schedule.model.dto.SituationQueryDTO;
 import com.achobeta.domain.schedule.model.vo.ParticipationDetailVO;
 import com.achobeta.domain.schedule.model.vo.ScheduleDetailVO;
-import com.achobeta.domain.schedule.model.vo.ScheduleResumeVO;
 import com.achobeta.domain.schedule.model.vo.UserSituationVO;
 import com.achobeta.domain.schedule.service.InterviewScheduleService;
 import com.achobeta.domain.schedule.service.InterviewerService;
@@ -23,7 +23,6 @@ import com.achobeta.domain.users.context.BaseContext;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -116,42 +115,39 @@ public class InterviewScheduleController {
         // 检测
         Long managerId = BaseContext.getCurrentUser().getUserId();
         // 查询
-        List<ScheduleResumeVO> interviewScheduleList = interviewScheduleService.getInterviewScheduleList(managerId, InterviewConditionDTO.of(interviewConditionDTO));
+        List<ScheduleDetailVO> interviewScheduleList = interviewScheduleService.getInterviewScheduleList(managerId, InterviewConditionDTO.of(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewScheduleList);
     }
 
     @PostMapping("/list/all")
     public SystemJsonResponse getInterviewScheduleListAll(@Valid @RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 查询
-        List<ScheduleResumeVO> interviewScheduleList = interviewScheduleService.getInterviewScheduleList(null, InterviewConditionDTO.of(interviewConditionDTO));
+        List<ScheduleDetailVO> interviewScheduleList = interviewScheduleService.getInterviewScheduleList(null, InterviewConditionDTO.of(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewScheduleList);
     }
 
     /**
      * 管理员查看用户参与和预约情况
      *
-     * @param actId
-     * @return
      */
-    @GetMapping("/situations/{actId}")
-    public SystemJsonResponse getUserParticipationSituationByActId(@PathVariable("actId") @NotNull Long actId) {
+    @PostMapping("/situations")
+    public SystemJsonResponse querySituations(@Valid @RequestBody SituationQueryDTO situationQueryDTO) {
         // 检测
-        recruitmentActivityService.checkRecruitmentActivityExists(actId);
+        recruitmentActivityService.checkRecruitmentActivityExists(situationQueryDTO.getActId());
         // 获取参与本次招新活动的所有用户参与和预约情况
-        UserSituationVO situations = interviewScheduleService.getSituationsByActId(actId);
+        UserSituationVO situations = interviewScheduleService.querySituations(situationQueryDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS(situations);
     }
 
-    @GetMapping("/print/situations/{actId}")
-    public SystemJsonResponse printUserParticipationSituationByActId(@PathVariable("actId") @NotNull Long actId,
-                                                                     @RequestParam(name = "level", required = false) Integer level,
-                                                                     @RequestParam(name = "synchronous", required = false) Boolean synchronous) {
+    @PostMapping("/print/situations")
+    public SystemJsonResponse printUserParticipationSituations(@Valid @RequestBody SituationQueryDTO situationQueryDTO,
+                                                               @RequestParam(name = "level", required = false) Integer level,
+                                                               @RequestParam(name = "synchronous", required = false) Boolean synchronous) {
         // 检测
-        RecruitmentActivity activity = recruitmentActivityService.checkAndGetRecruitmentActivity(actId);
         ResourceAccessLevel accessLevel = Optional.ofNullable(level).map(ResourceAccessLevel::get).orElse(ResourceConstants.DEFAULT_EXCEL_ACCESS_LEVEL);
         // 打印表格
         Long managerId = BaseContext.getCurrentUser().getUserId();
-        OnlineResourceVO onlineResourceVO = interviewScheduleService.printSituations(managerId, activity, accessLevel, synchronous);
+        OnlineResourceVO onlineResourceVO = interviewScheduleService.printSituations(managerId, situationQueryDTO, accessLevel, synchronous);
         return SystemJsonResponse.SYSTEM_SUCCESS(onlineResourceVO);
     }
 
@@ -176,7 +172,7 @@ public class InterviewScheduleController {
     @GetMapping("/reserve/{scheduleId}")
     public SystemJsonResponse interviewReserveApply(@PathVariable("scheduleId") @NotNull Long scheduleId,
                                                     @RequestParam("title") @NotBlank(message = "标题不能为空") String title,
-                                                    @RequestParam(name = "mobile", required = false) @Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号非法") String mobile) {
+                                                    @RequestParam(name = "mobile", required = false) @MobilePhone String mobile) {
         // 检查
         interviewScheduleService.checkInterviewScheduleExists(scheduleId);
         // 当前管理员

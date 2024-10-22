@@ -25,12 +25,12 @@
         select
             c.id, c.content, c.create_time, c.update_time,
             m.id m_id, m.username m_username, m.nickname m_nickname,m.email m_email,
-            m.phone_number m_phone_number, m.avatar m_acvtar
+            m.phone_number m_phone_number, m.avatar m_avatar
         from interview i
              left join interview_comment c on c.interview_id = i.id and c.is_deleted = 0 and i.is_deleted = 0
              left join user m on m.id = c.manager_id and m.is_deleted = 0 and c.is_deleted = 0
         where i.id = #{interviewId,jdbcType=BIGINT} and c.id is not null and i.is_deleted = 0
-        order by c.create_time
+        order by c.create_time asc
     </select>
 
 </mapper>

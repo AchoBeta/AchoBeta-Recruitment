@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -76,7 +76,7 @@ public class ParticipationQuestionLinkServiceImpl extends ServiceImpl<Participat
     @Override
     public void putQuestionAnswers(Long participationId, List<QuestionAnswerDTO> questionAnswerDTOS) {
         Long recId = getActivityParticipationActId(participationId);
-        Map<Long, String> hash = new HashMap<>();
+        Map<Long, String> hash = new LinkedHashMap<>();
         // 获取答题模板
         recruitmentActivityService.getQuestionsByActId(recId).forEach(questionVO -> {
             hash.put(questionVO.getId(), ActivityParticipationConstants.DEFAULT_ANSWER);

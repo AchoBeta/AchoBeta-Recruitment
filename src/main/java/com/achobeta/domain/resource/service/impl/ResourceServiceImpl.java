@@ -125,11 +125,12 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     @Transactional
-    public void checkAndRemoveImage(Long code, Long old) {
+    public Boolean shouldRemove(Long code, Long old) {
         if(!code.equals(old)) {
             checkImage(code);
-            removeKindly(old);
+            return Boolean.TRUE;
         }
+        return Boolean.FALSE;
     }
 
     @Override
@@ -167,7 +168,7 @@ public class ResourceServiceImpl implements ResourceService {
         if(ResourceUtil.matchType(contentType, ResourceType.IMAGE) && compressionThreshold.compareTo(data.length) <= 0) {
             // 压缩图片
             data = MediaUtil.compressImage(data);
-            suffix = "." + MediaUtil.COMPRESS_FORMAT_NAME;
+            suffix = MediaUtil.COMPRESS_FORMAT_SUFFIX;
             originalName = ResourceUtil.changeSuffix(originalName, suffix);
         } else {
             // 使用原后缀
@@ -308,7 +309,7 @@ public class ResourceServiceImpl implements ResourceService {
         String compressImage = objectStorageService.compressImage(resource.getUserId(), resource.getFileName());
         digitalResourceService.renameDigitalResource(
                 resource.getId(),
-                ResourceUtil.changeExtension(resource.getOriginalName(), MediaUtil.COMPRESS_FORMAT_NAME),
+                ResourceUtil.changeSuffix(resource.getOriginalName(), MediaUtil.COMPRESS_FORMAT_SUFFIX),
                 compressImage
         );
     }

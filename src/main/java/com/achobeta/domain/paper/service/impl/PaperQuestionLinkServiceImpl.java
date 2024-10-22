@@ -1,6 +1,7 @@
 package com.achobeta.domain.paper.service.impl;
 
 import com.achobeta.common.enums.GlobalServiceStatusCode;
+import com.achobeta.domain.paper.constants.QuestionPaperConstants;
 import com.achobeta.domain.paper.model.dao.mapper.PaperQuestionLinkMapper;
 import com.achobeta.domain.paper.model.dao.mapper.QuestionPaperLibraryMapper;
 import com.achobeta.domain.paper.model.entity.PaperQuestionLink;
@@ -10,15 +11,21 @@ import com.achobeta.domain.paper.service.PaperQuestionLinkService;
 import com.achobeta.domain.paper.service.QuestionPaperService;
 import com.achobeta.domain.question.model.vo.QuestionVO;
 import com.achobeta.exception.GlobalServiceException;
+import com.achobeta.redis.lock.RedisLock;
+import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
+import com.achobeta.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
 * @author 马拉圈
@@ -36,6 +43,10 @@ public class PaperQuestionLinkServiceImpl extends ServiceImpl<PaperQuestionLinkM
 
     private final QuestionPaperService questionPaperService;
 
+    private final RedisLock redisLock;
+
+    private final SimpleLockStrategy simpleLockStrategy;
+
     @Override
     public List<QuestionVO> getQuestionsOnPaper(Long paperId) {
         return paperQuestionLinkMapper.getQuestionsOnPaper(paperId);
@@ -52,27 +63,32 @@ public class PaperQuestionLinkServiceImpl extends ServiceImpl<PaperQuestionLinkM
     @Override
     @Transactional
     public void addQuestionsForPaper(Long paperId, List<Long> questionIds) {
-        Set<Long> hash = new HashSet<>();
-        // 获取试卷的所有题
-        getQuestionsOnPaper(paperId).forEach(questionVO -> hash.add(questionVO.getId()));
-        // 将不存在于原试卷的题滤出来
-        List<PaperQuestionLink> paperQuestionLinks = questionIds.stream()
-                .filter(questionId -> !hash.contains(questionId))
-                .map(questionId -> {
-                    PaperQuestionLink paperQuestionLink = new PaperQuestionLink();
-                    paperQuestionLink.setPaperId(paperId);
-                    paperQuestionLink.setQuestionId(questionId);
-                    return paperQuestionLink;
-                }).toList();
-        this.saveBatch(paperQuestionLinks);
+        redisLock.tryLockDoSomething(QuestionPaperConstants.PAPER_ADD_QUESTIONS_LOCK + paperId, () -> {
+            // 获取试卷的所有题
+            Set<Long> hash = getQuestionsOnPaper(paperId).stream().map(QuestionVO::getId).collect(Collectors.toSet());
+            // 将不存在于原试卷的题滤出来
+            List<PaperQuestionLink> paperQuestionLinks = questionIds.stream()
+                    .distinct()
+                    .filter(questionId -> Objects.nonNull(questionId) && !hash.contains(questionId))
+                    .map(questionId -> {
+                        PaperQuestionLink paperQuestionLink = new PaperQuestionLink();
+                        paperQuestionLink.setPaperId(paperId);
+                        paperQuestionLink.setQuestionId(questionId);
+                        return paperQuestionLink;
+                    }).toList();
+            this.saveBatch(paperQuestionLinks);
+        }, () -> {}, simpleLockStrategy);
     }
 
     @Override
     public void removeQuestionsFromPaper(Long paperId, List<Long> questionIds) {
-        this.lambdaUpdate()
-                .eq(PaperQuestionLink::getPaperId, paperId)
-                .in(PaperQuestionLink::getQuestionId, questionIds)
-                .remove();
+        questionIds = ObjectUtil.distinctNonNullStream(questionIds).toList();
+        if(!CollectionUtils.isEmpty(questionIds)) {
+            this.lambdaUpdate()
+                    .eq(PaperQuestionLink::getPaperId, paperId)
+                    .in(PaperQuestionLink::getQuestionId, questionIds)
+                    .remove();
+        }
     }
 
     @Override
@@ -85,15 +101,18 @@ public class PaperQuestionLinkServiceImpl extends ServiceImpl<PaperQuestionLinkM
 
     @Override
     @Transactional
-    public Long cloneQuestionPaper(Long paperId) {
+    public Long cloneQuestionPaper(Long paperId, String title) {
         // 拷贝试卷的定义
         QuestionPaperDetailVO paperDetail = getPaperDetail(paperId);
         List<Long> libIds = paperDetail.getTypes()
                 .stream()
                 .map(PaperLibraryVO::getId)
                 .toList();
-        Long newPaperId = questionPaperService.addQuestionPaper(libIds,
-                paperDetail.getTitle(), paperDetail.getDescription());
+        Long newPaperId = questionPaperService.addQuestionPaper(
+                libIds,
+                Optional.ofNullable(title).filter(StringUtils::hasText).orElseGet(paperDetail::getTitle),
+                paperDetail.getDescription()
+        );
         // 拷贝试卷的题目
         List<Long> questionIds = paperDetail.getQuestions()
                 .stream()

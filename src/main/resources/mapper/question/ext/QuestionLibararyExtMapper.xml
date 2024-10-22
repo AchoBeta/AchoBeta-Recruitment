@@ -19,11 +19,12 @@
     <select id="getQuestionDetail" parameterType="java.lang.Long" resultMap="QuestionDetail">
         select
             q.id, q.title, q.standard, q.create_time, q.update_time,
-            l.id l_id, l.lib_type l_lib_type, l.create_time l_create_time
+            l.id l_id, l.lib_type l_lib_type, l.create_time l_create_time, lq.create_time lq_create_time
         from question q
              left join library_question_link lq on q.id = lq.question_id and q.is_deleted = 0 and lq.is_deleted = 0
              left join question_library l on l.id = lq.lib_id and l.is_deleted = 0 and lq.is_deleted = 0
         where q.id = #{questionId,jdbcType=BIGINT} and q.is_deleted = 0
+        order by lq_create_time asc
     </select>
 
 </mapper>

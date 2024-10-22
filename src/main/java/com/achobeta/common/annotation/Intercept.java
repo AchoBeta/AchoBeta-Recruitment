@@ -27,6 +27,4 @@ public @interface Intercept {
 
     boolean ignore() default false;
 
-    boolean log() default false;
-
 }

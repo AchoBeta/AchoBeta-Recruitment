@@ -14,6 +14,7 @@ import com.achobeta.exception.GlobalServiceException;
 import com.achobeta.redis.lock.RedisLock;
 import com.achobeta.redis.lock.strategy.ReadLockStrategy;
 import com.achobeta.redis.lock.strategy.SimpleLockStrategy;
+import com.achobeta.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -103,6 +104,7 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
 
     @Override
     public List<ParticipationPeriodVO> getParticipationPeriods(List<Long> participationIds) {
+        participationIds = ObjectUtil.distinctNonNullStream(participationIds).toList();
         if(CollectionUtils.isEmpty(participationIds)) {
             return new ArrayList<>();
         }
@@ -111,6 +113,7 @@ public class ActivityParticipationServiceImpl extends ServiceImpl<ActivityPartic
 
     @Override
     public List<ParticipationQuestionVO> getParticipationQuestions(List<Long> participationIds) {
+        participationIds = ObjectUtil.distinctNonNullStream(participationIds).toList();
         if(CollectionUtils.isEmpty(participationIds)) {
             return new ArrayList<>();
         }

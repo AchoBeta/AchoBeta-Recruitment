@@ -34,9 +34,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.achobeta.domain.interview.enums.InterviewStatus.ENDED;
-import static com.achobeta.domain.interview.enums.InterviewStatus.NOT_STARTED;
-
 /**
  * Created With Intellij IDEA
  * Description:
@@ -70,8 +67,6 @@ public class InterviewController {
 
     @PostMapping("/update")
     public SystemJsonResponse updateInterview(@Valid @RequestBody InterviewUpdateDTO interviewUpdateDTO) {
-        // 未开始才能修改
-        interviewService.checkInterviewStatus(interviewUpdateDTO.getInterviewId(), List.of(NOT_STARTED, ENDED));
         // 更新
         interviewService.updateInterview(interviewUpdateDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS();
@@ -117,14 +112,12 @@ public class InterviewController {
         // 检查
         Long interviewId = interviewPaperDTO.getInterviewId();
         Interview interview = interviewService.checkAndGetInterviewExists(interviewId);
-        // 检查面试是否未开始
-        interview.getStatus().check(List.of(NOT_STARTED, ENDED));
         Long paperId = interviewPaperDTO.getPaperId();
         if(!Objects.equals(interview.getPaperId(), paperId)) {
             // 检查试卷是否存在
             questionPaperService.checkPaperExists(paperId);
             // 设置试卷
-            interviewService.setPaperForInterview(interviewId, paperId);
+            interviewService.setPaperForInterview(interview, paperId);
         }
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
@@ -132,7 +125,7 @@ public class InterviewController {
     @PostMapping("/list/manager/all")
     public SystemJsonResponse managerGetAllInterviewList(@Valid @RequestBody(required = false) InterviewConditionDTO interviewConditionDTO) {
         // 查询
-        List<InterviewVO> interviewVOList = interviewService.managerGetInterviewList(null, InterviewConditionDTO.of(interviewConditionDTO));
+        List<InterviewDetailVO> interviewVOList = interviewService.managerGetInterviewList(null, InterviewConditionDTO.of(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewVOList);
     }
 
@@ -154,7 +147,7 @@ public class InterviewController {
         // 获取当前管理员 id
         Long managerId = BaseContext.getCurrentUser().getUserId();
         // 查询
-        List<InterviewVO> interviewVOList = interviewService.managerGetInterviewList(managerId, InterviewConditionDTO.of(interviewConditionDTO));
+        List<InterviewDetailVO> interviewVOList = interviewService.managerGetInterviewList(managerId, InterviewConditionDTO.of(interviewConditionDTO));
         return SystemJsonResponse.SYSTEM_SUCCESS(interviewVOList);
     }
 

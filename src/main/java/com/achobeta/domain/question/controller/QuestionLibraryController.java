@@ -4,9 +4,11 @@ import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.common.annotation.Intercept;
 import com.achobeta.common.enums.UserTypeEnum;
 import com.achobeta.domain.paper.model.converter.LibraryConverter;
+import com.achobeta.domain.question.model.dto.LibraryReferenceQuestionDTO;
 import com.achobeta.domain.question.model.dto.QuestionLibraryDTO;
 import com.achobeta.domain.question.model.entity.QuestionLibrary;
 import com.achobeta.domain.question.service.QuestionLibraryService;
+import com.achobeta.domain.question.service.QuestionService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -33,10 +35,21 @@ public class QuestionLibraryController {
 
     private final QuestionLibraryService questionLibraryService;
 
+    private final QuestionService questionService;
+
     @PostMapping("/create")
     public SystemJsonResponse createQuestionLibrary(@RequestParam("libType") @NotBlank String libType) {
         Long questionLibraryId = questionLibraryService.createQuestionLibrary(libType);
         return SystemJsonResponse.SYSTEM_SUCCESS(questionLibraryId);
+    }
+
+    @PostMapping("/reference")
+    public SystemJsonResponse referenceQuestions(@Valid @RequestBody LibraryReferenceQuestionDTO libraryReferenceQuestionDTO) {
+        Long libId = libraryReferenceQuestionDTO.getLibId();
+        questionLibraryService.checkQuestionLibraryExists(libId);
+        // 引用
+        questionService.referenceQuestions(libraryReferenceQuestionDTO.getLibId(), libraryReferenceQuestionDTO.getQuestionIds());
+        return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
     @PostMapping("/rename")

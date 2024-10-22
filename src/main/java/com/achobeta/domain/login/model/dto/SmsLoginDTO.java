@@ -1,7 +1,7 @@
 package com.achobeta.domain.login.model.dto;
 
+import com.achobeta.common.annotation.MobilePhone;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -25,7 +25,7 @@ public class SmsLoginDTO implements Serializable {
      * 手机号
      */
     @NotBlank(message = "手机号不能为空")
-    @Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号非法")
+    @MobilePhone
     private String phoneNumber;
 
     /**

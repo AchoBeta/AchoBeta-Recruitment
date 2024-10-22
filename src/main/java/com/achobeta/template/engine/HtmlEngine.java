@@ -2,14 +2,8 @@ package com.achobeta.template.engine;
 
 import com.achobeta.template.model.po.ReplaceResource;
 import com.achobeta.template.model.po.Resource;
+import com.achobeta.template.util.MarkdownUtil;
 import com.achobeta.template.util.TemplateUtil;
-import com.vladsch.flexmark.ext.tables.TablesExtension;
-import com.vladsch.flexmark.ext.toc.TocExtension;
-import com.vladsch.flexmark.html.HtmlRenderer;
-import com.vladsch.flexmark.parser.Parser;
-import com.vladsch.flexmark.parser.ParserEmulationProfile;
-import com.vladsch.flexmark.util.ast.Node;
-import com.vladsch.flexmark.util.data.MutableDataSet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
@@ -40,29 +34,6 @@ public class HtmlEngine {
     }
 
     public class HtmlBuilder {
-
-        private final static MutableDataSet OPTIONS;
-
-        private final static Parser PARSER;
-
-        private final static HtmlRenderer HTML_RENDERER;
-
-        static {
-            OPTIONS = new MutableDataSet()
-                    .setFrom(ParserEmulationProfile.MARKDOWN)
-                    // 支持 [TOC]目录 以及 表格
-                    .set(Parser.EXTENSIONS, List.of(TocExtension.create(), TablesExtension.create()))
-            ;
-            PARSER = Parser.builder(OPTIONS).build();
-            HTML_RENDERER = HtmlRenderer.builder(OPTIONS).build();
-        }
-
-        private String markdownToHtml(String markdown) {
-            // 解析 Markdown 文本为节点
-            Node document = PARSER.parse(markdown);
-            // 将 Markdown 节点渲染为 HTML
-            return HTML_RENDERER.render(document);
-        }
 
         private final StringBuffer htmlBuffer = new StringBuffer();
 
@@ -104,7 +75,7 @@ public class HtmlEngine {
 
         // md -> html 追加
         public HtmlBuilder appendMarkdown(String markdown) {
-            String html = markdownToHtml(markdown);
+            String html = MarkdownUtil.markdownToHtml(markdown);
             return append(html);
         }
 
@@ -156,7 +127,7 @@ public class HtmlEngine {
          * 3. 紧接着调用 replaceMarkdown，传入 uniqueSymbol 和原 markdown 文本，文本转换为 html 并替换 uniqueSymbol 的位置
          */
         public HtmlBuilder replaceMarkdown(String target, String markdown) {
-            String html = markdownToHtml(markdown);
+            String html = MarkdownUtil.markdownToHtml(markdown);
             return replace(target, html);
         }
 
@@ -167,7 +138,7 @@ public class HtmlEngine {
 
         // md 转化为 html 替换对应的 target
         public HtmlBuilder replaceMarkdown(List<ReplaceResource> resourceList) {
-            String finalHtml = TemplateUtil.replaceSafely(build(), resourceList, this::markdownToHtml);
+            String finalHtml = TemplateUtil.replaceSafely(build(), resourceList, MarkdownUtil::markdownToHtml);
             return reset(finalHtml);
         }
 

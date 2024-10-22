@@ -1,5 +1,6 @@
 package com.achobeta.util;
 
+import cn.hutool.http.HttpResponse;
 import com.achobeta.common.enums.GlobalServiceStatusCode;
 import com.achobeta.exception.GlobalServiceException;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,8 @@ public class MediaUtil {
 
     public final static String COMPRESS_FORMAT_NAME = "jpg"; // 压缩图片格式
 
+    public final static String COMPRESS_FORMAT_SUFFIX = "." + COMPRESS_FORMAT_NAME; // 压缩图片格式
+
     public final static float COMPRESS_SCALE = 1.0f; // 压缩图片大小
 
     public final static float COMPRESS_QUALITY = 0.5f; // 压缩图片质量
@@ -49,6 +52,16 @@ public class MediaUtil {
     }
 
     public static InputStream getInputStream(String url) throws IOException {
+        // 尝试两次去获取
+        try {
+            HttpResponse response = HttpRequestUtil.getRequestAndExecute(url);
+            InputStream inputStream =  HttpRequestUtil.isAccessible(response) ? response.bodyStream() : null;
+            if(Objects.nonNull(inputStream)) {
+                return inputStream;
+            }
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+        }
         HttpURLConnection connection = HttpRequestUtil.openConnection(url);
         return HttpRequestUtil.isAccessible(connection) ? connection.getInputStream() : null;
     }
