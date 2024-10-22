@@ -126,7 +126,7 @@ services:
       - "9005:9005"
     volumes:
       - ./docker/minio/data:/data
-    command: server /data --console-address ":19005"
+    command: server /data --console-address ":19005" --address ":9005"
     networks:
       - my-network
     healthcheck:
@@ -151,10 +151,9 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=achobeta666
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/achobeta_recruitment?serverTimezone=UTC&characterEncoding=UTF8&useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true&allowMultiQueries=true
-      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.jdbc.Driver
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
       - SPRING_HIKARI_POOL_NAME=Retail_HikariCP
-      - REDIS_SDK_CONFIG_HOST=redis
-      - REDIS_SDK_CONFIG_PORT=6379
+      - AB_MINIO_ENDPOINT=http://minio:9005
     volumes:
       - ./logs:/data/log
     depends_on:
