@@ -23,6 +23,9 @@ docker stop ${CONTAINER_NAME}
 # 删除容器
 docker rm ${CONTAINER_NAME}
 
+# 删除镜像
+docker rmi ${IMAGE_NAME}
+
 # 普通镜像构建，随系统版本构建 amd/arm
 docker-compose -f docker-compose.yml up -d
 

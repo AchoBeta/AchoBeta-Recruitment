@@ -30,7 +30,7 @@
             </properties>
             <activation>
                 <!--默认环境-->
-                <activeByDefault>true</activeByDefault>
+<!--                <activeByDefault>true</activeByDefault>-->
             </activation>
         </profile>
 
@@ -41,7 +41,7 @@
                 <logging.level>info</logging.level>
             </properties>
             <activation>
-<!--                <activeByDefault>true</activeByDefault>-->
+                <activeByDefault>true</activeByDefault>
             </activation>
         </profile>
 

@@ -142,18 +142,18 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "9001:9001"
+      - "19001:19001"
     environment:
       - TZ=PRC
-      - SERVER_PORT=9001
+      - SERVER_PORT=19001
       - APP_CONFIG_API_VERSION=v1
       - APP_CONFIG_CROSS_ORIGIN=*
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=achobeta666
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/achobeta_recruitment?serverTimezone=UTC&characterEncoding=UTF8&useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true&allowMultiQueries=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/achobeta_recruitment?serverTimezone=Asia/Shanghai&characterEncoding=UTF8&useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true&allowMultiQueries=true
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
       - SPRING_HIKARI_POOL_NAME=Retail_HikariCP
-      - AB_MINIO_ENDPOINT=http://minio:9005
+      - AB_REQUEST_CORS_ALLOWORIGIN=http://8.138.151.35:3000, http://8.138.151.35:5173
     volumes:
       - ./logs:/data/log
     depends_on:
