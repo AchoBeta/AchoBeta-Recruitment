@@ -129,7 +129,7 @@ public enum GlobalServiceStatusCode {
      * @param code 状态码的code
      * @return 状态码的状态信息
      */
-    public static String GetStatusMsgByCode(Integer code) {
+    public static String getStatusMsgByCode(Integer code) {
         for (GlobalServiceStatusCode ele : values()) {
             if (ele.getCode().equals(code)) {
                 return ele.getMessage();
