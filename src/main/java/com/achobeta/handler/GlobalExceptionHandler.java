@@ -3,7 +3,7 @@ package com.achobeta.handler;
 import com.achobeta.common.SystemJsonResponse;
 import com.achobeta.config.RequestIdConfig;
 import com.achobeta.exception.GlobalServiceException;
-import com.mysql.jdbc.MysqlDataTruncation;
+import com.mysql.cj.jdbc.exceptions.MysqlDataTruncation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;

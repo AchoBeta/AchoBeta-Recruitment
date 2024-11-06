@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import javax.validation.constraints.NotNull;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
@@ -33,7 +32,7 @@ public class JwtUtil {
      * @return
      */
 
-    public static String createJWT(@NotNull SecretKey secretKey, @NotNull long ttlMillis, @NotNull Map<String, Object> claims) {
+    public static String createJWT(SecretKey secretKey, long ttlMillis, Map<String, Object> claims) {
         // 指定签名的时候使用的签名算法，也就是header那部分
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         // 生成JWT的时间
@@ -59,7 +58,7 @@ public class JwtUtil {
      * @param token     加密后的token
      * @return
      */
-    public static Claims parseJWT(@NotNull SecretKey secretKey, @NotNull String token) {
+    public static Claims parseJWT(SecretKey secretKey, String token) {
         Claims claims = null;
         try {
             // 得到DefaultJwtParser
@@ -75,7 +74,7 @@ public class JwtUtil {
         return claims;
     }
 
-    public static Date getTokenExpiration(@NotNull SecretKey secretKey, @NotNull String token) {
+    public static Date getTokenExpiration(SecretKey secretKey, String token) {
         // TODO 可能会成为性能瓶颈
         Claims claims = parseJWT(secretKey, token);
         //返回该token的过期时间
@@ -83,7 +82,7 @@ public class JwtUtil {
     }
 
     // 通过明文密钥生成加密后的秘钥 secretKey
-    public static SecretKey generalKey(@NotNull String secretKey) {
+    public static SecretKey generalKey(String secretKey) {
         byte[] encodedKey = Base64.getDecoder().decode(secretKey);
         SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
         log.info("生成的key -> {}", key.getAlgorithm());

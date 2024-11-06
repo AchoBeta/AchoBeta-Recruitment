@@ -126,7 +126,7 @@ services:
       - "9005:9005"
     volumes:
       - ./docker/minio/data:/data
-    command: server /data --console-address ":19005"
+    command: server /data --console-address ":19005" --address ":9005"
     networks:
       - my-network
     healthcheck:
@@ -142,21 +142,20 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "9001:19001"
+      - "19001:19001"
     environment:
       - TZ=PRC
-      - SERVER_PORT=9001
+      - SERVER_PORT=19001
       - APP_CONFIG_API_VERSION=v1
       - APP_CONFIG_CROSS_ORIGIN=*
-      - SPRING_DATASOURCE_USERNAME=mms
-      - SPRING_DATASOURCE_PASSWORD=bitter-macaron
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/achobeta_recruitment?serverTimezone=UTC&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Shanghai
-      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.jdbc.Driver
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=achobeta666
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/achobeta_recruitment?serverTimezone=Asia/Shanghai&characterEncoding=UTF8&useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true&allowMultiQueries=true
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
       - SPRING_HIKARI_POOL_NAME=Retail_HikariCP
-      - REDIS_SDK_CONFIG_HOST=redis
-      - REDIS_SDK_CONFIG_PORT=6379
+      - AB_REQUEST_CORS_ALLOWORIGIN=http://8.138.151.35:3000, http://8.138.151.35:5173
     volumes:
-      - ./log:/data/log
+      - ./logs:/data/log
     depends_on:
       - redis
       - rabbitmq
